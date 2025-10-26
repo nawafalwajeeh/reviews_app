@@ -1,0 +1,21 @@
+setup the native splash screen:
+    dart run flutter_native_splash:create --path=splash.yaml
+    
+delete the native splash screen: 
+   the new cmd: dart run flutter_native_splash:remove
+
+setup the launcher icon:
+   the new command should be used:  dart run flutter_launcher_icons  
+
+firebase database Link:
+    https://console.firebase.google.com/project/places-edd54/firestore/databases/-default-/data
+   
+fix problems:
+    dart fix --dry-run
+    dart fix --apply
+
+Keytool code to link firebase with SH1, SH--: 
+Windows: 
+    -  keytool -list -v -keystore "C:\Users\<%USER_PROFILE%>\.android\debug.keystore" -alias androiddebugkey -storepass android -keypass android
+   for example:  
+       keytool -list -v -keystore "C:\Users\pro\.android\debug.keystore" -alias androiddebugkey -storepass android -keypass android

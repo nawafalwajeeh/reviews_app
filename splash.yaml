@@ -1,0 +1,13 @@
+flutter_native_splash:
+  color: "#FFFFFF"
+  color_dark: "#272727"
+  image: assets/images/animations/animated-map.gif
+  image_dark: assets/images/animations/animated-map.gif
+
+  android_12:
+    color: "#FFFFFF"
+    color_dark: "#272727"
+    image: assets/images/animations/animated-map.gif
+    image_dark: assets/images/animations/animated-map.gif
+
+  web: true

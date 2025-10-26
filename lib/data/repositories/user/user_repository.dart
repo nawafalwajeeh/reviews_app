@@ -1,0 +1,168 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/services.dart';
+import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:reviews_app/data/repositories/authentication/authentication_repository.dart';
+import 'package:reviews_app/features/personalization/models/user_model.dart';
+import 'package:reviews_app/utils/exceptions/firebase_auth_exceptions.dart';
+import 'package:reviews_app/utils/exceptions/firebase_exceptions.dart';
+import 'package:reviews_app/utils/exceptions/format_exceptions.dart';
+import 'package:reviews_app/utils/exceptions/platform_exceptions.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+
+/// Repository class for user-related operations.
+class UserRepository extends GetxController {
+  static UserRepository get instance => Get.find();
+
+  final FirebaseFirestore _db = FirebaseFirestore.instance;
+
+  /// Function to save user data to Firestore.
+  Future<void> saveUserRecord(UserModel user) async {
+    try {
+      await _db.collection('Users').doc(user.id).set(user.toJson());
+    } on FirebaseAuthException catch (e) {
+      throw AppFirebaseAuthException(e.code).message;
+    } on FirebaseException catch (e) {
+      throw AppFirebaseException(e.code).message;
+    } on FormatException catch (_) {
+      throw AppFormatException();
+    } on PlatformException catch (e) {
+      throw AppPlatformException(e.code).message;
+    } catch (e) {
+      throw 'Something went wrong. Please try again.';
+    }
+  }
+
+  /// Function to fetch user details based on user ID.
+  Future<UserModel> fetchUserDetails() async {
+    try {
+      final documentSnapshot = await _db
+          .collection('Users')
+          .doc(AuthenticationRepository.instance.authUser?.uid)
+          .get();
+      if (documentSnapshot.exists) {
+        return UserModel.fromSnapshot(documentSnapshot);
+      } else {
+        return UserModel.empty();
+      }
+    } on FirebaseAuthException catch (e) {
+      throw AppFirebaseAuthException(e.code).message;
+    } on FirebaseException catch (e) {
+      throw AppFirebaseException(e.code).message;
+    } on FormatException catch (_) {
+      throw AppFormatException();
+    } on PlatformException catch (e) {
+      throw AppPlatformException(e.code).message;
+    } catch (e) {
+      throw 'Something went wrong. Please try again.';
+    }
+  }
+
+  /// Function to update user deta in Firestore.
+  Future<void> updateUserDetails(UserModel updatedUser) async {
+    try {
+      await _db
+          .collection('Users')
+          .doc(updatedUser.id)
+          .update(updatedUser.toJson());
+    } on FirebaseAuthException catch (e) {
+      throw AppFirebaseAuthException(e.code).message;
+    } on FirebaseException catch (e) {
+      throw AppFirebaseException(e.code).message;
+    } on FormatException catch (_) {
+      throw AppFormatException();
+    } on PlatformException catch (e) {
+      throw AppPlatformException(e.code).message;
+    } catch (e) {
+      throw 'Something went wrong. Please try again.';
+    }
+  }
+
+  /// Function to update any field in specific Users Collection.
+  Future<void> updateSingleField(Map<String, dynamic> json) async {
+    try {
+      await _db
+          .collection('Users')
+          .doc(AuthenticationRepository.instance.authUser?.uid)
+          .update(json);
+    } on FirebaseAuthException catch (e) {
+      throw AppFirebaseAuthException(e.code).message;
+    } on FirebaseException catch (e) {
+      throw AppFirebaseException(e.code).message;
+    } on FormatException catch (_) {
+      throw AppFormatException();
+    } on PlatformException catch (e) {
+      throw AppPlatformException(e.code).message;
+    } catch (e) {
+      throw 'Something went wrong. Please try again.';
+    }
+  }
+
+  /// Function to update any field in specific Users Collection.
+  Future<void> removeUserRecord(String userId) async {
+    try {
+      await _db.collection('Users').doc(userId).delete();
+    } on FirebaseAuthException catch (e) {
+      throw AppFirebaseAuthException(e.code).message;
+    } on FirebaseException catch (e) {
+      throw AppFirebaseException(e.code).message;
+    } on FormatException catch (_) {
+      throw AppFormatException();
+    } on PlatformException catch (e) {
+      throw AppPlatformException(e.code).message;
+    } catch (e) {
+      throw 'Something went wrong. Please try again.';
+    }
+  }
+
+  /// Upload any Image
+  Future<String> uploadImage(
+    String path,
+    XFile image, {
+    String bucketName = 'Images',
+  }) async {
+    try {
+      // use firebase storage
+      //---------------------------------
+      // final ref = FirebaseStorage.instance.ref(path).child(image.name);
+      // await ref.putFile(File(image.path));
+      // final url = await ref.getDownloadURL();
+      // return url;
+      //---------------------------------
+
+      // use supaBase Storage
+      // 1. Read image bytes
+      final bytes = await image.readAsBytes();
+      final fileName = '$path/${image.name}';
+
+      // 2. Upload the file to Supabase Storage
+      final String() = await Supabase.instance.client.storage
+          .from(bucketName)
+          .uploadBinary(fileName, bytes);
+
+      // If uploadBinary throws, it will be caught by catch below.
+      // uploadedPath is the path of the uploaded file.
+
+      // 3. Get the public URL of the uploaded image
+      final url = Supabase.instance.client.storage
+          .from(bucketName)
+          .getPublicUrl(fileName);
+
+      return url;
+    } on StorageException catch (e) {
+      // Supabase Storage-specific error handling.
+      throw e.message;
+    } on FirebaseAuthException catch (e) {
+      throw AppFirebaseAuthException(e.code).message;
+    } on FirebaseException catch (e) {
+      throw AppFirebaseException(e.code).message;
+    } on FormatException catch (_) {
+      throw AppFormatException();
+    } on PlatformException catch (e) {
+      throw AppPlatformException(e.code).message;
+    } catch (e) {
+      throw 'Something went wrong. Please try again.';
+    }
+  }
+}

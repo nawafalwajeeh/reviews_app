@@ -1,0 +1,172 @@
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:reviews_app/common/widgets/place/favourite_icon/favourite_icon.dart';
+import 'package:reviews_app/features/review/screens/place_details/place_details.dart';
+import 'package:reviews_app/utils/constants/colors.dart';
+import 'package:reviews_app/utils/constants/enums.dart';
+import 'package:reviews_app/utils/helpers/helper_functions.dart';
+
+import '../../../utils/constants/sizes.dart';
+import '../../../features/review/models/place_model.dart';
+import '../texts/place_title_text.dart';
+import 'rating/place_rating_badge.dart';
+
+class SmallPlaceCard extends StatelessWidget {
+  final PlaceModel place;
+  const SmallPlaceCard({super.key, required this.place});
+
+  @override
+  Widget build(BuildContext context) {
+    final dark = AppHelperFunctions.isDarkMode(context);
+
+    return GestureDetector(
+      onTap: () => Get.to(() => PlaceDetailsScreen()),
+      child: Container(
+        width: 150,
+        decoration: BoxDecoration(
+          color: dark
+              ? AppColors.darkerGrey
+              : AppColors.grey.withValues(alpha: 0.50),
+          borderRadius: BorderRadius.circular(AppSizes.cardRadiusLg),
+          boxShadow: [
+            BoxShadow(
+              blurRadius: 6,
+              color: dark
+                  // Alpha 153 (60%) opacity, correctly passed as a double
+                  ? AppColors.dark.withValues(alpha: 0.60)
+                  // Alpha 204 (80%) opacity, correctly passed as a double
+                  : AppColors.grey.withValues(alpha: 0.80),
+              offset: const Offset(0, 3),
+            ),
+          ],
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            /// -- Thumbnail Image
+            SizedBox(
+              height: 160,
+              width: double.infinity,
+              child: Stack(
+                children: [
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(AppSizes.cardRadiusLg),
+                    child: CachedNetworkImage(
+                      imageUrl: place.thumbnail,
+                      fit: BoxFit.cover,
+                      width: double.infinity,
+                      height: double.infinity,
+                      placeholder: (context, url) => const Center(
+                        child: CircularProgressIndicator(
+                          color: AppColors.primaryColor,
+                        ),
+                      ),
+                      errorWidget: (context, url, error) =>
+                          const Icon(Icons.error),
+                    ),
+                  ),
+
+                  /// -- Gradient Overlay
+                  Container(
+                    width: double.infinity,
+                    height: double.infinity,
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [
+                          AppColors.black.withValues(alpha: 0.20),
+                          // Make the bottom almost transparent
+                          Colors.transparent,
+                          Colors.transparent,
+                        ],
+                        // Start dark at the top, fade to transparent quickly
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                      ),
+                      // Apply the full border radius to the gradient overlay
+                      borderRadius: BorderRadius.circular(
+                        AppSizes.cardRadiusLg,
+                      ),
+                    ),
+                  ),
+
+                  /// -- Rating
+                  Positioned(
+                    left: AppSizes.sm,
+                    top: AppSizes.sm,
+                    child: PlaceRatingBadge(
+                      rating: place.rating,
+                      isSmall: true,
+                    ),
+                  ),
+
+                  /// -- Favourite Icon
+                  const Positioned(
+                    right: AppSizes.sm,
+                    top: AppSizes.sm,
+                    child: AppFavouriteIcon(
+                      iconSize: AppSizes.iconMd,
+                      height: 30,
+                      width: 30,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
+            /// -- Category & View Details
+            Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: AppSizes.sm,
+                vertical: 0,
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  /// -- Category Text
+                  Expanded(
+                    child: Text(
+                      place.category,
+                      style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                        color: AppColors.primaryColor,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 1,
+                    ),
+                  ),
+
+                  /// -- Subtle button to indicate tap/view details
+                  const Icon(
+                    Icons.arrow_forward_ios_rounded,
+                    size: AppSizes.iconXs,
+                    color: AppColors.darkGrey,
+                  ),
+                ],
+              ),
+            ),
+
+            /// -- Title and Location
+            Padding(
+              padding: const EdgeInsets.fromLTRB(
+                AppSizes.sm,
+                0,
+                AppSizes.sm,
+                AppSizes.xs,
+              ),
+              child: PlaceTitleText(
+                title: place.title,
+                location: place.location,
+                isDarkBackground: false,
+                isVerified: true,
+                placeTitleSize: TextSizes.small,
+                maxLines: 2,
+                titleColor: dark ? AppColors.light : AppColors.dark,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
