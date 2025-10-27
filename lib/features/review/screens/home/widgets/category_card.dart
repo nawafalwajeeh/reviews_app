@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:reviews_app/common/widgets/custom_shapes/containers/rounded_container.dart';
 import 'package:reviews_app/utils/constants/colors.dart';
 import 'package:reviews_app/utils/constants/sizes.dart';
 import 'package:reviews_app/utils/helpers/helper_functions.dart';
+
+import '../../../models/category_model.dart';
+import '../../sub_category/sub_categories.dart';
 
 class CategoryCard extends StatelessWidget {
   final String title;
@@ -25,7 +29,11 @@ class CategoryCard extends StatelessWidget {
     final dark = AppHelperFunctions.isDarkMode(context);
 
     return GestureDetector(
-      onTap: onTap,
+      onTap:
+          onTap ??
+          () => Get.to(
+            () => SubCategoriesScreen(category: CategoryModel.empty()),
+          ),
       child: Column(
         children: [
           AppRoundedContainer(
