@@ -26,7 +26,7 @@ class FavouriteScreen extends StatelessWidget {
                 icon: Iconsax.sort,
                 isFavorite: true,
                 // icon: Iconsax.add,
-                // onTap: () => Get.to(() => const HomeScreen()),
+                // onPressed: () => Get.to(() => const HomeScreen()),
               ),
 
               const SizedBox(height: AppSizes.spaceBtwItems),
