@@ -14,8 +14,8 @@ class App extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    /// -- to load theme mode from local Storage on app launch and change it
-    /// when change theme mode button tapped in [SettingsScreen()].
+    /// -- Initialize Settings controller to load theme mode from local Storage on app launch
+    /// and change it when change theme mode button tapped in [SettingsScreen()].
     final controller = Get.put(SettingsController());
 
     return Obx(
