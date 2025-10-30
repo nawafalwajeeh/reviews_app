@@ -1,40 +1,66 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:reviews_app/common/widgets/custom_shapes/containers/rounded_container.dart';
+import 'package:reviews_app/features/review/screens/sub_category/sub_categories.dart' show SubCategoriesScreen;
+import 'package:reviews_app/utils/constants/colors.dart';
+import 'package:reviews_app/utils/constants/sizes.dart';
+import 'package:reviews_app/utils/helpers/helper_functions.dart';
+import '../../../../features/review/models/category_model.dart' show CategoryModel;
 
-import '../../../../utils/constants/colors.dart';
-// import '../../../../utils/helpers/helper_functions.dart';
 
 class CategoryCard extends StatelessWidget {
+  final String title;
+  final IconData icon;
+  final List<Color> gradientColors;
+  final Color iconColor;
+  final VoidCallback? onTap;
+
   const CategoryCard({
     super.key,
-    required this.isSelected,
     required this.title,
+    required this.icon,
+    required this.gradientColors,
+    required this.iconColor,
     this.onTap,
   });
 
-  final bool isSelected;
-  final String title;
-  final VoidCallback? onTap;
-
   @override
   Widget build(BuildContext context) {
-    // final dark = AppHelperFunctions.isDarkMode(context);
+    final dark = AppHelperFunctions.isDarkMode(context);
 
     return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        height: 40,
-        decoration: BoxDecoration(
-          color: isSelected ? AppColors.primaryColor : AppColors.grey,
-          borderRadius: BorderRadius.circular(20),
-        ),
-        alignment: Alignment.center,
-        padding: const EdgeInsets.symmetric(horizontal: 20),
-        child: Text(
-          title,
-          style: Theme.of(context).textTheme.bodyMedium?.apply(
-            color: isSelected ? AppColors.light : AppColors.dark,
+      onTap:
+          onTap ??
+          () => Get.to(
+            () => SubCategoriesScreen(category: CategoryModel.empty()),
           ),
-        ),
+      child: Column(
+        children: [
+          AppRoundedContainer(
+            width: 60,
+            height: 60,
+            radius: AppSizes.cardRadiusLg,
+            gradient: LinearGradient(
+              colors: gradientColors,
+              begin: Alignment.bottomRight,
+              end: Alignment.topLeft,
+            ),
+            child: Icon(icon, color: iconColor, size: AppSizes.iconMd),
+          ),
+          const SizedBox(height: AppSizes.spaceBtwItems / 2),
+          SizedBox(
+            width: 55,
+            child: Text(
+              title,
+              overflow: TextOverflow.ellipsis,
+              textAlign: TextAlign.center,
+              maxLines: 1,
+              style: Theme.of(context).textTheme.labelMedium?.apply(
+                color: dark ? AppColors.white : AppColors.dark,
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

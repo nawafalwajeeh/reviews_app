@@ -1,4 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:iconsax/iconsax.dart';
+import 'package:reviews_app/common/widgets/appbar/appbar.dart';
+import 'package:reviews_app/common/widgets/custom_shapes/containers/primary_header_container.dart';
+import 'package:reviews_app/utils/constants/colors.dart';
+import 'package:reviews_app/utils/constants/sizes.dart';
 
 class NotificationsScreen extends StatelessWidget {
   const NotificationsScreen({super.key});
@@ -7,11 +13,58 @@ class NotificationsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.surface,
-      appBar: _buildAppBar(context),
-      body: const SafeArea(
+      // appBar: _buildAppBar(context),
+      body: SafeArea(
         child: Column(
           children: [
-            _HeaderSection(),
+            AppPrimaryHeaderContainer(
+              child: Column(
+                children: [
+                  CustomAppBar(
+                    leadingIcon: Iconsax.direct_left,
+                    leadingOnPressed: () => Get.back(),
+                    actions: [
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: AppSizes.spaceBtwItems,
+                        ),
+                        child: Row(
+                          children: [
+                            _AppBarIconButton(
+                              icon: Icons.settings_rounded,
+                              onPressed: () => _handleSettingsPressed(),
+                            ),
+                            const SizedBox(width: 8),
+                            _AppBarIconButton(
+                              icon: Icons.mark_email_read_rounded,
+                              onPressed: () => _handleMarkAllReadPressed(),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: AppSizes.spaceBtwItems),
+                  Text(
+                    'Notifications',
+                    style: Theme.of(
+                      context,
+                    ).textTheme.headlineMedium?.apply(color: AppColors.white),
+                  ),
+                  const SizedBox(height: AppSizes.spaceBtwItems),
+                  Opacity(
+                    opacity: 0.8,
+                    child: Text(
+                      'Stay updated with reviews and recommendations',
+                      style: Theme.of(
+                        context,
+                      ).textTheme.bodyMedium?.apply(color: AppColors.white),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            // _HeaderSection()
             Expanded(child: _NotificationList()),
           ],
         ),
@@ -130,7 +183,7 @@ class _NotificationList extends StatelessWidget {
             timeAgo: '2m ago',
             description:
                 'Sarah M. left an amazing review for Sunset Café. Check it out!',
-            gradientColors: [Color(0xFFFFE7E7), Color(0xFFFF6B6B)],
+            gradientColors: [Color(0xFFFFE7E7), Color(0xFFA8EDEA)],
             actionButton: NotificationActionButton(
               text: 'View Review',
               backgroundColor: Color(0xFFFFE7E7),
@@ -158,7 +211,7 @@ class _NotificationList extends StatelessWidget {
             timeAgo: '1h ago',
             description:
                 'Mountain Peak Brewery just opened 0.5 miles from you. Be the first to review!',
-            gradientColors: [Color(0xFFE7FFE7), Color(0xFF4CAF50)],
+            gradientColors: [Color(0xFFE7FFE7), Color(0xFF1C59A4)],
             actionButton: NotificationActionButton(
               text: 'Explore',
               backgroundColor: Color(0xFFE7FFE7),
@@ -172,7 +225,7 @@ class _NotificationList extends StatelessWidget {
             timeAgo: '3h ago',
             description:
                 'The owner of Artisan Coffee House replied to your review. Thanks for the feedback!',
-            gradientColors: [Color(0xFFFFF7E7), Color(0xFFFFA726)],
+            gradientColors: [Color(0xFFFFF7E7), Color(0xFF6495ED)],
             actionButton: NotificationActionButton(
               text: 'Read Reply',
               backgroundColor: Color(0xFFFFF7E7),
@@ -186,7 +239,7 @@ class _NotificationList extends StatelessWidget {
             timeAgo: '1d ago',
             description:
                 'Congratulations! You\'ve written 50 reviews and helped the community discover great places.',
-            gradientColors: [Color(0xFFF3E7FF), Color(0xFF9C27B0)],
+            gradientColors: [Color(0xFFF3E7FF), Color(0xFFADD8E6)],
             milestoneBadge: MilestoneBadge(
               icon: Icons.emoji_events_rounded,
               text: 'Local Guide Badge Earned',
@@ -199,7 +252,7 @@ class _NotificationList extends StatelessWidget {
             timeAgo: '2d ago',
             description:
                 'Alex reviewed 2 new places this week. Check out their latest discoveries!',
-            gradientColors: [Color(0xFFFFE7F3), Color(0xFFFF6B9D)],
+            gradientColors: [Color(0xFFB0E0FF), Color(0xFF5D6EA0)],
             userAvatars: [
               'https://images.unsplash.com/photo-1740657252845-b4ccbaa65d84',
             ],

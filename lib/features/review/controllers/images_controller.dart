@@ -10,7 +10,7 @@ class ImagesController extends GetxController {
   final RxString selectedPlaceImage = ''.obs;
 
   /// -- Get All Images from place.
-  // List<String> getAllProductImages(PlaceModel place) {
+  // List<String> getAllPlaceImages(PlaceModel place) {
   //   // use set to add unique images only
   //   Set<String> images = {};
 
@@ -24,15 +24,8 @@ class ImagesController extends GetxController {
   //   if (place.images != null) {
   //     images.addAll(place.images!);
   //   }
-
-  // Get all the images from Place variations if not null
-  //   if (place.placeVariations != null ||
-  //       place.placeVariations!.isNotEmpty) {
-  //     images.addAll(
-  //       place.placeVariations!.map((variation) => variation.image),
-  //     );
-  //   }
-
+  //
+  //
   //   return images.toList();
   // }
 
