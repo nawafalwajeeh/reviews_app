@@ -11,7 +11,7 @@ class PlaceModel {
   final String location;
   final String category;
   final double rating;
-  final List<String> amenities;
+  final List<String>? amenities;
   final double? latitude;
   final double? longitude;
   final String? websiteUrl;
@@ -25,7 +25,7 @@ class PlaceModel {
     required this.description,
     required this.rating,
     required this.thumbnail,
-    required this.amenities,
+    this.amenities,
     this.images,
     bool? isFavorite,
     this.isFeatured,
@@ -35,7 +35,7 @@ class PlaceModel {
     this.websiteUrl,
   }) : isFavorite = isFavorite ?? false;
 
-  /// -- Create Empty func for clean code
+  /// -- Create Empty PlaceModel to create empty instance
   static PlaceModel empty() => PlaceModel(
     id: '',
     title: '',
@@ -44,6 +44,7 @@ class PlaceModel {
     description: '',
     rating: 0.0,
     thumbnail: '',
+    images: [],
     amenities: [],
   );
 
@@ -57,7 +58,7 @@ class PlaceModel {
       'Rating': rating,
       'Thumbnail': thumbnail,
       'Images': images ?? [],
-      'Amenities': amenities,
+      'Amenities': amenities ?? [],
       'IsFeatured': isFeatured ?? false,
       'DateAdded': dateAdded,
       'Latitude': latitude,
@@ -125,30 +126,3 @@ class PlaceModel {
     );
   }
 }
-
-//----------------------
-// class PlaceModel {
-//   final String thumbnail;
-//   final List<String> images;
-//   final String title;
-//   final String location;
-//   final String category;
-//   final String description;
-//   final double rating;
-//   final bool isFavorite;
-//   final List<String> amenities;
-//   final double pricePerNight;
-
-//   PlaceModel({
-//     required this.thumbnail,
-//     required this.images,
-//     required this.title,
-//     required this.location,
-//     required this.category,
-//     required this.description,
-//     required this.rating,
-//     this.isFavorite = false,
-//     required this.amenities,
-//     required this.pricePerNight,
-//   });
-// }
