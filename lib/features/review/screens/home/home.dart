@@ -18,9 +18,7 @@ class HomeScreen extends StatelessWidget {
     final controller = Get.put(PlaceController());
     return GestureDetector(
       onTap: () {},
-      // onTap: () => FocusScope.of(context).unfocus();
       child: Scaffold(
-        // key: scaffoldKey,
         body: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -44,7 +42,6 @@ class HomeScreen extends StatelessWidget {
 
               /// -- Categories
               const Padding(
-                // padding: EdgeInsets.all(AppSizes.defaultSpace),
                 padding: EdgeInsets.symmetric(
                   horizontal: AppSizes.defaultSpace,
                 ),
@@ -56,7 +53,7 @@ class HomeScreen extends StatelessWidget {
                     ),
                     SizedBox(height: AppSizes.spaceBtwItems),
 
-                    /// Categories
+                    /// -- Categories
                     HomeCategories(),
                   ],
                 ),
@@ -69,7 +66,6 @@ class HomeScreen extends StatelessWidget {
 
               /// -- Trending
               Padding(
-                // padding: EdgeInsets.all(AppSizes.defaultSpace),
                 padding: EdgeInsets.symmetric(
                   horizontal: AppSizes.defaultSpace,
                 ),
@@ -81,7 +77,7 @@ class HomeScreen extends StatelessWidget {
                     ),
                     SizedBox(height: AppSizes.spaceBtwItems),
 
-                    /// Trending
+                    /// -- Trendings
                     HomeTrendings(places: controller.demoPlaces),
                     const SizedBox(height: AppSizes.spaceBtwItems),
                   ],
