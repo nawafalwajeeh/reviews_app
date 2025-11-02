@@ -16,7 +16,6 @@ class SubCategoriesScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final PlaceController placeController = Get.find();
-    // Removed Random as it's no longer needed
 
     final Map<String, List<PlaceModel>> categorizedDemoPlaces = {};
 
@@ -98,6 +97,7 @@ class SubCategoriesScreen extends StatelessWidget {
             children: [
               /// -- Horizontal Lists of Popular Places for Each Sub-Category
               ListView.builder(
+                // itemCount: category.subCategories.length,
                 itemCount: subCategoryNames.length,
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
