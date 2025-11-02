@@ -2,6 +2,7 @@ import 'package:get/get.dart';
 import 'package:reviews_app/features/review/controllers/category_controller.dart';
 // import 'package:reviews_app/features/personalization/controllers/address_controller.dart';
 import 'package:reviews_app/features/review/controllers/map_controller.dart';
+import 'package:reviews_app/features/review/controllers/notification_controller.dart';
 import 'package:reviews_app/features/review/controllers/place_controller.dart';
 import 'package:reviews_app/utils/helpers/network_manager.dart';
 
@@ -14,6 +15,7 @@ class GeneralBindings extends Bindings {
   void dependencies() {
     /// -- Core
     Get.put(AppNetworkManager(), permanent: true);
+    Get.put(NotificationController());
 
     /// -- Place
     Get.put(ImagesController());
