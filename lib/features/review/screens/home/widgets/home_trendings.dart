@@ -15,7 +15,7 @@ class HomeTrendings extends StatelessWidget {
       width: double.infinity,
       child: ListView.builder(
         physics: const BouncingScrollPhysics(),
-        itemCount: 4,
+        itemCount: places.length,
         scrollDirection: Axis.horizontal,
         clipBehavior: Clip.none,
         padding: EdgeInsets.zero,

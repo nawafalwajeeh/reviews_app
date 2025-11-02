@@ -9,7 +9,6 @@ import 'package:reviews_app/features/review/screens/sub_category/add_new_categor
 import 'package:reviews_app/utils/constants/colors.dart';
 import 'package:reviews_app/utils/constants/sizes.dart';
 import '../gallery/gallery.dart';
-import 'add_new_place.dart';
 import 'widgets/place_list_tab.dart';
 
 class AllPlacesScreen extends StatelessWidget {

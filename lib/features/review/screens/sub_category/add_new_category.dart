@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:reviews_app/common/widgets/appbar/appbar.dart'
+    show CustomAppBar;
+import 'package:reviews_app/utils/constants/sizes.dart';
 
 class AddNewCategoryScreen extends StatelessWidget {
   static const String routeName = 'CreateCategoryScreen';
@@ -10,38 +13,10 @@ class AddNewCategoryScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.surface,
-      appBar: _buildAppBar(context),
+      // appBar: _buildAppBar(context),
+      appBar: CustomAppBar(showBackArrow: true),
       body: SafeArea(child: CreateCategoryContent()),
     );
-  }
-
-  AppBar _buildAppBar(BuildContext context) {
-    return AppBar(
-      backgroundColor: Theme.of(context).colorScheme.surface,
-      automaticallyImplyLeading: false,
-      leading: _AppBarIconButton(
-        icon: Icons.arrow_back_rounded,
-        onPressed: () => _handleBackPressed(),
-      ),
-      actions: [
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: _AppBarIconButton(
-            icon: Icons.help_outline_rounded,
-            onPressed: () => _handleHelpPressed(),
-          ),
-        ),
-      ],
-      elevation: 0,
-    );
-  }
-
-  void _handleBackPressed() {
-    debugPrint('Back button pressed');
-  }
-
-  void _handleHelpPressed() {
-    debugPrint('Help button pressed');
   }
 }
 
@@ -62,42 +37,45 @@ class CreateCategoryContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-      padding: const EdgeInsets.symmetric(horizontal: 24),
+      padding: const EdgeInsets.symmetric(horizontal: AppSizes.defaultSpace),
       child: Form(
         key: _formKey,
         child: Column(
           children: [
-            const SizedBox(height: 32),
+            const SizedBox(height: AppSizes.spaceBtwSections),
             const _HeaderSection(),
-            const SizedBox(height: 32),
+            const SizedBox(height: AppSizes.spaceBtwSections),
             _IconSelectionSection(
               selectedIcon: _selectedIcon,
               // onIconSelected: (icon) => setState(() => _selectedIcon = icon),
               onIconSelected: (icon) {},
             ),
-            const SizedBox(height: 24),
+            const SizedBox(height: AppSizes.defaultSpace),
             _NameInputSection(controller: _nameController),
-            const SizedBox(height: 24),
+            const SizedBox(height: AppSizes.defaultSpace),
             _DescriptionInputSection(controller: _descriptionController),
-            const SizedBox(height: 24),
-            _ColorSelectionSection(
-              selectedColor: _selectedColor,
-              onColorSelected: (value) {},
-              // onColorSelected: (color) => setState(() => _selectedColor = color),
-            ),
-            const SizedBox(height: 24),
+            const SizedBox(height: AppSizes.defaultSpace),
+            // _ColorSelectionSection(
+            //   selectedColor: _selectedColor,
+            //   onColorSelected: (value) {},
+            //   // onColorSelected: (color) => setState(() => _selectedColor = color),
+            // ),
+            const SizedBox(height: AppSizes.defaultSpace),
             _PreviewSection(
               icon: _selectedIcon,
               color: _selectedColor,
               name: _nameController.text,
               description: _descriptionController.text,
             ),
-            const SizedBox(height: 24),
-            _CreateButton(
-              // onPressed: _handleCreateCategory,
-              onPressed: () {},
+            const SizedBox(height: AppSizes.defaultSpace),
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: () {},
+                child: Text('Create Category'),
+              ),
             ),
-            const SizedBox(height: 32),
+            const SizedBox(height: AppSizes.spaceBtwSections),
           ],
         ),
       ),
@@ -139,7 +117,7 @@ class _HeaderSubtitle extends StatelessWidget {
     return Text(
       'Add a new place category to organize your locations',
       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-        color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
+        color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
       ),
     );
   }
@@ -250,7 +228,7 @@ class _IconOption extends StatelessWidget {
           margin: const EdgeInsets.symmetric(horizontal: 8),
           decoration: BoxDecoration(
             color: isSelected
-                ? Theme.of(context).colorScheme.primary.withOpacity(0.1)
+                ? Theme.of(context).colorScheme.primary.withValues(alpha: 0.1)
                 : Theme.of(context).colorScheme.surface,
             borderRadius: BorderRadius.circular(20),
             border: Border.all(
@@ -264,7 +242,9 @@ class _IconOption extends StatelessWidget {
             icon,
             color: isSelected
                 ? Theme.of(context).colorScheme.primary
-                : Theme.of(context).colorScheme.onSurface.withOpacity(0.5),
+                : Theme.of(
+                    context,
+                  ).colorScheme.onSurface.withValues(alpha: 0.5),
             size: 32,
           ),
         ),
@@ -337,87 +317,87 @@ class _DescriptionInputSection extends StatelessWidget {
   }
 }
 
-class _ColorSelectionSection extends StatelessWidget {
-  final Color selectedColor;
-  final ValueChanged<Color> onColorSelected;
+// class _ColorSelectionSection extends StatelessWidget {
+//   final Color selectedColor;
+//   final ValueChanged<Color> onColorSelected;
 
-  const _ColorSelectionSection({
-    required this.selectedColor,
-    required this.onColorSelected,
-  });
+//   const _ColorSelectionSection({
+//     required this.selectedColor,
+//     required this.onColorSelected,
+//   });
 
-  @override
-  Widget build(BuildContext context) {
-    final colors = [
-      Colors.blue,
-      Colors.green,
-      Colors.orange,
-      Colors.pink,
-      Colors.purple,
-      Colors.blueGrey,
-    ];
+//   @override
+//   Widget build(BuildContext context) {
+//     final colors = [
+//       Colors.blue,
+//       Colors.green,
+//       Colors.orange,
+//       Colors.pink,
+//       Colors.purple,
+//       Colors.blueGrey,
+//     ];
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        _SectionTitle('COLOR THEME'),
-        const SizedBox(height: 12),
-        Row(
-          children: colors
-              .map(
-                (color) => _ColorOption(
-                  color: color,
-                  isSelected: selectedColor == color,
-                  onSelected: () => onColorSelected(color),
-                ),
-              )
-              .toList(),
-        ),
-      ],
-    );
-  }
-}
+//     return Column(
+//       crossAxisAlignment: CrossAxisAlignment.start,
+//       children: [
+//         _SectionTitle('COLOR THEME'),
+//         const SizedBox(height: 12),
+//         Row(
+//           children: colors
+//               .map(
+//                 (color) => _ColorOption(
+//                   color: color,
+//                   isSelected: selectedColor == color,
+//                   onSelected: () => onColorSelected(color),
+//                 ),
+//               )
+//               .toList(),
+//         ),
+//       ],
+//     );
+//   }
+// }
 
-class _ColorOption extends StatelessWidget {
-  final Color color;
-  final bool isSelected;
-  final VoidCallback onSelected;
+// class _ColorOption extends StatelessWidget {
+//   final Color color;
+//   final bool isSelected;
+//   final VoidCallback onSelected;
 
-  const _ColorOption({
-    required this.color,
-    required this.isSelected,
-    required this.onSelected,
-  });
+//   const _ColorOption({
+//     required this.color,
+//     required this.isSelected,
+//     required this.onSelected,
+//   });
 
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onSelected,
-      child: Container(
-        width: 48,
-        height: 48,
-        margin: const EdgeInsets.only(right: 12),
-        decoration: BoxDecoration(
-          color: color,
-          shape: BoxShape.circle,
-          border: isSelected
-              ? Border.all(
-                  color: Theme.of(context).colorScheme.surface,
-                  width: 3,
-                )
-              : null,
-        ),
-        child: isSelected
-            ? Icon(
-                Icons.check_rounded,
-                color: Theme.of(context).colorScheme.surface,
-                size: 20,
-              )
-            : null,
-      ),
-    );
-  }
-}
+//   @override
+//   Widget build(BuildContext context) {
+//     return GestureDetector(
+//       onTap: onSelected,
+//       child: Container(
+//         width: 48,
+//         height: 48,
+//         margin: const EdgeInsets.only(right: 12),
+//         decoration: BoxDecoration(
+//           color: color,
+//           shape: BoxShape.circle,
+//           border: isSelected
+//               ? Border.all(
+//                   color: Theme.of(context).colorScheme.surface,
+//                   width: 3,
+//                 )
+//               : null,
+//         ),
+//         child: isSelected
+//             ? Icon(
+//                 Icons.check_rounded,
+//                 color: Theme.of(context).colorScheme.surface,
+//                 size: 20,
+//               )
+//             : null,
+//       ),
+//     );
+//   }
+// }
 
 class _PreviewSection extends StatelessWidget {
   final String icon;
@@ -442,7 +422,7 @@ class _PreviewSection extends StatelessWidget {
         boxShadow: [
           BoxShadow(
             blurRadius: 10,
-            color: Colors.black.withOpacity(0.1),
+            color: Colors.black.withValues(alpha: 0.1),
             offset: const Offset(0, 2),
           ),
         ],
@@ -489,7 +469,7 @@ class _PreviewContent extends StatelessWidget {
           width: 48,
           height: 48,
           decoration: BoxDecoration(
-            color: color.withOpacity(0.1),
+            color: color.withValues(alpha: 0.1),
             borderRadius: BorderRadius.circular(12),
           ),
           child: Icon(_getIconFromLabel(icon), color: color, size: 24),
@@ -510,7 +490,7 @@ class _PreviewContent extends StatelessWidget {
                 style: Theme.of(context).textTheme.bodySmall?.copyWith(
                   color: Theme.of(
                     context,
-                  ).colorScheme.onSurface.withOpacity(0.6),
+                  ).colorScheme.onSurface.withValues(alpha: 0.6),
                 ),
               ),
             ],
@@ -545,36 +525,6 @@ class _PreviewLabel extends StatelessWidget {
       style: Theme.of(context).textTheme.labelSmall?.copyWith(
         color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
         letterSpacing: 1,
-      ),
-    );
-  }
-}
-
-class _CreateButton extends StatelessWidget {
-  final VoidCallback onPressed;
-
-  const _CreateButton({required this.onPressed});
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      width: double.infinity,
-      height: 56,
-      child: ElevatedButton(
-        onPressed: onPressed,
-        style: ElevatedButton.styleFrom(
-          backgroundColor: Theme.of(context).colorScheme.primary,
-          foregroundColor: Theme.of(context).colorScheme.onPrimary,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20),
-          ),
-        ),
-        child: Text(
-          'Create Category',
-          style: Theme.of(
-            context,
-          ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
-        ),
       ),
     );
   }
