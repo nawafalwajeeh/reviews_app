@@ -24,17 +24,21 @@ class AppGridLayout extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final double safeChildAspectRatio =
+        (childAspectRatio != null && childAspectRatio! > 0)
+        ? childAspectRatio!
+        : 1.0;
+
     return GridView.builder(
       itemCount: itemCount,
-      // padding: EdgeInsets.zero,
       padding: const EdgeInsets.all(AppSizes.sm),
       physics: const NeverScrollableScrollPhysics(),
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: crossAxisCount,
         mainAxisSpacing: mainAxisSpacing,
-        crossAxisSpacing: crossAxisSpacing,
         mainAxisExtent: mainAxisExtent,
-        childAspectRatio: mainAxisExtent == null ? childAspectRatio ?? 1.0 : 0,
+        crossAxisSpacing: crossAxisSpacing,
+        childAspectRatio: safeChildAspectRatio,
       ),
       shrinkWrap: true,
       itemBuilder: itemBuilder,

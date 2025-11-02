@@ -5,10 +5,10 @@ import 'package:reviews_app/common/widgets/appbar/tabbar.dart';
 import 'package:reviews_app/common/widgets/custom_shapes/containers/search_container.dart';
 import 'package:reviews_app/common/widgets/headers/custom_header.dart';
 import 'package:reviews_app/features/review/controllers/place_controller.dart';
-import 'package:reviews_app/features/review/screens/categories/add_new_category.dart';
 import 'package:reviews_app/utils/constants/colors.dart';
 import 'package:reviews_app/utils/constants/sizes.dart';
 import '../gallery/gallery.dart';
+import 'add_new_place.dart';
 import 'widgets/place_list_tab.dart';
 
 class AllPlacesScreen extends StatelessWidget {
@@ -22,44 +22,41 @@ class AllPlacesScreen extends StatelessWidget {
       length: controller.categories.length,
       child: Scaffold(
         floatingActionButton: FloatingActionButton(
-          // onPressed: () => Get.to(() => const AddNewPlaceScreen()),
-          onPressed: () => Get.to(() => const AddNewCategoryScreen()),
+          onPressed: () => Get.to(() => const AddNewPlaceScreen()),
           backgroundColor: AppColors.primaryColor,
           child: const Icon(Icons.add, color: AppColors.white),
         ),
-        body: SafeArea(
-          child: Column(
-            children: [
-              CustomHeader(
-                title: 'Discover Places',
-                icon: Iconsax.image,
-                onPressed: () => Get.to(() => const ImageGalleryScreen()),
+        body: Column(
+          children: [
+            CustomHeader(
+              title: 'Discover Places',
+              icon: Iconsax.image,
+              onPressed: () => Get.to(() => const ImageGalleryScreen()),
+            ),
+            const SizedBox(height: AppSizes.spaceBtwItems),
+            AppSearchContainer(text: 'Search for place'),
+            const SizedBox(height: AppSizes.spaceBtwItems),
+            Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: AppSizes.defaultSpace,
               ),
-              const SizedBox(height: AppSizes.spaceBtwItems),
-              AppSearchContainer(text: 'Search for place'),
-              const SizedBox(height: AppSizes.spaceBtwItems),
-              Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: AppSizes.defaultSpace,
-                ),
-                child: CustomTabBar(
-                  tabs: controller.categories
-                      .map((name) => Tab(text: name))
-                      .toList(),
-                ),
+              child: CustomTabBar(
+                tabs: controller.categories
+                    .map((name) => Tab(text: name))
+                    .toList(),
               ),
-              const SizedBox(height: AppSizes.spaceBtwItems),
+            ),
+            const SizedBox(height: AppSizes.spaceBtwItems),
 
-              /// -- Expanded ensures TabBarView takes all remaining space
-              Expanded(
-                child: TabBarView(
-                  children: controller.categories.map((categoryName) {
-                    return PlaceListTab(categoryFilter: categoryName);
-                  }).toList(),
-                ),
+            /// -- Expanded ensures TabBarView takes all remaining space
+            Expanded(
+              child: TabBarView(
+                children: controller.categories.map((categoryName) {
+                  return PlaceListTab(categoryFilter: categoryName);
+                }).toList(),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

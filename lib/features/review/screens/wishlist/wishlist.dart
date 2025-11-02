@@ -18,32 +18,32 @@ class FavouriteScreen extends StatelessWidget {
     return DefaultTabController(
       length: controller.categories.length,
       child: Scaffold(
-        body: SafeArea(
-          child: Column(
-            children: [
-              CustomHeader(
-                title: 'Favorites',
-                icon: Iconsax.sort,
-                isFavorite: true,
-                // icon: Iconsax.add,
-                // onPressed: () => Get.to(() => const HomeScreen()),
-              ),
+        body: Column(
+          children: [
+            CustomHeader(
+              title: 'Favorites',
+              icon: Iconsax.sort,
+              isFavorite: true,
+              // icon: Iconsax.add,
+              // onPressed: () => Get.to(() => const HomeScreen()),
+            ),
 
-              const SizedBox(height: AppSizes.spaceBtwItems),
-              AppSearchContainer(text: 'Search for favorite place'),
-              const SizedBox(height: AppSizes.spaceBtwItems),
+            const SizedBox(height: AppSizes.spaceBtwItems),
+            AppSearchContainer(text: 'Search for favorite place'),
+            const SizedBox(height: AppSizes.spaceBtwItems),
 
-              /// -- GridView Expanded ensures grid takes all remaining space
-              Expanded(
-                child: AppGridLayout(
-                  itemCount: 4,
-                  mainAxisExtent: 250,
-                  itemBuilder: (_, index) =>
-                      SmallPlaceCard(place: controller.demoPlaces[index]),
-                ),
+            /// -- GridView Expanded ensures grid takes all remaining space
+            Expanded(
+              child: AppGridLayout(
+                itemCount: controller.demoPlaces.length,
+                crossAxisCount: 2,
+                mainAxisExtent: 250,
+                childAspectRatio: 1.0,
+                itemBuilder: (_, index) =>
+                    SmallPlaceCard(place: controller.demoPlaces[index]),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

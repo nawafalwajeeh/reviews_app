@@ -11,7 +11,7 @@ class CustomHeader extends StatelessWidget {
     super.key,
     required this.title,
     required this.icon,
-    this.padding = const EdgeInsets.symmetric(vertical: AppSizes.defaultSpace),
+    // this.padding = const EdgeInsets.symmetric(vertical: AppSizes.xs),
     this.isFavorite = false,
     this.onPressed,
     this.iconBackgroundColor,
@@ -19,7 +19,7 @@ class CustomHeader extends StatelessWidget {
 
   final String title;
   final IconData icon;
-  final EdgeInsetsGeometry padding;
+  // final EdgeInsetsGeometry padding;
   final bool isFavorite;
   final VoidCallback? onPressed;
   final Color? iconBackgroundColor;
@@ -31,35 +31,32 @@ class CustomHeader extends StatelessWidget {
         ? AppColors.grey
         : AppColors.darkerGrey;
 
-    return Padding(
-      padding: padding,
-      child: CustomAppBar(
-        title: Column(
-          children: [
-            Text(title, style: Theme.of(context).textTheme.headlineMedium),
+    return CustomAppBar(
+      title: Column(
+        children: [
+          Text(title, style: Theme.of(context).textTheme.headlineMedium),
 
-            if (isFavorite) ...[
-              const SizedBox(height: AppSizes.xs),
-              Text(
-                '4 places saved',
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: Theme.of(
-                    context,
-                  ).colorScheme.onSurface.withValues(alpha: 0.6),
-                ),
+          if (isFavorite) ...[
+            const SizedBox(height: AppSizes.xs),
+            Text(
+              '4 places saved',
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                color: Theme.of(
+                  context,
+                ).colorScheme.onSurface.withValues(alpha: 0.6),
               ),
-            ],
+            ),
           ],
-        ),
-        actions: [
-          AppCircularIcon(
-            icon: icon,
-            color: dark ? AppColors.dark : AppColors.light,
-            backgroundColor: iconBackgroundColor ?? selectedIconBackgroundColor,
-            onPressed: onPressed,
-          ),
         ],
       ),
+      actions: [
+        AppCircularIcon(
+          icon: icon,
+          color: dark ? AppColors.dark : AppColors.light,
+          backgroundColor: iconBackgroundColor ?? selectedIconBackgroundColor,
+          onPressed: onPressed,
+        ),
+      ],
     );
   }
 }
