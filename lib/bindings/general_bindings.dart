@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:reviews_app/features/review/controllers/category_controller.dart';
 // import 'package:reviews_app/features/personalization/controllers/address_controller.dart';
 import 'package:reviews_app/features/review/controllers/map_controller.dart';
 import 'package:reviews_app/features/review/controllers/place_controller.dart';
@@ -18,6 +19,7 @@ class GeneralBindings extends Bindings {
     Get.put(ImagesController());
     Get.put(MapController());
     Get.put(PlaceController());
+    Get.put(CategoryController());
 
     /// -- User
     // Get.put(UserController());

@@ -5,12 +5,9 @@ import 'package:reviews_app/common/widgets/appbar/appbar.dart';
 import 'package:reviews_app/common/widgets/place/horizontal_place_card.dart';
 import 'package:reviews_app/common/widgets/texts/section_heading.dart';
 import 'package:reviews_app/utils/constants/sizes.dart';
-import 'package:reviews_app/utils/constants/colors.dart';
 import 'package:reviews_app/features/review/controllers/place_controller.dart';
 import 'package:reviews_app/features/review/models/category_model.dart';
 import 'package:reviews_app/features/review/models/place_model.dart';
-
-import 'widgets/place_category_tile.dart';
 
 class SubCategoriesScreen extends StatelessWidget {
   const SubCategoriesScreen({super.key, required this.category});
@@ -86,8 +83,6 @@ class SubCategoriesScreen extends StatelessWidget {
 
     const double placeCardHorizontalOverallHeight = 180;
 
-    const IconData genericCategoryIcon = Icons.category;
-
     return Scaffold(
       appBar: CustomAppBar(
         showBackArrow: true,
@@ -102,54 +97,6 @@ class SubCategoriesScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              /// -- Main Category Hero Image / Banner
-              ClipRRect(
-                borderRadius: BorderRadius.circular(AppSizes.cardRadiusLg),
-                child: CachedNetworkImage(
-                  imageUrl: category.image,
-                  width: double.infinity,
-                  height: 180,
-                  fit: BoxFit.cover,
-                  placeholder: (context, url) => Container(
-                    color: AppColors.lightGrey,
-                    height: 180,
-                    width: double.infinity,
-                  ),
-                  errorWidget: (context, url, error) => const Center(
-                    child: Icon(
-                      Icons.broken_image,
-                      color: AppColors.grey,
-                      size: 40,
-                    ),
-                  ),
-                ),
-              ),
-              const SizedBox(height: AppSizes.spaceBtwSections),
-
-              /// -- Explore section
-              AppSectionHeading(
-                title: 'Dive Deeper: Explore ${category.name} Categories',
-                showActionButton: false,
-                textColor: Theme.of(context).textTheme.headlineSmall?.color,
-              ),
-              const SizedBox(height: AppSizes.sm),
-
-              ListView.builder(
-                itemCount: subCategoryNames.length,
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                itemBuilder: (context, index) {
-                  final subCategoryName = subCategoryNames[index];
-
-                  return PlaceCategoryListTile(
-                    categoryName: subCategoryName,
-                    icon: genericCategoryIcon, // Pass the single generic icon
-                    onTap: () {},
-                  );
-                },
-              ),
-              const SizedBox(height: AppSizes.spaceBtwSections),
-
               /// -- Horizontal Lists of Popular Places for Each Sub-Category
               ListView.builder(
                 itemCount: subCategoryNames.length,

@@ -5,7 +5,7 @@ import 'package:reviews_app/common/widgets/appbar/tabbar.dart';
 import 'package:reviews_app/common/widgets/custom_shapes/containers/search_container.dart';
 import 'package:reviews_app/common/widgets/headers/custom_header.dart';
 import 'package:reviews_app/features/review/controllers/place_controller.dart';
-import 'package:reviews_app/features/review/screens/sub_category/add_new_category.dart';
+import 'package:reviews_app/features/review/screens/categories/add_new_category.dart';
 import 'package:reviews_app/utils/constants/colors.dart';
 import 'package:reviews_app/utils/constants/sizes.dart';
 import '../gallery/gallery.dart';

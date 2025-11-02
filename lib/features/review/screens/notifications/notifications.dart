@@ -23,13 +23,13 @@ class NotificationsScreen extends StatelessWidget {
             ),
             child: Row(
               children: [
-                AppBarIconButton(
-                  icon: Icons.settings_rounded,
+                IconButton(
+                  icon: Icon(Icons.settings_rounded),
                   onPressed: () {},
                 ),
                 const SizedBox(width: AppSizes.spaceBtwItems / 2),
-                AppBarIconButton(
-                  icon: Icons.mark_email_read_rounded,
+                IconButton(
+                  icon: Icon(Icons.mark_email_read_rounded),
                   onPressed: () {},
                 ),
               ],
@@ -39,7 +39,6 @@ class NotificationsScreen extends StatelessWidget {
       ),
       body: Column(
         children: [
-          // _HeaderSection(),
           Opacity(
             opacity: 0.8,
             child: Text(
@@ -51,34 +50,6 @@ class NotificationsScreen extends StatelessWidget {
           ),
           Expanded(child: NotificationList()),
         ],
-      ),
-    );
-  }
-}
-
-class AppBarIconButton extends StatelessWidget {
-  final IconData icon;
-  final VoidCallback onPressed;
-
-  const AppBarIconButton({
-    super.key,
-    required this.icon,
-    required this.onPressed,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return IconButton(
-      style: IconButton.styleFrom(
-        backgroundColor: Theme.of(context).colorScheme.surface,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        minimumSize: const Size(40, 40),
-      ),
-      onPressed: onPressed,
-      icon: Icon(
-        icon,
-        color: Theme.of(context).colorScheme.onSurface,
-        size: 20,
       ),
     );
   }

@@ -6,6 +6,9 @@ class CategoryModel {
   String image;
   String parentId;
   bool isFeatured;
+  String iconKey;
+  String gradientKey;
+  int iconColorValue;
 
   CategoryModel({
     required this.id,
@@ -13,11 +16,21 @@ class CategoryModel {
     required this.image,
     required this.isFeatured,
     this.parentId = '',
+    this.iconKey = 'default_icon',
+    this.gradientKey = 'default_gradient',
+    this.iconColorValue = 0xFFFFFFFF,
   });
 
   /// Empty Helper Function
-  static CategoryModel empty() =>
-      CategoryModel(id: '', name: '', image: '', isFeatured: false);
+  static CategoryModel empty() => CategoryModel(
+    id: '',
+    name: '',
+    image: '',
+    isFeatured: false,
+    iconKey: '',
+    gradientKey: '',
+    iconColorValue: 0xFFFFFFFF,
+  );
 
   /// Convert Model to json structure so that you can store data in Firestore
   Map<String, dynamic> toJson() => {
@@ -25,6 +38,9 @@ class CategoryModel {
     'Image': image,
     'ParentId': parentId,
     'IsFeatured': isFeatured,
+    'IconKey': iconKey,
+    'GradientKey': gradientKey,
+    'IconColorValue': iconColorValue,
   };
 
   /// Map json oriented document snapshot from Firestore to CategoryModel
@@ -41,6 +57,12 @@ class CategoryModel {
         image: data['Image'] ?? '',
         parentId: data['ParentId'] ?? '',
         isFeatured: data['IsFeatured'] ?? false,
+        iconKey: data['IconKey'] ?? '',
+        gradientKey: data['GradientKey'] ?? '',
+        // Ensure color value is retrieved as an int
+        iconColorValue: (data['IconColorValue'] is int)
+            ? data['IconColorValue']
+            : 0xFFFFFFFF,
       );
     } else {
       return CategoryModel.empty();

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:reviews_app/common/widgets/custom_shapes/containers/rounded_container.dart';
-import 'package:reviews_app/features/review/screens/sub_category/sub_categories.dart' show SubCategoriesScreen;
+import 'package:reviews_app/features/review/screens/categories/sub_categories.dart' show SubCategoriesScreen;
 import 'package:reviews_app/utils/constants/colors.dart';
 import 'package:reviews_app/utils/constants/sizes.dart';
 import 'package:reviews_app/utils/helpers/helper_functions.dart';

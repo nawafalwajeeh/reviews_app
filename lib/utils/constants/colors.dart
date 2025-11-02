@@ -37,8 +37,9 @@ final class AppColors {
   static const Color borderPrimary = Color(0xFFD9D9D9);
   static const Color borderSecondary = Color(0xFFE6E6E6);
 
-  // favoriteIcon Color
+  // Icon Color
   static const Color favoriteColor = Color(0xFFD32F2F);
+  static const Color categoryIconColor = Color(0xFF2E3A59);
 
   // Error and validation colors
   static const Color error = Color(0xFFD32F2F);
