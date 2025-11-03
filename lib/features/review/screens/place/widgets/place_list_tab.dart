@@ -15,7 +15,7 @@ class PlaceListTab extends StatelessWidget {
     final controller = PlaceController.instance;
     // 1. Get the list of places.
     // Use Obx or GetX to react to changes in the full list if it's coming from state management.
-    final List<PlaceModel> allPlaces = controller.demoPlaces;
+    final List<PlaceModel> allPlaces = controller.places;
     // 2. Filter the places based on the category.
     final List<PlaceModel> filteredPlaces = categoryFilter == 'All'
         ? allPlaces

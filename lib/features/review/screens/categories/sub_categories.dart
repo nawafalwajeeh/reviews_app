@@ -22,7 +22,7 @@ class SubCategoriesScreen extends StatelessWidget {
     for (final catName in placeController.categories.where(
       (cat) => cat != 'All',
     )) {
-      final filteredPlaces = placeController.demoPlaces
+      final filteredPlaces = placeController.places
           .where(
             (p) => p.category.toLowerCase().contains(catName.toLowerCase()),
           )
@@ -33,7 +33,7 @@ class SubCategoriesScreen extends StatelessWidget {
       if (categorizedDemoPlaces[catName]!.isEmpty) {
         if (catName.toLowerCase() == 'restaurant') {
           categorizedDemoPlaces[catName]!.addAll(
-            placeController.demoPlaces
+            placeController.places
                 .where(
                   (p) =>
                       p.title.toLowerCase().contains('restaurant') ||
@@ -43,7 +43,7 @@ class SubCategoriesScreen extends StatelessWidget {
           );
         } else if (catName.toLowerCase() == 'hotel') {
           categorizedDemoPlaces[catName]!.addAll(
-            placeController.demoPlaces
+            placeController.places
                 .where(
                   (p) =>
                       p.title.toLowerCase().contains('hotel') ||
@@ -53,7 +53,7 @@ class SubCategoriesScreen extends StatelessWidget {
           );
         } else if (catName.toLowerCase() == 'cafe') {
           categorizedDemoPlaces[catName]!.addAll(
-            placeController.demoPlaces
+            placeController.places
                 .where(
                   (p) =>
                       p.title.toLowerCase().contains('coffee') ||
@@ -63,13 +63,13 @@ class SubCategoriesScreen extends StatelessWidget {
           );
         } else if (catName.toLowerCase() == 'school') {
           categorizedDemoPlaces[catName]!.addAll(
-            placeController.demoPlaces
+            placeController.places
                 .where((p) => p.title.toLowerCase().contains('school'))
                 .take(2),
           );
         } else {
           categorizedDemoPlaces[catName]!.addAll(
-            placeController.demoPlaces.take(2),
+            placeController.places.take(2),
           );
         }
       }

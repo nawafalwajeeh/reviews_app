@@ -5,48 +5,7 @@ import '../models/place_model.dart';
 class PlaceController extends GetxController {
   static PlaceController get instance => Get.find();
 
-  //   final demoPlaces = [
-  //   Place(
-  //     imageUrl:
-  //         'https://images.unsplash.com/photo-1470338745628-171cf53de3a8?auto=format&fit=crop&w=800&q=80',
-  //     title: 'Bella Vista Restaurant',
-  //     location: 'Downtown • 2.5 km away',
-  //     category: 'Italian Cuisine',
-  //     subtitle: 'Open until 11:00 PM',
-  //     rating: 4.8,
-  //   ),
-  //   Place(
-  //     imageUrl:
-  //         'https://images.unsplash.com/photo-1468273519810-d3fe4c125cdb?auto=format&fit=crop&w=800&q=80',
-  //     title: 'Riverside Elementary School',
-  //     location: 'Westside • 1.8 km away',
-  //     category: 'Public School',
-  //     subtitle: 'Grades K-5 • Excellent Rating',
-  //     rating: 4.6,
-  //   ),
-  //   Place(
-  //     imageUrl:
-  //         'https://images.unsplash.com/photo-1464979681340-bdd28a61699e?auto=format&fit=crop&w=800&q=80',
-  //     title: 'The Coffee Corner',
-  //     location: 'City Center • 0.8 km away',
-  //     category: 'Coffee & Pastries',
-  //     subtitle: 'Open 24/7 • Free WiFi',
-  //     rating: 4.9,
-  //     isFavorite: true,
-  //   ),
-  //   Place(
-  //     imageUrl:
-  //         'https://images.unsplash.com/photo-1614957004131-9e8f2a13123c?auto=format&fit=crop&w=800&q=80',
-  //     title: 'Grand Plaza Hotel',
-  //     location: 'Business District • 3.2 km away',
-  //     category: 'Luxury Hotel',
-  //     subtitle: '5-Star • Pool & Spa',
-  //     rating: 4.7,
-  //   ),
-  // ];
-
-  // Demo place data (NOTE: These asset paths must exist in your Flutter project)
-  final demoPlaces = [
+  final places = [
     PlaceModel(
       thumbnail:
           'https://images.unsplash.com/photo-1464979681340-bdd28a61699e?auto=format&fit=crop&w=800&q=80',

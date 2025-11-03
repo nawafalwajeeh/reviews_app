@@ -35,12 +35,12 @@ class FavouriteScreen extends StatelessWidget {
             /// -- GridView Expanded ensures grid takes all remaining space
             Expanded(
               child: AppGridLayout(
-                itemCount: controller.demoPlaces.length,
+                itemCount: controller.places.length,
                 crossAxisCount: 2,
                 mainAxisExtent: 250,
                 childAspectRatio: 1.0,
                 itemBuilder: (_, index) =>
-                    SmallPlaceCard(place: controller.demoPlaces[index]),
+                    SmallPlaceCard(place: controller.places[index]),
               ),
             ),
           ],

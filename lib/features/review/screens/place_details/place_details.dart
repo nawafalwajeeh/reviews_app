@@ -19,7 +19,7 @@ class PlaceDetailsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = PlaceController.instance;
-    var place = controller.demoPlaces[0];
+    var place = controller.places[0];
     return Scaffold(
       extendBodyBehindAppBar: true,
       body: Stack(

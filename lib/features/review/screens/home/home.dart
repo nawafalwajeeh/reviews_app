@@ -78,7 +78,7 @@ class HomeScreen extends StatelessWidget {
                     SizedBox(height: AppSizes.spaceBtwItems),
 
                     /// -- Trendings
-                    HomeTrendings(places: controller.demoPlaces),
+                    HomeTrendings(places: controller.places),
                     const SizedBox(height: AppSizes.spaceBtwItems),
                   ],
                 ),
