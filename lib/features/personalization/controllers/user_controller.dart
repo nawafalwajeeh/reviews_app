@@ -13,7 +13,7 @@ import 'package:reviews_app/utils/helpers/network_manager.dart';
 import 'package:reviews_app/utils/logging/logger.dart';
 import 'package:reviews_app/utils/popups/full_screen_loader.dart';
 import 'package:reviews_app/utils/popups/loaders.dart';
-import 'package:permission_handler/permission_handler.dart';
+// import 'package:permission_handler/permission_handler.dart';
 
 import '../../authentication/screens/login/login.dart';
 
@@ -220,16 +220,16 @@ class UserController extends GetxController {
   Future<void> uploadUserProfilePicture() async {
     try {
       // Request photo permission with supBase only not needed with Firebase Storage
-      var photoStatus = await Permission.photos.request();
+      // var photoStatus = await Permission.photos.request();
 
-      if (!photoStatus.isGranted) {
-        AppLoaders.errorSnackBar(
-          title: 'Permission Denied',
-          message:
-              'Please allow access to your photos to upload a profile picture.',
-        );
-        return;
-      }
+      // if (!photoStatus.isGranted) {
+      //   AppLoaders.errorSnackBar(
+      //     title: 'Permission Denied',
+      //     message:
+      //         'Please allow access to your photos to upload a profile picture.',
+      //   );
+      //   return;
+      // }
       //-----------------------
       // Proceed with the image upload
       final image = await ImagePicker().pickImage(

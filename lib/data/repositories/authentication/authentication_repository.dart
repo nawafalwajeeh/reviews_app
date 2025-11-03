@@ -27,7 +27,7 @@ class AuthenticationRepository extends GetxController {
   /// getters
   // Get Authenticated User data
   User? get authUser => _firebaseUser.value;
-  
+
   // Check if the current user is a guest (anonymous)
   bool get isGuestUser => authUser != null && authUser!.isAnonymous;
 
@@ -53,7 +53,7 @@ class AuthenticationRepository extends GetxController {
   /// Function to show Relevant screen
   void screenRedirect() async {
     final user = _firebaseUser.value;
-    
+
     if (user != null) {
       // check if user is not anonymose
       if (!user.isAnonymous) {
