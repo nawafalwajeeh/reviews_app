@@ -10,10 +10,10 @@ import 'package:reviews_app/utils/helpers/helper_functions.dart';
 
 class SingleAddress extends StatelessWidget {
   const SingleAddress({super.key, required this.address, this.onTap});
-  
+
   final AddressModel address;
   final VoidCallback? onTap;
-  
+
   @override
   Widget build(BuildContext context) {
     final controller = AddressController.instance;
