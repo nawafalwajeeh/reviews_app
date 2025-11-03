@@ -27,15 +27,6 @@
               android:name="io.flutter.embedding.android.NormalTheme"
               android:resource="@style/NormalTheme"
               />
-            <!-- *************************************************************** -->
-            <!-- CRITICAL FIX: Disable Impeller to work with Software Rendering -->
-            <!-- *************************************************************** -->
-            <!--            <meta-data-->
-            <!--                android:name="flutter.force_shaders_slower_when_not_compiled"-->
-            <!--                android:value="true" />-->
-            <!--            <meta-data-->
-            <!--                android:name="flutter.renderer"-->
-            <!--                android:value="skia" />-->
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
