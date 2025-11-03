@@ -7,6 +7,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:reviews_app/data/repositories/user/user_repository.dart';
 import 'package:reviews_app/features/authentication/screens/login/login.dart';
 import 'package:reviews_app/features/authentication/screens/onboarding/onboarding.dart';
+import 'package:reviews_app/navigation_menu.dart';
 // import 'package:reviews_app/features/authentication/screens/onboarding/onboarding.dart';
 // import 'package:reviews_app/navigation_menu.dart';
 import 'package:reviews_app/utils/exceptions/firebase_auth_exceptions.dart';
@@ -15,6 +16,9 @@ import 'package:reviews_app/utils/exceptions/format_exceptions.dart';
 import 'package:reviews_app/utils/exceptions/platform_exceptions.dart';
 // import 'package:reviews_app/utils/local_storage/storage_utility.dart';
 import 'package:reviews_app/utils/logging/logger.dart';
+
+import '../../../features/authentication/screens/signup/verify_email.dart';
+import '../../../utils/local_storage/storage_utility.dart';
 // import '../../../features/authentication/screens/signup/verify_email.dart';
 
 class AuthenticationRepository extends GetxController {
@@ -31,6 +35,9 @@ class AuthenticationRepository extends GetxController {
   User? get authUser => _firebaseUser.value;
   // User? get firebaseUser => _firebaseUser.value;
 
+  /// NEW GETTER: Check if the current user is a guest (anonymous)
+  bool get isGuestUser => authUser != null && authUser!.isAnonymous;
+
   String get getUserID => _firebaseUser.value?.uid ?? "";
 
   String get getUserEmail => _firebaseUser.value?.email ?? "";
@@ -44,42 +51,62 @@ class AuthenticationRepository extends GetxController {
   @override
   void onReady() {
     super.onReady();
-    // _firebaseUser = Rx<User?>(_auth.currentUser);
-    // _firebaseUser.bindStream(_auth.userChanges());
+    _firebaseUser = Rx<User?>(_auth.currentUser);
+    _firebaseUser.bindStream(_auth.userChanges());
     FlutterNativeSplash.remove();
     screenRedirect();
   }
 
   /// Function to show Relevant screen
   void screenRedirect() async {
-    // Temporarily for testing purpose
-    // Get.offAll(() => const NavigationMenu());
-    Get.offAll(() => const OnBoardingScreen());
+    final user = _firebaseUser.value;
+    if (user != null) {
+      // check if user is anonymose
+      if (!user.isAnonymous) {
+        // User Logged-In: If email verified let the user go to Home Screen else to the Email Verification Screen
+        if (user.emailVerified) {
+          // Initialize user specific storage
+          await AppLocalStorage.init(user.uid);
 
-    //-------Original code---------------
-    // final user = _firebaseUser.value;
-    // if (user != null) {
-    //   // User Logged-In: If email verified let the user go to Home Screen else to the Email Verification Screen
-    //   if (user.emailVerified) {
-    //     // Initialize user specific storage
-    //     await AppLocalStorage.init(user.uid);
+          // If the user's email is verified, navigate to the main NavigationMenu
+          Get.offAll(() => const NavigationMenu());
+        } else {
+          // If the user's email is not verified, navigate to VerifyEmailScreen(email)
+          // Get.offAll(() => VerifyEmailScreen(email: _auth.currentUser?.email));
+          Get.offAll(() => VerifyEmailScreen(email: getUserEmail));
+        }
+      } else {
+        // 1b. User is ANONYMOUS (Guest): Navigate directly to the main browsing area
+        // Anonymous users are automatically considered "ready" to browse.
+        Get.offAll(() => const NavigationMenu());
+      }
+    } else {
+      // show [OnBoardingScreen] to the user the firstTime only
+      // Local Storage: User is new or Logged out! If new then write IsFirstTime Local storage variable = true.
+      deviceStorage.writeIfNull('IsFirstTime', true);
 
-    //     // If the user's email is verified, navigate to the main NavigationMenu
-    //     Get.offAll(() => const NavigationMenu());
-    //   } else {
-    //     // If the user's email is not verified, navigate to VerifyEmailScreen(email)
-    //     // Get.offAll(() => VerifyEmailScreen(email: _auth.currentUser?.email));
-    //     Get.offAll(() => VerifyEmailScreen(email: getUserEmail));
-    //   }
-    // } else {
-    //   // show [OnBoardingScreen] to the user the firstTime only
-    //   // Local Storage: User is new or Logged out! If new then write IsFirstTime Local storage variable = true.
-    //   deviceStorage.writeIfNull('IsFirstTime', true);
+      deviceStorage.read('IsFirstTime') != true
+          ? Get.offAll(() => const LoginScreen())
+          : Get.offAll(() => const OnBoardingScreen());
+    }
+  }
 
-    //   deviceStorage.read('IsFirstTime') != true
-    //       ? Get.offAll(() => const LoginScreen())
-    //       : Get.offAll(() => const OnBoardingScreen());
-    // }
+  Future<UserCredential> signInAnonymously() async {
+    try {
+      final userCredential = await _auth.signInAnonymously();
+      // On successful sign-in, the _firebaseUser stream will update and trigger screenRedirect()
+      return userCredential;
+    } on FirebaseAuthException catch (e) {
+      throw AppFirebaseAuthException(e.code).message;
+    } on FirebaseException catch (e) {
+      throw AppFirebaseException(e.code).message;
+    } on FormatException catch (_) {
+      throw AppFormatException();
+    } on PlatformException catch (e) {
+      throw AppPlatformException(e.code).message;
+    } catch (e) {
+      throw 'Something went wrong. Please try again.';
+    }
   }
 
   /// [EmailAuthentication]-SignIn-----------------

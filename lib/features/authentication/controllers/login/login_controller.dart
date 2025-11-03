@@ -8,6 +8,8 @@ import 'package:reviews_app/utils/helpers/network_manager.dart';
 import 'package:reviews_app/utils/popups/full_screen_loader.dart';
 import 'package:reviews_app/utils/popups/loaders.dart';
 
+import '../../../personalization/controllers/user_controller.dart';
+
 class LoginController extends GetxController {
   static LoginController get instance => Get.find();
 
@@ -19,16 +21,20 @@ class LoginController extends GetxController {
   final password = TextEditingController();
   GlobalKey<FormState> loginFormKey = GlobalKey<FormState>();
 
-  // final userController = Get.put(UserController());
+  final userController = Get.put(UserController());
 
-  // @override
-  // void onInit() {
-  //   if (AuthenticationRepository.instance.authUser != null) {
-  //     email.text = localStorage.read('REMEMBER_ME_EMAIL') ?? '';
-  //     password.text = localStorage.read('REMEMBER_ME_PASSWORD') ?? '';
-  //   }
-  //   super.onInit();
-  // }
+  @override
+  void onInit() {
+    if (AuthenticationRepository.instance.authUser != null) {
+      email.text = localStorage.read('REMEMBER_ME_EMAIL') ?? '';
+      password.text = localStorage.read('REMEMBER_ME_PASSWORD') ?? '';
+
+      if (email.text.isNotEmpty) {
+        rememberMe.value = true;
+      }
+    }
+    super.onInit();
+  }
 
   /// -- Login
   Future<void> emailAndPasswordSignIn() async {
@@ -56,6 +62,10 @@ class LoginController extends GetxController {
       if (rememberMe.value) {
         localStorage.write('REMEMBER_ME_EMAIL', email.text.trim());
         localStorage.write('REMEMBER_ME_PASSWORD', password.text.trim());
+      } else {
+        // Clear saved data if the user unchecks "Remember Me"
+        localStorage.remove('REMEMBER_ME_EMAIL');
+        localStorage.remove('REMEMBER_ME_PASSWORD');
       }
 
       // Login user using Email & Password Authentication
@@ -76,6 +86,43 @@ class LoginController extends GetxController {
     }
   }
 
+  /// -- Anonymous Sign-In (Skip)
+  Future<void> signInAnonymously() async {
+    try {
+      // 1. Start Loading
+      AppFullScreenLoader.openLoadingDialog(
+        'Entering as guest...',
+        AppImages.docerAnimation,
+      );
+
+      // 2. Check Internet Connectivity
+      final isConnected = await AppNetworkManager.instance.isConnected();
+      if (!isConnected) {
+        AppFullScreenLoader.stopLoading();
+        return;
+      }
+
+      // 3. Perform Anonymous Sign-In via Repository
+      await AuthenticationRepository.instance.signInAnonymously();
+
+      // 4. Remove Loader
+      AppFullScreenLoader.stopLoading();
+
+      // 5. Redirect based on the new Anonymous User state
+      AuthenticationRepository.instance.screenRedirect();
+    } catch (e) {
+      // 6. Handle Errors
+      AppFullScreenLoader.stopLoading();
+
+      // Show Geneic Error to the user
+      AppLoaders.errorSnackBar(
+        title: 'Oh Snap!',
+        message:
+            'Could not skip login. Please check your connection or try again: ${e.toString()}',
+      );
+    }
+  }
+
   /// -- Google Sign-In Authentication
   Future<void> googleSignIn() async {
     try {
@@ -93,11 +140,11 @@ class LoginController extends GetxController {
       }
 
       // Google Authentication
-      // final userCredentials = await AuthenticationRepository.instance
-      //     .signInWithGoogle();
+      final userCredentials = await AuthenticationRepository.instance
+          .signInWithGoogle();
 
       // Save User Data to Firebase Firestore db
-      // await userController.saveUserRecordFromCredentials(userCredentials);
+      await userController.saveUserRecordFromCredentials(userCredentials);
 
       // Remove Loader
       AppFullScreenLoader.stopLoading();
