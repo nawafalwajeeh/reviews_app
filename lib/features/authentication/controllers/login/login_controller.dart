@@ -89,29 +89,29 @@ class LoginController extends GetxController {
   /// -- Anonymous Sign-In (Skip)
   Future<void> signInAnonymously() async {
     try {
-      // 1. Start Loading
+      // Start Loading
       AppFullScreenLoader.openLoadingDialog(
         'Entering as guest...',
         AppImages.docerAnimation,
       );
 
-      // 2. Check Internet Connectivity
+      // Check Internet Connectivity
       final isConnected = await AppNetworkManager.instance.isConnected();
       if (!isConnected) {
         AppFullScreenLoader.stopLoading();
         return;
       }
 
-      // 3. Perform Anonymous Sign-In via Repository
+      // Perform Anonymous Sign-In via Repository
       await AuthenticationRepository.instance.signInAnonymously();
 
-      // 4. Remove Loader
+      // Remove Loader
       AppFullScreenLoader.stopLoading();
 
-      // 5. Redirect based on the new Anonymous User state
+      // Redirect based on the new Anonymous User state
       AuthenticationRepository.instance.screenRedirect();
     } catch (e) {
-      // 6. Handle Errors
+      // Handle Errors
       AppFullScreenLoader.stopLoading();
 
       // Show Geneic Error to the user

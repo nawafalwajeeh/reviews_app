@@ -35,7 +35,7 @@ class AuthenticationRepository extends GetxController {
   User? get authUser => _firebaseUser.value;
   // User? get firebaseUser => _firebaseUser.value;
 
-  /// NEW GETTER: Check if the current user is a guest (anonymous)
+  // Check if the current user is a guest (anonymous)
   bool get isGuestUser => authUser != null && authUser!.isAnonymous;
 
   String get getUserID => _firebaseUser.value?.uid ?? "";
@@ -61,7 +61,7 @@ class AuthenticationRepository extends GetxController {
   void screenRedirect() async {
     final user = _firebaseUser.value;
     if (user != null) {
-      // check if user is anonymose
+      // check if user is not anonymose
       if (!user.isAnonymous) {
         // User Logged-In: If email verified let the user go to Home Screen else to the Email Verification Screen
         if (user.emailVerified) {
@@ -76,7 +76,7 @@ class AuthenticationRepository extends GetxController {
           Get.offAll(() => VerifyEmailScreen(email: getUserEmail));
         }
       } else {
-        // 1b. User is ANONYMOUS (Guest): Navigate directly to the main browsing area
+        // User is ANONYMOUS (Guest), Navigate directly to the NavigationMenu
         // Anonymous users are automatically considered "ready" to browse.
         Get.offAll(() => const NavigationMenu());
       }
@@ -91,10 +91,10 @@ class AuthenticationRepository extends GetxController {
     }
   }
 
+  /// [AnonymousAuthentication] SignIn-----------------
   Future<UserCredential> signInAnonymously() async {
     try {
       final userCredential = await _auth.signInAnonymously();
-      // On successful sign-in, the _firebaseUser stream will update and trigger screenRedirect()
       return userCredential;
     } on FirebaseAuthException catch (e) {
       throw AppFirebaseAuthException(e.code).message;
