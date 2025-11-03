@@ -13,6 +13,7 @@ import 'package:reviews_app/utils/constants/colors.dart';
 import 'package:reviews_app/utils/constants/sizes.dart';
 import 'package:reviews_app/utils/constants/text_strings.dart';
 
+import '../../../../data/repositories/authentication/authentication_repository.dart';
 import 'widgets/settings_data.dart';
 
 class SettingsScreen extends StatelessWidget {
@@ -113,9 +114,9 @@ class SettingsScreen extends StatelessWidget {
                   SizedBox(
                     width: double.infinity,
                     child: OutlinedButton(
-                      // onPressed: () =>
-                      //     AuthenticationRepository.instance.logout(),
-                      onPressed: () => Get.offAll(() => const LoginScreen()),
+                      onPressed: () =>
+                          AuthenticationRepository.instance.logout(),
+                      // onPressed: () => Get.offAll(() => const LoginScreen()),
                       child: const Text(AppTexts.logout),
                     ),
                   ),

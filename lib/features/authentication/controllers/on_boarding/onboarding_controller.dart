@@ -26,7 +26,7 @@ class OnBoardingController extends GetxController {
     if (currentPageIndex.value == 2) {
       // make [OnBoardingScreen] show only
       // The first time when the app has been installed.
-      // storage.write('IsFirstTime', false);
+      storage.write('IsFirstTime', false);
       Get.offAll(() => const LoginScreen());
     } else {
       final int page = currentPageIndex.value + 1;
@@ -39,7 +39,7 @@ class OnBoardingController extends GetxController {
     currentPageIndex.value = 2;
     // make [OnBoardingScreen] show only
     // The first time when the app has been installed.
-    // storage.write('IsFirstTime', false);
+    storage.write('IsFirstTime', false);
     debugPrint('IsFirstTime: ${storage.read('IsFirstTime')}');
     Get.offAll(() => const LoginScreen());
   }

@@ -4,7 +4,6 @@ import 'package:iconsax/iconsax.dart';
 import 'package:reviews_app/features/authentication/controllers/login/login_controller.dart';
 import 'package:reviews_app/features/authentication/screens/password_configuration/forget_password.dart';
 import 'package:reviews_app/features/authentication/screens/signup/signup_screen.dart';
-import 'package:reviews_app/navigation_menu.dart';
 import 'package:reviews_app/utils/constants/sizes.dart';
 import 'package:reviews_app/utils/constants/text_strings.dart';
 import 'package:reviews_app/utils/validators/validation.dart';
@@ -17,7 +16,7 @@ class LoginForm extends StatelessWidget {
     final controller = Get.put(LoginController());
 
     return Form(
-      // key: controller.loginFormKey,
+      key: controller.loginFormKey,
       child: Padding(
         padding: const EdgeInsets.symmetric(
           vertical: AppSizes.spaceBtwSections,
@@ -92,8 +91,8 @@ class LoginForm extends StatelessWidget {
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
-                onPressed: () => Get.offAll(() => const NavigationMenu()),
-                // onPressed: () => controller.emailAndPasswordSignIn(),
+                // onPressed: () => Get.offAll(() => const NavigationMenu()),
+                onPressed: () => controller.emailAndPasswordSignIn(),
                 child: const Text(AppTexts.signIn),
               ),
             ),

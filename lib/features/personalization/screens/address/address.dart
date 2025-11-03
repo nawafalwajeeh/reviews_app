@@ -3,10 +3,10 @@ import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:reviews_app/common/widgets/appbar/appbar.dart';
 import 'package:reviews_app/features/personalization/controllers/address_controller.dart';
-import 'package:reviews_app/features/personalization/models/address_model.dart';
 import 'package:reviews_app/features/personalization/screens/address/widgets/single_address.dart';
 import 'package:reviews_app/utils/constants/colors.dart';
 import 'package:reviews_app/utils/constants/sizes.dart';
+import 'package:reviews_app/utils/helpers/cloud_helper_functions.dart';
 
 import 'add_new_address.dart';
 
@@ -40,22 +40,20 @@ class UserAddressScreen extends StatelessWidget {
               key: Key(controller.refreshData.value.toString()),
               future: controller.getAllUserAddresses(),
               builder: (context, snapshot) {
-                // final response = AppCloudHelperFunctions.checkMultiRecordState(
-                //   snapshot: snapshot,
-                // );
-                // if (response != null) return response;
+                final response = AppCloudHelperFunctions.checkMultiRecordState(
+                  snapshot: snapshot,
+                );
+                if (response != null) return response;
 
-                // /// data found
-                // final addresses = snapshot.data!;
+                /// data found
+                final addresses = snapshot.data!;
 
                 return ListView.builder(
-                  // itemCount: addresses.length,
-                  itemCount: 1,
+                  itemCount: addresses.length,
                   shrinkWrap: true,
                   itemBuilder: (context, index) => SingleAddress(
-                    address: AddressModel.empty(),
-                    // address: addresses[index],
-                    // onTap: () => controller.selectAddress(addresses[index]),
+                    address: addresses[index],
+                    onTap: () => controller.selectAddress(addresses[index]),
                   ),
                 );
               },

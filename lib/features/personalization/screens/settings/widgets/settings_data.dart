@@ -12,18 +12,6 @@ final List<SettingsTileModel> accountSettings = [
     title: 'My Addresses',
     subTitle: 'Set shopping delivery address',
     onTap: () => Get.to(() => const UserAddressScreen()),
-  // ),
-  // SettingsTileModel(
-  //   icon: Iconsax.shopping_cart,
-  //   title: 'My Cart',
-  //   subTitle: 'Add, remove products and move to checkout',
-  //   onTap: () => Get.to(() => const CartScreen()),
-  // ),
-  // SettingsTileModel(
-  //   icon: Iconsax.bag_tick,
-  //   title: 'My Orders',
-  //   subTitle: 'In-progress and Completed Orders',
-  //   onTap: () => Get.to(() => const OrderScreen()),
   ),
   SettingsTileModel(
     icon: Iconsax.bank,
@@ -47,7 +35,6 @@ final List<SettingsTileModel> accountSettings = [
     icon: Iconsax.security_card,
     title: 'Account Privacy',
     subTitle: 'Manage data usage and connected accounts',
-    // onTap: DeviceService.getDeviceId,
     onTap: () {},
   ),
 ];

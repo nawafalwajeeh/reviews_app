@@ -40,7 +40,6 @@ class ForgetPasswordScreen extends StatelessWidget {
                 key: controller.forgetPasswordFormKey,
                 child: TextFormField(
                   controller: controller.email,
-                  // validator: (value) => AppValidator.validateEmail(value),
                   validator: AppValidator.validateEmail,
                   decoration: const InputDecoration(
                     labelText: AppTexts.email,
@@ -54,9 +53,7 @@ class ForgetPasswordScreen extends StatelessWidget {
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
-                  onPressed: () =>
-                      Get.off(() => const ResetPasswordScreen(email: '')),
-                  // onPressed: () => controller.sendPasswordResetEmail(),
+                  onPressed: () => controller.sendPasswordResetEmail(),
                   child: const Text(AppTexts.submit),
                 ),
               ),

@@ -102,7 +102,7 @@ class LoginController extends GetxController {
         return;
       }
 
-      // Perform Anonymous Sign-In via Repository
+      // Perform Anonymous Sign-In via Authentication Repository
       await AuthenticationRepository.instance.signInAnonymously();
 
       // Remove Loader
@@ -111,7 +111,7 @@ class LoginController extends GetxController {
       // Redirect based on the new Anonymous User state
       AuthenticationRepository.instance.screenRedirect();
     } catch (e) {
-      // Handle Errors
+      // Remove Loader
       AppFullScreenLoader.stopLoading();
 
       // Show Geneic Error to the user

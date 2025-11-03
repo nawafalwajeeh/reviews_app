@@ -23,7 +23,6 @@ class SingleAddress extends StatelessWidget {
     return Obx(() {
       final selectedAddressId = controller.selectedAddress.value.id;
       final selectedAddress = selectedAddressId == address.id;
-      // final selectedAddress = false;
 
       final containerBackgroundColor = selectedAddress
           ? AppColors.primaryColor.withValues(alpha: 0.15)
@@ -87,8 +86,8 @@ class SingleAddress extends StatelessWidget {
                             ),
                             const SizedBox(width: AppSizes.sm),
                             Text(
-                              // address.name,
-                              'Nawaf',
+                              address.name,
+                              // 'Nawaf',
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                               style: Theme.of(context).textTheme.titleLarge
@@ -108,8 +107,8 @@ class SingleAddress extends StatelessWidget {
                             ),
                             const SizedBox(width: AppSizes.sm),
                             Text(
-                              // address.formattedPhoneNo,
-                              '(+967) 778228445',
+                              address.formattedPhoneNo,
+                              // '(+967) 778228445',
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                               style: Theme.of(context).textTheme.bodyMedium,
@@ -130,8 +129,8 @@ class SingleAddress extends StatelessWidget {
 
                             Flexible(
                               child: Text(
-                                // address.toString(),
-                                '26 Taiz, 26str, Military, sa-str, Yemen',
+                                address.toString(),
+                                // '26 Taiz, 26str, Military, sa-str, Yemen',
                                 maxLines: 2,
                                 overflow: TextOverflow.ellipsis,
                                 softWrap: true,
