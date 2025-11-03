@@ -25,7 +25,7 @@ class PlaceMetadata extends StatelessWidget {
         const SizedBox(height: AppSizes.sm),
 
         // Category Tag
-        CategoryTagWidget(text: place.category),
+        CategoryTagWidget(text: place.categoryId),
         const SizedBox(height: AppSizes.spaceBtwItems),
 
         // Location

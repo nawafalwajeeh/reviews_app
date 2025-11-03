@@ -13,7 +13,8 @@ import 'rating/place_rating_badge.dart';
 
 class PlaceCardHorizontal extends StatelessWidget {
   final PlaceModel place;
-  final double? height; // Still allowing height to be set, but we'll manage content
+  final double?
+  height; // Still allowing height to be set, but we'll manage content
 
   const PlaceCardHorizontal({
     super.key,
@@ -27,8 +28,9 @@ class PlaceCardHorizontal extends StatelessWidget {
 
     // Let's make the card slightly wider to accommodate the new image/text layout
     const double cardWidth = 360; // Increased width
-    const double imageHeightRatio = 0.65; // Image takes about 65% of the card's width
-                                         // making it wide and short as requested
+    const double imageHeightRatio =
+        0.65; // Image takes about 65% of the card's width
+    // making it wide and short as requested
     final double imageSectionWidth = cardWidth * imageHeightRatio;
     final double detailsSectionWidth = cardWidth * (1 - imageHeightRatio);
 
@@ -66,11 +68,16 @@ class PlaceCardHorizontal extends StatelessWidget {
                     child: CachedNetworkImage(
                       imageUrl: place.thumbnail,
                       height: double.infinity, // Fill available height
-                      width: double.infinity,  // Fill available width
-                      fit: BoxFit.cover,       // Cover the entire area
-                      placeholder: (context, url) => Container(color: AppColors.lightGrey),
+                      width: double.infinity, // Fill available width
+                      fit: BoxFit.cover, // Cover the entire area
+                      placeholder: (context, url) =>
+                          Container(color: AppColors.lightGrey),
                       errorWidget: (context, url, error) => const Center(
-                        child: Icon(Icons.broken_image, color: AppColors.grey, size: 40),
+                        child: Icon(
+                          Icons.broken_image,
+                          color: AppColors.grey,
+                          size: 40,
+                        ),
                       ),
                     ),
                   ),
@@ -83,7 +90,9 @@ class PlaceCardHorizontal extends StatelessWidget {
                       gradient: LinearGradient(
                         colors: [
                           Colors.transparent,
-                          dark ? AppColors.dark.withOpacity(0.4) : AppColors.black.withOpacity(0.2)
+                          dark
+                              ? AppColors.dark.withOpacity(0.4)
+                              : AppColors.black.withOpacity(0.2),
                         ],
                         begin: Alignment.topCenter,
                         end: Alignment.bottomCenter,
@@ -119,15 +128,17 @@ class PlaceCardHorizontal extends StatelessWidget {
                       location: place.location,
                       isVerified: true, // Assuming verification status
                       placeTitleSize: TextSizes.small, // Keep text concise here
-                      isDarkBackground: true, // Always show light text on image overlay
+                      isDarkBackground:
+                          true, // Always show light text on image overlay
                     ),
                   ),
                 ],
               ),
             ),
-            
+
             /// -- Details Section (Category, Description, Button)
-            SizedBox( // Use SizedBox with fixed width for details section
+            SizedBox(
+              // Use SizedBox with fixed width for details section
               width: detailsSectionWidth,
               child: Padding(
                 padding: const EdgeInsets.all(AppSizes.md),
@@ -140,11 +151,12 @@ class PlaceCardHorizontal extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          place.category,
-                          style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                            color: AppColors.primaryColor,
-                            fontWeight: FontWeight.w600,
-                          ),
+                          place.categoryId,
+                          style: Theme.of(context).textTheme.labelMedium
+                              ?.copyWith(
+                                color: AppColors.primaryColor,
+                                fontWeight: FontWeight.w600,
+                              ),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                         ),
@@ -152,15 +164,17 @@ class PlaceCardHorizontal extends StatelessWidget {
                         Text(
                           place.description,
                           overflow: TextOverflow.ellipsis,
-                          maxLines: 3, // Allow slightly more lines for description if needed
+                          maxLines:
+                              3, // Allow slightly more lines for description if needed
                           style: Theme.of(context).textTheme.bodySmall?.copyWith(
                             color: AppColors.darkGrey,
-                            fontSize: 12, // Slightly smaller font for more compact look
+                            fontSize:
+                                12, // Slightly smaller font for more compact look
                           ),
                         ),
                       ],
                     ),
-                    
+
                     /// -- View Details Button
                     SizedBox(
                       width: double.infinity,
@@ -170,15 +184,18 @@ class PlaceCardHorizontal extends StatelessWidget {
                           height: 38, // Slightly adjusted button height
                           decoration: BoxDecoration(
                             color: AppColors.primaryColor,
-                            borderRadius: BorderRadius.circular(AppSizes.borderRadiusLg),
+                            borderRadius: BorderRadius.circular(
+                              AppSizes.borderRadiusLg,
+                            ),
                           ),
                           alignment: Alignment.center,
                           child: Text(
                             'View Details',
-                            style: Theme.of(context).textTheme.labelLarge?.apply(
-                              color: AppColors.white,
-                              fontWeightDelta: 1,
-                            ),
+                            style: Theme.of(context).textTheme.labelLarge
+                                ?.apply(
+                                  color: AppColors.white,
+                                  fontWeightDelta: 1,
+                                ),
                           ),
                         ),
                       ),

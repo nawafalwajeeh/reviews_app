@@ -16,7 +16,7 @@ class PlaceController extends GetxController {
       ],
       title: 'Tropical Paradise Resort',
       location: 'Maldives, Indian Ocean',
-      category: 'Resort',
+      categoryId: 'Resort',
       description:
           'Experience the serene beauty of the Maldives with our overwater bungalows and crystal-clear lagoon access. Perfect for honeymooners and families looking for a luxury escape. This detailed description helps guests understand the unique offerings and atmosphere of the destination.',
       rating: 4.8,
@@ -41,7 +41,7 @@ class PlaceController extends GetxController {
       ],
       title: 'Tropical Paradise Resort',
       location: 'Maldives, Indian Ocean',
-      category: 'Resort',
+      categoryId: 'Resort',
       description:
           'Experience the serene beauty of the Maldives with our overwater bungalows and crystal-clear lagoon access. Perfect for honeymooners and families looking for a luxury escape. This detailed description helps guests understand the unique offerings and atmosphere of the destination.',
       rating: 4.8,

@@ -9,7 +9,7 @@ class PlaceModel {
   final bool? isFeatured;
   final DateTime? dateAdded;
   final String location;
-  final String category;
+  final String categoryId;
   final double rating;
   final List<String>? amenities;
   final double? latitude;
@@ -21,7 +21,7 @@ class PlaceModel {
     required this.id,
     required this.title,
     required this.location,
-    required this.category,
+    required this.categoryId,
     required this.description,
     required this.rating,
     required this.thumbnail,
@@ -40,7 +40,7 @@ class PlaceModel {
     id: '',
     title: '',
     location: '',
-    category: '',
+    categoryId: '',
     description: '',
     rating: 0.0,
     thumbnail: '',
@@ -54,7 +54,7 @@ class PlaceModel {
       'Title': title,
       'Description': description,
       'Location': location,
-      'Category': category,
+      'CategoryId': categoryId,
       'Rating': rating,
       'Thumbnail': thumbnail,
       'Images': images ?? [],
@@ -79,7 +79,7 @@ class PlaceModel {
       title: data['Title'] ?? '',
       description: data['Description'] ?? '',
       location: data['Location'] ?? '',
-      category: data['Category'] ?? '',
+      categoryId: data['CategoryId'] ?? '',
       rating: double.parse((data['Rating'] ?? 0.0).toString()),
       thumbnail: data['Thumbnail'] ?? '',
       isFeatured: data['IsFeatured'] ?? false,
@@ -108,7 +108,7 @@ class PlaceModel {
       title: data['Title'] ?? '',
       description: data['Description'] ?? '',
       location: data['Location'] ?? '',
-      category: data['Category'] ?? '',
+      categoryId: data['CategoryId'] ?? '',
       rating: double.parse((data['Rating'] ?? 0.0).toString()),
       thumbnail: data['Thumbnail'] ?? '',
       isFeatured: data['IsFeatured'] ?? false,

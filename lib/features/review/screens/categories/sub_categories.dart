@@ -24,7 +24,7 @@ class SubCategoriesScreen extends StatelessWidget {
     )) {
       final filteredPlaces = placeController.places
           .where(
-            (p) => p.category.toLowerCase().contains(catName.toLowerCase()),
+            (p) => p.categoryId.toLowerCase().contains(catName.toLowerCase()),
           )
           .toList();
 
@@ -37,7 +37,7 @@ class SubCategoriesScreen extends StatelessWidget {
                 .where(
                   (p) =>
                       p.title.toLowerCase().contains('restaurant') ||
-                      p.category.toLowerCase().contains('italian'),
+                      p.categoryId.toLowerCase().contains('italian'),
                 )
                 .take(2),
           );
@@ -47,7 +47,7 @@ class SubCategoriesScreen extends StatelessWidget {
                 .where(
                   (p) =>
                       p.title.toLowerCase().contains('hotel') ||
-                      p.category.toLowerCase().contains('resort'),
+                      p.categoryId.toLowerCase().contains('resort'),
                 )
                 .take(2),
           );
@@ -57,7 +57,7 @@ class SubCategoriesScreen extends StatelessWidget {
                 .where(
                   (p) =>
                       p.title.toLowerCase().contains('coffee') ||
-                      p.category.toLowerCase().contains('cafe'),
+                      p.categoryId.toLowerCase().contains('cafe'),
                 )
                 .take(2),
           );

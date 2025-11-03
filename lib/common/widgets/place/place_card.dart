@@ -91,7 +91,7 @@ class PlaceCard extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          place.category,
+                          place.categoryId,
                           style: Theme.of(context).textTheme.bodyMedium
                               ?.copyWith(color: AppColors.primaryColor),
                         ),

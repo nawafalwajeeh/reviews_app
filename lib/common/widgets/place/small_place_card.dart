@@ -126,7 +126,7 @@ class SmallPlaceCard extends StatelessWidget {
                   /// -- Category Text
                   Expanded(
                     child: Text(
-                      place.category,
+                      place.categoryId,
                       style: Theme.of(context).textTheme.labelSmall?.copyWith(
                         color: AppColors.primaryColor,
                         fontWeight: FontWeight.bold,

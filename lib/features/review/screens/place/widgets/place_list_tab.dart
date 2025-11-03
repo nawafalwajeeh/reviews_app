@@ -19,7 +19,7 @@ class PlaceListTab extends StatelessWidget {
     // 2. Filter the places based on the category.
     final List<PlaceModel> filteredPlaces = categoryFilter == 'All'
         ? allPlaces
-        : allPlaces.where((place) => place.category == categoryFilter).toList();
+        : allPlaces.where((place) => place.categoryId == categoryFilter).toList();
     if (filteredPlaces.isEmpty) {
       return Center(
         child: Text(
