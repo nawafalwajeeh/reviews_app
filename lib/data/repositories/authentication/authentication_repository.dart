@@ -8,18 +8,13 @@ import 'package:reviews_app/data/repositories/user/user_repository.dart';
 import 'package:reviews_app/features/authentication/screens/login/login.dart';
 import 'package:reviews_app/features/authentication/screens/onboarding/onboarding.dart';
 import 'package:reviews_app/navigation_menu.dart';
-// import 'package:reviews_app/features/authentication/screens/onboarding/onboarding.dart';
-// import 'package:reviews_app/navigation_menu.dart';
 import 'package:reviews_app/utils/exceptions/firebase_auth_exceptions.dart';
 import 'package:reviews_app/utils/exceptions/firebase_exceptions.dart';
 import 'package:reviews_app/utils/exceptions/format_exceptions.dart';
 import 'package:reviews_app/utils/exceptions/platform_exceptions.dart';
-// import 'package:reviews_app/utils/local_storage/storage_utility.dart';
 import 'package:reviews_app/utils/logging/logger.dart';
-
 import '../../../features/authentication/screens/signup/verify_email.dart';
 import '../../../utils/local_storage/storage_utility.dart';
-// import '../../../features/authentication/screens/signup/verify_email.dart';
 
 class AuthenticationRepository extends GetxController {
   static AuthenticationRepository get instance => Get.find();
@@ -30,11 +25,9 @@ class AuthenticationRepository extends GetxController {
   final _auth = FirebaseAuth.instance;
 
   /// getters
-  /// Get Authenticated User data
-  // User? get authUser => _auth.currentUser;
+  // Get Authenticated User data
   User? get authUser => _firebaseUser.value;
-  // User? get firebaseUser => _firebaseUser.value;
-
+  
   // Check if the current user is a guest (anonymous)
   bool get isGuestUser => authUser != null && authUser!.isAnonymous;
 
@@ -60,6 +53,7 @@ class AuthenticationRepository extends GetxController {
   /// Function to show Relevant screen
   void screenRedirect() async {
     final user = _firebaseUser.value;
+    
     if (user != null) {
       // check if user is not anonymose
       if (!user.isAnonymous) {
@@ -72,7 +66,6 @@ class AuthenticationRepository extends GetxController {
           Get.offAll(() => const NavigationMenu());
         } else {
           // If the user's email is not verified, navigate to VerifyEmailScreen(email)
-          // Get.offAll(() => VerifyEmailScreen(email: _auth.currentUser?.email));
           Get.offAll(() => VerifyEmailScreen(email: getUserEmail));
         }
       } else {
@@ -91,7 +84,7 @@ class AuthenticationRepository extends GetxController {
     }
   }
 
-  /// [AnonymousAuthentication] SignIn-----------------
+  /// [AnonymousAuthentication]-SignIn-Anonymously-----------------
   Future<UserCredential> signInAnonymously() async {
     try {
       final userCredential = await _auth.signInAnonymously();
