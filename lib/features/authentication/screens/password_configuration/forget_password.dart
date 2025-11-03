@@ -6,8 +6,6 @@ import 'package:reviews_app/utils/constants/sizes.dart';
 import 'package:reviews_app/utils/constants/text_strings.dart';
 import 'package:reviews_app/utils/validators/validation.dart';
 
-import 'reset_password.dart';
-
 class ForgetPasswordScreen extends StatelessWidget {
   const ForgetPasswordScreen({super.key});
 

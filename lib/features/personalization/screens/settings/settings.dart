@@ -6,7 +6,6 @@ import 'package:reviews_app/common/widgets/custom_shapes/containers/primary_head
 import 'package:reviews_app/common/widgets/list_tiles/settings_menu_tile.dart';
 import 'package:reviews_app/common/widgets/list_tiles/user_profile_tile.dart';
 import 'package:reviews_app/common/widgets/texts/section_heading.dart';
-import 'package:reviews_app/features/authentication/screens/login/login.dart';
 import 'package:reviews_app/features/personalization/controllers/settings_controller.dart';
 import 'package:reviews_app/features/personalization/screens/profile/profile.dart';
 import 'package:reviews_app/utils/constants/colors.dart';
