@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class PlaceModel {
   final String id;
   final String title;
+  final String userId;
   final String description;
   final String thumbnail;
   final List<String>? images;
@@ -24,6 +25,7 @@ class PlaceModel {
     required this.categoryId,
     required this.description,
     required this.rating,
+    required this.userId,
     required this.thumbnail,
     this.amenities,
     this.images,
@@ -39,6 +41,7 @@ class PlaceModel {
   static PlaceModel empty() => PlaceModel(
     id: '',
     title: '',
+    userId: '',
     location: '',
     categoryId: '',
     description: '',
@@ -53,6 +56,7 @@ class PlaceModel {
     return {
       'Title': title,
       'Description': description,
+      'UserId': userId,
       'Location': location,
       'CategoryId': categoryId,
       'Rating': rating,
@@ -77,6 +81,7 @@ class PlaceModel {
     return PlaceModel(
       id: document.id,
       title: data['Title'] ?? '',
+      userId: data['UserId'] ?? '',
       description: data['Description'] ?? '',
       location: data['Location'] ?? '',
       categoryId: data['CategoryId'] ?? '',
@@ -106,6 +111,7 @@ class PlaceModel {
     return PlaceModel(
       id: document.id,
       title: data['Title'] ?? '',
+      userId: data['UserId'] ?? '',
       description: data['Description'] ?? '',
       location: data['Location'] ?? '',
       categoryId: data['CategoryId'] ?? '',

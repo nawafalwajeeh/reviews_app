@@ -9,6 +9,9 @@ class CategoryModel {
   String iconKey;
   String gradientKey;
   int iconColorValue;
+  final String? userId;
+  DateTime? createdAt;
+  DateTime? updatedAt;
 
   CategoryModel({
     required this.id,
@@ -16,6 +19,7 @@ class CategoryModel {
     required this.image,
     required this.isFeatured,
     this.parentId = '',
+    this.userId = '',
     this.iconKey = 'default_icon',
     this.gradientKey = 'default_gradient',
     this.iconColorValue = 0xFFFFFFFF,
@@ -37,6 +41,7 @@ class CategoryModel {
     'Name': name,
     'Image': image,
     'ParentId': parentId,
+    'UserId': userId,
     'IsFeatured': isFeatured,
     'IconKey': iconKey,
     'GradientKey': gradientKey,
@@ -56,6 +61,7 @@ class CategoryModel {
         name: data['Name'] ?? '',
         image: data['Image'] ?? '',
         parentId: data['ParentId'] ?? '',
+        userId: data['UserId'] ?? '',
         isFeatured: data['IsFeatured'] ?? false,
         iconKey: data['IconKey'] ?? '',
         gradientKey: data['GradientKey'] ?? '',

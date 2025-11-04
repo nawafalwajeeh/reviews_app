@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:reviews_app/utils/constants/sizes.dart';
@@ -15,9 +14,9 @@ class AddCategoryForm extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         SectionTitle('CATEGORY NAME'),
-        const SizedBox(height: 12),
+        const SizedBox(height: AppSizes.spaceBtwItems),
         TextFormField(
-          // controller: controller.email,
+          // controller: controller.name,
           validator: (value) =>
               AppValidator.validateEmptyText('Category Name', value),
           decoration: const InputDecoration(
@@ -28,9 +27,9 @@ class AddCategoryForm extends StatelessWidget {
         SizedBox(height: AppSizes.spaceBtwInputFields),
 
         SectionTitle('DESCRIPTION'),
-        const SizedBox(height: 12),
+        const SizedBox(height: AppSizes.spaceBtwItems),
         TextFormField(
-          // controller: controller.email,
+          // controller: controller.description,
           validator: (value) =>
               AppValidator.validateEmptyText('Description', value),
           textInputAction: TextInputAction.done,

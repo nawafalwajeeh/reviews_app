@@ -89,7 +89,6 @@ class CategoryController extends GetxController {
       isFeatured: false,
       iconKey: 'museum',
       gradientKey: 'red_grad',
-      // iconColorValue: 0xFF642D2D,
       iconColorValue: 0xFF2D3A64,
     ),
     CategoryModel(
@@ -99,7 +98,6 @@ class CategoryController extends GetxController {
       isFeatured: false,
       iconKey: 'park',
       gradientKey: 'green_grad',
-      // iconColorValue: 0xFF2D642D,
       iconColorValue: 0xFF2D3A64,
     ),
     CategoryModel(
@@ -118,7 +116,6 @@ class CategoryController extends GetxController {
       isFeatured: false,
       iconKey: 'theatre',
       gradientKey: 'yellow_grad',
-      // iconColorValue: 0xFF664400,
       iconColorValue: 0xFF2D3A64,
     ),
     CategoryModel(
@@ -128,7 +125,6 @@ class CategoryController extends GetxController {
       isFeatured: false,
       iconKey: 'mall',
       gradientKey: 'cyan_grad',
-      // iconColorValue: 0xFF006677,
       iconColorValue: 0xFF2D3A64,
     ),
   ];

@@ -7,6 +7,8 @@ class PlaceController extends GetxController {
 
   final places = [
     PlaceModel(
+      id: '1',
+      userId: '1',
       thumbnail:
           'https://images.unsplash.com/photo-1464979681340-bdd28a61699e?auto=format&fit=crop&w=800&q=80',
       images: [
@@ -29,9 +31,10 @@ class PlaceController extends GetxController {
         'Spa',
         'Gym',
       ],
-      id: '1',
     ),
     PlaceModel(
+      id: '2',
+      userId: '2',
       thumbnail:
           'https://images.unsplash.com/photo-1464979681340-bdd28a61699e?auto=format&fit=crop&w=800&q=80',
       images: [
@@ -54,7 +57,6 @@ class PlaceController extends GetxController {
         'Spa',
         'Gym',
       ],
-      id: '2',
     ),
   ];
 
@@ -75,8 +77,8 @@ import 'package:shop_app/features/shop/models/product_model.dart';
 import 'package:shop_app/utils/constants/enums.dart';
 import 'package:shop_app/utils/popups/loaders.dart';
 
-class ProductController extends GetxController {
-  static ProductController get instance => Get.find();
+class PlaceController extends GetxController {
+  static PlaceController get instance => Get.find();
 
   /// Variables
   final isLoading = false.obs;
@@ -86,15 +88,15 @@ class ProductController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    fetchFeaturedProducts();
+    fetchFeaturedPlaces();
   }
 
-  Future<void> fetchFeaturedProducts() async {
+  Future<void> fetchFeaturedPlaces() async {
     try {
       // Show loader while loading products
       isLoading.value = true;
 
-      // Fetch Products
+      // Fetch Places
       final products = await productRepository.getFeaturedProducts();
 
       // Assign Products to the list
