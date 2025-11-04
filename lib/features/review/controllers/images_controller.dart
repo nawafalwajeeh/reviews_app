@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:reviews_app/utils/constants/sizes.dart';
 
+import '../models/image_model.dart';
 import '../models/place_model.dart';
+import 'media_controller.dart';
 
 class ImagesController extends GetxController {
   static ImagesController get instance => Get.find();
@@ -12,13 +14,12 @@ class ImagesController extends GetxController {
   final RxString selectedPlaceImage = ''.obs;
 
   // List to store additional images
-  final RxList<String> additionalPlaceImagesUrls = <String>[].obs;  
+  final RxList<String> additionalPlaceImagesUrls = <String>[].obs;
 
   /// Function to remove Place image
   Future<void> removeImage(int index) async {
     additionalPlaceImagesUrls.removeAt(index);
   }
-
 
   /// -- Get All Images from place.
   List<String> getAllPlaceImages(PlaceModel place) {
@@ -82,11 +83,13 @@ class ImagesController extends GetxController {
     );
   }
 
-   /// Pick Thumbnail Image from Gallery
+  /// Pick Thumbnail Image from Gallery
   void selectMultipleProductImages() async {
-    // final controller = Get.put(MediaController());
-    List<ImageModel>? selectedImages =
-        await controller.selectImagesFromMedia(allowMultipleSelection: true, alreadySelectedUrls: additionalProductImagesUrls);
+    final controller = Get.put(MediaController());
+    List<ImageModel>? selectedImages = await controller.selectImagesFromMedia(
+      allowMultipleSelection: true,
+      alreadySelectedUrls: additionalPlaceImagesUrls,
+    );
 
     // Handle the selected images
     if (selectedImages != null && selectedImages.isNotEmpty) {
