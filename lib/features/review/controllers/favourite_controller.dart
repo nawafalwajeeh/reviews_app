@@ -1,11 +1,9 @@
 import 'dart:convert';
-
 import 'package:get/get.dart';
-// import 'package:reviews_app/data/repositories/place/place_repository.dart';
-// import 'package:reviews_app/features/review/models/place_model.dart';
-
+import 'package:reviews_app/data/repositories/place/place_repository.dart';
 import '../../../utils/local_storage/storage_utility.dart';
 import '../../../utils/popups/loaders.dart';
+import '../models/place_model.dart';
 
 class FavouritesController extends GetxController {
   static FavouritesController get instance => Get.find();
@@ -21,7 +19,7 @@ class FavouritesController extends GetxController {
 
   // Method to initialize favouirites by reading from storage
   void initFavourites() {
-    final json = AppLocalStorage.instance().readData('favorites');
+    final json = AppLocalStorage.instance().readData('favorites') ?? '';
     if (json != null) {
       final storedFavorites = jsonDecode(json) as Map<String, dynamic>;
       favorites.assignAll(
@@ -53,10 +51,10 @@ class FavouritesController extends GetxController {
     AppLocalStorage.instance().writeData('favorites', encodedFavorites);
   }
 
-  // Future<List<PlaceModel>> favoritePlaces() async {
-  //   /// get all favorite places by thier ids's
-  //   return await PlaceRepository.instance.getFavouritePlaces(
-  //     favorites.keys.toList(),
-  //   );
-  // }
+  Future<List<PlaceModel>> favoritePlaces() async {
+    /// get all favorite places by thier ids's
+    return await PlaceRepository.instance.getFavoritePlaces(
+      favorites.keys.toList(),
+    );
+  }
 }

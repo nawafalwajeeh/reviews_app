@@ -60,6 +60,7 @@ final class AppImages {
       "assets/images/animations/141397-loading-juggle.json";
   static String cloudUploadingAnimation =
       "assets/images/animations/cloud-uploading-animation.json";
+  static String uploadingAnimation = "assets/images/animations/uploading-document.json";    
   static String loaderAnimation =
       "assets/images/animations/loader-animation.json";
 

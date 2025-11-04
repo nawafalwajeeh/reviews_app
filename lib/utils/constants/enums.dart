@@ -6,6 +6,10 @@
 /// Switch of Custom Text-Size Widget
 enum TextSizes { small, medium, large }
 
+enum ImageType { asset, network, memory, file }
+
+enum MediaCategory { folders, categories, places, users }
+
 enum PaymentMethods {
   paypal,
   googlePay,

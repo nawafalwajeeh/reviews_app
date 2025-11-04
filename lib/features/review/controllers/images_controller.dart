@@ -3,31 +3,41 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:reviews_app/utils/constants/sizes.dart';
 
+import '../models/place_model.dart';
+
 class ImagesController extends GetxController {
   static ImagesController get instance => Get.find();
 
   /// Variables
   final RxString selectedPlaceImage = ''.obs;
 
+  // List to store additional images
+  final RxList<String> additionalPlaceImagesUrls = <String>[].obs;  
+
+  /// Function to remove Place image
+  Future<void> removeImage(int index) async {
+    additionalPlaceImagesUrls.removeAt(index);
+  }
+
+
   /// -- Get All Images from place.
-  // List<String> getAllPlaceImages(PlaceModel place) {
-  //   // use set to add unique images only
-  //   Set<String> images = {};
+  List<String> getAllPlaceImages(PlaceModel place) {
+    // use set to add unique images only
+    Set<String> images = {};
 
-  //   // Load thumbnail image
-  //   images.add(place.thumbnail);
+    // Load thumbnail image
+    images.add(place.thumbnail);
 
-  // Assign Thumbnail as Selected Images
-  //   selectedPlaceImage.value = place.thumbnail;
+    // Assign Thumbnail as Selected Images
+    selectedPlaceImage.value = place.thumbnail;
 
-  // Get all images from the PlaceModel if not null.
-  //   if (place.images != null) {
-  //     images.addAll(place.images!);
-  //   }
-  //
-  //
-  //   return images.toList();
-  // }
+    // Get all images from the PlaceModel if not null.
+    if (place.images != null) {
+      images.addAll(place.images!);
+    }
+
+    return images.toList();
+  }
 
   /// -- show image popup
   void showEnlargedImage(String image, {bool isNetworkImage = true}) {
@@ -70,5 +80,17 @@ class ImagesController extends GetxController {
         ),
       ),
     );
+  }
+
+   /// Pick Thumbnail Image from Gallery
+  void selectMultipleProductImages() async {
+    // final controller = Get.put(MediaController());
+    List<ImageModel>? selectedImages =
+        await controller.selectImagesFromMedia(allowMultipleSelection: true, alreadySelectedUrls: additionalProductImagesUrls);
+
+    // Handle the selected images
+    if (selectedImages != null && selectedImages.isNotEmpty) {
+      additionalPlaceImagesUrls.assignAll(selectedImages.map((e) => e.url));
+    }
   }
 }

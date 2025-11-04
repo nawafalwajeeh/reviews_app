@@ -10,6 +10,12 @@ final class AppTexts {
   static const String logout = 'Logout';
   static const String searchInStore = 'Search in Store';
 
+  // -- Store Paths
+  static const String categoriesStoragePath = '/Categories';
+  static const String placesStoragePath = '/Places';
+  static const String usersStoragePath = '/Users';
+
+
   // -- OnBoarding Texts
   static const String onBoardingTitle1 = "Discover Local Gems";
   static const String onBoardingTitle2 = "Share Your Honest Reviews";
