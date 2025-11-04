@@ -5,12 +5,14 @@ class LabeledTextField extends StatelessWidget {
   final String label;
   final String hint;
   final int maxLines;
+  final TextEditingController? controller;
 
   const LabeledTextField({
     super.key,
     required this.label,
     required this.hint,
     this.maxLines = 1,
+    this.controller,
   });
 
   @override
@@ -21,6 +23,7 @@ class LabeledTextField extends StatelessWidget {
         Text(label, style: Theme.of(context).textTheme.titleSmall),
         const SizedBox(height: 8),
         TextFormField(
+          controller: controller,
           decoration: InputDecoration(
             hintText: hint,
             filled: true,

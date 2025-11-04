@@ -21,7 +21,7 @@ class PlaceRepository extends GetxController {
   String get getCurrentUserId => AuthenticationRepository.instance.getUserID;
 
   /// -- Get Limited Featured Places
-  Future<List<PlaceModel>> getFeaturedProducts({int limit = 4}) async {
+  Future<List<PlaceModel>> getFeaturedPlaces({int limit = 4}) async {
     try {
       final snapshot = await _db
           .collection('Places')
@@ -77,7 +77,7 @@ class PlaceRepository extends GetxController {
   }
 
   /// Get Places based on the Query
-  Future<List<PlaceModel>> fetchProductsByQuery(Query query) async {
+  Future<List<PlaceModel>> fetchPlacesByQuery(Query query) async {
     try {
       final querySnapshot = await query.get();
       final List<PlaceModel> placeList = querySnapshot.docs

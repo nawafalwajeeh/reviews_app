@@ -1,9 +1,41 @@
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:reviews_app/features/review/controllers/images_controller.dart';
+import 'package:reviews_app/features/review/models/place_category_model.dart';
+import 'package:reviews_app/utils/popups/full_screen_loader.dart';
 
+import '../../../data/repositories/place/place_repository.dart';
+import '../../../utils/constants/image_strings.dart';
+import '../../../utils/helpers/network_manager.dart';
+import '../../../utils/popups/loaders.dart';
+import '../models/category_model.dart';
 import '../models/place_model.dart';
 
 class PlaceController extends GetxController {
   static PlaceController get instance => Get.find();
+
+  /// Variables
+  final isLoading = false.obs;
+  final placeRepository = Get.put(PlaceRepository());
+  RxList<PlaceModel> featuredPlaces = <PlaceModel>[].obs;
+
+  // Text editing controllers for input fields
+  TextEditingController title = TextEditingController();
+  TextEditingController description = TextEditingController();
+  TextEditingController location = TextEditingController();
+  TextEditingController price = TextEditingController();
+  TextEditingController salePrice = TextEditingController();
+  TextEditingController brandTextField = TextEditingController();
+  GlobalKey<FormState> placeFormKey = GlobalKey<FormState>();
+
+  // Rx observable for selected categories
+  final RxList<CategoryModel> selectedCategories = <CategoryModel>[].obs;
+
+  // Flags for tracking different tasks
+  RxBool thumbnailUploader = false.obs;
+  RxBool additionalImagesUploader = false.obs;
+  RxBool placeDataUploader = false.obs;
+  RxBool categoriesRelationshipUploader = false.obs;
 
   final places = [
     PlaceModel(
@@ -68,22 +100,6 @@ class PlaceController extends GetxController {
     'Cafe',
     'Park',
   ];
-}
-
-/*
-import 'package:get/get.dart';
-import 'package:shop_app/data/repositories/product/product_repository.dart';
-import 'package:shop_app/features/shop/models/product_model.dart';
-import 'package:shop_app/utils/constants/enums.dart';
-import 'package:shop_app/utils/popups/loaders.dart';
-
-class PlaceController extends GetxController {
-  static PlaceController get instance => Get.find();
-
-  /// Variables
-  final isLoading = false.obs;
-  final productRepository = Get.put(ProductRepository());
-  RxList<ProductModel> featuredProducts = <ProductModel>[].obs;
 
   @override
   void onInit() {
@@ -97,10 +113,10 @@ class PlaceController extends GetxController {
       isLoading.value = true;
 
       // Fetch Places
-      final products = await productRepository.getFeaturedProducts();
+      final places = await placeRepository.getFeaturedPlaces();
 
       // Assign Products to the list
-      featuredProducts.assignAll(products);
+      featuredPlaces.assignAll(places);
     } catch (e) {
       AppLoaders.errorSnackBar(title: 'Oh Snap!', message: e.toString());
     } finally {
@@ -108,66 +124,121 @@ class PlaceController extends GetxController {
     }
   }
 
-  Future<List<ProductModel>> fetchAllFeaturedProducts() async {
+  Future<List<PlaceModel>> fetchAllFeaturedPlaces() async {
     try {
-      // Fetch Products
-      final products = await productRepository.getAllFeaturedProducts();
-      return products;
+      // Fetch Places
+      final places = await placeRepository.getAllFeaturedPlaces();
+      return places;
     } catch (e) {
       AppLoaders.errorSnackBar(title: 'Oh Snap!', message: e.toString());
       return [];
     }
   }
 
-  /// Get Product Price or price range for variations.
-  String getProductPrice(ProductModel product) {
-    double smallestPrice = double.infinity;
-    double largestPrice = 0.0;
+  // // Function to create a new product
+  // Future<void> createPlace() async {
+  //   try {
+  //     // Show progress dialog
+  //     AppFullScreenLoader.openLoadingDialog(
+  //       'Create your place...',
+  //       AppImages.docerAnimation,
+  //     );
 
-    // if no variations exist, return the simple price or sale price.
-    if (product.productType == ProductType.single.toString()) {
-      return (product.salePrice > 0 ? product.salePrice : product.price)
-          .toString();
-    } else {
-      // Calculate the smallest and largest prices among variations
-      for (var variation in product.productVariations!) {
-        // Determine the price to consider (salePrice if available, otherwise regular price)
-        double priceToConsider = variation.salePrice > 0.0
-            ? variation.salePrice
-            : variation.price;
+  //     // Check Internet Connectivity
+  //     final isConnected = await AppNetworkManager.instance.isConnected();
+  //     if (!isConnected) {
+  //       AppFullScreenLoader.stopLoading();
+  //       return;
+  //     }
 
-        // Update smallest and largest prices
-        if (priceToConsider < smallestPrice) {
-          smallestPrice = priceToConsider;
-        }
+  //     // Validate title and description form
+  //     if (!placeFormKey.currentState!.validate()) {
+  //       AppFullScreenLoader.stopLoading();
+  //       return;
+  //     }
 
-        if (priceToConsider > largestPrice) {
-          largestPrice = priceToConsider;
-        }
-      }
-    }
+  //     // Upload Product Thumbnail Image
+  //     thumbnailUploader.value = true;
+  //     final imagesController = ImagesController.instance;
 
-    // If smallest and largest prices are the same, reaturn a single price
-    if (smallestPrice.isEqual(largestPrice)) {
-      return largestPrice.toString();
-    } else {
-      // Otherwise, return a price range
-      return '$smallestPrice -\$$largestPrice';
-    }
-  }
+  //     // Additional Product Images
+  //     additionalImagesUploader.value = true;
 
-  /// Calculate Discount Percentage
-  String? calculateSalePercentage(double originalPrice, double? salePrice) {
-    if (salePrice == null || salePrice <= 0.0) return null;
-    if (originalPrice <= 0) return null;
+  //     // Map Product Data to ProductModel
+  //     final newRecord = PlaceModel(
+  //       id: '',
+  //       isFeatured: true,
+  //       title: title.text.trim(),
+  //       description: description.text.trim(),
+  //       location: location.text.trim(),
+  //       userId: placeRepository.getCurrentUserId,
+  //       // images: imagesController.additionalProductImagesUrls,
+  //       thumbnail: imagesController.selectedPlaceImage.value ?? '',
+  //       // amenities:
+  //       //     ProductAttributesController.instance.productAttributes,
+  //       // date: DateTime.now(),
+  //        categoryId: '', rating: 0.0,
+  //     );
 
-    double percentage = ((originalPrice - salePrice) / originalPrice) * 100;
-    return percentage.toStringAsFixed(0);
-  }
+  //     // Call Repository to Create New Product
+  //     placeDataUploader.value = true;
+  //     newRecord.id = await placeRepository.createPlace(newRecord);
 
-  /// Check Product Stock Status
-  String getProductStockStatus(int stock) {
-    return stock > 0 ? 'In Stock' : 'Out of Stock';
-  }
+  //     // Register product categories if any
+  //     if (selectedCategories.isNotEmpty) {
+  //       if (newRecord.id.isEmpty) throw 'Error storing data. Try again';
+
+  //       // Loop through selected Product Categories
+  //       categoriesRelationshipUploader.value = true;
+  //       for (var category in selectedCategories) {
+  //         // Map Data
+  //         final placeCategory = PlaceCategoryModel(
+  //           placeId: newRecord.id,
+  //           categoryId: category.id,
+  //         );
+  //         await placeRepository.createPlaceCategory(
+  //           placeCategory as CategoryModel
+
+  //         );
+  //       }
+  //     }
+
+  //     // Update Product List
+  //     ProductController.instance.addItemToLists(newRecord);
+
+  //     // Close the Progress Loader
+  //     TFullScreenLoader.stopLoading();
+
+  //     // Show Success Message Loader
+  //     showCompletionDialog();
+  //   } catch (e) {
+  //     TFullScreenLoader.stopLoading();
+  //     TLoaders.errorSnackBar(title: 'Oh Snap', message: e.toString());
+  //   }
+  // }
+
+  // // Reset form values and flags
+  // void resetValues() {
+  //   isLoading.value = false;
+  //   productType.value = ProductType.single;
+  //   productVisibility.value = ProductVisibility.hidden;
+  //   stockPriceFormKey.currentState?.reset();
+  //   titleDescriptionFormKey.currentState?.reset();
+  //   title.clear();
+  //   description.clear();
+  //   stock.clear();
+  //   price.clear();
+  //   salePrice.clear();
+  //   brandTextField.clear();
+  //   selectedBrand.value = null;
+  //   selectedCategories.clear();
+  //   ProductVariationController.instance.resetAllValues();
+  //   ProductAttributesController.instance.resetProductAttributes();
+
+  //   // Reset Upload Flags
+  //   thumbnailUploader.value = false;
+  //   additionalImagesUploader.value = false;
+  //   productDataUploader.value = false;
+  //   categoriesRelationshipUploader.value = false;
+  // }
 }
-*/
