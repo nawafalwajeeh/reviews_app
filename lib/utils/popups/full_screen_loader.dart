@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:reviews_app/common/widgets/loaders/animation_loader.dart';
 // import '../../common/widgets/loaders/animation_loader.dart';
+import '../../common/widgets/loaders/circular_loader.dart';
 import '../constants/colors.dart';
 import '../helpers/helper_functions.dart';
 
@@ -35,6 +36,15 @@ class AppFullScreenLoader {
           ),
         ),
       ),
+    );
+  }
+
+  static void popUpCircular() {
+    Get.defaultDialog(
+      title: '',
+      onWillPop: () async => false,
+      content: const AppCircularLoader(),
+      backgroundColor: Colors.transparent,
     );
   }
 

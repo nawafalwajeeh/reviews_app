@@ -8,7 +8,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:reviews_app/utils/constants/enums.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../../features/review/models/image_model.dart';
 
