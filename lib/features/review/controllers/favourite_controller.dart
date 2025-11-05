@@ -11,11 +11,11 @@ class FavouritesController extends GetxController {
   /// Variables
   final favorites = <String, bool>{}.obs;
 
-  @override
-  void onInit() {
-    super.onInit();
-    initFavourites();
-  }
+  // @override
+  // void onInit() {
+  //   super.onInit();
+  //   // initFavourites();
+  // }
 
   // Method to initialize favouirites by reading from storage
   void initFavourites() {

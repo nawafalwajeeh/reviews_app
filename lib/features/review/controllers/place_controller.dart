@@ -1,12 +1,12 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:reviews_app/features/review/controllers/images_controller.dart';
-import 'package:reviews_app/features/review/models/place_category_model.dart';
-import 'package:reviews_app/utils/popups/full_screen_loader.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:uuid/uuid.dart';
 
 import '../../../data/repositories/place/place_repository.dart';
 import '../../../utils/constants/image_strings.dart';
-import '../../../utils/helpers/network_manager.dart';
+import '../../../utils/popups/full_screen_loader.dart';
 import '../../../utils/popups/loaders.dart';
 import '../models/category_model.dart';
 import '../models/place_model.dart';
@@ -19,15 +19,6 @@ class PlaceController extends GetxController {
   final placeRepository = Get.put(PlaceRepository());
   RxList<PlaceModel> featuredPlaces = <PlaceModel>[].obs;
 
-  // Text editing controllers for input fields
-  TextEditingController title = TextEditingController();
-  TextEditingController description = TextEditingController();
-  TextEditingController location = TextEditingController();
-  TextEditingController price = TextEditingController();
-  TextEditingController salePrice = TextEditingController();
-  TextEditingController brandTextField = TextEditingController();
-  GlobalKey<FormState> placeFormKey = GlobalKey<FormState>();
-
   // Rx observable for selected categories
   final RxList<CategoryModel> selectedCategories = <CategoryModel>[].obs;
 
@@ -37,6 +28,33 @@ class PlaceController extends GetxController {
   RxBool placeDataUploader = false.obs;
   RxBool categoriesRelationshipUploader = false.obs;
 
+  // --- TEXT EDITING CONTROLLERS (Input Fields) ---
+  // REQUIRED FIELDS
+  TextEditingController titleController = TextEditingController();
+  TextEditingController descriptionController = TextEditingController();
+  TextEditingController locationController = TextEditingController();
+
+  // OPTIONAL FIELD
+  TextEditingController websiteUrlController = TextEditingController();
+
+  GlobalKey<FormState> placeFormKey = GlobalKey<FormState>();
+
+  final RxString selectedLocationName = ''.obs;
+  // --- SELECTION & STATE VARIABLES ---
+  // Image Handling (for thumbnail and images list)
+  final ImagePicker _picker = ImagePicker();
+  final RxList<File> selectedLocalImageFiles = <File>[].obs;
+  final int maxImages = 15;
+
+  // Category Selection (for the required 'categoryId')
+  final RxString selectedCategoryId =
+      ''.obs; // Store the ID of the selected category
+
+  // Amenities (for the optional 'amenities' list)
+  final RxList<String> selectedTags = <String>[].obs;
+
+  // Feature Flag
+  final RxBool isFeatured = false.obs;
   final places = [
     PlaceModel(
       id: '1',
@@ -55,7 +73,7 @@ class PlaceController extends GetxController {
           'Experience the serene beauty of the Maldives with our overwater bungalows and crystal-clear lagoon access. Perfect for honeymooners and families looking for a luxury escape. This detailed description helps guests understand the unique offerings and atmosphere of the destination.',
       rating: 4.8,
       isFavorite: true,
-      amenities: [
+      tags: [
         'Free Wi-Fi',
         'Swimming Pool',
         'Beach Access',
@@ -81,7 +99,7 @@ class PlaceController extends GetxController {
           'Experience the serene beauty of the Maldives with our overwater bungalows and crystal-clear lagoon access. Perfect for honeymooners and families looking for a luxury escape. This detailed description helps guests understand the unique offerings and atmosphere of the destination.',
       rating: 4.8,
       isFavorite: true,
-      amenities: [
+      tags: [
         'Free Wi-Fi',
         'Swimming Pool',
         'Beach Access',
@@ -109,13 +127,8 @@ class PlaceController extends GetxController {
 
   Future<void> fetchFeaturedPlaces() async {
     try {
-      // Show loader while loading products
       isLoading.value = true;
-
-      // Fetch Places
       final places = await placeRepository.getFeaturedPlaces();
-
-      // Assign Products to the list
       featuredPlaces.assignAll(places);
     } catch (e) {
       AppLoaders.errorSnackBar(title: 'Oh Snap!', message: e.toString());
@@ -126,7 +139,6 @@ class PlaceController extends GetxController {
 
   Future<List<PlaceModel>> fetchAllFeaturedPlaces() async {
     try {
-      // Fetch Places
       final places = await placeRepository.getAllFeaturedPlaces();
       return places;
     } catch (e) {
@@ -135,110 +147,220 @@ class PlaceController extends GetxController {
     }
   }
 
-  // // Function to create a new product
-  // Future<void> createPlace() async {
-  //   try {
-  //     // Show progress dialog
-  //     AppFullScreenLoader.openLoadingDialog(
-  //       'Create your place...',
-  //       AppImages.docerAnimation,
-  //     );
+  /// Toggles selection for the amenity chips (multi-select).
+  void toggleTag(String tag) {
+    if (selectedTags.contains(tag)) {
+      selectedTags.remove(tag);
+    } else {
+      selectedTags.add(tag);
+    }
+  }
 
-  //     // Check Internet Connectivity
-  //     final isConnected = await AppNetworkManager.instance.isConnected();
-  //     if (!isConnected) {
-  //       AppFullScreenLoader.stopLoading();
-  //       return;
-  //     }
+  /// Function to pick multiple images locally
+  Future<void> pickAndHandleLocalImages() async {
+    // (implementation for image picking remains the same)
+    try {
+      final List<XFile> images = await _picker.pickMultiImage(
+        imageQuality: 70,
+        maxWidth: 1024,
+      );
 
-  //     // Validate title and description form
-  //     if (!placeFormKey.currentState!.validate()) {
-  //       AppFullScreenLoader.stopLoading();
-  //       return;
-  //     }
+      if (images.isNotEmpty) {
+        for (var xFile in images) {
+          if (selectedLocalImageFiles.length < maxImages) {
+            selectedLocalImageFiles.add(File(xFile.path));
+          } else {
+            AppLoaders.warningSnackBar(
+              title: 'Image Limit Reached',
+              message: 'You can only upload a maximum of $maxImages images.',
+            );
+            break;
+          }
+        }
+      }
+    } catch (e) {
+      AppLoaders.errorSnackBar(
+        title: 'Image Selection Failed',
+        message: 'Could not select images: $e',
+      );
+    }
+  }
 
-  //     // Upload Product Thumbnail Image
-  //     thumbnailUploader.value = true;
-  //     final imagesController = ImagesController.instance;
+  /// Function to upload the list of images
+  Future<List<String>> uploadPlaceImages(String placeId) async {
+    // ... implementation remains the same
+    try {
+      if (selectedLocalImageFiles.isEmpty) return [];
 
-  //     // Additional Product Images
-  //     additionalImagesUploader.value = true;
+      AppFullScreenLoader.openLoadingDialog(
+        'Uploading ${selectedLocalImageFiles.length} photos...',
+        AppImages.docerAnimation,
+      );
 
-  //     // Map Product Data to ProductModel
-  //     final newRecord = PlaceModel(
-  //       id: '',
-  //       isFeatured: true,
-  //       title: title.text.trim(),
-  //       description: description.text.trim(),
-  //       location: location.text.trim(),
-  //       userId: placeRepository.getCurrentUserId,
-  //       // images: imagesController.additionalProductImagesUrls,
-  //       thumbnail: imagesController.selectedPlaceImage.value ?? '',
-  //       // amenities:
-  //       //     ProductAttributesController.instance.productAttributes,
-  //       // date: DateTime.now(),
-  //        categoryId: '', rating: 0.0,
-  //     );
+      final List<String> uploadedUrls = [];
 
-  //     // Call Repository to Create New Product
-  //     placeDataUploader.value = true;
-  //     newRecord.id = await placeRepository.createPlace(newRecord);
+      for (int i = 0; i < selectedLocalImageFiles.length; i++) {
+        final file = selectedLocalImageFiles[i];
+        final xFile = XFile(file.path);
+        final String path = 'Places/$placeId';
 
-  //     // Register product categories if any
-  //     if (selectedCategories.isNotEmpty) {
-  //       if (newRecord.id.isEmpty) throw 'Error storing data. Try again';
+        final url = await placeRepository.uploadImage(
+          path,
+          xFile,
+          bucketName: 'Images',
+        );
+        uploadedUrls.add(url);
+      }
 
-  //       // Loop through selected Product Categories
-  //       categoriesRelationshipUploader.value = true;
-  //       for (var category in selectedCategories) {
-  //         // Map Data
-  //         final placeCategory = PlaceCategoryModel(
-  //           placeId: newRecord.id,
-  //           categoryId: category.id,
-  //         );
-  //         await placeRepository.createPlaceCategory(
-  //           placeCategory as CategoryModel
+      return uploadedUrls;
+    } catch (e) {
+      rethrow;
+    }
+  }
 
-  //         );
-  //       }
-  //     }
+  void openLocationPicker() {
+    // In a real application, this would:
+    // 1. Navigate to a map screen (e.g., Get.to(MapPickerScreen())).
+    // 2. Allow the user to tap on the map.
+    // 3. Reverse-geocode the coordinates to get an address string.
+    // 4. Update selectedLocationName.value with the result.
 
-  //     // Update Product List
-  //     ProductController.instance.addItemToLists(newRecord);
+    print('Opening map picker...');
+    // --- Simulation for demonstration ---
+    Future.delayed(const Duration(milliseconds: 500), () {
+      selectedLocationName.value = 'The Colosseum, Rome, Italy';
+      print('Location set from map: ${selectedLocationName.value}');
+    });
+    // --- End Simulation ---
+  }
 
-  //     // Close the Progress Loader
-  //     TFullScreenLoader.stopLoading();
+  /// Helper function to convert an address string to coordinates
+  Future<({double latitude, double longitude})> _geocodeAddress(
+    String address,
+  ) async {
+    try {
+      // final locations = await locationFromAddress(address);
+      // if (locations.isEmpty) throw 'Could not find coordinates for this address.';
+      // final location = locations.first;
+      // return (latitude: location.latitude, longitude: location.longitude);
+      // Simulates a successful geocoding call
+      AppFullScreenLoader.openLoadingDialog(
+        'Geocoding location...',
+        AppImages.docerAnimation,
+      );
+      await Future.delayed(const Duration(milliseconds: 500));
+      return (latitude: 37.7749, longitude: -122.4194); // Mock: San Francisco
+    } catch (e) {
+      AppLoaders.warningSnackBar(
+        title: 'Location Error',
+        message:
+            'Could not automatically find coordinates for the address provided. Using default (0,0).',
+      );
+      return (latitude: 0.0, longitude: 0.0);
+    }
+  }
 
-  //     // Show Success Message Loader
-  //     showCompletionDialog();
-  //   } catch (e) {
-  //     TFullScreenLoader.stopLoading();
-  //     TLoaders.errorSnackBar(title: 'Oh Snap', message: e.toString());
-  //   }
-  // }
+  /// -- Create new place
+  Future<void> createPlace() async {
+    try {
+      // 1. Start Loading & Form Validation
+      AppFullScreenLoader.openLoadingDialog(
+        'Creating new place...',
+        AppImages.docerAnimation,
+      );
+      if (!placeFormKey.currentState!.validate()) {
+        AppFullScreenLoader.stopLoading();
+        return;
+      }
 
-  // // Reset form values and flags
-  // void resetValues() {
-  //   isLoading.value = false;
-  //   productType.value = ProductType.single;
-  //   productVisibility.value = ProductVisibility.hidden;
-  //   stockPriceFormKey.currentState?.reset();
-  //   titleDescriptionFormKey.currentState?.reset();
-  //   title.clear();
-  //   description.clear();
-  //   stock.clear();
-  //   price.clear();
-  //   salePrice.clear();
-  //   brandTextField.clear();
-  //   selectedBrand.value = null;
-  //   selectedCategories.clear();
-  //   ProductVariationController.instance.resetAllValues();
-  //   ProductAttributesController.instance.resetProductAttributes();
+      // Additional Checks
+      if (selectedLocalImageFiles.isEmpty) {
+        AppFullScreenLoader.stopLoading();
+        AppLoaders.warningSnackBar(
+          title: 'No Images',
+          message: 'Please select at least one image.',
+        );
+        return;
+      }
 
-  //   // Reset Upload Flags
-  //   thumbnailUploader.value = false;
-  //   additionalImagesUploader.value = false;
-  //   productDataUploader.value = false;
-  //   categoriesRelationshipUploader.value = false;
-  // }
+      if (selectedCategoryId.isEmpty) {
+        AppFullScreenLoader.stopLoading();
+        AppLoaders.warningSnackBar(
+          title: 'Category Missing',
+          message: 'Please select a valid category.',
+        );
+        return;
+      }
+
+      // 2. Geocode the address from the text field
+      final coordinates = await _geocodeAddress(locationController.text.trim());
+
+      // // 3. Generate a unique ID for the new place
+      const Uuid uuid = Uuid();
+      final String placeId = uuid.v4();
+
+      // 4. Upload Images to Storage
+      final List<String> imageUrls = await uploadPlaceImages(placeId);
+
+      // 5. Prepare Place Model - MAPPING ALL FIELDS
+      final newPlace = PlaceModel(
+        id: placeId,
+        title: titleController.text.trim(),
+        description: descriptionController.text.trim(),
+        location: locationController.text.trim(),
+
+        // Image URLs
+        thumbnail: imageUrls.first,
+        images: imageUrls.length > 1 ? imageUrls.sublist(1) : null,
+
+        // Selected IDs and Lists
+        categoryId: selectedCategoryId.value,
+        tags: selectedTags.toList(),
+        // Coordinates (Obtained from Geocoding)
+        latitude: coordinates.latitude,
+        longitude: coordinates.longitude,
+        websiteUrl: websiteUrlController.text.trim().isEmpty
+            ? null
+            : websiteUrlController.text.trim(),
+        userId: '',
+        rating: 0.0,
+        isFeatured: isFeatured.value,
+        dateAdded: DateTime.now(),
+        isFavorite: false,
+      );
+
+      // 6. Save Place Data to Firestore
+      await placeRepository.createPlace(newPlace);
+
+      // 7. Success Handling and Cleanup
+      AppFullScreenLoader.stopLoading();
+      AppLoaders.successSnackBar(
+        title: 'Success!',
+        message: 'Your new place "${newPlace.title}" has been created!',
+      );
+      _resetForm();
+    } catch (e) {
+      AppFullScreenLoader.stopLoading();
+      AppLoaders.errorSnackBar(title: 'Oh Snap!', message: e.toString());
+    }
+  }
+
+  /// Helper to reset form and image selection state
+  void _resetForm() {
+    titleController.clear();
+    descriptionController.clear();
+    locationController.clear();
+    websiteUrlController.clear();
+    selectedCategoryId.value = '';
+    selectedTags.clear();
+    isFeatured.value = false;
+    placeFormKey.currentState?.reset();
+    selectedLocalImageFiles.clear();
+  }
+
+  void removeLocalImage(int index) {
+    if (index >= 0 && index < selectedLocalImageFiles.length) {
+      selectedLocalImageFiles.removeAt(index);
+    }
+  }
 }

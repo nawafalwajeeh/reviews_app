@@ -5,8 +5,9 @@ import 'package:reviews_app/utils/constants/sizes.dart';
 class LabeledDropdown extends StatelessWidget {
   final String label;
   final List<String> items;
+  final Function(String?)? onChanged;
 
-  const LabeledDropdown({super.key, required this.label, required this.items});
+  const LabeledDropdown({super.key, required this.label, required this.items, this.onChanged});
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +25,7 @@ class LabeledDropdown extends StatelessWidget {
                 ),
               )
               .toList(),
-          onChanged: (value) {},
+          onChanged: onChanged,
           decoration: InputDecoration(
             hintText: 'Select a category',
             filled: true,

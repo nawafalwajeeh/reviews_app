@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:reviews_app/features/review/controllers/place_controller.dart';
 import 'package:reviews_app/utils/constants/sizes.dart';
 import 'label_chip.dart';
 import 'label_drop_down.dart';
@@ -10,12 +11,15 @@ class PlaceForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final controller = PlaceController.instance;
+
     return Form(
       child: Column(
         children: [
           LabeledTextField(
             label: 'Place Name',
             hint: 'Enter the name of this place',
+            controller: controller.descriptionController,
           ),
           const SizedBox(height: AppSizes.spaceBtwInputFields),
           LabeledDropdown(
@@ -28,6 +32,8 @@ class PlaceForm extends StatelessWidget {
               'Shopping',
               'Entertainment',
             ],
+            onChanged: (value) =>
+                controller.selectedCategoryId.value = value ?? '',
           ),
           const SizedBox(height: AppSizes.spaceBtwInputFields),
           LabeledLocationPicker(label: 'Location'),
@@ -36,11 +42,12 @@ class PlaceForm extends StatelessWidget {
             label: 'Description',
             hint: 'Tell us what makes this place special...',
             maxLines: 4,
+            controller: controller.descriptionController,
           ),
           const SizedBox(height: AppSizes.spaceBtwInputFields),
           LabeledChips(
             label: 'Tags',
-            options: const [
+            tags: const [
               'Family Friendly',
               'Pet Friendly',
               'Outdoor',
@@ -49,6 +56,8 @@ class PlaceForm extends StatelessWidget {
               'Budget Friendly',
               'Luxury',
             ],
+            selectedTags: controller.selectedTags,
+            onSelected: controller.toggleTag,
           ),
         ],
       ),

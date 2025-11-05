@@ -12,7 +12,7 @@ class PlaceModel {
   final String location;
   final String categoryId;
   final double rating;
-  final List<String>? amenities;
+  final List<String>? tags;
   final double? latitude;
   final double? longitude;
   final String? websiteUrl;
@@ -27,7 +27,7 @@ class PlaceModel {
     required this.rating,
     required this.userId,
     required this.thumbnail,
-    this.amenities,
+    this.tags,
     this.images,
     bool? isFavorite,
     this.isFeatured,
@@ -48,7 +48,7 @@ class PlaceModel {
     rating: 0.0,
     thumbnail: '',
     images: [],
-    amenities: [],
+    tags: [],
   );
 
   /// -- Json Format (To save data to Firestore)
@@ -62,7 +62,7 @@ class PlaceModel {
       'Rating': rating,
       'Thumbnail': thumbnail,
       'Images': images ?? [],
-      'Amenities': amenities ?? [],
+      'Amenities': tags ?? [],
       'IsFeatured': isFeatured ?? false,
       'DateAdded': dateAdded,
       'Latitude': latitude,
@@ -95,7 +95,7 @@ class PlaceModel {
       longitude: double.tryParse((data['Longitude'] ?? 0.0).toString()),
       websiteUrl: data['WebsiteUrl'],
       images: data['Images'] != null ? List<String>.from(data['Images']) : [],
-      amenities: data['Amenities'] != null
+      tags: data['Amenities'] != null
           ? List<String>.from(data['Amenities'])
           : [],
       isFavorite: false,
@@ -125,7 +125,7 @@ class PlaceModel {
       longitude: double.tryParse((data['Longitude'] ?? 0.0).toString()),
       websiteUrl: data['WebsiteUrl'],
       images: data['Images'] != null ? List<String>.from(data['Images']) : [],
-      amenities: data['Amenities'] != null
+      tags: data['Amenities'] != null
           ? List<String>.from(data['Amenities'])
           : [],
       isFavorite: false,
