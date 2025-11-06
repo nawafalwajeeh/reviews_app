@@ -111,7 +111,7 @@ class PlaceCardHorizontal extends StatelessWidget {
                   Positioned(
                     right: AppSizes.sm,
                     top: AppSizes.sm,
-                    child: AppFavouriteIcon(),
+                    child: AppFavouriteIcon(placeId: place.id),
                   ),
 
                   /// -- Place Title and Location (Overlayed at the Bottom)

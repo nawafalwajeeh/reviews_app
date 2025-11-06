@@ -1,7 +1,6 @@
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:reviews_app/data/repositories/authentication/authentication_repository.dart';
 import 'package:reviews_app/features/review/models/category_model.dart';
 import '../../../utils/exceptions/firebase_exceptions.dart';
 import '../../../utils/exceptions/format_exceptions.dart';
@@ -35,12 +34,7 @@ class CategoryRepository extends GetxController {
   // Create a new category document in the 'Categories' collection
   Future<String> createCategory(CategoryModel category) async {
     try {
-      final userId = AuthenticationRepository.instance.getUserID;
-
-      Map<String, dynamic> data = category.toJson();
-      data['UserId'] = userId;
-
-      final result = await _db.collection("Categories").add(data);
+      final result = await _db.collection("Categories").add(category.toJson());
       return result.id;
     } on FirebaseException catch (e) {
       throw AppFirebaseException(e.code).message;

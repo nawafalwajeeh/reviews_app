@@ -66,7 +66,11 @@ class PlaceCard extends StatelessWidget {
                     // child: PlaceRatingBadge(place: place),
                     child: PlaceRatingBadge(rating: place.rating),
                   ),
-                  Positioned(right: 16, top: 16, child: AppFavouriteIcon()),
+                  Positioned(
+                    right: 16,
+                    top: 16,
+                    child: AppFavouriteIcon(placeId: place.id),
+                  ),
                   Positioned(
                     left: 16,
                     bottom: 16,
@@ -82,7 +86,8 @@ class PlaceCard extends StatelessWidget {
               ),
             ),
             Padding(
-              padding: const EdgeInsets.all(20),
+              // padding: const EdgeInsets.all(20),
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [

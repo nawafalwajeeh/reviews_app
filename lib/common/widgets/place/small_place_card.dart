@@ -101,13 +101,14 @@ class SmallPlaceCard extends StatelessWidget {
                   ),
 
                   /// -- Favourite Icon
-                  const Positioned(
+                  Positioned(
                     right: AppSizes.sm,
                     top: AppSizes.sm,
                     child: AppFavouriteIcon(
                       iconSize: AppSizes.iconMd,
                       height: 30,
                       width: 30,
+                      placeId: place.id,
                     ),
                   ),
                 ],
@@ -152,7 +153,8 @@ class SmallPlaceCard extends StatelessWidget {
                 AppSizes.sm,
                 0,
                 AppSizes.sm,
-                AppSizes.xs,
+                // AppSizes.xs,
+                0,
               ),
               child: PlaceTitleText(
                 title: place.title,
@@ -160,7 +162,7 @@ class SmallPlaceCard extends StatelessWidget {
                 isDarkBackground: false,
                 isVerified: true,
                 placeTitleSize: TextSizes.small,
-                maxLines: 2,
+                maxLines: 1,
                 titleColor: dark ? AppColors.light : AppColors.dark,
               ),
             ),

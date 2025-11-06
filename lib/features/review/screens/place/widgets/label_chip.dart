@@ -59,8 +59,8 @@ import 'package:reviews_app/utils/constants/sizes.dart';
 class LabeledChips extends StatelessWidget {
   final String label;
   final List<String> tags;
-  final  RxList<String> selectedTags;
-  final void Function(bool)? onSelected;
+  final RxList<String> selectedTags;
+  final void Function(String)? onSelected;
 
   const LabeledChips({
     super.key,
@@ -77,17 +77,19 @@ class LabeledChips extends StatelessWidget {
       children: [
         Text(label, style: Theme.of(context).textTheme.titleSmall),
         const SizedBox(height: AppSizes.sm),
-        Wrap(
-          spacing: 8,
-          runSpacing: 8,
-          children: tags.map((tag) {
-            final isSelected = selectedTags.contains(tag);
-            return AppChoiceChip(
-              text: tag,
-              selected: isSelected,
-              onSelected: onSelected,
-            );
-          }).toList(),
+        Obx(
+          () => Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            children: tags.map((tag) {
+              final isSelected = selectedTags.contains(tag);
+              return AppChoiceChip(
+                text: tag,
+                selected: isSelected,
+                onSelected: onSelected,
+              );
+            }).toList(),
+          ),
         ),
       ],
     );

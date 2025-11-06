@@ -62,7 +62,7 @@ class PlaceModel {
       'Rating': rating,
       'Thumbnail': thumbnail,
       'Images': images ?? [],
-      'Amenities': tags ?? [],
+      'Tags': tags ?? [],
       'IsFeatured': isFeatured ?? false,
       'DateAdded': dateAdded,
       'Latitude': latitude,
@@ -95,9 +95,7 @@ class PlaceModel {
       longitude: double.tryParse((data['Longitude'] ?? 0.0).toString()),
       websiteUrl: data['WebsiteUrl'],
       images: data['Images'] != null ? List<String>.from(data['Images']) : [],
-      tags: data['Amenities'] != null
-          ? List<String>.from(data['Amenities'])
-          : [],
+      tags: data['Tags'] != null ? List<String>.from(data['Tags']) : [],
       isFavorite: false,
     );
   }
@@ -125,9 +123,7 @@ class PlaceModel {
       longitude: double.tryParse((data['Longitude'] ?? 0.0).toString()),
       websiteUrl: data['WebsiteUrl'],
       images: data['Images'] != null ? List<String>.from(data['Images']) : [],
-      tags: data['Amenities'] != null
-          ? List<String>.from(data['Amenities'])
-          : [],
+      tags: data['Tags'] != null ? List<String>.from(data['Tags']) : [],
       isFavorite: false,
     );
   }

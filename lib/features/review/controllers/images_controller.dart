@@ -4,11 +4,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:reviews_app/utils/constants/image_strings.dart';
 import 'package:reviews_app/utils/constants/sizes.dart';
-import 'package:reviews_app/utils/popups/full_screen_loader.dart'
-    show AppFullScreenLoader;
-
 import '../../../utils/popups/loaders.dart';
 import '../models/image_model.dart';
 import '../models/place_model.dart';
@@ -25,61 +21,6 @@ class ImagesController extends GetxController {
 
   // List to store local File objects before upload
   final RxList<File> selectedLocalImageFiles = <File>[].obs;
-  final ImagePicker _picker = ImagePicker();
-  final int maxImages = 10;
-
-  // /// -- METHOD: Select Multiple Images from Gallery --
-  // Future<void> pickAndHandleLocalImages() async {
-  //   try {
-  //     final List<XFile> images = await _picker.pickMultiImage();
-
-  //     if (images.isNotEmpty) {
-  //       // Filter and add files up to the max limit
-  //       for (var xFile in images) {
-  //         if (selectedLocalImageFiles.length < maxImages) {
-  //           selectedLocalImageFiles.add(File(xFile.path));
-  //         } else {
-  //           AppLoaders.warningSnackBar(
-  //             title: 'Image Limit Reached',
-  //             message: 'You can only upload a maximum of $maxImages images.',
-  //           );
-  //           break;
-  //         }
-  //       }
-  //     }
-  //   } catch (e) {
-  //     AppLoaders.errorSnackBar(
-  //       title: 'Image Selection Failed',
-  //       message: 'Could not select images: $e',
-  //     );
-  //   }
-  // }
-
-  // /// -- METHOD: Upload Local Files to Storage and Get URLs --
-  // Future<List<String>> uploadPlaceImagesToStorage(String placeId) async {
-  //   try {
-  //     if (selectedLocalImageFiles.isEmpty) return [];
-
-  //     AppFullScreenLoader.openLoadingDialog(
-  //       text: 'Uploading ${selectedLocalImageFiles.length} photos...',
-  //       animation: AppImages.docerAnimation,
-  //     );
-
-  //     final List<String> uploadedUrls = await
-  //         .uploadPlaceImages(placeId, selectedLocalImageFiles.toList());
-
-  //     // Clear local files after successful upload
-  //     selectedLocalImageFiles.clear();
-
-  //     return uploadedUrls;
-  //   } catch (e) {
-  //     AppLoaders.errorSnackBar(
-  //       title: 'Image Upload Error',
-  //       message: 'Failed to upload images: ${e.toString()}',
-  //     );
-  //     return [];
-  //   }
-  // }
 
   /// Function to remove LOCAL image before submission
   void removeLocalImage(int index) {

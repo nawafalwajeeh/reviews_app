@@ -15,7 +15,8 @@ class AppChoiceChip extends StatelessWidget {
 
   final String text;
   final bool selected;
-  final void Function(bool)? onSelected;
+  // final void Function(bool)? onSelected;
+  final void Function(String tag)? onSelected;
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +27,7 @@ class AppChoiceChip extends StatelessWidget {
       child: ChoiceChip(
         label: isColor ? const SizedBox() : Text(text),
         selected: selected,
-        onSelected: onSelected,
+        onSelected: (_) => onSelected?.call(text),
         labelStyle: TextStyle(color: selected ? AppColors.white : null),
         avatar: isColor
             ? AppRoundedContainer(
@@ -42,7 +43,8 @@ class AppChoiceChip extends StatelessWidget {
         // Make icon in the center
         labelPadding: isColor ? const EdgeInsets.all(0) : null,
         padding: isColor ? const EdgeInsets.all(0) : null,
-        backgroundColor: AppHelperFunctions.getColor(text),
+        // backgroundColor: AppHelperFunctions.getColor(text),
+        backgroundColor: selected ? AppColors.primaryColor : AppColors.grey,
       ),
     );
   }

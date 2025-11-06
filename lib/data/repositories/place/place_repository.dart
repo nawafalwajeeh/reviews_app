@@ -168,16 +168,8 @@ class PlaceRepository extends GetxController {
   /// -- Create new place
   Future<String> createPlace(PlaceModel place) async {
     try {
-      // get the userId
-      final userId = AuthenticationRepository.instance.getUserID;
-      // get the place data
-      Map<String, dynamic> data = place.toJson();
-
-      // set the userId to UserId field in the model
-      data['UserId'] = userId;
-      // add the data to the database
-      final result = await _db.collection('Places').add(data);
-      return result.id;
+      final data = await _db.collection('Places').add(place.toJson());
+      return data.id;
     } on FirebaseException catch (e) {
       throw AppFirebaseException(e.code).message;
     } on FormatException catch (_) {
@@ -192,13 +184,10 @@ class PlaceRepository extends GetxController {
   /// -- Create new Place Category
   Future<String> createPlaceCategory(CategoryModel placeCategory) async {
     try {
-      final userId = getCurrentUserId;
-
-      Map<String, dynamic> data = placeCategory.toJson();
-      data['UserId'] = userId;
-
-      final result = await _db.collection('PlaceCategory').add(data);
-      return result.id;
+      final data = await _db
+          .collection('PlaceCategory')
+          .add(placeCategory.toJson());
+      return data.id;
     } on FirebaseException catch (e) {
       throw AppFirebaseException(e.code).message;
     } on FormatException catch (_) {
@@ -329,8 +318,8 @@ class PlaceRepository extends GetxController {
     }
   }
 
-/// -- Upload Image to Storage and Get URL --
-   Future<String> uploadImage(
+  /// -- Upload Image to Storage and Get URL --
+  Future<String> uploadImage(
     String path,
     XFile image, {
     String bucketName = 'Images',

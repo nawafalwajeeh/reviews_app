@@ -2,6 +2,8 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:reviews_app/data/repositories/authentication/authentication_repository.dart';
+import 'package:reviews_app/data/services/cloud_storage/supabase_storage_service.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../../data/repositories/place/place_repository.dart';
@@ -22,21 +24,15 @@ class PlaceController extends GetxController {
   // Rx observable for selected categories
   final RxList<CategoryModel> selectedCategories = <CategoryModel>[].obs;
 
-  // Flags for tracking different tasks
+  // Text Editing Controllers & Form Key
   RxBool thumbnailUploader = false.obs;
   RxBool additionalImagesUploader = false.obs;
   RxBool placeDataUploader = false.obs;
   RxBool categoriesRelationshipUploader = false.obs;
-
-  // --- TEXT EDITING CONTROLLERS (Input Fields) ---
-  // REQUIRED FIELDS
   TextEditingController titleController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
   TextEditingController locationController = TextEditingController();
-
-  // OPTIONAL FIELD
   TextEditingController websiteUrlController = TextEditingController();
-
   GlobalKey<FormState> placeFormKey = GlobalKey<FormState>();
 
   final RxString selectedLocationName = ''.obs;
@@ -54,7 +50,7 @@ class PlaceController extends GetxController {
   final RxList<String> selectedTags = <String>[].obs;
 
   // Feature Flag
-  final RxBool isFeatured = false.obs;
+  final RxBool isFeatured = true.obs;
   final places = [
     PlaceModel(
       id: '1',
@@ -117,6 +113,10 @@ class PlaceController extends GetxController {
     'School',
     'Cafe',
     'Park',
+    'Hotel',
+    'Hospital',
+    'House',
+    'Park',
   ];
 
   @override
@@ -149,8 +149,8 @@ class PlaceController extends GetxController {
 
   /// Toggles selection for the amenity chips (multi-select).
   void toggleTag(String tag) {
-    if (selectedTags.contains(tag)) {
-      selectedTags.remove(tag);
+    if (selectedTags.contains(tag.toString())) {
+      selectedTags.remove(tag.toString());
     } else {
       selectedTags.add(tag);
     }
@@ -158,7 +158,6 @@ class PlaceController extends GetxController {
 
   /// Function to pick multiple images locally
   Future<void> pickAndHandleLocalImages() async {
-    // (implementation for image picking remains the same)
     try {
       final List<XFile> images = await _picker.pickMultiImage(
         imageQuality: 70,
@@ -186,38 +185,48 @@ class PlaceController extends GetxController {
     }
   }
 
-  /// Function to upload the list of images
-  Future<List<String>> uploadPlaceImages(String placeId) async {
-    // ... implementation remains the same
+  /// Function to upload place images to Supabase Storage
+  Future<List<String>> uploadPlaceImages(String userId, String placeId) async {
     try {
+      final storage = Get.put(AppSupabaseStorageService());
+
       if (selectedLocalImageFiles.isEmpty) return [];
 
       AppFullScreenLoader.openLoadingDialog(
-        'Uploading ${selectedLocalImageFiles.length} photos...',
+        'Uploading ${selectedLocalImageFiles.length} photos for Place ID: $placeId...',
         AppImages.docerAnimation,
       );
 
       final List<String> uploadedUrls = [];
 
+      final String storagePath = 'Places/$userId/$placeId';
+
       for (int i = 0; i < selectedLocalImageFiles.length; i++) {
         final file = selectedLocalImageFiles[i];
         final xFile = XFile(file.path);
-        final String path = 'Places/$placeId';
 
-        final url = await placeRepository.uploadImage(
-          path,
+        final url = await storage.uploadImageFile(
+          storagePath,
           xFile,
-          bucketName: 'Images',
+          createUniqueName: true, // Generate a UUID filename
         );
+
         uploadedUrls.add(url);
       }
 
+      AppFullScreenLoader.stopLoading();
       return uploadedUrls;
     } catch (e) {
+      AppFullScreenLoader.stopLoading();
+      AppLoaders.errorSnackBar(
+        title: 'Upload Failed!',
+        message: 'Could not upload place images: ${e.toString()}',
+      );
       rethrow;
     }
   }
 
+  /// Function to open map picker and get location
   void openLocationPicker() {
     // In a real application, this would:
     // 1. Navigate to a map screen (e.g., Get.to(MapPickerScreen())).
@@ -225,13 +234,11 @@ class PlaceController extends GetxController {
     // 3. Reverse-geocode the coordinates to get an address string.
     // 4. Update selectedLocationName.value with the result.
 
-    print('Opening map picker...');
-    // --- Simulation for demonstration ---
+    debugPrint('Opening map picker...');
     Future.delayed(const Duration(milliseconds: 500), () {
       selectedLocationName.value = 'The Colosseum, Rome, Italy';
-      print('Location set from map: ${selectedLocationName.value}');
+      debugPrint('Location set from map: ${selectedLocationName.value}');
     });
-    // --- End Simulation ---
   }
 
   /// Helper function to convert an address string to coordinates
@@ -295,12 +302,13 @@ class PlaceController extends GetxController {
       // 2. Geocode the address from the text field
       final coordinates = await _geocodeAddress(locationController.text.trim());
 
-      // // 3. Generate a unique ID for the new place
+      // 3. Generate a unique ID for the new place
+      final userId = AuthenticationRepository.instance.getUserID;
       const Uuid uuid = Uuid();
       final String placeId = uuid.v4();
 
       // 4. Upload Images to Storage
-      final List<String> imageUrls = await uploadPlaceImages(placeId);
+      final List<String> imageUrls = await uploadPlaceImages(userId, placeId);
 
       // 5. Prepare Place Model - MAPPING ALL FIELDS
       final newPlace = PlaceModel(
@@ -322,7 +330,7 @@ class PlaceController extends GetxController {
         websiteUrl: websiteUrlController.text.trim().isEmpty
             ? null
             : websiteUrlController.text.trim(),
-        userId: '',
+        userId: userId,
         rating: 0.0,
         isFeatured: isFeatured.value,
         dateAdded: DateTime.now(),
@@ -340,8 +348,9 @@ class PlaceController extends GetxController {
       );
       _resetForm();
     } catch (e) {
-      AppFullScreenLoader.stopLoading();
       AppLoaders.errorSnackBar(title: 'Oh Snap!', message: e.toString());
+    } finally {
+      AppFullScreenLoader.stopLoading();
     }
   }
 
@@ -362,5 +371,17 @@ class PlaceController extends GetxController {
     if (index >= 0 && index < selectedLocalImageFiles.length) {
       selectedLocalImageFiles.removeAt(index);
     }
+  }
+
+  /// Get top rated/trending places (simple sort by rating)
+  List<PlaceModel> get trendingPlaces {
+    final copy = [...places];
+    copy.sort((a, b) => b.rating.compareTo(a.rating));
+    return copy.take(10).toList();
+  }
+
+  /// Refresh data
+  Future<void> refreshAll() async {
+    await fetchAllFeaturedPlaces();
   }
 }

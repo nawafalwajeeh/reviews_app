@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:reviews_app/data/repositories/authentication/authentication_repository.dart';
 import 'package:reviews_app/data/repositories/user/user_repository.dart';
 import 'package:reviews_app/features/personalization/models/user_model.dart';
@@ -256,10 +257,14 @@ class UserController extends GetxController {
         //   image,
         // );
         //-------------------------
-
+        // get the userId
+        final userId = AuthenticationRepository.instance.getUserID;
         // With Supabase Storage
         // https://iofzzsfucawjnemyrcnr.supabase.co/storage/v1/object/public/Images/Profile/review_profile_image_2.jpeg
-        final imageUrl = await userRepository.uploadImage('Profile', image);
+        final imageUrl = await userRepository.uploadImage(
+          'Users/Profile/$userId',
+          image,
+        );
         debugPrint('Image URL: $imageUrl');
 
         // Update user Image Record

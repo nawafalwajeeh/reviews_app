@@ -13,54 +13,52 @@ class PlaceForm extends StatelessWidget {
   Widget build(BuildContext context) {
     final controller = PlaceController.instance;
 
-    return Form(
-      child: Column(
-        children: [
-          LabeledTextField(
-            label: 'Place Name',
-            hint: 'Enter the name of this place',
-            controller: controller.descriptionController,
-          ),
-          const SizedBox(height: AppSizes.spaceBtwInputFields),
-          LabeledDropdown(
-            label: 'Category',
-            items: const [
-              'Restaurant',
-              'Cafe',
-              'Park',
-              'Museum',
-              'Shopping',
-              'Entertainment',
-            ],
-            onChanged: (value) =>
-                controller.selectedCategoryId.value = value ?? '',
-          ),
-          const SizedBox(height: AppSizes.spaceBtwInputFields),
-          LabeledLocationPicker(label: 'Location'),
-          const SizedBox(height: AppSizes.spaceBtwInputFields),
-          LabeledTextField(
-            label: 'Description',
-            hint: 'Tell us what makes this place special...',
-            maxLines: 4,
-            controller: controller.descriptionController,
-          ),
-          const SizedBox(height: AppSizes.spaceBtwInputFields),
-          LabeledChips(
-            label: 'Tags',
-            tags: const [
-              'Family Friendly',
-              'Pet Friendly',
-              'Outdoor',
-              'Indoor',
-              'Romantic',
-              'Budget Friendly',
-              'Luxury',
-            ],
-            selectedTags: controller.selectedTags,
-            onSelected: controller.toggleTag,
-          ),
-        ],
-      ),
+    return Column(
+      children: [
+        LabeledTextField(
+          label: 'Place Name',
+          hint: 'Enter the name of this place',
+          controller: controller.descriptionController,
+        ),
+        const SizedBox(height: AppSizes.spaceBtwInputFields),
+        LabeledDropdown(
+          label: 'Category',
+          items: const [
+            'Restaurant',
+            'Cafe',
+            'Park',
+            'Museum',
+            'Shopping',
+            'Entertainment',
+          ],
+          onChanged: (value) =>
+              controller.selectedCategoryId.value = value ?? '',
+        ),
+        const SizedBox(height: AppSizes.spaceBtwInputFields),
+        LabeledLocationPicker(label: 'Location'),
+        const SizedBox(height: AppSizes.spaceBtwInputFields),
+        LabeledTextField(
+          label: 'Description',
+          hint: 'Tell us what makes this place special...',
+          maxLines: 4,
+          controller: controller.descriptionController,
+        ),
+        const SizedBox(height: AppSizes.spaceBtwInputFields),
+        LabeledChips(
+          label: 'Tags',
+          tags: const [
+            'Family Friendly',
+            'Pet Friendly',
+            'Outdoor',
+            'Indoor',
+            'Romantic',
+            'Budget Friendly',
+            'Luxury',
+          ],
+          selectedTags: controller.selectedTags,
+          onSelected: controller.toggleTag,
+        ),
+      ],
     );
   }
 }

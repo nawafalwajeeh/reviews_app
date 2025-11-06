@@ -3,9 +3,9 @@ import 'package:get/get.dart';
 import 'package:reviews_app/common/widgets/appbar/appbar.dart';
 import 'package:reviews_app/utils/constants/colors.dart';
 import 'package:reviews_app/utils/constants/sizes.dart';
+import '../../controllers/place_controller.dart';
 import 'widgets/add_photo_box.dart';
 import 'widgets/place_form.dart';
-import 'widgets/create_place_button.dart';
 import 'widgets/guid_lines_box.dart';
 
 class AddNewPlaceScreen extends StatelessWidget {
@@ -13,7 +13,8 @@ class AddNewPlaceScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    
+    final controller = PlaceController.instance;
+
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
@@ -32,31 +33,42 @@ class AddNewPlaceScreen extends StatelessWidget {
             padding: const EdgeInsets.symmetric(
               horizontal: AppSizes.defaultSpace,
             ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const SizedBox(height: AppSizes.spaceBtwItems),
-                Text(
-                  'Create New Place',
-                  style: Theme.of(context).textTheme.headlineMedium,
-                ),
-                const SizedBox(height: AppSizes.xs),
-                Text(
-                  'Share your favorite spot with the community',
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: Theme.of(context).hintColor,
+            child: Form(
+              key: controller.placeFormKey,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const SizedBox(height: AppSizes.spaceBtwItems),
+                  Text(
+                    'Create New Place',
+                    style: Theme.of(context).textTheme.headlineMedium,
                   ),
-                ),
-                const SizedBox(height: AppSizes.spaceBtwItems),
-                AddPhotoBox(),
-                const SizedBox(height: AppSizes.spaceBtwItems),
-                PlaceForm(),
-                const SizedBox(height: AppSizes.spaceBtwItems),
-                CommunityGuidelinesBox(),
-                const SizedBox(height: AppSizes.spaceBtwItems),
-                CreatePlaceButton(onPressed: () {}),
-                const SizedBox(height: AppSizes.spaceBtwSections),
-              ],
+                  const SizedBox(height: AppSizes.xs),
+                  Text(
+                    'Share your favorite spot with the community',
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      color: Theme.of(context).hintColor,
+                    ),
+                  ),
+                  const SizedBox(height: AppSizes.spaceBtwItems),
+                  AddPhotoBox(),
+                  const SizedBox(height: AppSizes.spaceBtwItems),
+                  PlaceForm(),
+                  const SizedBox(height: AppSizes.spaceBtwItems),
+                  CommunityGuidelinesBox(),
+                  const SizedBox(height: AppSizes.spaceBtwItems),
+
+                  /// -- Create Button
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      onPressed: () => controller.createPlace(),
+                      child: Text('Create Place'),
+                    ),
+                  ),
+                  const SizedBox(height: AppSizes.spaceBtwSections),
+                ],
+              ),
             ),
           ),
         ),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:reviews_app/utils/constants/sizes.dart';
+// import '../../../controllers/place_controller.dart';
 import '../../../models/place_model.dart';
 import 'trending_card.dart';
 
@@ -10,6 +11,8 @@ class HomeTrendings extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // final controller = PlaceController.instance;
+
     return SizedBox(
       height: 285,
       width: double.infinity,

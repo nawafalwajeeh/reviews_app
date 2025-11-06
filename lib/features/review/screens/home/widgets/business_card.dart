@@ -53,21 +53,23 @@ class BusinessCard extends StatelessWidget {
                     ),
 
                     /// -- Subtitle & Description
-                    Opacity(
-                      opacity: 0.9,
-                      child: Padding(
-                        padding: const EdgeInsets.only(
-                          top: AppSizes.sm,
-                          bottom: AppSizes.spaceBtwItems,
-                        ),
-                        child: Text(
-                          'Get discovered by millions of customers and grow your business',
-                          style: Theme.of(context).textTheme.bodyMedium!
-                              .copyWith(
-                                color: AppColors.white.withValues(
-                                  alpha: 0.9,
-                                ), // Match opacity from parent
-                              ),
+                    Expanded(
+                      child: Opacity(
+                        opacity: 0.9,
+                        child: Padding(
+                          padding: const EdgeInsets.only(
+                            top: AppSizes.sm,
+                            bottom: AppSizes.spaceBtwItems,
+                          ),
+                          child: Text(
+                            'Get discovered by millions of customers and grow your business',
+                            style: Theme.of(context).textTheme.bodyMedium!
+                                .copyWith(
+                                  color: AppColors.white.withValues(
+                                    alpha: 0.9,
+                                  ), // Match opacity from parent
+                                ),
+                          ),
                         ),
                       ),
                     ),
