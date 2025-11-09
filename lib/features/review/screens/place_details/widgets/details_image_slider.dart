@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
 import 'package:reviews_app/common/widgets/appbar/appbar.dart';
 import 'package:reviews_app/common/widgets/custom_shapes/curved_edges/curved_edges_widget.dart';
 import 'package:reviews_app/common/widgets/images/rounded_image.dart';
@@ -10,6 +11,7 @@ import 'package:reviews_app/utils/constants/sizes.dart';
 
 import '../../../../../utils/constants/colors.dart';
 import '../../../../../utils/helpers/helper_functions.dart';
+import '../../../controllers/images_controller.dart';
 // import '../../../controllers/images_controller.dart';
 
 class PlaceImageSlider extends StatelessWidget {
@@ -19,9 +21,9 @@ class PlaceImageSlider extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // final controller = ImagesController.instance;
+    final controller = ImagesController.instance;
+    final images = controller.getAllPlaceImages(place);
     final dark = AppHelperFunctions.isDarkMode(context);
-    final image = place.thumbnail;
 
     return Column(
       // Use Column to stack the header and the slider vertically
@@ -36,20 +38,23 @@ class PlaceImageSlider extends StatelessWidget {
               children: [
                 /// Main Large Image
                 Positioned.fill(
-                  child: GestureDetector(
-                    // onTap: () => controller.showEnlargedImage(image),
-                    child: CachedNetworkImage(
-                      imageUrl: image,
-                      fit: BoxFit.cover,
-                      errorWidget: (context, url, error) =>
-                          const Icon(Icons.error, size: 60),
-                      progressIndicatorBuilder: (_, _, progress) =>
-                          CircularProgressIndicator(
-                            value: progress.progress,
-                            color: AppColors.primaryColor,
-                          ),
-                    ),
-                  ),
+                  child: Obx(() {
+                    final image = controller.selectedPlaceImage.value;
+                    return GestureDetector(
+                      onTap: () => controller.showEnlargedImage(image),
+                      child: CachedNetworkImage(
+                        imageUrl: image,
+                        fit: BoxFit.cover,
+                        errorWidget: (context, url, error) =>
+                            const Icon(Icons.error, size: 60),
+                        progressIndicatorBuilder: (_, _, progress) =>
+                            CircularProgressIndicator(
+                              value: progress.progress,
+                              color: AppColors.primaryColor,
+                            ),
+                      ),
+                    );
+                  }),
                 ),
 
                 /// Gradient Overlay (for text readability)
@@ -73,7 +78,7 @@ class PlaceImageSlider extends StatelessWidget {
                 /// AppBar Icons
                 CustomAppBar(
                   showBackArrow: true,
-                  actions: [AppFavouriteIcon()],
+                  actions: [AppFavouriteIcon(placeId: place.id)],
                 ),
 
                 /// Title and Rating
@@ -85,13 +90,6 @@ class PlaceImageSlider extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // Text(
-                      //   place.title,
-                      //   style: Theme.of(context).textTheme.headlineMedium!
-                      //       .copyWith(color: Colors.white),
-                      //   maxLines: 2,
-                      //   overflow: TextOverflow.ellipsis,
-                      // ),
                       PlaceTitleText(
                         title: place.title,
                         location: place.location,
@@ -127,7 +125,8 @@ class PlaceImageSlider extends StatelessWidget {
           child: SizedBox(
             height: 120, // Slider height
             child: ListView.separated(
-              itemCount: place.images.length, // Use actual image count
+              // itemCount: place.images.length, // Use actual image count
+              itemCount: images.length,
               shrinkWrap: true,
               scrollDirection: Axis.horizontal,
               physics: const AlwaysScrollableScrollPhysics(),
@@ -137,20 +136,29 @@ class PlaceImageSlider extends StatelessWidget {
                 horizontal: AppSizes.defaultSpace,
               ), // Horizontal spacing
               itemBuilder: (_, index) {
-                final imageUrl = place.images[index];
-                return GestureDetector(
-                  // onTap: () => controller.selectedPlaceImage.value = imageUrl,
-                  child: AppRoundedImage(
-                    width: 160,
-                    height: 120,
-                    backgroundColor: dark ? AppColors.dark : AppColors.white,
-                    border: Border.all(color: AppColors.primaryColor),
-                    padding: const EdgeInsets.all(AppSizes.xs),
-                    isNetworkImage: true,
-                    fit: BoxFit.cover,
-                    imageUrl: imageUrl,
-                  ),
-                );
+                // final imageUrl = place.images[index];
+                final imageUrl = images[index];
+                return Obx(() {
+                  final imageSelected =
+                      controller.selectedPlaceImage.value == imageUrl;
+                  return GestureDetector(
+                    onTap: () => controller.selectedPlaceImage.value = imageUrl,
+                    child: AppRoundedImage(
+                      width: 160,
+                      height: 120,
+                      backgroundColor: dark ? AppColors.dark : AppColors.white,
+                      border: Border.all(
+                        color: imageSelected
+                            ? AppColors.primaryColor
+                            : Colors.transparent,
+                      ),
+                      padding: const EdgeInsets.all(AppSizes.xs),
+                      isNetworkImage: true,
+                      fit: BoxFit.cover,
+                      imageUrl: imageUrl,
+                    ),
+                  );
+                });
               },
             ),
           ),

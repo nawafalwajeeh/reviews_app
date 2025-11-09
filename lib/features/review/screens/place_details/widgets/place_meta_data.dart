@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:reviews_app/common/widgets/place/category/category_tag.dart';
+// import 'package:reviews_app/features/review/controllers/category_controller.dart';
+import 'package:reviews_app/features/review/controllers/place_controller.dart';
 import 'package:reviews_app/utils/constants/sizes.dart';
 
 import '../../../../../common/widgets/list_tiles/place_meta_data_tile.dart';
@@ -12,6 +15,8 @@ class PlaceMetadata extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final controller = PlaceController.instance;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -25,18 +30,25 @@ class PlaceMetadata extends StatelessWidget {
         const SizedBox(height: AppSizes.sm),
 
         // Category Tag
-        CategoryTagWidget(text: place.categoryId),
+        // CategoryTagWidget(text: place.categoryId),
+        Obx(
+          () => CategoryTagWidget(text: controller.selectedCategoryName.value),
+        ),
         const SizedBox(height: AppSizes.spaceBtwItems),
 
         // Location
         PlaceDetailsMetadataTile(text: place.title, icon: Iconsax.location),
 
         const SizedBox(height: AppSizes.spaceBtwItems),
-        PlaceDetailsMetadataTile(text: '+967 778228445', icon: Iconsax.mobile),
-        const SizedBox(height: AppSizes.spaceBtwItems),
         PlaceDetailsMetadataTile(
-          text: 'Open: 11:00 AM - 10:00 PM',
-          icon: Iconsax.box_time,
+          text: place.phoneNumber ?? '',
+          icon: Iconsax.mobile,
+        ),
+        const SizedBox(height: AppSizes.spaceBtwItems),
+
+        PlaceDetailsMetadataTile(
+          text: 'Date: ${place.dateAdded}',
+          icon: Iconsax.calendar,
         ),
       ],
     );

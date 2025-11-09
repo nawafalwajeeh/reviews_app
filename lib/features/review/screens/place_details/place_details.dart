@@ -3,7 +3,8 @@ import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:readmore/readmore.dart';
 import 'package:reviews_app/common/widgets/texts/section_heading.dart';
-import 'package:reviews_app/features/review/controllers/place_controller.dart';
+// import 'package:reviews_app/features/review/controllers/place_controller.dart';
+import 'package:reviews_app/features/review/models/place_model.dart';
 import 'package:reviews_app/utils/constants/colors.dart' show AppColors;
 import '../../../../utils/constants/sizes.dart';
 import '../place_reviews/place_reviews.dart';
@@ -14,12 +15,13 @@ import 'widgets/rating_share.dart';
 import 'widgets/write_review.dart';
 
 class PlaceDetailsScreen extends StatelessWidget {
-  const PlaceDetailsScreen({super.key});
+  const PlaceDetailsScreen({super.key, required this.place});
+
+  final PlaceModel place;
 
   @override
   Widget build(BuildContext context) {
-    final controller = PlaceController.instance;
-    var place = controller.places[0];
+    // final controller = PlaceController.instance;
     return Scaffold(
       extendBodyBehindAppBar: true,
       body: Stack(
@@ -73,7 +75,7 @@ class PlaceDetailsScreen extends StatelessWidget {
                         title: 'Amentities',
                         showActionButton: false,
                       ),
-                      AmenitiesSection(),
+                      AmenitiesSection(tags: place.tags ?? []),
                       const SizedBox(height: AppSizes.spaceBtwSections),
 
                       /// -- Map Section Placeholder

@@ -1,8 +1,7 @@
 import 'package:get/get.dart';
 import 'package:reviews_app/features/authentication/screens/login/login.dart';
 import 'package:reviews_app/features/authentication/screens/onboarding/onboarding.dart';
-import 'package:reviews_app/features/authentication/screens/password_configuration/forget_password.dart'
-    show ForgetPasswordScreen;
+import 'package:reviews_app/features/authentication/screens/password_configuration/forget_password.dart';
 import 'package:reviews_app/features/authentication/screens/signup/signup_screen.dart';
 import 'package:reviews_app/features/authentication/screens/signup/verify_email.dart';
 import 'package:reviews_app/features/personalization/screens/address/address.dart';
@@ -14,6 +13,7 @@ import 'package:reviews_app/features/review/screens/place/places_screen.dart';
 import 'package:reviews_app/features/review/screens/place_details/place_details.dart';
 import 'package:reviews_app/features/review/screens/search/search.dart';
 import 'package:reviews_app/features/review/screens/wishlist/wishlist.dart';
+import '../features/review/models/place_model.dart';
 import '../features/review/screens/place_reviews/place_reviews.dart';
 import 'app_routes.dart';
 
@@ -27,7 +27,7 @@ class AppPages {
     GetPage(name: AppRoutes.gallery, page: () => const ImageGalleryScreen()),
     GetPage(
       name: AppRoutes.placesDetail,
-      page: () => const PlaceDetailsScreen(),
+      page: () => PlaceDetailsScreen(place: PlaceModel.empty()),
     ),
     GetPage(
       name: AppRoutes.placeReviews,

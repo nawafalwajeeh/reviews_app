@@ -5,11 +5,13 @@ import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:reviews_app/data/repositories/authentication/authentication_repository.dart';
 import 'package:reviews_app/data/services/cloud_storage/supabase_storage_service.dart';
+import 'package:reviews_app/features/review/controllers/category_controller.dart';
 import 'package:reviews_app/features/review/models/place_category_model.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../../data/repositories/place/place_repository.dart';
 import '../../../utils/constants/image_strings.dart';
+import '../../../utils/helpers/network_manager.dart';
 import '../../../utils/popups/full_screen_loader.dart';
 import '../../../utils/popups/loaders.dart';
 import '../models/category_model.dart';
@@ -35,6 +37,7 @@ class PlaceController extends GetxController {
   TextEditingController titleController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
   TextEditingController locationController = TextEditingController();
+  TextEditingController phoneController = TextEditingController();
   TextEditingController websiteUrlController = TextEditingController();
   GlobalKey<FormState> placeFormKey = GlobalKey<FormState>();
 
@@ -51,76 +54,10 @@ class PlaceController extends GetxController {
 
   // Amenities (for the optional 'amenities' list)
   final RxList<String> selectedTags = <String>[].obs;
+  final RxString selectedCategoryName =
+      CategoryController.instance.selectedCategoryName;
 
-  // Feature Flag
   final RxBool isFeatured = true.obs;
-  // final places = [
-  //   PlaceModel(
-  //     id: '1',
-  //     userId: '1',
-  //     thumbnail:
-  //         'https://images.unsplash.com/photo-1464979681340-bdd28a61699e?auto=format&fit=crop&w=800&q=80',
-  //     images: [
-  //       'https://images.unsplash.com/photo-1464979681340-bdd28a61699e?auto=format&fit=crop&w=800&q=80',
-  //       'https://images.unsplash.com/photo-1464979681340-bdd28a61699e?auto=format&fit=crop&w=800&q=80',
-  //       'https://images.unsplash.com/photo-1464979681340-bdd28a61699e?auto=format&fit=crop&w=800&q=80',
-  //     ],
-  //     title: 'Tropical Paradise Resort',
-  //     location: 'Maldives, Indian Ocean',
-  //     categoryId: 'Resort',
-  //     description:
-  //         'Experience the serene beauty of the Maldives with our overwater bungalows and crystal-clear lagoon access. Perfect for honeymooners and families looking for a luxury escape. This detailed description helps guests understand the unique offerings and atmosphere of the destination.',
-  //     rating: 4.8,
-  //     isFavorite: true,
-  //     tags: [
-  //       'Free Wi-Fi',
-  //       'Swimming Pool',
-  //       'Beach Access',
-  //       'Restaurant',
-  //       'Spa',
-  //       'Gym',
-  //     ],
-  //   ),
-  //   PlaceModel(
-  //     id: '2',
-  //     userId: '2',
-  //     thumbnail:
-  //         'https://images.unsplash.com/photo-1464979681340-bdd28a61699e?auto=format&fit=crop&w=800&q=80',
-  //     images: [
-  //       'https://images.unsplash.com/photo-1464979681340-bdd28a61699e?auto=format&fit=crop&w=800&q=80',
-  //       'https://images.unsplash.com/photo-1464979681340-bdd28a61699e?auto=format&fit=crop&w=800&q=80',
-  //       'https://images.unsplash.com/photo-1464979681340-bdd28a61699e?auto=format&fit=crop&w=800&q=80',
-  //     ],
-  //     title: 'Tropical Paradise Resort',
-  //     location: 'Maldives, Indian Ocean',
-  //     categoryId: 'Resort',
-  //     description:
-  //         'Experience the serene beauty of the Maldives with our overwater bungalows and crystal-clear lagoon access. Perfect for honeymooners and families looking for a luxury escape. This detailed description helps guests understand the unique offerings and atmosphere of the destination.',
-  //     rating: 4.8,
-  //     isFavorite: true,
-  //     tags: [
-  //       'Free Wi-Fi',
-  //       'Swimming Pool',
-  //       'Beach Access',
-  //       'Restaurant',
-  //       'Spa',
-  //       'Gym',
-  //     ],
-  //   ),
-  // ];
-
-  // final List<String> categories = const [
-  //   'All',
-  //   'Restaurant',
-  //   'Hotel',
-  //   'School',
-  //   'Cafe',
-  //   'Park',
-  //   'Hotel',
-  //   'Hospital',
-  //   'House',
-  //   'Park',
-  // ];
 
   @override
   void onInit() {
@@ -286,11 +223,20 @@ class PlaceController extends GetxController {
   /// -- Create new place
   Future<void> createPlace() async {
     try {
-      // 1. Start Loading & Form Validation
+      // Start Loading & Form Validation
       AppFullScreenLoader.openLoadingDialog(
         'Creating new place...',
         AppImages.docerAnimation,
       );
+
+      // Check Internet Connectivity
+      final isConnected = await AppNetworkManager.instance.isConnected();
+      if (!isConnected) {
+        AppFullScreenLoader.stopLoading();
+        return;
+      }
+
+      // Form Validation
       if (!placeFormKey.currentState!.validate()) {
         AppFullScreenLoader.stopLoading();
         return;
@@ -332,11 +278,9 @@ class PlaceController extends GetxController {
         title: titleController.text.trim(),
         description: descriptionController.text.trim(),
         location: locationController.text.trim(),
-
         // Image URLs
         thumbnail: imageUrls.first,
         images: imageUrls.length > 1 ? imageUrls.sublist(1) : null,
-
         // Selected IDs and Lists
         categoryId: selectedCategoryId.value,
         tags: selectedTags.toList(),
@@ -351,6 +295,7 @@ class PlaceController extends GetxController {
         isFeatured: isFeatured.value,
         dateAdded: DateTime.now(),
         isFavorite: false,
+        phoneNumber: phoneController.text.trim(),
       );
 
       // 6. Save Place Data to Firestore
@@ -372,11 +317,11 @@ class PlaceController extends GetxController {
         message: 'Your new place "${newPlace.title}" has been created!',
       );
       _resetForm();
-      Get.back();
     } catch (e) {
       AppLoaders.errorSnackBar(title: 'Oh Snap!', message: e.toString());
     } finally {
       AppFullScreenLoader.stopLoading();
+      Get.back();
     }
   }
 

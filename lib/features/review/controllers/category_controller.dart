@@ -41,6 +41,7 @@ class CategoryController extends GetxController {
   // Observable list to store the fetched category models
   final RxList<CategoryModel> categoryModels = <CategoryModel>[].obs;
   List<String> get categoryNames => categoryModels.map((m) => m.name).toList();
+  final RxString selectedCategoryName = ''.obs;
 
   /// -- load Category data
   Future<void> fetchCategories() async {
@@ -74,18 +75,22 @@ class CategoryController extends GetxController {
   }
 
   /// -- load Category data
-  // Future<List<CategoryModel>> fetchAllCategories() async {
-  //   try {
-  //     // Start Loader while loading Categories
-  //     // Fetch Categories from the data source (Firestore, API, etc)
-  //     final categories = await _categoryRepository.getAllCategories();
+  Future<CategoryModel> getSelectedCategory({
+    required String categoryId,
+  }) async {
+    try {
+      // Start Loader while loading Categories
+      // Fetch Categories from the data source (Firestore, API, etc)
+      final category = await _categoryRepository.getSelectedCategory(
+        categoryId,
+      );
 
-  //     return categories;
-  //   } catch (e) {
-  //     AppLoaders.errorSnackBar(title: 'Oh Snap!', message: e.toString());
-  //     return [];
-  //   }
-  // }
+      return category;
+    } catch (e) {
+      AppLoaders.errorSnackBar(title: 'Oh Snap!', message: e.toString());
+      return CategoryModel.empty();
+    }
+  }
 
   /// -- Load Selected Category data
   // Future<List<CategoryModel>> getSubCategories({
@@ -103,7 +108,21 @@ class CategoryController extends GetxController {
   //   }
   // }
 
-  /// -- Get Category or Sub-Category Products.
+  /// -- Get CategoryName By Id
+  Future<String> getCategoryName(String categoryId) async {
+    try {
+      final categoryName = await _categoryRepository.getCategoryNameById(
+        categoryId,
+      );
+      selectedCategoryName.value = categoryName;
+      return categoryName;
+    } catch (e) {
+      AppLoaders.errorSnackBar(title: 'Oh Snap', message: e.toString());
+      return '';
+    }
+  }
+
+  /// -- Get Category Places.
   Future<List<PlaceModel>> getCategoryPlaces({
     required String categoryId,
     int limit = 4,
@@ -116,6 +135,7 @@ class CategoryController extends GetxController {
       return places;
     } catch (e) {
       AppLoaders.errorSnackBar(title: 'Oh Snap!', message: e.toString());
+      debugPrint(e.toString());
       return [];
     }
   }
@@ -190,7 +210,6 @@ class CategoryController extends GetxController {
         message: 'Could not create category: ${e.toString()}',
       );
     } finally {
-      // 8. Stop Loading (Guaranteed execution)
       AppFullScreenLoader.stopLoading();
     }
   }

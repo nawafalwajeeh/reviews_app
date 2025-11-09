@@ -15,6 +15,9 @@ class CategoryCard extends StatelessWidget {
   final List<Color> gradientColors;
   final Color iconColor;
   final VoidCallback? onTap;
+  final double height;
+  final double width;
+  final double titleSize;
 
   const CategoryCard({
     super.key,
@@ -22,6 +25,9 @@ class CategoryCard extends StatelessWidget {
     required this.icon,
     required this.gradientColors,
     required this.iconColor,
+    this.height = 60,
+    this.width = 60,
+    this.titleSize = 55,
     this.onTap,
   });
 
@@ -38,8 +44,8 @@ class CategoryCard extends StatelessWidget {
       child: Column(
         children: [
           AppRoundedContainer(
-            width: 60,
-            height: 60,
+            width: width,
+            height: height,
             radius: AppSizes.cardRadiusLg,
             gradient: LinearGradient(
               colors: gradientColors,
@@ -50,7 +56,7 @@ class CategoryCard extends StatelessWidget {
           ),
           const SizedBox(height: AppSizes.spaceBtwItems / 2),
           SizedBox(
-            width: 55,
+            width: titleSize,
             child: Text(
               title,
               overflow: TextOverflow.ellipsis,

@@ -33,7 +33,45 @@ class CategoryRepository extends GetxController {
     }
   }
 
-  // Create a new category document in the 'Categories' collection
+  /// -- Get CategoryName By Id
+  Future<String> getCategoryNameById(String categoryId) async {
+    try {
+      final doc = await _db.collection("Categories").doc(categoryId).get();
+
+      if (doc.exists) {
+        final category = CategoryModel.fromSnapshot(doc);
+        return category.name;
+      } else {
+        throw 'Category not found';
+      }
+    } on FirebaseException catch (e) {
+      throw AppFirebaseException(e.code).message;
+    } on PlatformException catch (e) {
+      throw AppPlatformException(e.code).message;
+    } catch (e) {
+      throw 'Something went wrong. Please try again';
+    }
+  }
+
+  /// Get Specific Category
+  Future<CategoryModel> getSelectedCategory(String categoryId) async {
+    try {
+      final doc = await _db.collection("Categories").doc(categoryId).get();
+      if (doc.exists) {
+        return CategoryModel.fromSnapshot(doc);
+      } else {
+        return CategoryModel.empty();
+      }
+    } on FirebaseException catch (e) {
+      throw AppFirebaseException(e.code).message;
+    } on PlatformException catch (e) {
+      throw AppPlatformException(e.code).message;
+    } catch (e) {
+      throw 'Something went wrong. Please try again';
+    }
+  }
+
+  /// -- Create a new category document in the 'Categories' collection
   Future<String> createCategory(CategoryModel category) async {
     try {
       final result = await _db.collection("Categories").add(category.toJson());

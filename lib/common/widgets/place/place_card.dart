@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:reviews_app/common/widgets/place/favourite_icon/favourite_icon.dart';
+import 'package:reviews_app/common/widgets/texts/category_name_text.dart';
 import 'package:reviews_app/common/widgets/texts/place_title_text.dart';
 import 'package:reviews_app/features/review/screens/place_details/place_details.dart';
 import 'package:reviews_app/utils/constants/colors.dart';
@@ -20,7 +21,7 @@ class PlaceCard extends StatelessWidget {
     final dark = AppHelperFunctions.isDarkMode(context);
 
     return GestureDetector(
-      onTap: () => Get.to(() => PlaceDetailsScreen()),
+      onTap: () => Get.to(() => PlaceDetailsScreen(place: place)),
       child: Container(
         decoration: BoxDecoration(
           color: dark ? AppColors.darkerGrey : AppColors.grey,
@@ -95,11 +96,12 @@ class PlaceCard extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          place.categoryId,
-                          style: Theme.of(context).textTheme.bodyMedium
-                              ?.copyWith(color: AppColors.primaryColor),
-                        ),
+                        // Text(
+                        //   place.categoryId,
+                        //   style: Theme.of(context).textTheme.bodyMedium
+                        //       ?.copyWith(color: AppColors.primaryColor),
+                        // ),
+                        CategoryNameText(categoryId: place.categoryId),
 
                         const SizedBox(height: 2),
                         Text(

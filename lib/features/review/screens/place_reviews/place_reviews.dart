@@ -11,10 +11,10 @@ import 'widgets/user_review_card.dart';
 class PlaceReviewsScreen extends StatelessWidget {
   const PlaceReviewsScreen({super.key});
 
+  // final PlaceModel place;
+
   @override
   Widget build(BuildContext context) {
-    /// We calculate the space needed for the input field itself,
-    /// plus some padding, and subtract the keyboard height.
     final double keyboardOffset = MediaQuery.of(context).viewInsets.bottom;
     return Scaffold(
       resizeToAvoidBottomInset: true,

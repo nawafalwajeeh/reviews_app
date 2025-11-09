@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:reviews_app/utils/constants/colors.dart';
+import 'package:reviews_app/utils/helpers/helper_functions.dart';
 
 import '../../../controllers/place_controller.dart';
 
@@ -13,6 +14,7 @@ class LabeledLocationPicker extends StatelessWidget {
   Widget build(BuildContext context) {
     // Get the instance of the controller
     final controller = PlaceController.instance;
+    final dark = AppHelperFunctions.isDarkMode(context);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -31,9 +33,9 @@ class LabeledLocationPicker extends StatelessWidget {
             child: Container(
               height: 56,
               decoration: BoxDecoration(
-                color: AppColors.grey,
+                color: dark ? AppColors.black : AppColors.grey,
                 borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: Theme.of(context).dividerColor),
+                border: Border.all(color: AppColors.darkGrey),
               ),
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Row(
@@ -49,13 +51,13 @@ class LabeledLocationPicker extends StatelessWidget {
                       overflow: TextOverflow.ellipsis,
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                         color: isLocationSet
-                            ? Theme.of(context)
-                                  .textTheme
-                                  .bodyMedium
-                                  ?.color // Darker text for set location
-                            : Theme.of(
-                                context,
-                              ).hintColor, // Hint color for placeholder
+                            ? dark
+                                  ? AppColors
+                                        .white // Darker text for set location
+                                  : AppColors.dark
+                            : dark
+                            ? AppColors.darkGrey
+                            : AppColors.darkGrey, // Hint color for placeholder
                         fontWeight: isLocationSet
                             ? FontWeight.w500
                             : FontWeight.normal,
@@ -78,44 +80,3 @@ class LabeledLocationPicker extends StatelessWidget {
     );
   }
 }
-
-// class LabeledLocationPicker extends StatelessWidget {
-//   final String label;
-
-//   const LabeledLocationPicker({super.key, required this.label});
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Column(
-//       crossAxisAlignment: CrossAxisAlignment.start,
-//       children: [
-//         Text(label, style: Theme.of(context).textTheme.titleSmall),
-//         const SizedBox(height: 8),
-//         InkWell(
-//           onTap: () {},
-//           child: Container(
-//             height: 56,
-//             decoration: BoxDecoration(
-//               color: AppColors.grey,
-//               borderRadius: BorderRadius.circular(12),
-//               border: Border.all(color: Theme.of(context).dividerColor),
-//             ),
-//             padding: const EdgeInsets.symmetric(horizontal: 16),
-//             child: Row(
-//               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//               children: [
-//                 Text(
-//                   'Tap to set location',
-//                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-//                     color: Theme.of(context).hintColor,
-//                   ),
-//                 ),
-//                 Icon(Icons.location_on_outlined, color: AppColors.primaryColor),
-//               ],
-//             ),
-//           ),
-//         ),
-//       ],
-//     );
-//   }
-// }

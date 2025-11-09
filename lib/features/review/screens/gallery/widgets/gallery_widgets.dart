@@ -91,27 +91,3 @@ extension ListExtension<T> on List<T> {
   }
 }
 
-// Data Models
-class FeaturedImage {
-  final String imageUrl;
-  final String title;
-  final String subtitle;
-
-  const FeaturedImage({
-    required this.imageUrl,
-    required this.title,
-    required this.subtitle,
-  });
-}
-
-class CollectionItem {
-  final String imageUrl;
-  final String title;
-  final int photoCount;
-
-  const CollectionItem({
-    required this.imageUrl,
-    required this.title,
-    required this.photoCount,
-  });
-}

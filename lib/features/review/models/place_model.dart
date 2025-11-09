@@ -17,6 +17,8 @@ class PlaceModel {
   final double? longitude;
   final String? websiteUrl;
   bool isFavorite;
+  String? phoneNumber;
+  // String? openingHourse;
 
   PlaceModel({
     required this.id,
@@ -35,6 +37,8 @@ class PlaceModel {
     this.latitude,
     this.longitude,
     this.websiteUrl,
+    this.phoneNumber,
+    // this.openingHourse,
   }) : isFavorite = isFavorite ?? false;
 
   /// -- Create Empty PlaceModel to create empty instance
@@ -54,6 +58,7 @@ class PlaceModel {
   /// -- Json Format (To save data to Firestore)
   Map<String, dynamic> toJson() {
     return {
+      'Id': id,
       'Title': title,
       'Description': description,
       'UserId': userId,
@@ -68,6 +73,8 @@ class PlaceModel {
       'Latitude': latitude,
       'Longitude': longitude,
       'WebsiteUrl': websiteUrl,
+      'PhoneNumber': phoneNumber,
+      // 'OpeningHourse': openingHourse,
     };
   }
 
@@ -97,6 +104,8 @@ class PlaceModel {
       images: data['Images'] != null ? List<String>.from(data['Images']) : [],
       tags: data['Tags'] != null ? List<String>.from(data['Tags']) : [],
       isFavorite: false,
+      phoneNumber: data['PhoneNumber'] ?? '',
+      // openingHourse: data['OpeningHourse'] ?? '',
     );
   }
 
@@ -125,6 +134,8 @@ class PlaceModel {
       images: data['Images'] != null ? List<String>.from(data['Images']) : [],
       tags: data['Tags'] != null ? List<String>.from(data['Tags']) : [],
       isFavorite: false,
+      phoneNumber: data['PhoneNumber'] ?? '',
+      // openingHourse: data['OpeningHourse'] ?? '',
     );
   }
 }

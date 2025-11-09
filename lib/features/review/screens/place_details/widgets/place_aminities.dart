@@ -3,21 +3,12 @@ import 'package:flutter/material.dart';
 import 'amenity_chip.dart';
 
 class AmenitiesSection extends StatelessWidget {
-  const AmenitiesSection({super.key});
+  const AmenitiesSection({super.key, required this.tags});
+
+  final List<String> tags;
 
   @override
   Widget build(BuildContext context) {
-    final List<String> amenities = [
-      'WiFi',
-      'Parking',
-      'Outdoor Seating',
-      'Wheelchair Accessible',
-      'Pet Friendly',
-      'Takeout',
-      'Delivery',
-      'Full Bar',
-    ];
-
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Column(
@@ -26,9 +17,7 @@ class AmenitiesSection extends StatelessWidget {
           Wrap(
             spacing: 8,
             runSpacing: 8,
-            children: amenities
-                .map((amenity) => AmenityChip(amenity: amenity))
-                .toList(),
+            children: tags.map((tag) => AmenityChip(amenity: tag)).toList(),
           ),
         ],
       ),

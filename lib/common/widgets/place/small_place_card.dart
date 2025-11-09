@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:reviews_app/common/widgets/place/favourite_icon/favourite_icon.dart';
+import 'package:reviews_app/common/widgets/texts/category_name_text.dart';
 import 'package:reviews_app/features/review/screens/place_details/place_details.dart';
 import 'package:reviews_app/utils/constants/colors.dart';
 import 'package:reviews_app/utils/constants/enums.dart';
@@ -21,7 +22,7 @@ class SmallPlaceCard extends StatelessWidget {
     final dark = AppHelperFunctions.isDarkMode(context);
 
     return GestureDetector(
-      onTap: () => Get.to(() => PlaceDetailsScreen()),
+      onTap: () => Get.to(() => PlaceDetailsScreen(place: place)),
       child: Container(
         width: 150,
         decoration: BoxDecoration(
@@ -33,9 +34,7 @@ class SmallPlaceCard extends StatelessWidget {
             BoxShadow(
               blurRadius: 6,
               color: dark
-                  // Alpha 153 (60%) opacity, correctly passed as a double
                   ? AppColors.dark.withValues(alpha: 0.60)
-                  // Alpha 204 (80%) opacity, correctly passed as a double
                   : AppColors.grey.withValues(alpha: 0.80),
               offset: const Offset(0, 3),
             ),
@@ -79,11 +78,9 @@ class SmallPlaceCard extends StatelessWidget {
                           Colors.transparent,
                           Colors.transparent,
                         ],
-                        // Start dark at the top, fade to transparent quickly
                         begin: Alignment.topCenter,
                         end: Alignment.bottomCenter,
                       ),
-                      // Apply the full border radius to the gradient overlay
                       borderRadius: BorderRadius.circular(
                         AppSizes.cardRadiusLg,
                       ),
@@ -126,15 +123,16 @@ class SmallPlaceCard extends StatelessWidget {
                 children: [
                   /// -- Category Text
                   Expanded(
-                    child: Text(
-                      place.categoryId,
-                      style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                        color: AppColors.primaryColor,
-                        fontWeight: FontWeight.bold,
-                      ),
-                      overflow: TextOverflow.ellipsis,
-                      maxLines: 1,
-                    ),
+                    // child: Text(
+                    //   place.categoryId,
+                    //   style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                    //     color: AppColors.primaryColor,
+                    //     fontWeight: FontWeight.bold,
+                    //   ),
+                    //   overflow: TextOverflow.ellipsis,
+                    //   maxLines: 1,
+                    // ),
+                    child: CategoryNameText(categoryId: place.categoryId),
                   ),
 
                   /// -- Subtle button to indicate tap/view details
