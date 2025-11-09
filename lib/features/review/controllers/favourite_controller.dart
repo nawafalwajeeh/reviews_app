@@ -19,11 +19,19 @@ class FavouritesController extends GetxController {
 
   // Method to initialize favouirites by reading from storage
   void initFavourites() {
-    final json = AppLocalStorage.instance().readData('favorites') ?? '';
-    if (json != null) {
-      final storedFavorites = jsonDecode(json) as Map<String, dynamic>;
-      favorites.assignAll(
-        storedFavorites.map((key, value) => MapEntry(key, value as bool)),
+    try {
+      final json = AppLocalStorage.instance().readData('favorites') ?? '';
+      if (json != null && json.isNotEmpty) {
+        final storedFavorites = jsonDecode(json) as Map<String, dynamic>;
+        favorites.assignAll(
+          storedFavorites.map((key, value) => MapEntry(key, value as bool)),
+        );
+      }
+    } catch (e) {
+      favorites.assignAll({});
+      AppLoaders.errorSnackBar(
+        title: 'Error',
+        message: 'Failed to load favorites: $e',
       );
     }
   }

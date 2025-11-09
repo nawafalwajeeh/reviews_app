@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:reviews_app/utils/constants/colors.dart';
 import '../../../../common/widgets/appbar/appbar.dart';
 import '../../../../common/widgets/place/category/category_grid_list.dart';
+import '../../../../common/widgets/shimmers/category_grid_shimmer.dart';
 import '../../../../utils/constants/sizes.dart';
 import '../../controllers/category_controller.dart';
 import 'add_new_category.dart';
@@ -27,7 +28,30 @@ class AllCategoriesScreen extends StatelessWidget {
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(AppSizes.defaultSpace),
-          child: CategoryGridList(categories: controller.mockCategories),
+
+          child: Obx(() {
+            // 1. HANDLE LOADING STATE
+            if (controller.isLoading.value) {
+              // Show a loading shimmer appropriate for a full list (e.g., 6 items)
+              return const CategoryGridShimmer(
+                itemCount: 20,
+                crossAxisCount: 4,
+              );
+            }
+
+            // 2. HANDLE EMPTY/ERROR STATE
+            if (controller.allCategories.isEmpty) {
+              return Center(
+                child: Text(
+                  'No categories found.',
+                  style: Theme.of(context).textTheme.bodyLarge,
+                ),
+              );
+            }
+
+            // 3. SHOW DATA (No limit applied here, showing all)
+            return CategoryGridList(categories: controller.allCategories);
+          }),
         ),
       ),
     );

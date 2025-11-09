@@ -5,7 +5,6 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:reviews_app/data/repositories/authentication/authentication_repository.dart';
-import 'package:reviews_app/features/review/models/category_model.dart';
 import 'package:reviews_app/features/review/models/place_category_model.dart';
 import 'package:reviews_app/features/review/models/place_model.dart';
 import 'package:reviews_app/utils/exceptions/firebase_auth_exceptions.dart';
@@ -182,7 +181,7 @@ class PlaceRepository extends GetxController {
   }
 
   /// -- Create new Place Category
-  Future<String> createPlaceCategory(CategoryModel placeCategory) async {
+  Future<String> createPlaceCategory(PlaceCategoryModel placeCategory) async {
     try {
       final data = await _db
           .collection('PlaceCategory')

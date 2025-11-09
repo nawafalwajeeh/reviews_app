@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:reviews_app/data/repositories/authentication/authentication_repository.dart';
+import 'package:reviews_app/data/repositories/place/place_repository.dart';
+import 'package:reviews_app/features/review/models/category_mapper.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../../data/repositories/categories/category_repository.dart';
@@ -8,6 +10,7 @@ import '../../../utils/constants/image_strings.dart';
 import '../../../utils/popups/full_screen_loader.dart';
 import '../../../utils/popups/loaders.dart';
 import '../models/category_model.dart';
+import '../models/place_model.dart';
 
 class CategoryController extends GetxController {
   static CategoryController get instance => Get.find();
@@ -19,133 +22,104 @@ class CategoryController extends GetxController {
   final iconKey = 'default_icon'.obs; // Key for icon resource
   final gradientKey = 'default_grad'.obs; // Key for gradient resource
   final iconColorValue = 0xFF2D3A64.obs; // Hex color value
+  final isLoading = false.obs;
+  final RxList<CategoryModel> allCategories = <CategoryModel>[].obs;
+  final RxList<CategoryModel> featuredCategories = <CategoryModel>[].obs;
 
   final RxInt selectedIndex = 0.obs;
   bool isSelected(int index) => index == selectedIndex.value;
 
-  final List<String> categories = [
-    'All',
-    'Restaurants',
-    'Schools',
-    'Cafes',
-    'Hotels',
-  ];
+  final RxList<String> categories = allCategoryNames.obs;
 
-  // Using .obs to make the list reactive for real-time updates
-  final RxList<CategoryModel> mockCategories = <CategoryModel>[
-    CategoryModel(
-      id: '1',
-      name: 'Restaurants',
-      image: '',
-      isFeatured: true,
-      iconKey: 'restaurant',
-      gradientKey: 'blue_grad',
-      iconColorValue: 0xFF2D3A64,
-    ),
-    CategoryModel(
-      id: '2',
-      name: 'Hotels',
-      image: '',
-      isFeatured: true,
-      iconKey: 'hotel',
-      gradientKey: 'dark_blue_grad',
-      iconColorValue: 0xFF2E3A59,
-    ),
-    CategoryModel(
-      id: '3',
-      name: 'Hospitals',
-      image: '',
-      isFeatured: true,
-      iconKey: 'hospital',
-      gradientKey: 'light_blue_grad',
-      iconColorValue: 0xFF2D3A64,
-    ),
-    CategoryModel(
-      id: '4',
-      name: 'Groceries',
-      image: '',
-      isFeatured: false,
-      iconKey: 'grocery',
-      gradientKey: 'navy_grad',
-      iconColorValue: 0xFF2D3A64,
-    ),
-    CategoryModel(
-      id: '5',
-      name: 'Gas Stations',
-      image: '',
-      isFeatured: false,
-      iconKey: 'gas',
-      gradientKey: 'pastel_grad',
-      iconColorValue: 0xFF2D3A64,
-    ),
-    CategoryModel(
-      id: '6',
-      name: 'Gyms',
-      image: '',
-      isFeatured: true,
-      iconKey: 'gym',
-      gradientKey: 'purple_grad',
-      iconColorValue: 0xFF2D3A64,
-    ),
-    CategoryModel(
-      id: '7',
-      name: 'Schools',
-      image: '',
-      isFeatured: false,
-      iconKey: 'school',
-      gradientKey: 'indigo_grad',
-      iconColorValue: 0xFF2D3A64,
-    ),
-    CategoryModel(
-      id: '8',
-      name: 'Museums',
-      image: '',
-      isFeatured: false,
-      iconKey: 'museum',
-      gradientKey: 'red_grad',
-      iconColorValue: 0xFF2D3A64,
-    ),
-    CategoryModel(
-      id: '9',
-      name: 'Parks',
-      image: '',
-      isFeatured: false,
-      iconKey: 'park',
-      gradientKey: 'green_grad',
-      iconColorValue: 0xFF2D3A64,
-    ),
-    CategoryModel(
-      id: '10',
-      name: 'Offices',
-      image: '',
-      isFeatured: false,
-      iconKey: 'office',
-      gradientKey: 'gray_grad',
-      iconColorValue: 0xFF5F2D64,
-    ),
-    CategoryModel(
-      id: '11',
-      name: 'Theatres',
-      image: '',
-      isFeatured: false,
-      iconKey: 'theatre',
-      gradientKey: 'yellow_grad',
-      iconColorValue: 0xFF2D3A64,
-    ),
-    CategoryModel(
-      id: '12',
-      name: 'Malls',
-      image: '',
-      isFeatured: false,
-      iconKey: 'mall',
-      gradientKey: 'cyan_grad',
-      iconColorValue: 0xFF2D3A64,
-    ),
-  ].obs;
+  @override
+  void onInit() {
+    fetchCategories();
+    super.onInit();
+  }
 
-  // ----------------------------------------------------
-  /// -- Create new place category
-  // ----------------------------------------------------
+  final RxList<CategoryModel> mockCategories = allMockCategories.obs;
+  // Observable list to store the fetched category models
+  final RxList<CategoryModel> categoryModels = <CategoryModel>[].obs;
+  List<String> get categoryNames => categoryModels.map((m) => m.name).toList();
+
+  /// -- load Category data
+  Future<void> fetchCategories() async {
+    try {
+      // Start Loader while loading Categories
+      isLoading.value = true;
+      // Fetch Categories from the data source (Firestore, API, etc)
+      final categories = await _categoryRepository.getAllCategories();
+
+      // Update the categories list
+      allCategories.assignAll(categories);
+
+      // Filter Futured categories
+      featuredCategories.assignAll(
+        allCategories
+            .where(
+              (category) => category.isFeatured && category.parentId.isEmpty,
+            )
+            .take(8)
+            .toList(),
+      );
+
+      // Update the observable list
+      categoryModels.assignAll(categories);
+    } catch (e) {
+      AppLoaders.errorSnackBar(title: 'Oh Snap!', message: e.toString());
+    } finally {
+      // Remove Loader
+      isLoading.value = false;
+    }
+  }
+
+  /// -- load Category data
+  // Future<List<CategoryModel>> fetchAllCategories() async {
+  //   try {
+  //     // Start Loader while loading Categories
+  //     // Fetch Categories from the data source (Firestore, API, etc)
+  //     final categories = await _categoryRepository.getAllCategories();
+
+  //     return categories;
+  //   } catch (e) {
+  //     AppLoaders.errorSnackBar(title: 'Oh Snap!', message: e.toString());
+  //     return [];
+  //   }
+  // }
+
+  /// -- Load Selected Category data
+  // Future<List<CategoryModel>> getSubCategories({
+  //   required String categoryId,
+  // }) async {
+  //   try {
+  //     // Fetch limited (4) products against each subCategory
+  //     final subCategories = await _categoryRepository.getSubCategories(
+  //       categoryId,
+  //     );
+  //     return subCategories;
+  //   } catch (e) {
+  //     AppLoaders.errorSnackBar(title: 'Oh Snap!', message: e.toString());
+  //     return [];
+  //   }
+  // }
+
+  /// -- Get Category or Sub-Category Products.
+  Future<List<PlaceModel>> getCategoryPlaces({
+    required String categoryId,
+    int limit = 4,
+  }) async {
+    try {
+      final places = await PlaceRepository.instance.getPlacesForCategory(
+        categoryId,
+        limit: limit,
+      );
+      return places;
+    } catch (e) {
+      AppLoaders.errorSnackBar(title: 'Oh Snap!', message: e.toString());
+      return [];
+    }
+  }
+
   Future<void> createPlaceCategory() async {
     try {
       // 1. Start Loading & Form Validation (Manual check for required fields)
@@ -230,139 +204,3 @@ class CategoryController extends GetxController {
     iconColorValue.value = 0xFF2D3A64;
   }
 }
-
-
-//----------------------------
-// import 'package:get/get.dart';
-
-// import '../models/category_model.dart';
-
-// class CategoryController extends GetxController {
-//   static CategoryController get instance => Get.find();
-
-//   final RxInt selectedIndex = 0.obs;
-//   // final RxInt isSelected = 0.obs;
-
-//   bool isSelected(int index) => index == selectedIndex.value;
-
-//   final List<String> categories = [
-//     'All',
-//     'Restaurants',
-//     'Schools',
-//     'Cafes',
-//     'Hotels',
-//   ];
-
-//   final List<CategoryModel> mockCategories = [
-//     CategoryModel(
-//       id: '1',
-//       name: 'Restaurants',
-//       image: '',
-//       isFeatured: true,
-//       iconKey: 'restaurant',
-//       gradientKey: 'blue_grad',
-//       iconColorValue: 0xFF2D3A64,
-//     ),
-//     CategoryModel(
-//       id: '2',
-//       name: 'Hotels',
-//       image: '',
-//       isFeatured: true,
-//       iconKey: 'hotel',
-//       gradientKey: 'dark_blue_grad',
-//       iconColorValue: 0xFF2E3A59,
-//     ),
-//     CategoryModel(
-//       id: '3',
-//       name: 'Hospitals',
-//       image: '',
-//       isFeatured: true,
-//       iconKey: 'hospital',
-//       gradientKey: 'light_blue_grad',
-//       iconColorValue: 0xFF2D3A64,
-//     ),
-//     CategoryModel(
-//       id: '4',
-//       name: 'Groceries',
-//       image: '',
-//       isFeatured: false,
-//       iconKey: 'grocery',
-//       gradientKey: 'navy_grad',
-//       iconColorValue: 0xFF2D3A64,
-//     ),
-//     CategoryModel(
-//       id: '5',
-//       name: 'Gas Stations',
-//       image: '',
-//       isFeatured: false,
-//       iconKey: 'gas',
-//       gradientKey: 'pastel_grad',
-//       iconColorValue: 0xFF2D3A64,
-//     ),
-//     CategoryModel(
-//       id: '6',
-//       name: 'Gyms',
-//       image: '',
-//       isFeatured: true,
-//       iconKey: 'gym',
-//       gradientKey: 'purple_grad',
-//       iconColorValue: 0xFF2D3A64,
-//     ),
-//     CategoryModel(
-//       id: '7',
-//       name: 'Schools',
-//       image: '',
-//       isFeatured: false,
-//       iconKey: 'school',
-//       gradientKey: 'indigo_grad',
-//       iconColorValue: 0xFF2D3A64,
-//     ),
-//     CategoryModel(
-//       id: '8',
-//       name: 'Museums',
-//       image: '',
-//       isFeatured: false,
-//       iconKey: 'museum',
-//       gradientKey: 'red_grad',
-//       iconColorValue: 0xFF2D3A64,
-//     ),
-//     CategoryModel(
-//       id: '9',
-//       name: 'Parks',
-//       image: '',
-//       isFeatured: false,
-//       iconKey: 'park',
-//       gradientKey: 'green_grad',
-//       iconColorValue: 0xFF2D3A64,
-//     ),
-//     CategoryModel(
-//       id: '10',
-//       name: 'Offices',
-//       image: '',
-//       isFeatured: false,
-//       iconKey: 'office',
-//       gradientKey: 'gray_grad',
-//       iconColorValue: 0xFF5F2D64,
-//     ),
-//     CategoryModel(
-//       id: '11',
-//       name: 'Theatres',
-//       image: '',
-//       isFeatured: false,
-//       iconKey: 'theatre',
-//       gradientKey: 'yellow_grad',
-//       iconColorValue: 0xFF2D3A64,
-//     ),
-//     CategoryModel(
-//       id: '12',
-//       name: 'Malls',
-//       image: '',
-//       isFeatured: false,
-//       iconKey: 'mall',
-//       gradientKey: 'cyan_grad',
-//       iconColorValue: 0xFF2D3A64,
-//     ),
-//   ];
-
-
-// }

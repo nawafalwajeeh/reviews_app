@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 // import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
 import '../../../../common/widgets/appbar/appbar.dart';
 import '../../../../common/widgets/texts/section_heading.dart';
 import '../../../../utils/constants/colors.dart';
 import '../../../../utils/constants/sizes.dart';
+import '../../../review/controllers/upload_data_controller.dart';
 // import '../../controllers/upload_data_controller.dart';
 
 class UploadDataScreen extends StatelessWidget {
@@ -12,7 +14,7 @@ class UploadDataScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // final controller = Get.put(UploadDataController());
+    final controller = Get.put(UploadDataController());
     return Scaffold(
       appBar: const CustomAppBar(
         title: Text('Upload Data'),
@@ -43,8 +45,8 @@ class UploadDataScreen extends StatelessWidget {
                       style: Theme.of(context).textTheme.titleMedium,
                     ),
                     trailing: IconButton(
-                      // onPressed: () => controller.uploadCategories(),
-                      onPressed: (){},
+                      onPressed: () => controller.uploadCategories(),
+                      // onPressed: (){},
                       icon: const Icon(
                         Iconsax.arrow_up_1,
                         size: 28,

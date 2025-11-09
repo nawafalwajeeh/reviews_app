@@ -43,13 +43,17 @@ class UserProfileTile extends StatelessWidget {
                 padding: 0,
               ),
         title: Text(
-          controller.user.value.fullName,
+          controller.user.value.fullName.isNotEmpty
+              ? controller.user.value.fullName
+              : 'Guest User',
           style: Theme.of(
             context,
           ).textTheme.headlineSmall?.apply(color: AppColors.white),
         ),
         subtitle: Text(
-          controller.user.value.email,
+          controller.user.value.email.isNotEmpty
+              ? controller.user.value.email
+              : 'guest@gmail.com',
           style: Theme.of(
             context,
           ).textTheme.bodyMedium?.apply(color: AppColors.white),

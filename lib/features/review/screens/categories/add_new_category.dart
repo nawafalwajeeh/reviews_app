@@ -9,9 +9,6 @@ import 'widgets/icon_selection_section.dart';
 import 'widgets/preview_section.dart';
 
 class AddNewCategoryScreen extends StatelessWidget {
-  static const String routeName = 'CreateCategoryScreen';
-  static const String routePath = '/createCategoryScreen';
-
   const AddNewCategoryScreen({super.key});
 
   @override

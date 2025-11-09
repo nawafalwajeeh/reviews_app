@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:reviews_app/common/widgets/appbar/appbar.dart';
 import 'package:reviews_app/common/widgets/place/horizontal_place_card.dart';
 import 'package:reviews_app/common/widgets/texts/section_heading.dart';
+import 'package:reviews_app/features/review/controllers/category_controller.dart';
 import 'package:reviews_app/utils/constants/sizes.dart';
 import 'package:reviews_app/features/review/controllers/place_controller.dart';
 import 'package:reviews_app/features/review/models/category_model.dart';
@@ -15,11 +15,11 @@ class SubCategoriesScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final PlaceController placeController = Get.find();
-
+    final placeController = PlaceController.instance;
+    final categoryController = CategoryController.instance;
     final Map<String, List<PlaceModel>> categorizedDemoPlaces = {};
 
-    for (final catName in placeController.categories.where(
+    for (final catName in categoryController.categories.where(
       (cat) => cat != 'All',
     )) {
       final filteredPlaces = placeController.places
@@ -75,7 +75,7 @@ class SubCategoriesScreen extends StatelessWidget {
       }
     }
 
-    final List<String> subCategoryNames = placeController.categories
+    final List<String> subCategoryNames = categoryController.categories
         .where((cat) => cat != 'All')
         .toList();
 

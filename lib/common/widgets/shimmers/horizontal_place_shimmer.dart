@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:reviews_app/common/widgets/shimmers/shimmer_effect.dart';
 import 'package:reviews_app/utils/constants/sizes.dart';
 
-class AppHorizontalProductShimmer extends StatelessWidget {
-  const AppHorizontalProductShimmer({super.key, this.itemCount = 4});
+class AppHorizontalPlaceShimmer extends StatelessWidget {
+  const AppHorizontalPlaceShimmer({super.key, this.itemCount = 4});
 
   final int itemCount;
 

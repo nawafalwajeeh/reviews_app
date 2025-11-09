@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:reviews_app/common/widgets/custom_shapes/containers/primary_header_container.dart';
 import 'package:reviews_app/common/widgets/texts/section_heading.dart';
 import '../../../../common/widgets/custom_shapes/containers/search_container.dart';
+import '../../../../common/widgets/shimmers/trending_list_shimmer.dart';
 import '../../../../utils/constants/sizes.dart';
 import '../../controllers/place_controller.dart';
 import 'widgets/business_card.dart';
@@ -78,8 +79,23 @@ class HomeScreen extends StatelessWidget {
                     SizedBox(height: AppSizes.spaceBtwItems),
 
                     /// -- Trendings
-                    // HomeTrendings(places: controller.places),
-                    HomeTrendings(places: controller.featuredPlaces),
+                    Obx(() {
+                      // Show Shimmer if loading
+                      if (controller.isLoading.value) {
+                        return const AppTrendingListShimmer();
+                      }
+
+                      // Show actual data if loaded and not empty
+                      if (controller.featuredPlaces.isNotEmpty) {
+                        return HomeTrendings(places: controller.featuredPlaces);
+                      }
+
+                      // Show nothing or an empty state if loaded but empty
+                      return const Center(
+                        child: Text('No trending places found.'),
+                      );
+                    }),
+
                     const SizedBox(height: AppSizes.spaceBtwItems),
                   ],
                 ),

@@ -1,9 +1,11 @@
 import 'dart:io';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:reviews_app/data/repositories/authentication/authentication_repository.dart';
 import 'package:reviews_app/data/services/cloud_storage/supabase_storage_service.dart';
+import 'package:reviews_app/features/review/models/place_category_model.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../../data/repositories/place/place_repository.dart';
@@ -20,6 +22,7 @@ class PlaceController extends GetxController {
   final isLoading = false.obs;
   final placeRepository = Get.put(PlaceRepository());
   RxList<PlaceModel> featuredPlaces = <PlaceModel>[].obs;
+  RxList<PlaceModel> places = <PlaceModel>[].obs;
 
   // Rx observable for selected categories
   final RxList<CategoryModel> selectedCategories = <CategoryModel>[].obs;
@@ -51,73 +54,73 @@ class PlaceController extends GetxController {
 
   // Feature Flag
   final RxBool isFeatured = true.obs;
-  final places = [
-    PlaceModel(
-      id: '1',
-      userId: '1',
-      thumbnail:
-          'https://images.unsplash.com/photo-1464979681340-bdd28a61699e?auto=format&fit=crop&w=800&q=80',
-      images: [
-        'https://images.unsplash.com/photo-1464979681340-bdd28a61699e?auto=format&fit=crop&w=800&q=80',
-        'https://images.unsplash.com/photo-1464979681340-bdd28a61699e?auto=format&fit=crop&w=800&q=80',
-        'https://images.unsplash.com/photo-1464979681340-bdd28a61699e?auto=format&fit=crop&w=800&q=80',
-      ],
-      title: 'Tropical Paradise Resort',
-      location: 'Maldives, Indian Ocean',
-      categoryId: 'Resort',
-      description:
-          'Experience the serene beauty of the Maldives with our overwater bungalows and crystal-clear lagoon access. Perfect for honeymooners and families looking for a luxury escape. This detailed description helps guests understand the unique offerings and atmosphere of the destination.',
-      rating: 4.8,
-      isFavorite: true,
-      tags: [
-        'Free Wi-Fi',
-        'Swimming Pool',
-        'Beach Access',
-        'Restaurant',
-        'Spa',
-        'Gym',
-      ],
-    ),
-    PlaceModel(
-      id: '2',
-      userId: '2',
-      thumbnail:
-          'https://images.unsplash.com/photo-1464979681340-bdd28a61699e?auto=format&fit=crop&w=800&q=80',
-      images: [
-        'https://images.unsplash.com/photo-1464979681340-bdd28a61699e?auto=format&fit=crop&w=800&q=80',
-        'https://images.unsplash.com/photo-1464979681340-bdd28a61699e?auto=format&fit=crop&w=800&q=80',
-        'https://images.unsplash.com/photo-1464979681340-bdd28a61699e?auto=format&fit=crop&w=800&q=80',
-      ],
-      title: 'Tropical Paradise Resort',
-      location: 'Maldives, Indian Ocean',
-      categoryId: 'Resort',
-      description:
-          'Experience the serene beauty of the Maldives with our overwater bungalows and crystal-clear lagoon access. Perfect for honeymooners and families looking for a luxury escape. This detailed description helps guests understand the unique offerings and atmosphere of the destination.',
-      rating: 4.8,
-      isFavorite: true,
-      tags: [
-        'Free Wi-Fi',
-        'Swimming Pool',
-        'Beach Access',
-        'Restaurant',
-        'Spa',
-        'Gym',
-      ],
-    ),
-  ];
+  // final places = [
+  //   PlaceModel(
+  //     id: '1',
+  //     userId: '1',
+  //     thumbnail:
+  //         'https://images.unsplash.com/photo-1464979681340-bdd28a61699e?auto=format&fit=crop&w=800&q=80',
+  //     images: [
+  //       'https://images.unsplash.com/photo-1464979681340-bdd28a61699e?auto=format&fit=crop&w=800&q=80',
+  //       'https://images.unsplash.com/photo-1464979681340-bdd28a61699e?auto=format&fit=crop&w=800&q=80',
+  //       'https://images.unsplash.com/photo-1464979681340-bdd28a61699e?auto=format&fit=crop&w=800&q=80',
+  //     ],
+  //     title: 'Tropical Paradise Resort',
+  //     location: 'Maldives, Indian Ocean',
+  //     categoryId: 'Resort',
+  //     description:
+  //         'Experience the serene beauty of the Maldives with our overwater bungalows and crystal-clear lagoon access. Perfect for honeymooners and families looking for a luxury escape. This detailed description helps guests understand the unique offerings and atmosphere of the destination.',
+  //     rating: 4.8,
+  //     isFavorite: true,
+  //     tags: [
+  //       'Free Wi-Fi',
+  //       'Swimming Pool',
+  //       'Beach Access',
+  //       'Restaurant',
+  //       'Spa',
+  //       'Gym',
+  //     ],
+  //   ),
+  //   PlaceModel(
+  //     id: '2',
+  //     userId: '2',
+  //     thumbnail:
+  //         'https://images.unsplash.com/photo-1464979681340-bdd28a61699e?auto=format&fit=crop&w=800&q=80',
+  //     images: [
+  //       'https://images.unsplash.com/photo-1464979681340-bdd28a61699e?auto=format&fit=crop&w=800&q=80',
+  //       'https://images.unsplash.com/photo-1464979681340-bdd28a61699e?auto=format&fit=crop&w=800&q=80',
+  //       'https://images.unsplash.com/photo-1464979681340-bdd28a61699e?auto=format&fit=crop&w=800&q=80',
+  //     ],
+  //     title: 'Tropical Paradise Resort',
+  //     location: 'Maldives, Indian Ocean',
+  //     categoryId: 'Resort',
+  //     description:
+  //         'Experience the serene beauty of the Maldives with our overwater bungalows and crystal-clear lagoon access. Perfect for honeymooners and families looking for a luxury escape. This detailed description helps guests understand the unique offerings and atmosphere of the destination.',
+  //     rating: 4.8,
+  //     isFavorite: true,
+  //     tags: [
+  //       'Free Wi-Fi',
+  //       'Swimming Pool',
+  //       'Beach Access',
+  //       'Restaurant',
+  //       'Spa',
+  //       'Gym',
+  //     ],
+  //   ),
+  // ];
 
-  final List<String> categories = const [
-    'All',
-    'Restaurant',
-    'Hotel',
-    'School',
-    'Cafe',
-    'Park',
-    'Hotel',
-    'Hospital',
-    'House',
-    'Park',
-  ];
+  // final List<String> categories = const [
+  //   'All',
+  //   'Restaurant',
+  //   'Hotel',
+  //   'School',
+  //   'Cafe',
+  //   'Park',
+  //   'Hotel',
+  //   'Hospital',
+  //   'House',
+  //   'Park',
+  // ];
 
   @override
   void onInit() {
@@ -140,6 +143,19 @@ class PlaceController extends GetxController {
   Future<List<PlaceModel>> fetchAllFeaturedPlaces() async {
     try {
       final places = await placeRepository.getAllFeaturedPlaces();
+      return places;
+    } catch (e) {
+      AppLoaders.errorSnackBar(title: 'Oh Snap!', message: e.toString());
+      return [];
+    }
+  }
+
+  /// Fetch Places By Query
+  Future<List<PlaceModel>> fetchPlacesByQuery(Query? query) async {
+    try {
+      if (query == null) return [];
+
+      final places = await placeRepository.fetchPlacesByQuery(query);
       return places;
     } catch (e) {
       AppLoaders.errorSnackBar(title: 'Oh Snap!', message: e.toString());
@@ -339,7 +355,16 @@ class PlaceController extends GetxController {
 
       // 6. Save Place Data to Firestore
       await placeRepository.createPlace(newPlace);
+      final linkModel = PlaceCategoryModel(
+        placeId: newPlace.id,
+        categoryId: newPlace.categoryId,
+      );
 
+      // Call the repository function to create the link document
+      final linkId = await placeRepository.createPlaceCategory(linkModel);
+      debugPrint(
+        'Place-Category link created with ID: $linkId, CategoryId: ${linkModel.categoryId}',
+      );
       // 7. Success Handling and Cleanup
       AppFullScreenLoader.stopLoading();
       AppLoaders.successSnackBar(
@@ -347,6 +372,7 @@ class PlaceController extends GetxController {
         message: 'Your new place "${newPlace.title}" has been created!',
       );
       _resetForm();
+      Get.back();
     } catch (e) {
       AppLoaders.errorSnackBar(title: 'Oh Snap!', message: e.toString());
     } finally {
