@@ -5,7 +5,7 @@ final class AppTexts {
   static const String skip = "Skip";
   static const String done = "Done";
   static const String submit = "Submit";
-  static const String appName = "Review";
+  static const String appName = "Places";
   static const String tContinue = "Continue";
   static const String logout = 'Logout';
   static const String searchInStore = 'Search in Store';

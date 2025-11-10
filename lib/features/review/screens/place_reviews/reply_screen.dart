@@ -56,7 +56,6 @@ class CommentRepliesScreen extends StatelessWidget {
             onCancelReply: () => Navigator.pop(context),
             onSend: () {},
           ),
-
           // Add padding for the home indicator/system bottom bar when the keyboard is closed
           if (keyboardOffset == 0)
             SizedBox(height: MediaQuery.of(context).padding.bottom),

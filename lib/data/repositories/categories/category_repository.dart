@@ -71,6 +71,30 @@ class CategoryRepository extends GetxController {
     }
   }
 
+  /// -- Get Categories By List of Ids
+  Future<List<CategoryModel>> getCategoriesByIds(
+    List<String> categoryIds,
+  ) async {
+    try {
+      if (categoryIds.isEmpty) return [];
+
+      final snapshot = await _db
+          .collection('Categories')
+          .where(FieldPath.documentId, whereIn: categoryIds.take(10).toList())
+          .get();
+
+      return snapshot.docs
+          .map((doc) => CategoryModel.fromSnapshot(doc))
+          .toList();
+    } on FirebaseException catch (e) {
+      throw AppFirebaseException(e.code).message;
+    } on PlatformException catch (e) {
+      throw AppPlatformException(e.code).message;
+    } catch (e) {
+      throw 'Something went wrong. Please try again';
+    }
+  }
+
   /// -- Create a new category document in the 'Categories' collection
   Future<String> createCategory(CategoryModel category) async {
     try {
