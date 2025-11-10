@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class PlaceModel {
-  final String id;
+  String id;
   final String title;
   final String userId;
   final String description;
@@ -40,6 +40,49 @@ class PlaceModel {
     this.phoneNumber,
     // this.openingHourse,
   }) : isFavorite = isFavorite ?? false;
+
+  /// Creates a new instance of PlaceModel with optional new values,
+  /// preserving existing values if no new value is provided.
+  PlaceModel copyWith({
+    String? id,
+    String? title,
+    String? userId,
+    String? description,
+    String? thumbnail,
+    List<String>? images,
+    bool? isFeatured,
+    DateTime? dateAdded,
+    String? location,
+    String? categoryId,
+    double? rating,
+    List<String>? tags,
+    double? latitude,
+    double? longitude,
+    String? websiteUrl,
+    bool? isFavorite,
+    String? phoneNumber,
+  }) {
+    return PlaceModel(
+      id: id ?? this.id,
+      title: title ?? this.title,
+      userId: userId ?? this.userId,
+      description: description ?? this.description,
+      thumbnail: thumbnail ?? this.thumbnail,
+      images: images ?? this.images,
+      isFeatured: isFeatured ?? this.isFeatured,
+      dateAdded: dateAdded ?? this.dateAdded,
+      location: location ?? this.location,
+      categoryId: categoryId ?? this.categoryId,
+      rating: rating ?? this.rating,
+      tags: tags ?? this.tags,
+      latitude: latitude ?? this.latitude,
+      longitude: longitude ?? this.longitude,
+      websiteUrl: websiteUrl ?? this.websiteUrl,
+      isFavorite: isFavorite ?? this.isFavorite,
+      phoneNumber: phoneNumber ?? this.phoneNumber,
+      // Note: openingHourse is commented out in the constructor, so we omit it here as well.
+    );
+  }
 
   /// -- Create Empty PlaceModel to create empty instance
   static PlaceModel empty() => PlaceModel(

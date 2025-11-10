@@ -25,7 +25,7 @@ Future<void> main() async {
   /// -- Await Splash until other items load
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
 
-  /// -- Initialize SupaBase 
+  /// -- Initialize SupaBase
   await Supabase.initialize(
     url: ApiConstants.supabaseUrl,
     anonKey: ApiConstants.supabaseKey,

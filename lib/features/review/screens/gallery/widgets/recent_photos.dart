@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:reviews_app/common/widgets/shimmers/gallery_shimmer.dart';
-import 'package:reviews_app/common/widgets/texts/section_heading.dart';
-import 'package:reviews_app/features/review/controllers/gallery_controller.dart';
-import 'package:reviews_app/features/review/models/featured_images_model.dart';
-import 'package:reviews_app/utils/constants/sizes.dart';
-import 'package:reviews_app/utils/helpers/cloud_helper_functions.dart';
 
+import '../../../../../common/widgets/shimmers/gallery_shimmer.dart';
+import '../../../../../common/widgets/texts/section_heading.dart';
+import '../../../../../utils/constants/sizes.dart';
+import '../../../../../utils/helpers/cloud_helper_functions.dart';
+import '../../../controllers/gallery_controller.dart';
+import '../../../models/featured_images_model.dart';
 import 'featured_image_card.dart';
-
-// Assuming FeaturedImageCard is here
 
 class RecentPhotosSection extends StatelessWidget {
   const RecentPhotosSection({super.key});
@@ -23,19 +21,23 @@ class RecentPhotosSection extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const AppSectionHeading(
-            title: 'Recent Places', // Updated title to reflect the content source
-            buttonTitle: 'View All',
-            onPressed: null, 
+            title:
+                'Recent Places', // Updated title to reflect the content source
+
+            showActionButton: false,
+            onPressed: null,
           ),
           const SizedBox(height: AppSizes.spaceBtwItems),
-          
+
           FutureBuilder<List<FeaturedImagesModel>>(
-            future: controller.getRecentFeaturedImages(), // Fetch from recent places
+            // This future is now correctly fixed to return a single String URL in the model
+            future: controller
+                .getRecentFeaturedImages(), // Fetch from recent places
             builder: (context, snapshot) {
               /// --- Handle Loader, Empty, Error Message using your helper
               const loader = GalleryShimmer(
-                count: 3, 
-                crossAxisCount: 1, 
+                count: 3,
+                crossAxisCount: 1,
                 itemHeight: 250,
               );
 
@@ -50,16 +52,19 @@ class RecentPhotosSection extends StatelessWidget {
               final recentImages = snapshot.data!;
 
               return SizedBox(
-                height: 250, // Fixed height for horizontal list of cards
+                height: 250,
                 child: ListView.separated(
                   itemCount: recentImages.length,
                   scrollDirection: Axis.horizontal,
-                  separatorBuilder: (_, __) => const SizedBox(width: AppSizes.spaceBtwItems),
+                  separatorBuilder: (_, _) =>
+                      const SizedBox(width: AppSizes.spaceBtwItems),
                   itemBuilder: (context, index) {
                     final image = recentImages[index];
                     return SizedBox(
-                      width: MediaQuery.of(context).size.width * 0.75, // Make cards wide
-                      child: FeaturedImageCard(featuredImage: image), // Uses Place Name & Category Name
+                      width:
+                          MediaQuery.of(context).size.width *
+                          0.75, // Make cards wide
+                      child: FeaturedImageCard(featuredImage: image),
                     );
                   },
                 ),
@@ -71,6 +76,85 @@ class RecentPhotosSection extends StatelessWidget {
     );
   }
 }
+//-------------------------
+// import 'package:flutter/material.dart';
+// import 'package:reviews_app/common/widgets/shimmers/gallery_shimmer.dart';
+// import 'package:reviews_app/common/widgets/texts/section_heading.dart';
+// import 'package:reviews_app/features/review/controllers/gallery_controller.dart';
+// import 'package:reviews_app/features/review/models/featured_images_model.dart';
+// import 'package:reviews_app/utils/constants/sizes.dart';
+// import 'package:reviews_app/utils/helpers/cloud_helper_functions.dart';
+
+// import 'featured_image_card.dart';
+
+// // Assuming FeaturedImageCard is here
+
+// class RecentPhotosSection extends StatelessWidget {
+//   const RecentPhotosSection({super.key});
+
+//   @override
+//   Widget build(BuildContext context) {
+//     final controller = GalleryController.instance;
+
+//     return Padding(
+//       padding: const EdgeInsets.symmetric(horizontal: AppSizes.defaultSpace),
+//       child: Column(
+//         crossAxisAlignment: CrossAxisAlignment.start,
+//         children: [
+//           const AppSectionHeading(
+//             title:
+//                 'Recent Places', // Updated title to reflect the content source
+//             buttonTitle: 'View All',
+//             onPressed: null,
+//           ),
+//           const SizedBox(height: AppSizes.spaceBtwItems),
+
+//           FutureBuilder<List<FeaturedImagesModel>>(
+//             future: controller
+//                 .getRecentFeaturedImages(), // Fetch from recent places
+//             builder: (context, snapshot) {
+//               /// --- Handle Loader, Empty, Error Message using your helper
+//               const loader = GalleryShimmer(
+//                 count: 3,
+//                 crossAxisCount: 1,
+//                 itemHeight: 250,
+//               );
+
+//               final widget = AppCloudHelperFunctions.checkMultiRecordState(
+//                 snapshot: snapshot,
+//                 loader: loader,
+//               );
+
+//               if (widget != null) return widget;
+
+//               /// --- Record Found!
+//               final recentImages = snapshot.data!;
+
+//               return SizedBox(
+//                 height: 250,
+//                 child: ListView.separated(
+//                   itemCount: recentImages.length,
+//                   scrollDirection: Axis.horizontal,
+//                   separatorBuilder: (_, _) =>
+//                       const SizedBox(width: AppSizes.spaceBtwItems),
+//                   itemBuilder: (context, index) {
+//                     final image = recentImages[index];
+//                     return SizedBox(
+//                       width:
+//                           MediaQuery.of(context).size.width *
+//                           0.75, // Make cards wide
+//                       child: FeaturedImageCard(featuredImage: image),
+//                     );
+//                   },
+//                 ),
+//               );
+//             },
+//           ),
+//         ],
+//       ),
+//     );
+//   }
+// }
 //------------------
 // import 'package:flutter/material.dart';
 // import 'package:reviews_app/common/widgets/texts/section_heading.dart';

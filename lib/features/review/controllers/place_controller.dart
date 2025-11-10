@@ -310,8 +310,7 @@ class PlaceController extends GetxController {
       debugPrint(
         'Place-Category link created with ID: $linkId, CategoryId: ${linkModel.categoryId}',
       );
-      // 7. Success Handling and Cleanup
-      AppFullScreenLoader.stopLoading();
+
       AppLoaders.successSnackBar(
         title: 'Success!',
         message: 'Your new place "${newPlace.title}" has been created!',

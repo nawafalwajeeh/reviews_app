@@ -9,8 +9,6 @@ import 'widgets/recent_photos.dart';
 class ImageGalleryScreen extends StatelessWidget {
   const ImageGalleryScreen({super.key});
 
-  
-
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -29,7 +27,7 @@ class ImageGalleryScreen extends StatelessWidget {
             AppSearchContainer(text: 'Search photos'),
             const SizedBox(height: AppSizes.spaceBtwSections),
 
-            Expanded(child: GalleryContent( )),
+            Expanded(child: GalleryContent()),
           ],
         ),
       ),
@@ -38,7 +36,7 @@ class ImageGalleryScreen extends StatelessWidget {
 }
 
 class GalleryContent extends StatelessWidget {
-  const GalleryContent({super.key, });
+  const GalleryContent({super.key});
 
   @override
   Widget build(BuildContext context) {

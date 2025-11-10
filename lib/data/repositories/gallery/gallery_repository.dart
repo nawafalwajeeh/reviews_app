@@ -12,6 +12,24 @@ class GalleryRepository extends GetxController {
 
   final _db = FirebaseFirestore.instance;
 
+  /// --- Collections creation logic (New Functionality) ---
+  Future<String> createCollection(CollectionItem collection) async {
+    try {
+      // Collections should typically be static and managed by admin,
+      // but this function allows creation if necessary.
+      final docRef = await _db
+          .collection('Collections')
+          .add(collection.toJson());
+      return docRef.id;
+    } on FirebaseException catch (e) {
+      throw AppFirebaseException(e.code).message;
+    } on PlatformException catch (e) {
+      throw AppPlatformException(e.code).message;
+    } catch (e) {
+      throw 'Something went wrong while creating Collection. Please try again.';
+    }
+  }
+
   /// --- Collections fetching logic ---
   Future<List<CollectionItem>> getAllCollections() async {
     try {
@@ -51,9 +69,35 @@ class GalleryRepository extends GetxController {
     }
   }
 
+  /// --- Image fetching logic (By Collection ID) ---
+  Future<List<GalleryImageModel>> getPhotosByCollectionId(
+    String collectionId,
+  ) async {
+    try {
+      final snapshot = await _db
+          .collection('GalleryImages')
+          .where('CollectionId', isEqualTo: collectionId)
+          .get();
+
+      final photos = snapshot.docs
+          .map((document) => GalleryImageModel.fromSnapshot(document))
+          .toList();
+
+      // The returned type is now List<GalleryImageModel>, which matches the signature.
+      return photos;
+    } on FirebaseException catch (e) {
+      throw AppFirebaseException(e.code).message;
+    } on PlatformException catch (e) {
+      throw AppPlatformException(e.code).message;
+    } catch (e) {
+      throw 'Something went wrong while fetching Photos by Collection. Please try again.';
+    }
+  }
+
   /// --- Image fetching logic (Recent Photos - used in RecentPhotosSection) ---
-  Future<List<GalleryImageModel>> getRecentGalleryImages(
-      {int limit = 5}) async {
+  Future<List<GalleryImageModel>> getRecentGalleryImages({
+    int limit = 5,
+  }) async {
     try {
       final snapshot = await _db
           .collection('GalleryImages')
