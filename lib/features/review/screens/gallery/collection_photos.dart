@@ -16,7 +16,6 @@ class CollectionPhotosScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        // Ensure the title updates dynamically based on the collection name
         title: Obx(
           () => Text(
             controller.newCollectionTitle.value.isEmpty
@@ -28,10 +27,9 @@ class CollectionPhotosScreen extends StatelessWidget {
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(AppSizes.defaultSpace),
         child: FutureBuilder<List<GalleryImageModel>>(
-          // <-- FIXED TYPE HERE
           future: controller.getPhotosByCollectionId(collectionId),
           builder: (context, snapshot) {
-            // --- Handle Loader, Empty, Error Message ---
+            /// -- Handle Loader, Empty, Error Message
             final widget = AppCloudHelperFunctions.checkMultiRecordState(
               snapshot: snapshot,
               loader: const Center(child: CircularProgressIndicator()),
@@ -39,7 +37,7 @@ class CollectionPhotosScreen extends StatelessWidget {
 
             if (widget != null) return Center(child: widget);
 
-            // --- Record Found!
+            /// -- Record Found!
             final photos = snapshot.data!;
 
             if (photos.isEmpty) {
@@ -51,7 +49,7 @@ class CollectionPhotosScreen extends StatelessWidget {
               );
             }
 
-            // 2. Group the photos by placeName
+            //  Group the photos by placeName
             final Map<String, List<GalleryImageModel>> groupedPhotos = {};
             for (var photo in photos) {
               // Use PlaceName for grouping, defaulting to 'Uncategorized' if empty
@@ -64,7 +62,7 @@ class CollectionPhotosScreen extends StatelessWidget {
               groupedPhotos[name]!.add(photo);
             }
 
-            // 3. Build the UI by iterating through the grouped map keys (place names)
+            // Build the UI by iterating through the grouped map keys (place names)
             final List<String> placeNames = groupedPhotos.keys.toList();
 
             return ListView.separated(
@@ -72,7 +70,7 @@ class CollectionPhotosScreen extends StatelessWidget {
               shrinkWrap: true,
               itemCount: placeNames.length,
               // Separate each place section clearly
-              separatorBuilder: (_, __) =>
+              separatorBuilder: (_, _) =>
                   const SizedBox(height: AppSizes.spaceBtwSections),
               itemBuilder: (context, index) {
                 final placeName = placeNames[index];
