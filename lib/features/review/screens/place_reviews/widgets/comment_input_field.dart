@@ -1,4 +1,4 @@
-// --- widgets/bottom_comment_input_field.dart ---
+
 import 'package:flutter/material.dart';
 import 'package:reviews_app/utils/constants/colors.dart';
 import 'package:reviews_app/utils/constants/image_strings.dart';

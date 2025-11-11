@@ -3,15 +3,16 @@ import 'package:get/get.dart';
 import 'package:reviews_app/common/widgets/appbar/appbar.dart';
 import 'package:reviews_app/common/widgets/place/rating/rating_indicator.dart';
 import 'package:reviews_app/utils/constants/sizes.dart';
+import '../../models/place_model.dart';
 import 'reply_screen.dart';
 import 'widgets/comment_input_field.dart';
 import 'widgets/rating_progress_indicator.dart';
 import 'widgets/user_review_card.dart';
 
 class PlaceReviewsScreen extends StatelessWidget {
-  const PlaceReviewsScreen({super.key});
+  const PlaceReviewsScreen({super.key, required this.place});
 
-  // final PlaceModel place;
+  final PlaceModel place;
 
   @override
   Widget build(BuildContext context) {
@@ -39,9 +40,10 @@ class PlaceReviewsScreen extends StatelessWidget {
                   const SizedBox(height: AppSizes.spaceBtwItems),
 
                   /// Overall Place Rating
-                  const OverallPlaceRating(),
+                  OverallPlaceRating(rating: place.rating.toStringAsFixed(1)),
 
-                  const AppRatingBarIndicator(rating: 3.5),
+                  // const AppRatingBarIndicator(rating: 3.5),
+                  AppRatingBarIndicator(rating: place.rating),
                   Text('12,611', style: Theme.of(context).textTheme.bodySmall),
                   const SizedBox(height: AppSizes.spaceBtwSections),
 

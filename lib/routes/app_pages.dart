@@ -31,7 +31,7 @@ class AppPages {
     ),
     GetPage(
       name: AppRoutes.placeReviews,
-      page: () => const PlaceReviewsScreen(),
+      page: () => PlaceReviewsScreen(place: PlaceModel.empty()),
     ),
     GetPage(name: AppRoutes.userProfile, page: () => const ProfileScreen()),
     GetPage(name: AppRoutes.userAddress, page: () => const UserAddressScreen()),

@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 import 'package:readmore/readmore.dart';
 import 'package:reviews_app/common/widgets/place/rating/rating_indicator.dart';

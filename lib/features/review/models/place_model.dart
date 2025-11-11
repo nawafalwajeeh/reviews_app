@@ -12,6 +12,7 @@ class PlaceModel {
   final String location;
   final String categoryId;
   final double rating;
+  final int reviewsCount;
   final List<String>? tags;
   final double? latitude;
   final double? longitude;
@@ -27,6 +28,7 @@ class PlaceModel {
     required this.categoryId,
     required this.description,
     required this.rating,
+    this.reviewsCount = 0,
     required this.userId,
     required this.thumbnail,
     this.tags,
@@ -55,6 +57,7 @@ class PlaceModel {
     String? location,
     String? categoryId,
     double? rating,
+    int? reviewsCount,
     List<String>? tags,
     double? latitude,
     double? longitude,
@@ -74,13 +77,13 @@ class PlaceModel {
       location: location ?? this.location,
       categoryId: categoryId ?? this.categoryId,
       rating: rating ?? this.rating,
+      reviewsCount: reviewsCount ?? this.reviewsCount,
       tags: tags ?? this.tags,
       latitude: latitude ?? this.latitude,
       longitude: longitude ?? this.longitude,
       websiteUrl: websiteUrl ?? this.websiteUrl,
       isFavorite: isFavorite ?? this.isFavorite,
       phoneNumber: phoneNumber ?? this.phoneNumber,
-      // Note: openingHourse is commented out in the constructor, so we omit it here as well.
     );
   }
 
@@ -93,6 +96,7 @@ class PlaceModel {
     categoryId: '',
     description: '',
     rating: 0.0,
+    reviewsCount: 0, // Default count
     thumbnail: '',
     images: [],
     tags: [],
@@ -117,6 +121,7 @@ class PlaceModel {
       'Longitude': longitude,
       'WebsiteUrl': websiteUrl,
       'PhoneNumber': phoneNumber,
+      'ReviewCount': reviewsCount,
       // 'OpeningHourse': openingHourse,
     };
   }
@@ -136,6 +141,7 @@ class PlaceModel {
       location: data['Location'] ?? '',
       categoryId: data['CategoryId'] ?? '',
       rating: double.parse((data['Rating'] ?? 0.0).toString()),
+      reviewsCount: (data['ReviewCount'] ?? 0).toInt(),
       thumbnail: data['Thumbnail'] ?? '',
       isFeatured: data['IsFeatured'] ?? false,
       dateAdded: data['DateAdded'] != null
@@ -166,6 +172,7 @@ class PlaceModel {
       location: data['Location'] ?? '',
       categoryId: data['CategoryId'] ?? '',
       rating: double.parse((data['Rating'] ?? 0.0).toString()),
+      reviewsCount: (data['ReviewCount'] ?? 0).toInt(),
       thumbnail: data['Thumbnail'] ?? '',
       isFeatured: data['IsFeatured'] ?? false,
       dateAdded: data['DateAdded'] != null

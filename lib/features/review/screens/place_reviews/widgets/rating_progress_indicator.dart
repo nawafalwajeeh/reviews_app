@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'progress_indicator_and_rating.dart';
 
 class OverallPlaceRating extends StatelessWidget {
-  const OverallPlaceRating({
-    super.key,
-  });
+  const OverallPlaceRating({super.key, this.rating = '4.8'});
+
+  final String rating;
 
   @override
   Widget build(BuildContext context) {
@@ -13,12 +13,9 @@ class OverallPlaceRating extends StatelessWidget {
       children: [
         Expanded(
           flex: 3,
-          child: Text(
-            '4.8',
-            style: Theme.of(context).textTheme.displayLarge,
-          ),
+          child: Text(rating, style: Theme.of(context).textTheme.displayLarge),
         ),
-    
+
         Expanded(
           flex: 7,
           child: Column(
@@ -35,3 +32,4 @@ class OverallPlaceRating extends StatelessWidget {
     );
   }
 }
+

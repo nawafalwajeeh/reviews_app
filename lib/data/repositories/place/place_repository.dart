@@ -342,4 +342,49 @@ class PlaceRepository extends GetxController {
       throw 'Something went wrong. Please try again.';
     }
   }
+
+  /// Updates the total review count and calculates the new average rating for a place.
+  Future<void> updatePlaceRatingStatistics(
+    String placeId,
+    double newRating,
+  ) async {
+    try {
+      final placeRef = _db.collection('Places').doc(placeId);
+
+      await _db.runTransaction((transaction) async {
+        final placeSnapshot = await transaction.get(placeRef);
+
+        if (!placeSnapshot.exists) {
+          throw Exception('Place not found for rating update.');
+        }
+
+        final data = placeSnapshot.data()!;
+
+        // Get current statistics (using safe access with default values)
+        final currentReviewCount = (data['ReviewCount'] ?? 0).toInt();
+        // Assuming 'AverageRating' is stored as a double
+        final currentAverageRating = (data['Rating'] ?? 0.0).toDouble();
+
+        // 1. Calculate the total sum of all previous ratings
+        final totalRatingSum = currentAverageRating * currentReviewCount;
+
+        // 2. Calculate new count and new average
+        final newReviewCount = currentReviewCount + 1;
+        final newAverageRating = (totalRatingSum + newRating) / newReviewCount;
+
+        // 3. Update the document atomically
+        transaction.update(placeRef, {
+          'ReviewCount': newReviewCount,
+          // Store average rating rounded to 2 decimal places for cleanliness
+          'Rating': double.parse(newAverageRating.toStringAsFixed(2)),
+        });
+      });
+    } on FirebaseException catch (e) {
+      throw AppFirebaseException(e.code).message;
+    } on PlatformException catch (e) {
+      throw AppPlatformException(e.code).message;
+    } catch (e) {
+      throw 'Something went wrong while updating place rating. Please try again.';
+    }
+  }
 }

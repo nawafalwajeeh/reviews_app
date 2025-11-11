@@ -98,7 +98,7 @@ class PlaceDetailsScreen extends StatelessWidget {
                       //     style: Theme.of(context).textTheme.titleMedium,
                       //   ),
                       // ),
-                      WriteReviewSection(),
+                      WriteReviewSection(placeId: place.id),
                       SizedBox(height: AppSizes.spaceBtwItems),
 
                       const Divider(),
@@ -106,13 +106,13 @@ class PlaceDetailsScreen extends StatelessWidget {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          const AppSectionHeading(
-                            title: 'Reviews(199)',
+                           AppSectionHeading(
+                            title: 'Reviews(${place.reviewsCount})',
                             showActionButton: false,
                           ),
                           IconButton(
                             onPressed: () =>
-                                Get.to(() => const PlaceReviewsScreen()),
+                                Get.to(() => PlaceReviewsScreen(place: place)),
                             icon: const Icon(Iconsax.arrow_right_3, size: 18),
                           ),
                         ],

@@ -12,10 +12,11 @@ import 'package:reviews_app/utils/constants/sizes.dart';
 import '../../../../../utils/constants/colors.dart';
 import '../../../../../utils/helpers/helper_functions.dart';
 import '../../../controllers/images_controller.dart';
+import '../../../models/place_model.dart';
 // import '../../../controllers/images_controller.dart';
 
 class PlaceImageSlider extends StatelessWidget {
-  final dynamic place;
+  final PlaceModel place;
 
   const PlaceImageSlider({super.key, required this.place});
 
@@ -104,8 +105,8 @@ class PlaceImageSlider extends StatelessWidget {
                           const Icon(Icons.star, color: Colors.amber, size: 20),
                           const SizedBox(width: AppSizes.xs),
                           Text(
-                            // '${place.rating.toStringAsFixed(1)} (${place.reviewCount} reviews)',
-                            '244 reviews',
+                            '${place.rating.toStringAsFixed(1)} (${place.reviewsCount} reviews)',
+                            // '${place.reviewsCount} reviews',
                             style: Theme.of(context).textTheme.bodyLarge!
                                 .copyWith(color: Colors.white),
                           ),

@@ -26,7 +26,8 @@ class RatingAndShareWidget extends StatelessWidget {
             ),
             const SizedBox(width: AppSizes.sm),
             Text(
-              '(${(place.rating * 10).toInt().abs() + 10} Reviews)',
+              // '(${(place.rating * 10).toInt().abs() + 10} Reviews)',
+              '(${place.reviewsCount} reviews)',
               style: Theme.of(context).textTheme.bodySmall,
             ),
           ],
