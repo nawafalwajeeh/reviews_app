@@ -123,14 +123,38 @@ flutter:
         - asset: assets/fonts/Poppins-Bold.ttf
           weight: 800
 
+# OLD Launcher icon settings
+# flutter_launcher_icons:
+#   android: "launcher_icon"
+#   ios: true
+#   remove_alpha_ios: true
+#   image_path: "assets/icons/launcher/ic-launcher.png"
+#   min_sdk_android: 21 # android min sdk min:16, default 21
+#   web:
+#     generate: true
+#     image_path: "assets/icons/launcher/ic-launcher.png"
+#     background_color: "#hexcode"
+#     theme_color: "#hexcode"
+
+# Luncher icon
 flutter_launcher_icons:
+  # General settings for standard icons and iOS
   android: "launcher_icon"
   ios: true
   remove_alpha_ios: true
   image_path: "assets/icons/launcher/ic-launcher.png"
   min_sdk_android: 21 # android min sdk min:16, default 21
+
+  # --- Adaptive Icon Settings (REQUIRED FOR FILLING SPACE) ---
+  # 1. Sets the solid color that will fill the entire icon shape (the circle/square)
+  adaptive_icon_background: "#2B54A6"
+
+  # 2. Uses your logo as the content that sits on top of the background.
+  # Note: Ensure ic-launcher.png has no excess transparent padding inside its canvas.
+  adaptive_icon_foreground: "assets/icons/launcher/ic-launcher.png"
+
   web:
     generate: true
     image_path: "assets/icons/launcher/ic-launcher.png"
-    background_color: "#hexcode"
-    theme_color: "#hexcode"
+    background_color: "#2B54A6"
+    theme_color: "#2B54A6"
