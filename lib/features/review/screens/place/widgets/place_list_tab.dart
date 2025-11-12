@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:reviews_app/data/repositories/authentication/authentication_repository.dart';
 import 'package:reviews_app/data/repositories/place/place_repository.dart';
 import 'package:reviews_app/utils/constants/sizes.dart' show AppSizes;
 
 import '../../../../../common/widgets/place/place_card.dart';
 import '../../../../../common/widgets/shimmers/big_card_shimmer.dart';
+import '../../../controllers/place_controller.dart';
 import '../../../models/place_model.dart';
+import '../edit_place.dart';
 
 class PlaceListTab extends StatelessWidget {
-  const PlaceListTab({
-    super.key,
-    required this.categoryId,
-  });
+  const PlaceListTab({super.key, required this.categoryId});
 
   // final String categoryFilter;
   final String categoryId;
@@ -24,7 +24,10 @@ class PlaceListTab extends StatelessWidget {
 
     return FutureBuilder<List<PlaceModel>>(
       // future: futureMethod,
-      future: PlaceRepository.instance.getPlacesForCategory(categoryId, limit: -1),
+      future: PlaceRepository.instance.getPlacesForCategory(
+        categoryId,
+        limit: -1,
+      ),
       builder: (_, snapshot) {
         // 1. HANDLE LOADING STATE
         if (snapshot.connectionState == ConnectionState.waiting) {
@@ -83,7 +86,34 @@ class PlaceListTab extends StatelessWidget {
               const SizedBox(height: AppSizes.spaceBtwSections),
           itemBuilder: (context, index) {
             final place = filteredPlaces[index];
-            return PlaceCard(place: place);
+            // return PlaceCard(place: place);
+            bool isCreator = false;
+            final creatorId = place.userId;
+            final currentUserId = AuthenticationRepository.instance.getUserID;
+            if (creatorId == currentUserId) {
+              isCreator = true;
+            }
+            debugPrint('currentUserId: $currentUserId, isCreator: $isCreator');
+            return PlaceCard(
+              place: place,
+              showEditOptions: isCreator,
+              // onEdit: isCreator
+              //     ? () => Get.to(() => EditPlaceScreen(place: place))
+              //     : () {},
+              onEdit: () {
+                if (isCreator) {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => EditPlaceScreen(place: place),
+                    ),
+                  );
+                }
+              },
+
+              onDelete: () => isCreator
+                  ? PlaceController.instance.deletePlaceWithConfirmation(place)
+                  : () {},
+            );
           },
         );
       },
@@ -108,7 +138,7 @@ class PlaceListTab extends StatelessWidget {
 //     return FutureBuilder<List<PlaceModel>>(
 //       future: futureMethod,
 //       builder: (_, snapshot) {
-//         const loader = PlaceCardShimmer(); 
+//         const loader = PlaceCardShimmer();
 //         final widget = AppCloudHelperFunctions.checkMultiRecordState(
 //           snapshot: snapshot,
 //           loader: loader,

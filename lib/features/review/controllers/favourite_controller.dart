@@ -29,10 +29,10 @@ class FavouritesController extends GetxController {
       }
     } catch (e) {
       favorites.assignAll({});
-      AppLoaders.errorSnackBar(
-        title: 'Error',
-        message: 'Failed to load favorites: $e',
-      );
+      // AppLoaders.errorSnackBar(
+      //   title: 'Error',
+      //   message: 'Failed to load favorites: $e',
+      // );
     }
   }
 

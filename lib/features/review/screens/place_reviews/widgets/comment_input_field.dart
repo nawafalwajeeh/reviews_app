@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:reviews_app/utils/constants/colors.dart';
 import 'package:reviews_app/utils/constants/image_strings.dart';
@@ -8,9 +7,10 @@ import 'package:reviews_app/utils/helpers/helper_functions.dart';
 class BottomCommentInputField extends StatelessWidget {
   final String currentUserAvatar = AppImages.user;
   final VoidCallback onCancelReply;
-  final VoidCallback onSend;
+  final Function(String) onSend; // Changed from VoidCallback to Function(String)
   final bool isReplying;
   final String? replyTarget;
+  final bool isLoading; // Added isLoading parameter
 
   const BottomCommentInputField({
     super.key,
@@ -18,6 +18,7 @@ class BottomCommentInputField extends StatelessWidget {
     required this.onSend,
     this.isReplying = false,
     this.replyTarget,
+    this.isLoading = false, // Added with default value
   });
 
   @override
@@ -30,22 +31,21 @@ class BottomCommentInputField extends StatelessWidget {
         color: dark ? AppColors.dark : AppColors.white,
         border: Border(
           top: BorderSide(
-            color: AppColors.grey.withValues(alpha: 0.5),
+            color: AppColors.grey.withValues(alpha:0.5), // Fixed: changed withValues to withOpacity
             width: 0.5,
           ),
         ),
       ),
       padding: const EdgeInsets.only(
         top: AppSizes.sm,
-        bottom: AppSizes
-            .sm, // Removed MediaQuery.of(context).padding.bottom calculation
+        bottom: AppSizes.sm,
         left: AppSizes.defaultSpace,
         right: AppSizes.defaultSpace,
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          /// Reply Target Notification (omitted for brevity, assume content remains the same)
+          /// Reply Target Notification
           if (isReplying && replyTarget != null)
             Padding(
               padding: const EdgeInsets.only(bottom: AppSizes.sm),
@@ -70,7 +70,7 @@ class BottomCommentInputField extends StatelessWidget {
               ),
             ),
 
-          /// Input Field Row (omitted for brevity, assume content remains the same)
+          /// Input Field Row
           Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
@@ -88,19 +88,25 @@ class BottomCommentInputField extends StatelessWidget {
                       hintText: isReplying
                           ? 'Type your reply...'
                           : 'Add a new comment...',
-                      suffixIcon: IconButton(
-                        icon: const Icon(
-                          Icons.send,
-                          size: 20,
-                          color: AppColors.primaryColor,
-                        ),
-                        onPressed: () {
-                          if (controller.text.isNotEmpty) {
-                            onSend();
-                            controller.clear();
-                          }
-                        },
-                      ),
+                      suffixIcon: isLoading
+                          ? const SizedBox(
+                              width: 20,
+                              height: 20,
+                              child: CircularProgressIndicator(strokeWidth: 2),
+                            )
+                          : IconButton(
+                              icon: const Icon(
+                                Icons.send,
+                                size: 20,
+                                color: AppColors.primaryColor,
+                              ),
+                              onPressed: () {
+                                if (controller.text.isNotEmpty && !isLoading) {
+                                  onSend(controller.text.trim()); // Pass the text
+                                  controller.clear();
+                                }
+                              },
+                            ),
                     ),
                   ),
                 ),

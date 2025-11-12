@@ -17,6 +17,7 @@ class PlaceModel {
   final double? latitude;
   final double? longitude;
   final String? websiteUrl;
+  final Map<String, int> ratingDistribution;
   bool isFavorite;
   String? phoneNumber;
   // String? openingHourse;
@@ -31,6 +32,7 @@ class PlaceModel {
     this.reviewsCount = 0,
     required this.userId,
     required this.thumbnail,
+    this.ratingDistribution = const {'5': 0, '4': 0, '3': 0, '2': 0, '1': 0},
     this.tags,
     this.images,
     bool? isFavorite,
@@ -62,6 +64,7 @@ class PlaceModel {
     double? latitude,
     double? longitude,
     String? websiteUrl,
+    Map<String, int>? ratingDistribution,
     bool? isFavorite,
     String? phoneNumber,
   }) {
@@ -79,6 +82,7 @@ class PlaceModel {
       rating: rating ?? this.rating,
       reviewsCount: reviewsCount ?? this.reviewsCount,
       tags: tags ?? this.tags,
+      ratingDistribution: ratingDistribution ?? this.ratingDistribution,
       latitude: latitude ?? this.latitude,
       longitude: longitude ?? this.longitude,
       websiteUrl: websiteUrl ?? this.websiteUrl,
@@ -100,6 +104,7 @@ class PlaceModel {
     thumbnail: '',
     images: [],
     tags: [],
+    ratingDistribution: {'5': 0, '4': 0, '3': 0, '2': 0, '1': 0},
   );
 
   /// -- Json Format (To save data to Firestore)
@@ -122,6 +127,7 @@ class PlaceModel {
       'WebsiteUrl': websiteUrl,
       'PhoneNumber': phoneNumber,
       'ReviewCount': reviewsCount,
+      'RatingDistribution': ratingDistribution,
       // 'OpeningHourse': openingHourse,
     };
   }
@@ -132,6 +138,17 @@ class PlaceModel {
   ) {
     if (document.data() == null) return PlaceModel.empty();
     final data = document.data()!;
+
+    // Handle rating distribution
+    final ratingDistributionData =
+        data['RatingDistribution'] ?? {'5': 0, '4': 0, '3': 0, '2': 0, '1': 0};
+    final Map<String, int> ratingDistribution = {
+      '5': (ratingDistributionData['5'] ?? 0).toInt(),
+      '4': (ratingDistributionData['4'] ?? 0).toInt(),
+      '3': (ratingDistributionData['3'] ?? 0).toInt(),
+      '2': (ratingDistributionData['2'] ?? 0).toInt(),
+      '1': (ratingDistributionData['1'] ?? 0).toInt(),
+    };
 
     return PlaceModel(
       id: document.id,
@@ -147,6 +164,7 @@ class PlaceModel {
       dateAdded: data['DateAdded'] != null
           ? (data['DateAdded'] as Timestamp).toDate()
           : null,
+      ratingDistribution: ratingDistribution,
       latitude: double.tryParse((data['Latitude'] ?? 0.0).toString()),
       longitude: double.tryParse((data['Longitude'] ?? 0.0).toString()),
       websiteUrl: data['WebsiteUrl'],
@@ -164,6 +182,16 @@ class PlaceModel {
   ) {
     final data = document.data() as Map<String, dynamic>;
 
+    // Handle rating distribution
+    final ratingDistributionData =
+        data['RatingDistribution'] ?? {'5': 0, '4': 0, '3': 0, '2': 0, '1': 0};
+    final Map<String, int> ratingDistribution = {
+      '5': (ratingDistributionData['5'] ?? 0).toInt(),
+      '4': (ratingDistributionData['4'] ?? 0).toInt(),
+      '3': (ratingDistributionData['3'] ?? 0).toInt(),
+      '2': (ratingDistributionData['2'] ?? 0).toInt(),
+      '1': (ratingDistributionData['1'] ?? 0).toInt(),
+    };
     return PlaceModel(
       id: document.id,
       title: data['Title'] ?? '',
@@ -178,6 +206,7 @@ class PlaceModel {
       dateAdded: data['DateAdded'] != null
           ? (data['DateAdded'] as Timestamp).toDate()
           : null,
+      ratingDistribution: ratingDistribution,
       latitude: double.tryParse((data['Latitude'] ?? 0.0).toString()),
       longitude: double.tryParse((data['Longitude'] ?? 0.0).toString()),
       websiteUrl: data['WebsiteUrl'],

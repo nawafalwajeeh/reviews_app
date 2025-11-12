@@ -3,7 +3,6 @@ import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:readmore/readmore.dart';
 import 'package:reviews_app/common/widgets/texts/section_heading.dart';
-// import 'package:reviews_app/features/review/controllers/place_controller.dart';
 import 'package:reviews_app/features/review/models/place_model.dart';
 import 'package:reviews_app/utils/constants/colors.dart' show AppColors;
 import '../../../../utils/constants/sizes.dart';
@@ -106,7 +105,7 @@ class PlaceDetailsScreen extends StatelessWidget {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                           AppSectionHeading(
+                          AppSectionHeading(
                             title: 'Reviews(${place.reviewsCount})',
                             showActionButton: false,
                           ),

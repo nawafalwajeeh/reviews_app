@@ -8,6 +8,8 @@ import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:reviews_app/utils/constants/colors.dart';
 import 'package:reviews_app/utils/logging/logger.dart';
 
+import '../screens/map/map_picker.dart';
+
 class MapController extends GetxController {
   static MapController get instance => Get.find();
 
@@ -26,7 +28,7 @@ class MapController extends GetxController {
 
   // Google Map Controller instance (now private)
   final mapControllerCompleter = Completer<GoogleMapController>();
-  GoogleMapController? _googleMapController; // Made private for safer access
+  GoogleMapController? googleMapController; // Made private for safer access
 
   /// -- Static/ Helper Variables
   static const LatLng sourceLocation = LatLng(13.57952, 44.02091);
@@ -50,7 +52,7 @@ class MapController extends GetxController {
   void onMapCreated(GoogleMapController controller) {
     // Prevent "Bad state: Future already completed" error during hot restart.
     if (!mapControllerCompleter.isCompleted) {
-      _googleMapController = controller;
+      googleMapController = controller;
       mapControllerCompleter.complete(controller);
       AppLoggerHelper.info("MapController successfully created and completed.");
       // Perform initial camera animation here if needed.
@@ -203,14 +205,38 @@ class MapController extends GetxController {
     });
   }
 
+
+   // Add a method to clear selection markers
+  void clearSelectionMarkers() {
+    markers.removeWhere((marker) => marker.markerId == const MarkerId('selectedLocation'));
+  }
+  
+  // Add a method to move camera to specific position
+  Future<void> moveCameraToPosition(LatLng position, {double zoom = 13.5}) async {
+    try {
+      final controller = await mapControllerCompleter.future;
+      await controller.animateCamera(
+        CameraUpdate.newCameraPosition(
+          CameraPosition(
+            target: position,
+            zoom: zoom,
+          ),
+        ),
+      );
+    } catch (e) {
+      AppLoggerHelper.error('Error moving camera: $e');
+    }
+  }
+  
+
   @override
   void onClose() {
     _locationSubscription?.cancel();
     AppLoggerHelper.warning("Location stream subscription cancelled.");
 
     // Call dispose on the heavy map object itself.
-    if (_googleMapController != null) {
-      _googleMapController!.dispose();
+    if (googleMapController != null) {
+      googleMapController!.dispose();
       AppLoggerHelper.info("Disposing mapController to prevent memory leak.");
     }
     super.onClose();

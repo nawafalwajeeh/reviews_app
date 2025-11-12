@@ -35,7 +35,12 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
         automaticallyImplyLeading: false,
         leading: showBackArrow
             ? IconButton(
-                onPressed: () => Get.back(),
+                // onPressed: () => Get.back(),
+                onPressed: () {
+                  // if (Navigator.of(context).canPop()) {
+                  Navigator.of(context).pop();
+                  // }
+                },
                 icon: AppCircularIcon(
                   icon: Iconsax.arrow_left,
                   color: AppHelperFunctions.isDarkMode(context)

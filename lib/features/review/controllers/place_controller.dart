@@ -10,6 +10,7 @@ import 'package:reviews_app/features/review/models/place_category_model.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../../data/repositories/place/place_repository.dart';
+import '../../../utils/constants/colors.dart';
 import '../../../utils/constants/image_strings.dart';
 import '../../../utils/helpers/network_manager.dart';
 import '../../../utils/popups/full_screen_loader.dart';
@@ -58,6 +59,9 @@ class PlaceController extends GetxController {
       CategoryController.instance.selectedCategoryName;
 
   final RxBool isFeatured = true.obs;
+  // Add these variables for edit functionality
+  final RxString editingPlaceId = ''.obs;
+  final RxList<String> existingImageUrls = <String>[].obs;
 
   @override
   void onInit() {
@@ -311,16 +315,15 @@ class PlaceController extends GetxController {
         'Place-Category link created with ID: $linkId, CategoryId: ${linkModel.categoryId}',
       );
 
+      AppFullScreenLoader.stopLoading();
       AppLoaders.successSnackBar(
         title: 'Success!',
         message: 'Your new place "${newPlace.title}" has been created!',
       );
       _resetForm();
+      Get.back();
     } catch (e) {
       AppLoaders.errorSnackBar(title: 'Oh Snap!', message: e.toString());
-    } finally {
-      AppFullScreenLoader.stopLoading();
-      Get.back();
     }
   }
 
@@ -353,5 +356,161 @@ class PlaceController extends GetxController {
   /// Refresh data
   Future<void> refreshAll() async {
     await fetchAllFeaturedPlaces();
+  }
+
+  /// Initialize form with existing place data for editing
+  void initializeEditForm(PlaceModel place) {
+    editingPlaceId.value = place.id;
+
+    // Set existing image URLs
+    existingImageUrls.clear();
+    if (place.images != null) {
+      existingImageUrls.addAll(place.images!);
+    }
+
+    // Populate form fields
+    titleController.text = place.title;
+    descriptionController.text = place.description;
+    locationController.text = place.location;
+    selectedLocationName.value = place.location;
+    phoneController.text = place.phoneNumber ?? '';
+    websiteUrlController.text = place.websiteUrl ?? '';
+    selectedCategoryId.value = place.categoryId;
+
+    // Set tags
+    selectedTags.clear();
+    if (place.tags != null) {
+      selectedTags.addAll(place.tags!);
+    }
+
+    // Clear any previously selected local images
+    selectedLocalImageFiles.clear();
+  }
+
+  /// Clear edit form data
+  void clearEditForm() {
+    editingPlaceId.value = '';
+    existingImageUrls.clear();
+    selectedLocalImageFiles.clear();
+    _resetForm();
+  }
+
+  /// Update existing place
+  Future<void> updatePlace(String placeId) async {
+    try {
+      // Start Loading & Form Validation
+      AppFullScreenLoader.openLoadingDialog(
+        'Updating place...',
+        AppImages.docerAnimation,
+      );
+
+      // Check Internet Connectivity
+      final isConnected = await AppNetworkManager.instance.isConnected();
+      if (!isConnected) {
+        AppFullScreenLoader.stopLoading();
+        return;
+      }
+
+      // Form Validation
+      if (!placeFormKey.currentState!.validate()) {
+        AppFullScreenLoader.stopLoading();
+        return;
+      }
+
+      // Geocode the address
+      final coordinates = await _geocodeAddress(locationController.text.trim());
+
+      // Upload new images if any
+      List<String> allImageUrls = [...existingImageUrls];
+      if (selectedLocalImageFiles.isNotEmpty) {
+        final userId = AuthenticationRepository.instance.getUserID;
+        final newImageUrls = await uploadPlaceImages(userId, placeId);
+        allImageUrls.addAll(newImageUrls);
+      }
+
+      // Prepare updated Place Model
+      final updatedPlace = PlaceModel(
+        id: placeId,
+        title: titleController.text.trim(),
+        description: descriptionController.text.trim(),
+        location: locationController.text.trim(),
+        // Image URLs - combine existing and new
+        thumbnail: allImageUrls.isNotEmpty ? allImageUrls.first : '',
+        images: allImageUrls.length > 1 ? allImageUrls.sublist(1) : null,
+        // Selected IDs and Lists
+        categoryId: selectedCategoryId.value,
+        tags: selectedTags.toList(),
+        // Coordinates
+        latitude: coordinates.latitude,
+        longitude: coordinates.longitude,
+        websiteUrl: websiteUrlController.text.trim().isEmpty
+            ? null
+            : websiteUrlController.text.trim(),
+        userId: AuthenticationRepository.instance.getUserID,
+        rating: 0.0, // Keep existing rating
+        isFeatured: isFeatured.value,
+        dateAdded: DateTime.now(), // Keep original date
+        isFavorite: false,
+        phoneNumber: phoneController.text.trim(),
+      );
+
+      // Update place in Firestore
+      await placeRepository.updatePlace(updatedPlace);
+
+      AppLoaders.successSnackBar(
+        title: 'Success!',
+        message: 'Place "${updatedPlace.title}" has been updated!',
+      );
+
+      clearEditForm();
+      Get.back();
+    } catch (e) {
+      AppLoaders.errorSnackBar(title: 'Update Failed', message: e.toString());
+    } finally {
+      AppFullScreenLoader.stopLoading();
+    }
+  }
+
+  /// Delete place with confirmation
+  Future<void> deletePlaceWithConfirmation(PlaceModel place) async {
+    Get.defaultDialog(
+      title: 'Delete Place?',
+      middleText:
+          'Are you sure you want to delete "${place.title}"? This action cannot be undone.',
+      textConfirm: 'Delete',
+      textCancel: 'Cancel',
+      confirmTextColor: AppColors.white,
+      onConfirm: () async {
+        Navigator.of(Get.context!).pop();
+        await _deletePlace(place);
+      },
+      // onCancel: () => Get.back(),
+      onCancel: () => Navigator.of(Get.context!).pop(),
+    );
+  }
+
+  /// Actual delete implementation
+  Future<void> _deletePlace(PlaceModel place) async {
+    try {
+      AppFullScreenLoader.openLoadingDialog(
+        'Deleting place...',
+        AppImages.docerAnimation,
+      );
+
+      await placeRepository.deletePlace(place);
+
+      // Remove from local lists
+      featuredPlaces.removeWhere((p) => p.id == place.id);
+      featuredPlaces.removeWhere((p) => p.id == place.id);
+
+      AppLoaders.successSnackBar(
+        title: 'Success!',
+        message: 'Place "${place.title}" has been deleted',
+      );
+    } catch (e) {
+      AppLoaders.errorSnackBar(title: 'Delete Failed', message: e.toString());
+    } finally {
+      AppFullScreenLoader.stopLoading();
+    }
   }
 }
