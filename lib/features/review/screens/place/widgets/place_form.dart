@@ -10,7 +10,7 @@ import '../../../../../utils/validators/validation.dart';
 import 'billing_address_section.dart';
 import 'billing_payment_section.dart';
 import 'label_chip.dart';
-import 'label_location_picker.dart';
+// import 'label_location_picker.dart';
 
 class PlaceForm extends StatelessWidget {
   final bool isEditMode;
@@ -88,10 +88,6 @@ class PlaceForm extends StatelessWidget {
           child: Column(
             spacing: AppSizes.spaceBtwItems,
             children: [
-              /// Pricing
-              // BillingAmountSection(subTotal: subTotal),
-              // SizedBox(height: AppSizes.spaceBtwItems),
-
               /// Divider
               const Divider(),
               // SizedBox(height: AppSizes.spaceBtwItems),

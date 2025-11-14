@@ -1,6 +1,9 @@
 import 'dart:convert';
 import 'package:get/get.dart';
+import 'package:reviews_app/data/repositories/authentication/authentication_repository.dart';
 import 'package:reviews_app/data/repositories/place/place_repository.dart';
+import 'package:reviews_app/features/authentication/screens/signup/signup_screen.dart';
+import 'package:reviews_app/features/personalization/controllers/user_controller.dart';
 import '../../../utils/local_storage/storage_utility.dart';
 import '../../../utils/popups/loaders.dart';
 import '../models/place_model.dart';
@@ -10,10 +13,16 @@ class FavouritesController extends GetxController {
 
   /// Variables
   final favorites = <String, bool>{}.obs;
+  final userController = UserController.instance;
 
+  // @override
+  // void onInit() {
+  //   super.onInit();
+  //   initFavourites();
+  // }
   @override
-  void onInit() {
-    super.onInit();
+  void onReady() {
+    super.onReady();
     initFavourites();
   }
 
@@ -28,11 +37,11 @@ class FavouritesController extends GetxController {
         );
       }
     } catch (e) {
-      favorites.assignAll({});
-      // AppLoaders.errorSnackBar(
-      //   title: 'Error',
-      //   message: 'Failed to load favorites: $e',
-      // );
+      // favorites.assignAll({});
+      AppLoaders.errorSnackBar(
+        title: 'Error',
+        message: 'Failed to load favorites: $e',
+      );
     }
   }
 
@@ -41,6 +50,19 @@ class FavouritesController extends GetxController {
   }
 
   void toggleFavoritePlaces(String placeId) {
+    if (AuthenticationRepository.instance.getUserID.isEmpty ||
+        AuthenticationRepository.instance.isGuestUser) {
+      AppLoaders.warningSnackBar(
+        title: 'Authentication Required',
+        message:
+            'Please sign in or create an account to create your own places.',
+      );
+
+      Get.to(() => const SignupScreen());
+
+      return;
+    }
+
     if (!favorites.containsKey(placeId)) {
       favorites[placeId] = true;
       saveFavoritesToStorage();

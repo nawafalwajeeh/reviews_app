@@ -97,7 +97,10 @@ class PlaceDetailsScreen extends StatelessWidget {
                       //     style: Theme.of(context).textTheme.titleMedium,
                       //   ),
                       // ),
-                      WriteReviewSection(placeId: place.id),
+                      WriteReviewSection(
+                        placeId: place.id,
+                       
+                      ),
                       SizedBox(height: AppSizes.spaceBtwItems),
 
                       const Divider(),

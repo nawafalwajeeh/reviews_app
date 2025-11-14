@@ -2,6 +2,7 @@
 import 'package:get/get.dart';
 import '../../../data/repositories/comment/comment_repository.dart';
 import '../../../utils/popups/loaders.dart';
+import '../../authentication/screens/signup/signup_screen.dart';
 import '../models/comment_model.dart';
 import '../../../data/repositories/authentication/authentication_repository.dart';
 
@@ -38,7 +39,7 @@ class CommentController extends GetxController {
     return _replies[commentId] ?? [];
   }
 
-  // NEW: Check if a comment has any replies
+  // Check if a comment has any replies
   bool hasReplies(String commentId) {
     return _replies.containsKey(commentId) && _replies[commentId]!.isNotEmpty;
   }
@@ -113,16 +114,19 @@ class CommentController extends GetxController {
     }
   }
 
-  // === COMMENT ACTIONS ===
-
-  // UPDATED: Add comment with proper nested reply handling
+  // Add comment with proper nested reply handling
   Future<void> addComment(String commentText, {String? parentCommentId}) async {
     try {
       _isLoading.value = true;
 
       final userId = authRepo.getUserID;
-      if (userId.isEmpty) {
-        Get.snackbar('Error', 'You must be logged in to comment');
+
+      if (userId.isEmpty || AuthenticationRepository.instance.isGuestUser) {
+        AppLoaders.warningSnackBar(
+          title: 'Authentication Required',
+          message: 'Please sign in or create an account to comment.',
+        );
+        Get.to(() => const SignupScreen());
         return;
       }
 
@@ -282,8 +286,15 @@ class CommentController extends GetxController {
   Future<void> reactToComment(String commentId, bool isLike) async {
     try {
       final userId = authRepo.getUserID;
-      if (userId.isEmpty) {
-        Get.snackbar('Error', 'You must be logged in to react');
+
+      if (userId.isEmpty || AuthenticationRepository.instance.isGuestUser) {
+        AppLoaders.warningSnackBar(
+          title: 'Authentication Required',
+          message: 'Please sign in or create an account to react.',
+        );
+
+        Get.to(() => const SignupScreen());
+
         return;
       }
 

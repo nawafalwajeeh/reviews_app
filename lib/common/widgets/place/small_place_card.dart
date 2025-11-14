@@ -92,7 +92,7 @@ class SmallPlaceCard extends StatelessWidget {
                     left: AppSizes.sm,
                     top: AppSizes.sm,
                     child: PlaceRatingBadge(
-                      rating: place.rating,
+                      rating: place.averageRating,
                       isSmall: true,
                     ),
                   ),

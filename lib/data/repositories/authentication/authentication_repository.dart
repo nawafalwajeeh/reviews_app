@@ -39,6 +39,8 @@ class AuthenticationRepository extends GetxController {
 
   String get getPhoneNo => _firebaseUser.value?.phoneNumber ?? "";
 
+  bool get isCurrentUser => getUserID == _firebaseUser.value?.uid;
+
   /// Called Immediately when the [AuthenticationRepository]
   /// instance is created and ready to go ahead.
   @override

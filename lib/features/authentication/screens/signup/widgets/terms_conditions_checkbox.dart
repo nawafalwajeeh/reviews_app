@@ -28,38 +28,40 @@ class TermsAndConditionsCheckbox extends StatelessWidget {
           ),
         ),
         const SizedBox(width: AppSizes.spaceBtwItems),
-        Text.rich(
-          TextSpan(
-            children: [
-              TextSpan(
-                text: '${AppTexts.iAgreeTo} ',
-                style: Theme.of(context).textTheme.bodySmall,
-              ),
-              TextSpan(
-                text: '${AppTexts.privacyPolicy} ',
-                style: Theme.of(context).textTheme.bodyMedium!.apply(
-                  color: dark ? AppColors.white : AppColors.primaryColor,
-                  decoration: TextDecoration.underline,
-                  decorationColor: dark
-                      ? AppColors.white
-                      : AppColors.primaryColor,
+        Expanded(
+          child: Text.rich(
+            TextSpan(
+              children: [
+                TextSpan(
+                  text: '${AppTexts.iAgreeTo} ',
+                  style: Theme.of(context).textTheme.bodySmall,
                 ),
-              ),
-              TextSpan(
-                text: '${AppTexts.and} ',
-                style: Theme.of(context).textTheme.bodySmall,
-              ),
-              TextSpan(
-                text: AppTexts.termsOfUse,
-                style: Theme.of(context).textTheme.bodyMedium!.apply(
-                  color: dark ? AppColors.white : AppColors.primaryColor,
-                  decoration: TextDecoration.underline,
-                  decorationColor: dark
-                      ? AppColors.white
-                      : AppColors.primaryColor,
+                TextSpan(
+                  text: '${AppTexts.privacyPolicy} ',
+                  style: Theme.of(context).textTheme.bodyMedium!.apply(
+                    color: dark ? AppColors.white : AppColors.primaryColor,
+                    decoration: TextDecoration.underline,
+                    decorationColor: dark
+                        ? AppColors.white
+                        : AppColors.primaryColor,
+                  ),
                 ),
-              ),
-            ],
+                TextSpan(
+                  text: '${AppTexts.and} ',
+                  style: Theme.of(context).textTheme.bodySmall,
+                ),
+                TextSpan(
+                  text: AppTexts.termsOfUse,
+                  style: Theme.of(context).textTheme.bodyMedium!.apply(
+                    color: dark ? AppColors.white : AppColors.primaryColor,
+                    decoration: TextDecoration.underline,
+                    decorationColor: dark
+                        ? AppColors.white
+                        : AppColors.primaryColor,
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ],

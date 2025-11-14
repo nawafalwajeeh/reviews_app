@@ -111,7 +111,7 @@ class PlaceCardHorizontal extends StatelessWidget {
                   Positioned(
                     left: AppSizes.sm,
                     top: AppSizes.sm,
-                    child: PlaceRatingBadge(rating: place.rating),
+                    child: PlaceRatingBadge(rating: place.averageRating),
                   ),
 
                   /// -- Favourite Icon (Top Right)

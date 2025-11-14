@@ -105,7 +105,7 @@ class PlaceImageSlider extends StatelessWidget {
                           const Icon(Icons.star, color: Colors.amber, size: 20),
                           const SizedBox(width: AppSizes.xs),
                           Text(
-                            '${place.rating.toStringAsFixed(1)} (${place.reviewsCount} reviews)',
+                            '${place.averageRating.toStringAsFixed(1)} (${place.reviewsCount} reviews)',
                             // '${place.reviewsCount} reviews',
                             style: Theme.of(context).textTheme.bodyLarge!
                                 .copyWith(color: Colors.white),

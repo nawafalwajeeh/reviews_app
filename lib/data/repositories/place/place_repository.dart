@@ -177,14 +177,14 @@ class PlaceRepository extends GetxController {
       // limited or unlimited based on the limit parameter
       QuerySnapshot placeCategoryQuery = limit == -1
           ? await _db
-              .collection('PlaceCategory')
-              .where('categoryId', isEqualTo: categoryId)
-              .get()
+                .collection('PlaceCategory')
+                .where('categoryId', isEqualTo: categoryId)
+                .get()
           : await _db
-              .collection('PlaceCategory')
-              .where('categoryId', isEqualTo: categoryId)
-              .limit(limit)
-              .get();
+                .collection('PlaceCategory')
+                .where('categoryId', isEqualTo: categoryId)
+                .limit(limit)
+                .get();
 
       // 2. Extract placeIds from the documents
       final placeIds = placeCategoryQuery.docs
@@ -222,7 +222,7 @@ class PlaceRepository extends GetxController {
     } catch (e) {
       throw 'Something went wrong. Please try again.';
     }
-  }  
+  }
 
   /// -- Create new place
   Future<String> createPlace(PlaceModel place) async {
@@ -399,6 +399,72 @@ class PlaceRepository extends GetxController {
     }
   }
 
+  /// Decrements the total review count and the count for the specific rating
+  /// within the RatingDistribution map when a review is **deleted**.
+  /// The rating is expected to be a whole number (1-5).
+  Future<void> removeReviewRating(String placeId, int ratingToRemove) async {
+    try {
+      final placeRef = _db.collection('Places').doc(placeId);
+      final starKey = ratingToRemove.toString();
+
+      // Basic input validation: ensure rating is within 1-5 range.
+      if (ratingToRemove < 1 || ratingToRemove > 5) return;
+
+      // Use Firestore's atomic increment feature with a negative value (-1)
+      await placeRef.update({
+        // 1. Decrement the total number of reviews
+        'ReviewCount': FieldValue.increment(-1),
+        // 2. Decrement the count for this specific star rating in the Map
+        'RatingDistribution.$starKey': FieldValue.increment(-1),
+      });
+    } on FirebaseException catch (e) {
+      throw AppFirebaseException(e.code).message;
+    } on PlatformException catch (e) {
+      throw AppPlatformException(e.code).message;
+    } catch (e) {
+      throw 'Something went wrong while removing review rating. Please try again.';
+    }
+  }
+
+  /// Handles the change in rating when a user **edits** an existing review.
+  /// It decrements the old rating's count and increments the new rating's count
+  /// in the RatingDistribution map.
+  ///
+  /// The overall ReviewCount is NOT modified since the review still exists.
+  Future<void> updateRatingChange({
+    required String placeId,
+    required int oldRating,
+    required int newRating,
+  }) async {
+    // Optimization: If the ratings are the same, no database update is necessary.
+    if (oldRating == newRating) return;
+
+    try {
+      final placeRef = _db.collection('Places').doc(placeId);
+      final oldStarKey = oldRating.toString();
+      final newStarKey = newRating.toString();
+
+      // Basic input validation: ensure both ratings are within 1-5 range.
+      if (oldRating < 1 || oldRating > 5 || newRating < 1 || newRating > 5) {
+        return;
+      }
+
+      await placeRef.update({
+        // 1. Decrement the count of the old rating
+        'RatingDistribution.$oldStarKey': FieldValue.increment(-1),
+        // 2. Increment the count of the new rating
+        'RatingDistribution.$newStarKey': FieldValue.increment(1),
+        // Note: ReviewCount is deliberately unchanged here.
+      });
+    } on FirebaseException catch (e) {
+      throw AppFirebaseException(e.code).message;
+    } on PlatformException catch (e) {
+      throw AppPlatformException(e.code).message;
+    } catch (e) {
+      throw 'Something went wrong while updating review rating change. Please try again.';
+    }
+  }
+
   /// Updates the total review count and calculates the new average rating for a place.
   Future<void> updatePlaceRatingStatistics(
     String placeId,
@@ -407,38 +473,31 @@ class PlaceRepository extends GetxController {
     try {
       final placeRef = _db.collection('Places').doc(placeId);
 
-      await _db.runTransaction((transaction) async {
-        final placeSnapshot = await transaction.get(placeRef);
+      // 1. Determine the star key (1-5) for the distribution map.
+      // We round the newRating to the nearest whole number to use as the distribution key.
+      final starKey = newRating.round().toString();
 
-        if (!placeSnapshot.exists) {
-          throw Exception('Place not found for rating update.');
-        }
+      // Guard: Ensure the star key is valid (1, 2, 3, 4, 5)
+      if (!['1', '2', '3', '4', '5'].contains(starKey)) {
+        // Log this issue if it happens, but shouldn't for typical 1-5 star systems.
+        throw Exception(
+          'Invalid rating value ($newRating) received for distribution update.',
+        );
+      }
 
-        final data = placeSnapshot.data()!;
-
-        // Get current statistics (using safe access with default values)
-        final currentReviewCount = (data['ReviewCount'] ?? 0).toInt();
-        // Assuming 'AverageRating' is stored as a double
-        final currentAverageRating = (data['Rating'] ?? 0.0).toDouble();
-
-        // 1. Calculate the total sum of all previous ratings
-        final totalRatingSum = currentAverageRating * currentReviewCount;
-
-        // 2. Calculate new count and new average
-        final newReviewCount = currentReviewCount + 1;
-        final newAverageRating = (totalRatingSum + newRating) / newReviewCount;
-
-        // 3. Update the document atomically
-        transaction.update(placeRef, {
-          'ReviewCount': newReviewCount,
-          // Store average rating rounded to 2 decimal places for cleanliness
-          'Rating': double.parse(newAverageRating.toStringAsFixed(2)),
-        });
+      // 2. Use Firestore's atomic increment feature for both the total count
+      // and the specific star rating count inside the RatingDistribution map.
+      await placeRef.update({
+        'ReviewCount': FieldValue.increment(1),
+        // This syntax uses dot notation to atomically increment a value inside a Map field.
+        'RatingDistribution.$starKey': FieldValue.increment(1),
       });
+
+      // 3. IMPORTANT: We no longer need to calculate and update 'AverageRating'
+      // because the PlaceModel recalculates the average from the RatingDistribution
+      // every time it reads the document.
     } on FirebaseException catch (e) {
       throw AppFirebaseException(e.code).message;
-    } on PlatformException catch (e) {
-      throw AppPlatformException(e.code).message;
     } catch (e) {
       throw 'Something went wrong while updating place rating. Please try again.';
     }

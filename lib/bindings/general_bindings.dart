@@ -17,6 +17,10 @@ class GeneralBindings extends Bindings {
     Get.put(AppNetworkManager(), permanent: true);
     Get.put(NotificationController());
 
+    /// -- User
+    Get.put(UserController());
+    Get.put(AddressController());
+
     /// -- Place
     Get.put(ImagesController());
     Get.put(MapController());
@@ -24,9 +28,5 @@ class GeneralBindings extends Bindings {
     Get.put(PlaceController());
     Get.put(GalleryController());
     Get.put(FavouritesController());
-
-    /// -- User
-    Get.put(UserController());
-    Get.put(AddressController());
   }
 }

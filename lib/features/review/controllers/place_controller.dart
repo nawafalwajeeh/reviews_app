@@ -16,6 +16,7 @@ import '../../../utils/constants/image_strings.dart';
 import '../../../utils/helpers/network_manager.dart';
 import '../../../utils/popups/full_screen_loader.dart';
 import '../../../utils/popups/loaders.dart';
+import '../../authentication/screens/signup/signup_screen.dart';
 import '../models/category_model.dart';
 import '../models/place_model.dart';
 
@@ -229,7 +230,15 @@ class PlaceController extends GetxController {
   /// -- Create new place
   Future<void> createPlace() async {
     try {
-      if (!userController.isAuthenticatedAndProceed(Get.context!)) {
+      if (AuthenticationRepository.instance.isGuestUser) {
+        AppLoaders.warningSnackBar(
+          title: 'Authentication Required',
+          message:
+              'Please sign in or create an account to save your favorite places.',
+        );
+
+        Get.to(() => const SignupScreen());
+
         return;
       }
 
@@ -301,7 +310,7 @@ class PlaceController extends GetxController {
             ? null
             : websiteUrlController.text.trim(),
         userId: userId,
-        rating: 0.0,
+        averageRating: 0.0,
         isFeatured: isFeatured.value,
         dateAdded: DateTime.now(),
         isFavorite: false,
@@ -355,7 +364,7 @@ class PlaceController extends GetxController {
   /// Get top rated/trending places (simple sort by rating)
   List<PlaceModel> get trendingPlaces {
     final copy = [...places];
-    copy.sort((a, b) => b.rating.compareTo(a.rating));
+    copy.sort((a, b) => b.averageRating.compareTo(a.averageRating));
     return copy.take(10).toList();
   }
 
@@ -453,7 +462,7 @@ class PlaceController extends GetxController {
             ? null
             : websiteUrlController.text.trim(),
         userId: AuthenticationRepository.instance.getUserID,
-        rating: 0.0, // Keep existing rating
+        averageRating: 0.0, // Keep existing rating
         isFeatured: isFeatured.value,
         dateAdded: DateTime.now(), // Keep original date
         isFavorite: false,

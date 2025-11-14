@@ -9,6 +9,7 @@ import '../../../data/repositories/place/place_repository.dart';
 import '../../../utils/helpers/network_manager.dart';
 import '../../../utils/popups/full_screen_loader.dart';
 import '../../../utils/popups/loaders.dart';
+import '../../authentication/screens/signup/signup_screen.dart';
 import '../models/reply_model.dart';
 import '../models/review_model.dart';
 
@@ -28,6 +29,8 @@ class ReviewController extends GetxController {
 
   // Reactive states for UI updates
   final rating = 0.0.obs;
+  final originalRating =
+      0.0.obs; // NEW: Stores the rating before editing starts
   final isLoading = false.obs;
   final existingReviewId = ''.obs;
   final isEditing = false.obs; // Start as false, will be set properly
@@ -48,17 +51,18 @@ class ReviewController extends GetxController {
 
   Future<void> fetchExistingReview() async {
     final userId = _authRepo.getUserID;
+    debugPrint('UserId: $userId');
     if (userId.isEmpty) return;
     try {
       final existing = await _reviewRepo.getExistingReview(userId, placeId);
+      debugPrint('reviewUserId: ${existing?.userId}');
       if (existing != null) {
         // Update reactive states
         existingReviewId.value = existing.id;
         rating.value = existing.rating;
-        
-        // FIX: Set isEditing based on whether we have an existing review
+        originalRating.value =
+            existing.rating; // CRITICAL: Store the original rating
         isEditing.value = false; // Start in read-only mode when review exists
-
         // Update non-reactive controller text
         reviewTextController.text = existing.reviewText;
       } else {
@@ -66,6 +70,7 @@ class ReviewController extends GetxController {
         existingReviewId.value = '';
         isEditing.value = true; // Enable editing for new reviews
         rating.value = 0.0;
+        originalRating.value = 0.0;
         reviewTextController.clear();
       }
 
@@ -73,7 +78,10 @@ class ReviewController extends GetxController {
       // ensuring the TextFormField picks up the initial/updated text.
       update();
     } catch (e) {
-      print('Error fetching existing review: $e');
+      AppLoaders.warningSnackBar(
+        title: 'Oh Snap!',
+        message: 'Error fetching existing review: $e',
+      );
     }
   }
 
@@ -83,14 +91,26 @@ class ReviewController extends GetxController {
   }
 
   void setRating(double newRating) {
-    // FIX: Allow rating changes when editing OR when creating new review
+    // Allow rating changes when editing OR when creating new review
     if (isEditing.value || existingReviewId.value.isEmpty) {
       rating.value = newRating;
     }
   }
 
   Future<void> submitReview() async {
+    final userId = _authRepo.getUserID;
     try {
+      if (AuthenticationRepository.instance.isGuestUser) {
+        AppLoaders.warningSnackBar(
+          title: 'Authentication Required',
+          message: 'Please sign in or create an account to add your review.',
+        );
+
+        Get.to(() => const SignupScreen());
+
+        return;
+      }
+
       // Start Loading
       isLoading.value = true;
       AppFullScreenLoader.openLoadingDialog(
@@ -116,19 +136,10 @@ class ReviewController extends GetxController {
         return;
       }
 
-      // 2. Get current user data
-      final userId = _authRepo.getUserID;
+      final newRating = rating.value;
+      final oldRating = originalRating.value;
 
-      if (userId.isEmpty) {
-        AppFullScreenLoader.stopLoading();
-        AppLoaders.errorSnackBar(
-          title: 'Authentication Error',
-          message: 'You must be logged in to post a review.',
-        );
-        AppFullScreenLoader.stopLoading();
-        return;
-      }
-
+      // 2. Get current user data (simplified placeholder)
       final userName = 'Current User (ID: ${userId.substring(0, 8)}...)';
       final userAvatar = 'https://placehold.co/40x40/007AFF/FFFFFF?text=U';
 
@@ -139,7 +150,7 @@ class ReviewController extends GetxController {
         userId: userId,
         userName: userName,
         userAvatar: userAvatar,
-        rating: rating.value,
+        rating: newRating,
         reviewText: reviewTextController.text.trim(),
         timestamp: DateTime.now(),
       );
@@ -148,23 +159,28 @@ class ReviewController extends GetxController {
       bool isUpdating = existingReviewId.value.isNotEmpty;
 
       if (isUpdating) {
+        // A. Update the review document
         await _reviewRepo.updateReview(reviewToSubmit);
+
+        // B. Update the Place's statistics if the rating has changed
+        if (newRating.round() != oldRating.round()) {
+          // : We need a dedicated PlaceRepository method for changing ratings
+          await _placeRepo.updateRatingChange(
+            placeId: placeId,
+            oldRating: oldRating.round(),
+            newRating: newRating.round(),
+          );
+        }
       } else {
-        await _reviewRepo.addReview(reviewToSubmit);
-        // After adding, re-fetch to capture the new mock ID
+        // A. Add the review document (Fix: removed duplicate call)
         await _reviewRepo.addReview(reviewToSubmit);
 
-        // NEW: Update rating distribution for NEW reviews only
-        await _reviewRepo.updateRatingDistribution(
-          placeId,
-          rating.value.round(), // Convert double to int (5.0 -> 5)
-        );
+        // B. Update the Place's statistics for a NEW review
+        // This method must now perform: ReviewCount + 1 AND RatingDistribution[newRating] + 1
+        await _placeRepo.updatePlaceRatingStatistics(placeId, newRating);
       }
 
-      // 5. Update the Place's overall rating statistics
-      await _placeRepo.updatePlaceRatingStatistics(placeId, rating.value);
-
-      // 6. Success feedback
+      // 5. Success feedback
       AppLoaders.successSnackBar(
         title: isUpdating ? 'Update Success!' : 'Submission Success!',
         message: isUpdating
@@ -172,16 +188,10 @@ class ReviewController extends GetxController {
             : 'Your review has been submitted.',
       );
 
-      // 7. Transition back to read-only view after successful submission/update
-      if (isUpdating) {
-        isEditing.value = false; // Go back to read-only mode after update
-      } else {
-        // For new reviews, fetch the newly created review to get its ID
-        await fetchExistingReview();
-      }
+      // 6. Transition back to read-only view after successful submission/update
+      await fetchExistingReview(); // Refetch to reset state, update ID (for new review), and update originalRating
 
       update(); // Refresh UI
-
     } catch (e) {
       AppLoaders.errorSnackBar(
         title: 'Submission Failed',
@@ -205,11 +215,16 @@ class ReviewController extends GetxController {
         AppImages.docerAnimation,
       );
 
+      // Before deleting the review, we must decrement the distribution count
+      // in the Place document.
+      await _placeRepo.removeReviewRating(placeId, rating.value.round());
+
       await _reviewRepo.deleteReview(existingReviewId.value);
 
       // Reset state
       existingReviewId.value = '';
       rating.value = 0.0;
+      originalRating.value = 0.0;
       reviewTextController.clear();
       isEditing.value = true; // Enable editing after deletion
 
@@ -251,6 +266,7 @@ class ReviewController extends GetxController {
 // import '../../../utils/helpers/network_manager.dart';
 // import '../../../utils/popups/full_screen_loader.dart';
 // import '../../../utils/popups/loaders.dart';
+// import '../../authentication/screens/signup/signup_screen.dart';
 // import '../models/reply_model.dart';
 // import '../models/review_model.dart';
 
@@ -272,7 +288,7 @@ class ReviewController extends GetxController {
 //   final rating = 0.0.obs;
 //   final isLoading = false.obs;
 //   final existingReviewId = ''.obs;
-//   final isEditing = true.obs;
+//   final isEditing = false.obs; // Start as false, will be set properly
 
 //   // reply/edit targets
 //   final replyingTo = Rxn<ReplyModel>();
@@ -290,21 +306,22 @@ class ReviewController extends GetxController {
 
 //   Future<void> fetchExistingReview() async {
 //     final userId = _authRepo.getUserID;
+//     debugPrint('UserId: $userId');
 //     if (userId.isEmpty) return;
 //     try {
 //       final existing = await _reviewRepo.getExistingReview(userId, placeId);
+//       debugPrint('reviewUserId: ${existing?.userId}');
 //       if (existing != null) {
 //         // Update reactive states
 //         existingReviewId.value = existing.id;
 //         rating.value = existing.rating;
-//         isEditing.value = false; // Start in read-only mode
-
+//         isEditing.value = false; // Start in read-only mode when review exists
 //         // Update non-reactive controller text
 //         reviewTextController.text = existing.reviewText;
 //       } else {
 //         // Reset states for a new review
 //         existingReviewId.value = '';
-//         isEditing.value = true;
+//         isEditing.value = true; // Enable editing for new reviews
 //         rating.value = 0.0;
 //         reviewTextController.clear();
 //       }
@@ -313,22 +330,39 @@ class ReviewController extends GetxController {
 //       // ensuring the TextFormField picks up the initial/updated text.
 //       update();
 //     } catch (e) {
-//       print('Error fetching existing review: $e');
+//       AppLoaders.warningSnackBar(
+//         title: 'Oh Snap!',
+//         message: 'Error fetching existing review: $e',
+//       );
 //     }
 //   }
 
 //   void enableEditing() {
 //     isEditing.value = true;
+//     update(); // Important: notify listeners
 //   }
 
 //   void setRating(double newRating) {
-//     if (isEditing.value) {
+//     // Allow rating changes when editing OR when creating new review
+//     if (isEditing.value || existingReviewId.value.isEmpty) {
 //       rating.value = newRating;
 //     }
 //   }
 
 //   Future<void> submitReview() async {
+//       final userId = _authRepo.getUserID;
 //     try {
+//       if (AuthenticationRepository.instance.isGuestUser) {
+//         AppLoaders.warningSnackBar(
+//           title: 'Authentication Required',
+//           message: 'Please sign in or create an account to add your review.',
+//         );
+
+//         Get.to(() => const SignupScreen());
+
+//         return;
+//       }
+
 //       // Start Loading
 //       isLoading.value = true;
 //       AppFullScreenLoader.openLoadingDialog(
@@ -355,17 +389,8 @@ class ReviewController extends GetxController {
 //       }
 
 //       // 2. Get current user data
-//       final userId = _authRepo.getUserID;
 
-//       if (userId.isEmpty) {
-//         AppFullScreenLoader.stopLoading();
-//         AppLoaders.errorSnackBar(
-//           title: 'Authentication Error',
-//           message: 'You must be logged in to post a review.',
-//         );
-//         AppFullScreenLoader.stopLoading();
-//         return;
-//       }
+      
 
 //       final userName = 'Current User (ID: ${userId.substring(0, 8)}...)';
 //       final userAvatar = 'https://placehold.co/40x40/007AFF/FFFFFF?text=U';
@@ -403,7 +428,6 @@ class ReviewController extends GetxController {
 //       await _placeRepo.updatePlaceRatingStatistics(placeId, rating.value);
 
 //       // 6. Success feedback
-//       // AppLoaders.stopLoading();
 //       AppLoaders.successSnackBar(
 //         title: isUpdating ? 'Update Success!' : 'Submission Success!',
 //         message: isUpdating
@@ -412,14 +436,14 @@ class ReviewController extends GetxController {
 //       );
 
 //       // 7. Transition back to read-only view after successful submission/update
-//       isEditing.value = false;
+//       if (isUpdating) {
+//         isEditing.value = false; // Go back to read-only mode after update
+//       } else {
+//         // For new reviews, fetch the newly created review to get its ID
+//         await fetchExistingReview();
+//       }
 
-//       AppLoaders.successSnackBar(
-//         title: 'Success!',
-//         message: 'Your review has been submitted and the place rating updated.',
-//       );
-
-//       await fetchExistingReview();
+//       update(); // Refresh UI
 //     } catch (e) {
 //       AppLoaders.errorSnackBar(
 //         title: 'Submission Failed',
@@ -431,7 +455,6 @@ class ReviewController extends GetxController {
 //     }
 //   }
 
-//   // In ReviewController
 //   Future<void> deleteReview() async {
 //     try {
 //       if (existingReviewId.value.isEmpty) return;
@@ -450,7 +473,7 @@ class ReviewController extends GetxController {
 //       existingReviewId.value = '';
 //       rating.value = 0.0;
 //       reviewTextController.clear();
-//       isEditing.value = true;
+//       isEditing.value = true; // Enable editing after deletion
 
 //       AppFullScreenLoader.stopLoading();
 //       AppLoaders.successSnackBar(
@@ -466,4 +489,15 @@ class ReviewController extends GetxController {
 //       isLoading.value = false;
 //     }
 //   }
+
+//   // Helper method to check if text field should be enabled
+//   bool get isTextFieldEnabled {
+//     return isEditing.value || existingReviewId.value.isEmpty;
+//   }
+
+//   // Helper method to check if rating should be enabled
+//   bool get isRatingEnabled {
+//     return isEditing.value || existingReviewId.value.isEmpty;
+//   }
 // }
+

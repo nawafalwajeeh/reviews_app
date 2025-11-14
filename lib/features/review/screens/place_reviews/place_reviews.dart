@@ -48,14 +48,14 @@ class PlaceReviewsScreen extends StatelessWidget {
                   const SizedBox(height: AppSizes.spaceBtwItems),
 
                   OverallPlaceRating(
-                    rating: place.rating.toStringAsFixed(1),
+                    rating: place.averageRating.toStringAsFixed(1),
                     totalReviews: place.reviewsCount,
                     ratingDistribution:
                         place.ratingDistribution, // PASS REAL DATA
                   ),
 
                   /// Rating Bar Indicator
-                  AppRatingBarIndicator(rating: place.rating),
+                  AppRatingBarIndicator(rating: place.averageRating),
                   Text(
                     '${place.reviewsCount} reviews',
                     style: Theme.of(context).textTheme.bodySmall,

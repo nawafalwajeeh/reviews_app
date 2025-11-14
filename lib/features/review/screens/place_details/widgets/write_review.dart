@@ -2,7 +2,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:get/get.dart';
-
 import '../../../controllers/review_controller.dart';
 
 class WriteReviewSection extends StatelessWidget {
@@ -78,24 +77,6 @@ class WriteReviewSection extends StatelessWidget {
                     const SizedBox(height: 8),
 
                     /// Rating Stars
-                    // Center(
-                    //   child: Obx(
-                    //     () => RatingBar.builder(
-                    //       initialRating: controller.rating.value,
-                    //       minRating: 1,
-                    //       direction: Axis.horizontal,
-                    //       allowHalfRating: true,
-                    //       itemCount: 5,
-                    //       itemSize: 36,
-                    //       unratedColor: Colors.grey[300],
-                    //       itemBuilder: (context, _) =>
-                    //           const Icon(Icons.star, color: Color(0xFFFFCC00)),
-                    //       onRatingUpdate: controller.setRating,
-                    //       ignoreGestures: !controller.isEditing.value,
-                    //     ),
-                    //   ),
-                    // ),
-                    /// Rating Stars
                     Center(
                       child: Obx(
                         () => RatingBar.builder(
@@ -116,30 +97,7 @@ class WriteReviewSection extends StatelessWidget {
                     ),
                     const SizedBox(height: 16),
 
-                    // /// Review Text Field
-                    // TextFormField(
-                    //   controller: controller.reviewTextController,
-                    //   maxLines: 4,
-                    //   enabled: controller.isEditing.value,
-                    //   decoration: InputDecoration(
-                    //     hintText: 'Share your experience...',
-                    //     border: OutlineInputBorder(
-                    //       borderRadius: BorderRadius.circular(12),
-                    //       borderSide: BorderSide.none,
-                    //     ),
-                    //     filled: true,
-                    //     fillColor: Theme.of(context).colorScheme.surface,
-                    //   ),
-                    //   validator: (value) {
-                    //     if (controller.isEditing.value &&
-                    //         (value == null || value.trim().isEmpty)) {
-                    //       return 'Review text is required.';
-                    //     }
-                    //     return null;
-                    //   },
-                    // ),
-
-                    /// Review Text Field - FIXED
+                    /// Review Text Field
                     Obx(() {
                       return TextFormField(
                         controller: controller.reviewTextController,

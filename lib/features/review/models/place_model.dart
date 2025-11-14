@@ -11,7 +11,7 @@ class PlaceModel {
   final DateTime? dateAdded;
   final String location;
   final String categoryId;
-  final double rating;
+  final double averageRating;
   final int reviewsCount;
   final List<String>? tags;
   final double? latitude;
@@ -28,7 +28,7 @@ class PlaceModel {
     required this.location,
     required this.categoryId,
     required this.description,
-    required this.rating,
+    required this.averageRating,
     this.reviewsCount = 0,
     required this.userId,
     required this.thumbnail,
@@ -58,7 +58,7 @@ class PlaceModel {
     DateTime? dateAdded,
     String? location,
     String? categoryId,
-    double? rating,
+    double? averageRating,
     int? reviewsCount,
     List<String>? tags,
     double? latitude,
@@ -79,7 +79,7 @@ class PlaceModel {
       dateAdded: dateAdded ?? this.dateAdded,
       location: location ?? this.location,
       categoryId: categoryId ?? this.categoryId,
-      rating: rating ?? this.rating,
+      averageRating: averageRating ?? this.averageRating,
       reviewsCount: reviewsCount ?? this.reviewsCount,
       tags: tags ?? this.tags,
       ratingDistribution: ratingDistribution ?? this.ratingDistribution,
@@ -99,7 +99,7 @@ class PlaceModel {
     location: '',
     categoryId: '',
     description: '',
-    rating: 0.0,
+    averageRating: 0.0,
     reviewsCount: 0, // Default count
     thumbnail: '',
     images: [],
@@ -116,7 +116,7 @@ class PlaceModel {
       'UserId': userId,
       'Location': location,
       'CategoryId': categoryId,
-      'Rating': rating,
+      'AverageRating': averageRating,
       'Thumbnail': thumbnail,
       'Images': images ?? [],
       'Tags': tags ?? [],
@@ -130,6 +130,24 @@ class PlaceModel {
       'RatingDistribution': ratingDistribution,
       // 'OpeningHourse': openingHourse,
     };
+  }
+
+  static double _calculateAverageRating(Map<String, int> distribution) {
+    int totalScore =
+        (distribution['5']! * 5) +
+        (distribution['4']! * 4) +
+        (distribution['3']! * 3) +
+        (distribution['2']! * 2) +
+        (distribution['1']! * 1);
+
+    int totalReviews = distribution.values.fold<int>(
+      0,
+      (sum, count) => sum + count,
+    );
+
+    if (totalReviews == 0) return 0.0;
+
+    return totalScore / totalReviews;
   }
 
   /// -- Map Json oriented document snapshot from Firebase to Model
@@ -150,6 +168,13 @@ class PlaceModel {
       '1': (ratingDistributionData['1'] ?? 0).toInt(),
     };
 
+    // 2. Calculate the definitive average rating and total count from the distribution map
+    final calculatedAverageRating = _calculateAverageRating(ratingDistribution);
+    final calculatedReviewCount = ratingDistribution.values.fold<int>(
+      0,
+      (int sum, int count) => sum + count,
+    );
+
     return PlaceModel(
       id: document.id,
       title: data['Title'] ?? '',
@@ -157,8 +182,10 @@ class PlaceModel {
       description: data['Description'] ?? '',
       location: data['Location'] ?? '',
       categoryId: data['CategoryId'] ?? '',
-      rating: double.parse((data['Rating'] ?? 0.0).toString()),
-      reviewsCount: (data['ReviewCount'] ?? 0).toInt(),
+      // averageRating: double.parse((data['Rating'] ?? 0.0).toString()),
+      // reviewsCount: (data['ReviewCount'] ?? 0).toInt(),
+      averageRating: calculatedAverageRating,
+      reviewsCount: calculatedReviewCount,
       thumbnail: data['Thumbnail'] ?? '',
       isFeatured: data['IsFeatured'] ?? false,
       dateAdded: data['DateAdded'] != null
@@ -192,6 +219,13 @@ class PlaceModel {
       '2': (ratingDistributionData['2'] ?? 0).toInt(),
       '1': (ratingDistributionData['1'] ?? 0).toInt(),
     };
+
+    // 2. Calculate the definitive average rating and total count from the distribution map
+    final calculatedAverageRating = _calculateAverageRating(ratingDistribution);
+    final calculatedReviewCount = ratingDistribution.values.fold<int>(
+      0,
+      (int sum, int count) => sum + count,
+    );
     return PlaceModel(
       id: document.id,
       title: data['Title'] ?? '',
@@ -199,8 +233,10 @@ class PlaceModel {
       description: data['Description'] ?? '',
       location: data['Location'] ?? '',
       categoryId: data['CategoryId'] ?? '',
-      rating: double.parse((data['Rating'] ?? 0.0).toString()),
-      reviewsCount: (data['ReviewCount'] ?? 0).toInt(),
+      // averageRating: double.parse((data['Rating'] ?? 0.0).toString()),
+      // reviewsCount: (data['ReviewCount'] ?? 0).toInt(),
+      averageRating: calculatedAverageRating,
+      reviewsCount: calculatedReviewCount,
       thumbnail: data['Thumbnail'] ?? '',
       isFeatured: data['IsFeatured'] ?? false,
       dateAdded: data['DateAdded'] != null

@@ -21,7 +21,7 @@ class RatingAndShareWidget extends StatelessWidget {
             const Icon(Iconsax.star5, color: Colors.amber, size: 24),
             const SizedBox(width: AppSizes.xs),
             Text(
-              place.rating.toString(),
+              place.averageRating.toString(),
               style: Theme.of(context).textTheme.headlineSmall,
             ),
             const SizedBox(width: AppSizes.sm),
