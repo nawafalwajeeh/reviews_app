@@ -16,11 +16,17 @@ class PlaceCardHorizontal extends StatelessWidget {
   final PlaceModel place;
   final double?
   height; // Still allowing height to be set, but we'll manage content
+  final bool showEditOptions;
+  final VoidCallback? onEdit;
+  final VoidCallback? onDelete;
 
   const PlaceCardHorizontal({
     super.key,
     required this.place,
-    this.height = 180, // Keeping this default height for the *entire card*
+    this.height = 180,
+    this.showEditOptions = false,
+    this.onEdit,
+    this.onDelete,
   });
 
   @override
@@ -115,6 +121,13 @@ class PlaceCardHorizontal extends StatelessWidget {
                     child: AppFavouriteIcon(placeId: place.id),
                   ),
 
+                  if (showEditOptions)
+                    Positioned(
+                      right: 16,
+                      bottom: 16,
+                      child: _buildEditDeleteButtons(),
+                    ),
+
                   /// -- Place Title and Location (Overlayed at the Bottom)
                   Positioned(
                     left: AppSizes.md, // Increased padding
@@ -197,6 +210,31 @@ class PlaceCardHorizontal extends StatelessWidget {
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _buildEditDeleteButtons() {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.black54,
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          // Edit Button
+          IconButton(
+            icon: const Icon(Icons.edit, size: 18, color: Colors.white),
+            onPressed: onEdit,
+          ),
+
+          // Delete Button
+          IconButton(
+            icon: const Icon(Icons.delete, size: 18, color: Colors.red),
+            onPressed: onDelete,
+          ),
+        ],
       ),
     );
   }

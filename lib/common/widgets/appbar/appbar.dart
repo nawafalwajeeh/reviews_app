@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:reviews_app/common/widgets/icons/circular_icon.dart';
 import 'package:reviews_app/utils/constants/colors.dart';

@@ -77,7 +77,6 @@ class AuthenticationRepository extends GetxController {
       // show [OnBoardingScreen] to the user the firstTime only
       // Local Storage: User is new or Logged out! If new then write IsFirstTime Local storage variable = true.
       deviceStorage.writeIfNull('IsFirstTime', true);
-
       deviceStorage.read('IsFirstTime') != true
           ? Get.offAll(() => const LoginScreen())
           : Get.offAll(() => const OnBoardingScreen());

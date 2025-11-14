@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:reviews_app/data/repositories/authentication/authentication_repository.dart';
 import 'package:reviews_app/data/services/cloud_storage/supabase_storage_service.dart';
+import 'package:reviews_app/features/personalization/controllers/user_controller.dart';
 import 'package:reviews_app/features/review/controllers/category_controller.dart';
 import 'package:reviews_app/features/review/models/place_category_model.dart';
 import 'package:uuid/uuid.dart';
@@ -41,6 +42,7 @@ class PlaceController extends GetxController {
   TextEditingController phoneController = TextEditingController();
   TextEditingController websiteUrlController = TextEditingController();
   GlobalKey<FormState> placeFormKey = GlobalKey<FormState>();
+  final userController = UserController.instance;
 
   final RxString selectedLocationName = ''.obs;
   // --- SELECTION & STATE VARIABLES ---
@@ -227,6 +229,10 @@ class PlaceController extends GetxController {
   /// -- Create new place
   Future<void> createPlace() async {
     try {
+      if (!userController.isAuthenticatedAndProceed(Get.context!)) {
+        return;
+      }
+
       // Start Loading & Form Validation
       AppFullScreenLoader.openLoadingDialog(
         'Creating new place...',

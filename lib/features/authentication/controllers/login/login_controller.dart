@@ -21,17 +21,14 @@ class LoginController extends GetxController {
   final password = TextEditingController();
   GlobalKey<FormState> loginFormKey = GlobalKey<FormState>();
 
-  final userController = Get.put(UserController());
+  // final userController = Get.put(UserController());
+  final userController = UserController.instance;
 
   @override
   void onInit() {
     if (AuthenticationRepository.instance.authUser != null) {
       email.text = localStorage.read('REMEMBER_ME_EMAIL') ?? '';
       password.text = localStorage.read('REMEMBER_ME_PASSWORD') ?? '';
-
-      if (email.text.isNotEmpty) {
-        rememberMe.value = true;
-      }
     }
     super.onInit();
   }
@@ -62,10 +59,6 @@ class LoginController extends GetxController {
       if (rememberMe.value) {
         localStorage.write('REMEMBER_ME_EMAIL', email.text.trim());
         localStorage.write('REMEMBER_ME_PASSWORD', password.text.trim());
-      } else {
-        // Clear saved data if the user unchecks "Remember Me"
-        localStorage.remove('REMEMBER_ME_EMAIL');
-        localStorage.remove('REMEMBER_ME_PASSWORD');
       }
 
       // Login user using Email & Password Authentication
@@ -103,7 +96,11 @@ class LoginController extends GetxController {
       }
 
       // Perform Anonymous Sign-In via Authentication Repository
-      await AuthenticationRepository.instance.signInAnonymously();
+      final userCredentials = await AuthenticationRepository.instance
+          .signInAnonymously();
+
+      // Save User Data to Firebase Firestore db
+      await userController.saveUserRecordFromCredentials(userCredentials);
 
       // Remove Loader
       AppFullScreenLoader.stopLoading();

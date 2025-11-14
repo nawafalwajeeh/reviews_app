@@ -106,7 +106,8 @@ class PlaceDetailsScreen extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           AppSectionHeading(
-                            title: 'Reviews(${place.reviewsCount})',
+                            // title: 'Reviews(${place.reviewsCount})',
+                            title: 'Comments',
                             showActionButton: false,
                           ),
                           IconButton(

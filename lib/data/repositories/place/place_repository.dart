@@ -118,33 +118,88 @@ class PlaceRepository extends GetxController {
   /// If the limit is -1, retrieves all products for the category;
   ///  otherwise, limits the result based on the provided limit.
   /// Returns a list of [PlaceModel] objects.
+  // Future<List<PlaceModel>> getPlacesForCategory(
+  //   String categoryId, {
+  //   int limit = 4,
+  // }) async {
+  //   try {
+  //     // Query to get all documnets where placeId matches the provided categoryId & Fetch
+  //     // limited or unlimited based on the limit parameter
+  //     QuerySnapshot placeCategoryQuery = limit == -1
+  //         ? await _db
+  //               .collection('PlaceCategory')
+  //               .where('categoryId', isEqualTo: categoryId)
+  //               .get()
+  //         : await _db
+  //               .collection('PlaceCategory')
+  //               .where('categoryId', isEqualTo: categoryId)
+  //               .limit(limit)
+  //               .get();
+
+  //     // Extract placeIds from the documents
+  //     final placeIds = placeCategoryQuery.docs
+  //         .map((doc) => PlaceCategoryModel.fromSnapshot(doc).placeId)
+  //         .toList();
+  //     // Query to get all documents where the placeId is in the list of placeIds
+  //     // FieldPath.documentId to query documents in Collection
+  //     final placesQuery = await _db
+  //         .collection('Places')
+  //         // .where(FieldPath.documentId, whereIn: placeIds)
+  //         .where('Id', whereIn: placeIds)
+  //         .get();
+
+  //     debugPrint(
+  //       'Fetched ${placesQuery.docs.length} places for category $categoryId',
+  //     );
+  //     debugPrint('placeIds: $placeIds');
+
+  //     // Extract relevant data from the documents
+  //     List<PlaceModel> places = placesQuery.docs
+  //         .map((doc) => PlaceModel.fromSnapshot(doc))
+  //         .toList();
+
+  //     return places;
+  //   } on FirebaseException catch (e) {
+  //     throw AppFirebaseException(e.code).message;
+  //   } on PlatformException catch (e) {
+  //     throw AppPlatformException(e.code).message;
+  //   } catch (e) {
+  //     throw 'Something went wrong. Please try again.';
+  //   }
+  // }
+
   Future<List<PlaceModel>> getPlacesForCategory(
     String categoryId, {
     int limit = 4,
   }) async {
     try {
-      // Query to get all documnets where placeId matches the provided categoryId & Fetch
+      // 1. Query to get all documnets where placeId matches the provided categoryId & Fetch
       // limited or unlimited based on the limit parameter
       QuerySnapshot placeCategoryQuery = limit == -1
           ? await _db
-                .collection('PlaceCategory')
-                .where('categoryId', isEqualTo: categoryId)
-                .get()
+              .collection('PlaceCategory')
+              .where('categoryId', isEqualTo: categoryId)
+              .get()
           : await _db
-                .collection('PlaceCategory')
-                .where('categoryId', isEqualTo: categoryId)
-                .limit(limit)
-                .get();
+              .collection('PlaceCategory')
+              .where('categoryId', isEqualTo: categoryId)
+              .limit(limit)
+              .get();
 
-      // Extract placeIds from the documents
+      // 2. Extract placeIds from the documents
       final placeIds = placeCategoryQuery.docs
           .map((doc) => PlaceCategoryModel.fromSnapshot(doc).placeId)
           .toList();
-      // Query to get all documents where the placeId is in the list of placeIds
-      // FieldPath.documentId to query documents in Collection
+
+      // --- CRITICAL FIX: Prevent invalid `whereIn` query ---
+      // If placeIds is empty, the subsequent Firebase query will fail and throw an exception.
+      // We return an empty list immediately to signal 'No Data Found' successfully.
+      if (placeIds.isEmpty) return [];
+
+      // 3. Query to get all documents where the placeId is in the list of placeIds
       final placesQuery = await _db
           .collection('Places')
-          // .where(FieldPath.documentId, whereIn: placeIds)
+          // .where(FieldPath.documentId, whereIn: placeIds) // Assuming 'Id' is the document ID
           .where('Id', whereIn: placeIds)
           .get();
 
@@ -153,20 +208,21 @@ class PlaceRepository extends GetxController {
       );
       debugPrint('placeIds: $placeIds');
 
-      // Extract relevant data from the documents
+      // 4. Extract relevant data from the documents
       List<PlaceModel> places = placesQuery.docs
           .map((doc) => PlaceModel.fromSnapshot(doc))
           .toList();
 
       return places;
     } on FirebaseException catch (e) {
+      // Re-throw the message to be handled by the FutureBuilder's snapshot.hasError
       throw AppFirebaseException(e.code).message;
     } on PlatformException catch (e) {
       throw AppPlatformException(e.code).message;
     } catch (e) {
       throw 'Something went wrong. Please try again.';
     }
-  }
+  }  
 
   /// -- Create new place
   Future<String> createPlace(PlaceModel place) async {

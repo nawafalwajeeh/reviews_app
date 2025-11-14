@@ -60,7 +60,8 @@ final class AppImages {
       "assets/images/animations/141397-loading-juggle.json";
   static String cloudUploadingAnimation =
       "assets/images/animations/cloud-uploading-animation.json";
-  static String uploadingAnimation = "assets/images/animations/uploading-document.json";    
+  static String uploadingAnimation =
+      "assets/images/animations/uploading-document.json";
   static String loaderAnimation =
       "assets/images/animations/loader-animation.json";
 
@@ -99,6 +100,7 @@ final class AppImages {
   static const String paytm = "assets/icons/payment_methods/paytm.png";
   static const String successfulPaymentIcon =
       "assets/icons/payment_methods/successful_payment_icon.png";
+  static const String kuraimiBank = "assets/icons/payment_methods/kuraimi.png";
 
   // -- Location
   static const String locationPin = "assets/icons/location/pin_location.png";

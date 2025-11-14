@@ -6,7 +6,7 @@ import 'package:reviews_app/features/review/models/category_model.dart';
 import 'package:reviews_app/features/review/screens/categories/all_categories.dart';
 import 'package:reviews_app/utils/constants/sizes.dart';
 
-import '../../../../features/review/screens/categories/sub_categories.dart';
+import '../../../../features/review/screens/categories/category_places.dart';
 import '../../layouts/grid_layout.dart';
 import 'category_card.dart';
 
@@ -51,7 +51,7 @@ class CategoryGridList extends StatelessWidget {
           ),
           iconColor: CategoryMapper.getIconColor(category.iconColorValue),
           onTap: () {
-            Get.to(() => SubCategoriesScreen(category: category));
+            Get.to(() => CategoryPlacesScreen(category: category));
           },
         );
       },

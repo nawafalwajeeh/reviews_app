@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:reviews_app/features/review/screens/place/add_new_place.dart';
 import 'package:reviews_app/utils/constants/colors.dart';
 import 'package:reviews_app/utils/constants/sizes.dart';
 
@@ -25,7 +27,8 @@ class BusinessCard extends StatelessWidget {
 
           /// -- Define the gradient
           gradient: const LinearGradient(
-            colors: [AppColors.businessStartColor, AppColors.businessEndColor],
+            // colors: [AppColors.businessStartColor, AppColors.businessEndColor],
+            colors: [Color(0xFFB0E0FF), Color(0xFF5D6EA0)],
             stops: [0, 1],
             begin: Alignment.bottomRight,
             end: Alignment.topLeft,
@@ -76,7 +79,7 @@ class BusinessCard extends StatelessWidget {
 
                     /// Button
                     ElevatedButton(
-                      onPressed: () {},
+                      onPressed: () => Get.to(() => AddNewPlaceScreen()),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: AppColors.white,
                         foregroundColor: AppColors.primaryColor,

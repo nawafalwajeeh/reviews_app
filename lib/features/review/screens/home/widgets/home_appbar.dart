@@ -32,14 +32,12 @@ class HomeAppBar extends StatelessWidget {
             if (controller.profileLoading.value) {
               return const AppShimmerEffect(width: 80, height: 15);
             } else {
-              final fullName = controller.user.value.fullName.isNotEmpty
-                  ? controller.user.value.fullName
-                  : 'Guest User';
               return GestureDetector(
                 onTap: () => Get.toNamed(AppRoutes.userProfile),
                 child: Text(
-                  // controller.user.value.fullName,
-                  fullName,
+                  controller.user.value.fullName.isNotEmpty
+                      ? controller.user.value.fullName
+                      : 'Gest User',
                   style: Theme.of(
                     context,
                   ).textTheme.headlineSmall?.apply(color: AppColors.white),

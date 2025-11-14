@@ -5,6 +5,7 @@ import 'package:get_storage/get_storage.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:reviews_app/data/repositories/authentication/authentication_repository.dart';
 import 'package:reviews_app/data/repositories/user/user_repository.dart';
+import 'package:reviews_app/features/authentication/screens/signup/signup_screen.dart';
 import 'package:reviews_app/features/personalization/models/user_model.dart';
 import 'package:reviews_app/features/personalization/screens/profile/widgets/re_authenticate_user_login_form.dart';
 import 'package:reviews_app/utils/constants/image_strings.dart';
@@ -30,9 +31,15 @@ class UserController extends GetxController {
   GlobalKey<FormState> reAuthFormKey = GlobalKey<FormState>();
   final localStorage = GetStorage();
 
+  // @override
+  // void onInit() {
+  //   super.onInit();
+  //   fetchUserRecord();
+  // }
+
   @override
-  void onInit() {
-    super.onInit();
+  void onReady() {
+    super.onReady();
     fetchUserRecord();
   }
 
@@ -283,5 +290,24 @@ class UserController extends GetxController {
     } finally {
       imageUploading.value = false;
     }
+  }
+
+  bool isAuthenticatedAndProceed(BuildContext context) {
+    if (user.value.id!.isEmpty &&
+        AuthenticationRepository.instance.authUser!.isAnonymous) {
+      // Show a friendly message
+      AppLoaders.warningSnackBar(
+        title: 'Requires Login',
+        message: 'Please log in or create an account to use this feature.',
+      );
+
+      // Redirect to the Signup Screen
+      // Get.offAll(() => SignupScreen());
+      Get.to(() => SignupScreen());
+
+      return false;
+    }
+    // Proceed with the action
+    return true;
   }
 }

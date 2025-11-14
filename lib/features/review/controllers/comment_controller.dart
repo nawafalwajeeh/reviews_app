@@ -1,11 +1,12 @@
 // controllers/comment_controller.dart
 import 'package:get/get.dart';
 import '../../../data/repositories/comment/comment_repository.dart';
+import '../../../utils/popups/loaders.dart';
 import '../models/comment_model.dart';
 import '../../../data/repositories/authentication/authentication_repository.dart';
 
 class CommentController extends GetxController {
-   static CommentController get instance => Get.find();
+  static CommentController get instance => Get.find();
 
   final _commentRepository = Get.put(CommentRepository());
   final AuthenticationRepository authRepo = AuthenticationRepository.instance;
@@ -105,7 +106,10 @@ class CommentController extends GetxController {
       );
       _commentReactions[commentId] = reaction;
     } catch (e) {
-      print('Error loading user reaction: $e');
+      AppLoaders.errorSnackBar(
+        title: 'Oh Snap!',
+        message: 'Error loading user reaction: $e',
+      );
     }
   }
 
@@ -142,10 +146,16 @@ class CommentController extends GetxController {
       }
 
       _isLoading.value = false;
-      Get.snackbar('Success', 'Comment added successfully');
+      AppLoaders.successSnackBar(
+        title: 'Success',
+        message: 'Comment added successfully',
+      );
     } catch (e) {
       _isLoading.value = false;
-      Get.snackbar('Error', 'Failed to add comment: $e');
+      AppLoaders.errorSnackBar(
+        title: 'Oh Snap!',
+        message: 'Failed to add comment: $e',
+      );
     }
   }
 
@@ -176,10 +186,16 @@ class CommentController extends GetxController {
           updatedAt: DateTime.now(),
         );
         await _commentRepository.updateComment(updatedComment);
-        Get.snackbar('Success', 'Comment updated successfully');
+        AppLoaders.successSnackBar(
+          title: 'Success',
+          message: 'Comment updated successfully',
+        );
       }
     } catch (e) {
-      Get.snackbar('Error', 'Failed to update comment: $e');
+      AppLoaders.errorSnackBar(
+        title: 'Oh Snap!',
+        message: 'Failed to update comment: $e',
+      );
     }
   }
 
@@ -207,10 +223,16 @@ class CommentController extends GetxController {
         // Remove from local state
         _removeCommentFromState(commentId, comment.parentCommentId);
 
-        Get.snackbar('Success', 'Comment deleted successfully');
+        AppLoaders.successSnackBar(
+          title: 'Success',
+          message: 'Comment deleted successfully',
+        );
       }
     } catch (e) {
-      Get.snackbar('Error', 'Failed to delete comment: $e');
+      AppLoaders.errorSnackBar(
+        title: 'Oh Snap!',
+        message: 'Failed to delete comment: $e',
+      );
     }
   }
 
@@ -268,7 +290,10 @@ class CommentController extends GetxController {
       await _commentRepository.likeComment(commentId, userId, isLike);
       _loadUserReaction(commentId); // Reload reaction
     } catch (e) {
-      Get.snackbar('Error', 'Failed to react to comment: $e');
+      AppLoaders.errorSnackBar(
+        title: 'Oh Snap!',
+        message: 'Failed to react to comment: $e',
+      );
     }
   }
 
@@ -282,7 +307,10 @@ class CommentController extends GetxController {
     try {
       final userId = authRepo.getUserID;
       if (userId.isEmpty) {
-        Get.snackbar('Error', 'You must be logged in to react');
+        AppLoaders.errorSnackBar(
+          title: 'Oh Snap!',
+          message: 'You must be logged in to react',
+        );
         return;
       }
 
@@ -290,7 +318,10 @@ class CommentController extends GetxController {
       await _commentRepository.likeComment(replyId, userId, isLike);
       _loadUserReaction(replyId); // Reload reaction for this specific reply
     } catch (e) {
-      Get.snackbar('Error', 'Failed to react to reply: $e');
+      AppLoaders.errorSnackBar(
+        title: 'Oh Snap!',
+        message: 'Failed to react to reply: $e',
+      );
     }
   }
 

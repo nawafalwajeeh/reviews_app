@@ -57,7 +57,7 @@ class AddNewPlaceScreen extends StatelessWidget {
                   const SizedBox(height: AppSizes.spaceBtwItems),
                   CommunityGuidelinesBox(),
                   const SizedBox(height: AppSizes.spaceBtwItems),
-
+                  
                   /// -- Create Button
                   SizedBox(
                     width: double.infinity,

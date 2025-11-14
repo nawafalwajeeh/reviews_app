@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 import 'package:reviews_app/features/review/screens/notifications/widgets/user_avatars_list.dart';
 
@@ -13,7 +14,7 @@ class NotificationContent extends StatelessWidget {
   final MilestoneBadge? milestoneBadge;
   final String? followingText;
 
-  const NotificationContent({super.key, 
+  const NotificationContent({super.key,
     required this.title,
     required this.timeAgo,
     required this.description,

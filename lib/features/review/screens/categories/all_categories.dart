@@ -14,11 +14,6 @@ class AllCategoriesScreen extends StatelessWidget {
     final controller = CategoryController.instance;
 
     return Scaffold(
-      // floatingActionButton: FloatingActionButton(
-      //   backgroundColor: AppColors.primaryColor,
-      //   // onPressed: () => Get.to(() => const AddNewCategoryScreen()),
-      //   child: const Icon(Icons.add, color: AppColors.white),
-      // ),
       appBar: const CustomAppBar(
         showBackArrow: true,
         title: Text('All Categories'),
@@ -47,7 +42,7 @@ class AllCategoriesScreen extends StatelessWidget {
               );
             }
 
-            // 3. SHOW DATA (No limit applied here, showing all)
+            // SHOW DATA (No limit applied here, showing all)
             return CategoryGridList(categories: controller.allCategories);
           }),
         ),

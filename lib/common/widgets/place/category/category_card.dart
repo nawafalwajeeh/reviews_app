@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:reviews_app/common/widgets/custom_shapes/containers/rounded_container.dart';
-import 'package:reviews_app/features/review/screens/categories/sub_categories.dart'
-    show SubCategoriesScreen;
+import 'package:reviews_app/features/review/screens/categories/category_places.dart'
+    show CategoryPlacesScreen;
 import 'package:reviews_app/utils/constants/colors.dart';
 import 'package:reviews_app/utils/constants/sizes.dart';
 import 'package:reviews_app/utils/helpers/helper_functions.dart';
@@ -39,7 +39,7 @@ class CategoryCard extends StatelessWidget {
       onTap:
           onTap ??
           () => Get.to(
-            () => SubCategoriesScreen(category: CategoryModel.empty()),
+            () => CategoryPlacesScreen(category: CategoryModel.empty()),
           ),
       child: Column(
         children: [

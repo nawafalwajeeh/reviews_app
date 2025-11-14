@@ -15,6 +15,7 @@ class CustomHeader extends StatelessWidget {
     this.isFavorite = false,
     this.onPressed,
     this.iconBackgroundColor,
+    this.favoriteCount
   });
 
   final String title;
@@ -23,6 +24,7 @@ class CustomHeader extends StatelessWidget {
   final bool isFavorite;
   final VoidCallback? onPressed;
   final Color? iconBackgroundColor;
+  final int? favoriteCount;
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +41,7 @@ class CustomHeader extends StatelessWidget {
           if (isFavorite) ...[
             const SizedBox(height: AppSizes.xs),
             Text(
-              '4 places saved',
+              '$favoriteCount places saved',
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                 color: Theme.of(
                   context,

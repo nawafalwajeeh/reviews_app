@@ -8,7 +8,6 @@ import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:reviews_app/utils/constants/colors.dart';
 import 'package:reviews_app/utils/logging/logger.dart';
 
-import '../screens/map/map_picker.dart';
 
 class MapController extends GetxController {
   static MapController get instance => Get.find();

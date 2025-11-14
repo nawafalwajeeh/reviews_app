@@ -21,3 +21,14 @@ enum PaymentMethods {
   razorPay,
   paytm,
 }
+
+enum NotificationType {
+  reviewAdded,
+  reviewLiked,
+  commentAdded,
+  replyAdded,
+  placeFeatured,
+  milestoneReached,
+  newFollower,
+  systemAnnouncement,
+}

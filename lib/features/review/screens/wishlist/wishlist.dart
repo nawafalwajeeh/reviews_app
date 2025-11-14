@@ -23,12 +23,15 @@ class FavouriteScreen extends StatelessWidget {
     return Scaffold(
       body: Column(
         children: [
-          CustomHeader(
-            title: 'Favorites',
-            icon: Iconsax.sort,
-            isFavorite: true,
-            // icon: Iconsax.add,
-            // onPressed: () => Get.to(() => const HomeScreen()),
+          Obx(
+            () => CustomHeader(
+              title: 'Favorites',
+              icon: Iconsax.sort,
+              isFavorite: true,
+              // icon: Iconsax.add,
+              // onPressed: () => Get.to(() => const HomeScreen()),
+              favoriteCount: controller.favorites.length,
+            ),
           ),
 
           const SizedBox(height: AppSizes.spaceBtwItems),
