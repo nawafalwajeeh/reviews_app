@@ -140,6 +140,14 @@ class CategoryController extends GetxController {
     }
   }
 
+  /// -- Stream Category Places (Stream)
+  Stream<List<PlaceModel>> streamCategoryPlaces({required String categoryId}) {
+    // This calls the new real-time streaming method in the repository.
+    return PlaceRepository.instance.streamPlacesForCategory(
+      categoryId: categoryId,
+    );
+  }
+
   Future<void> createPlaceCategory() async {
     try {
       // 1. Start Loading & Form Validation (Manual check for required fields)

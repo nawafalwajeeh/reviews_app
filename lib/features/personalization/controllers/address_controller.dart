@@ -13,6 +13,9 @@ import 'package:reviews_app/utils/helpers/network_manager.dart';
 import 'package:reviews_app/utils/popups/full_screen_loader.dart';
 import 'package:reviews_app/utils/popups/loaders.dart';
 
+import '../../../utils/constants/colors.dart';
+import '../../review/screens/map/map.dart';
+
 class AddressController extends GetxController {
   static AddressController get instance => Get.find();
 
@@ -28,11 +31,14 @@ class AddressController extends GetxController {
   final refreshData = true.obs;
   final Rx<AddressModel> selectedAddress = AddressModel.empty().obs;
   final addressRepository = Get.put(AddressRepository());
+  final RxList<AddressModel> allUserAddresses = <AddressModel>[].obs;
 
   /// Fetch all user specific addresses
   Future<List<AddressModel>> getAllUserAddresses() async {
     try {
       final addresses = await addressRepository.fetchUserAddresses();
+      // Update the observable list in the controller
+      allUserAddresses.assignAll(addresses);
       selectedAddress.value = addresses.firstWhere(
         (element) => element.selectedAddress,
         orElse: () => AddressModel.empty(),
@@ -172,6 +178,18 @@ class AddressController extends GetxController {
     addressFormKey.currentState?.reset();
   }
 
+  /// Navigates to the Map Picker Screen and processes the result.
+  void navigateToMapPicker() {
+    // Use Get.to and then() to capture the returned value (the AddressModel)
+    // The result is the AddressModel created in MapPickerScreen
+    Get.to(() => MapScreen(isPickerMode: true))?.then((result) {
+      if (result != null && result is AddressModel) {
+        // Use the unified selectAddress function to update the selectedAddress.value
+        selectAddress(result);
+      }
+    });
+  }
+
   /// Show adresses ModalBottomSheet on Checkout
   Future<void> selectNewAddressPopup(BuildContext context) {
     return showModalBottomSheet(
@@ -184,6 +202,17 @@ class AddressController extends GetxController {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             AppSectionHeading(title: 'Select Address', showActionButton: false),
+            SizedBox(
+              width: double.infinity,
+              child: OutlinedButton.icon(
+                icon: const Icon(Icons.map, color: AppColors.primaryColor),
+                label: const Text('Pick Location on Map'),
+                onPressed: () {
+                  Get.back(); // Close the bottom sheet first
+                  navigateToMapPicker(); // Navigate to the Map screen
+                },
+              ),
+            ),
             // const SizedBox(height: AppSizes.spaceBtwSections),
             Expanded(
               child: FutureBuilder(

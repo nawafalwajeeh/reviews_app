@@ -37,7 +37,10 @@ class PlaceMetadata extends StatelessWidget {
         const SizedBox(height: AppSizes.spaceBtwItems),
 
         // Location
-        PlaceDetailsMetadataTile(text: place.title, icon: Iconsax.location),
+        PlaceDetailsMetadataTile(
+          text: place.address.toString(),
+          icon: Iconsax.location,
+        ),
 
         const SizedBox(height: AppSizes.spaceBtwItems),
         PlaceDetailsMetadataTile(

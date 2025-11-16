@@ -135,7 +135,9 @@ class PlaceCardHorizontal extends StatelessWidget {
                     bottom: AppSizes.md, // Increased padding
                     child: PlaceTitleText(
                       title: place.title,
-                      location: place.location,
+                      // location: place.location,
+                      // location: place.address.toString(),
+                      location: place.address.shortAddress,
                       isVerified: true, // Assuming verification status
                       placeTitleSize: TextSizes.small,
                       isDarkBackground: true,

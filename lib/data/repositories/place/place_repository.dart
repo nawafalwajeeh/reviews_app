@@ -39,6 +39,75 @@ class PlaceRepository extends GetxController {
     }
   }
 
+  /// Returns a Stream that updates whenever the list of featured places changes.
+  Stream<List<PlaceModel>> getFeaturedPlacesStream() {
+    try {
+      return _db
+          .collection('Places')
+          .where('IsFeatured', isEqualTo: true)
+          .snapshots() // Get the real-time stream
+          .map((snapshot) {
+            return snapshot.docs
+                .map((doc) => PlaceModel.fromSnapshot(doc))
+                .toList();
+          });
+    } on FirebaseException catch (e) {
+      // It's generally better to let the error propagate up the stream,
+      // but here we wrap it for consistency if needed downstream.
+      throw AppFirebaseException(e.code).message;
+    } catch (e) {
+      throw 'Something went wrong while streaming featured places.';
+    }
+  }
+
+  /// -- Get Real-Time Stream of Places by Category
+  /// Returns a Stream that updates whenever the places in the specified category change.
+  /// This performs a two-step query using Firestore Streams.
+  Stream<List<PlaceModel>> getPlacesForCategoryStream(String categoryId) {
+    try {
+      // 1. Get a stream of the PlaceCategory links for the given categoryId
+      final placeCategoryStream = _db
+          .collection('PlaceCategory')
+          .where('categoryId', isEqualTo: categoryId)
+          .snapshots();
+
+      // 2. Map the stream of PlaceCategory snapshots to a stream of PlaceModels.
+      return placeCategoryStream.asyncMap((placeCategoryQuery) async {
+        // Extract placeIds from the PlaceCategory documents
+        final placeIds = placeCategoryQuery.docs
+            .map((doc) => PlaceCategoryModel.fromSnapshot(doc).placeId)
+            .toList();
+
+        // CRITICAL FIX: Firestore 'whereIn' fails on empty lists.
+        if (placeIds.isEmpty) {
+          return <PlaceModel>[];
+        }
+
+        // 3. Query the 'Places' collection using the extracted IDs
+        // Note: Firestore 'whereIn' is limited to 10 items. Consider splitting
+        // the list and merging results for production if you expect more than 10.
+        final placesQuery = await _db
+            .collection('Places')
+            .where(
+              'Id',
+              whereIn: placeIds,
+            ) // Assumes 'Id' field matches doc ID or PlaceModel.id
+            .get();
+
+        // 4. Convert QuerySnapshot to List<PlaceModel>
+        return placesQuery.docs
+            .map((doc) => PlaceModel.fromSnapshot(doc))
+            .toList();
+      });
+    } on FirebaseException catch (e) {
+      throw AppFirebaseException(e.code).message;
+    } on PlatformException catch (e) {
+      throw AppPlatformException(e.code).message;
+    } catch (e) {
+      throw 'Something went wrong while streaming places by category.';
+    }
+  }
+
   /// -- Get All Featured Places
   Future<List<PlaceModel>> getAllFeaturedPlaces() async {
     try {
@@ -222,6 +291,81 @@ class PlaceRepository extends GetxController {
     } catch (e) {
       throw 'Something went wrong. Please try again.';
     }
+  }
+
+    /// not for changes within the *Place document* itself (e.g., a rating update).
+  Stream<List<PlaceModel>> streamPlacesForCategory({
+    required String categoryId,
+  }) {
+    // 1. Stream PlaceCategory documents to get the list of place IDs.
+    return _db
+        .collection('PlaceCategory')
+        .where('categoryId', isEqualTo: categoryId)
+        .snapshots()
+        .asyncMap((placeCategoryQuery) async {
+          // 2. Extract placeIds from the documents
+          final placeIds = placeCategoryQuery.docs
+              .map((doc) => PlaceCategoryModel.fromSnapshot(doc).placeId)
+              .toList();
+
+          // 3. Use the strongly-typed, chunking helper to fetch the Places.
+          // The result (Future<List<PlaceModel>>) is awaited by asyncMap,
+          // which resolves the final Stream element type to List<PlaceModel>.
+          return await _fetchPlacesByIds(placeIds);
+
+        }).handleError((error) {
+          // Handle errors specific to the stream operation
+          if (error is FirebaseException) {
+            throw AppFirebaseException(error.code).message;
+          } else if (error is PlatformException) {
+            throw AppPlatformException(error.code).message;
+          }
+          throw 'Something went wrong streaming category places: $error';
+        });
+  }
+
+    /// to respect the Firestore limit of 10 items in a 'whereIn' clause.
+  Future<List<PlaceModel>> _fetchPlacesByIds(List<String> placeIds) async {
+    if (placeIds.isEmpty) return const [];
+
+    List<PlaceModel> allPlaces = [];
+    const chunkSize = 10;
+
+    for (int i = 0; i < placeIds.length; i += chunkSize) {
+      final chunk = placeIds.sublist(
+        i,
+        i + chunkSize > placeIds.length ? placeIds.length : i + chunkSize,
+      );
+
+      // Use .get() (Future) for fetching, as this is used inside asyncMap
+      // and guarantees a single, strongly-typed result (List<PlaceModel>).
+      final placesQuery = await _db
+          .collection('Places')
+          .where('Id', whereIn: chunk)
+          .get();
+
+      allPlaces.addAll(
+          placesQuery.docs.map((doc) => PlaceModel.fromSnapshot(doc)).toList());
+    }
+
+    return allPlaces;
+  }
+
+
+
+  /// Required for Details Screen: Stream a single Place document for real-time updates
+  Stream<PlaceModel> streamSinglePlace(String placeId) {
+    return _db
+        .collection('Places')
+        .doc(placeId)
+        .snapshots()
+        .map((snapshot) => PlaceModel.fromSnapshot(snapshot))
+        .handleError((e) {
+      if (e is FirebaseException) {
+        throw AppFirebaseException(e.code).message;
+      }
+      throw 'Error streaming single place: $e';
+    });
   }
 
   /// -- Create new place

@@ -12,7 +12,8 @@ class AddressModel {
   final String country;
   final DateTime? dateTime;
   bool selectedAddress;
-
+  final double latitude;
+  final double longitude;
   AddressModel({
     required this.id,
     required this.name,
@@ -24,6 +25,8 @@ class AddressModel {
     required this.country,
     this.dateTime,
     this.selectedAddress = true,
+    this.latitude = 0.0,
+    this.longitude = 0.0,
   });
 
   String get formattedPhoneNo => AppFormatter.formatPhoneNumber(phoneNumber);
@@ -37,6 +40,8 @@ class AddressModel {
     state: '',
     postalCode: '',
     country: '',
+    latitude: 0.0,
+    longitude: 0.0,
   );
 
   Map<String, dynamic> toJson() {
@@ -50,11 +55,21 @@ class AddressModel {
       'Country': country,
       'DateTime': DateTime.now(),
       'SelectedAddress': selectedAddress,
+      'Latitude': latitude,
+      'Longitude': longitude,
     };
   }
 
+  // Helper function to safely extract doubles from Firestore, defaulting to 0.0
+  static double _parseDouble(dynamic value) {
+    if (value == null) return 0.0;
+    if (value is num) return value.toDouble();
+    if (value is String) return double.tryParse(value) ?? 0.0;
+    return 0.0;
+  }
+
   // Factory constructor to create an AddressModel from a Map
-  factory AddressModel.fromMap(Map<String, dynamic> data) {
+  factory AddressModel.fromJson(Map<String, dynamic> data) {
     return AddressModel(
       id: (data['Id'] ?? '') as String,
       name: (data['Name'] ?? '') as String,
@@ -68,7 +83,19 @@ class AddressModel {
       selectedAddress: (data['SelectedAddress'] ?? false) as bool,
       // Use a null-aware cascade to handle the null Timestamp.
       dateTime: (data['DateTime'] as Timestamp?)?.toDate(),
+      latitude: _parseDouble(data['Latitude']),
+      longitude: _parseDouble(data['Longitude']),
     );
+  }
+
+  String get shortAddress {
+    // Create a list containing the city and country strings.
+    // Use .where((s) => s.isNotEmpty) to filter out any fields that might be
+    //  empty from the database, preventing an awkward ", Yemen" or "Taiz, ".
+    final parts = [city, country].where((s) => s.isNotEmpty).toList();
+
+    // Join the remaining parts with a comma and a space.
+    return parts.join(', ');
   }
 
   // Factory constructor to create an AddressModel from a DocumentSnapshot
@@ -86,6 +113,8 @@ class AddressModel {
       country: (data['Country'] ?? '') as String,
       selectedAddress: (data['SelectedAddress'] ?? false) as bool,
       dateTime: (data['DateTime'] as Timestamp?)?.toDate(),
+      latitude: _parseDouble(data['Latitude']),
+      longitude: _parseDouble(data['Longitude']),
     );
   }
 

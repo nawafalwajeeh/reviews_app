@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:readmore/readmore.dart';
 import 'package:reviews_app/common/widgets/texts/section_heading.dart';
+import 'package:reviews_app/data/repositories/authentication/authentication_repository.dart';
 import 'package:reviews_app/features/review/models/place_model.dart';
 import 'package:reviews_app/utils/constants/colors.dart' show AppColors;
 import '../../../../utils/constants/sizes.dart';
@@ -21,6 +22,10 @@ class PlaceDetailsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // final controller = PlaceController.instance;
+    final userId = AuthenticationRepository.instance.getUserID;
+    final creatorId = place.userId;
+    debugPrint('UserId: $userId, creatorId: $creatorId');
+
     return Scaffold(
       extendBodyBehindAppBar: true,
       body: Stack(
@@ -97,10 +102,9 @@ class PlaceDetailsScreen extends StatelessWidget {
                       //     style: Theme.of(context).textTheme.titleMedium,
                       //   ),
                       // ),
-                      WriteReviewSection(
-                        placeId: place.id,
-                       
-                      ),
+                      if (AuthenticationRepository.instance.getUserID !=
+                          place.userId)
+                        WriteReviewSection(placeId: place.id),
                       SizedBox(height: AppSizes.spaceBtwItems),
 
                       const Divider(),

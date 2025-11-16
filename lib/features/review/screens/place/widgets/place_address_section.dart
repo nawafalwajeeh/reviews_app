@@ -1,23 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:reviews_app/features/personalization/models/address_model.dart';
+import 'package:reviews_app/features/review/controllers/place_controller.dart';
 import 'package:reviews_app/utils/constants/sizes.dart';
 import '../../../../../common/widgets/texts/section_heading.dart';
 import '../../../../../utils/constants/colors.dart';
 import '../../../../personalization/controllers/address_controller.dart';
 
-class BillingAddressSection extends StatelessWidget {
-  const BillingAddressSection({super.key});
+class PlaceAddressSection extends StatelessWidget {
+  const PlaceAddressSection({super.key});
 
   @override
   Widget build(BuildContext context) {
     final controller = AddressController.instance;
+    final placeController = PlaceController.instance;
 
-    return Obx(
-      () => Column(
+    return Obx(() {
+      placeController.selectedAddress.value = controller.selectedAddress.value;
+      debugPrint('selectedAddress: ${placeController.selectedAddress.value}');
+
+      return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           AppSectionHeading(
-            title: 'Shipping Address',
+            title: 'Place Address',
             buttonTitle: 'Change',
             onPressed: () => controller.selectNewAddressPopup(context),
           ),
@@ -69,7 +75,7 @@ class BillingAddressSection extends StatelessWidget {
                   style: Theme.of(context).textTheme.bodyMedium,
                 ),
         ],
-      ),
-    );
+      );
+    });
   }
 }

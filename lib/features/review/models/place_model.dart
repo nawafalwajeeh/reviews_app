@@ -1,4 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
+
+import '../../personalization/models/address_model.dart';
 
 class PlaceModel {
   String id;
@@ -9,7 +12,8 @@ class PlaceModel {
   final List<String>? images;
   final bool? isFeatured;
   final DateTime? dateAdded;
-  final String location;
+  // final String location;
+  final AddressModel address;
   final String categoryId;
   final double averageRating;
   final int reviewsCount;
@@ -25,7 +29,8 @@ class PlaceModel {
   PlaceModel({
     required this.id,
     required this.title,
-    required this.location,
+    // required this.location,
+    required this.address,
     required this.categoryId,
     required this.description,
     required this.averageRating,
@@ -56,7 +61,8 @@ class PlaceModel {
     List<String>? images,
     bool? isFeatured,
     DateTime? dateAdded,
-    String? location,
+    // String? location,
+    AddressModel? address,
     String? categoryId,
     double? averageRating,
     int? reviewsCount,
@@ -77,7 +83,8 @@ class PlaceModel {
       images: images ?? this.images,
       isFeatured: isFeatured ?? this.isFeatured,
       dateAdded: dateAdded ?? this.dateAdded,
-      location: location ?? this.location,
+      // location: location ?? this.location,
+      address: address ?? this.address,
       categoryId: categoryId ?? this.categoryId,
       averageRating: averageRating ?? this.averageRating,
       reviewsCount: reviewsCount ?? this.reviewsCount,
@@ -96,7 +103,8 @@ class PlaceModel {
     id: '',
     title: '',
     userId: '',
-    location: '',
+    // location: '',
+    address: AddressModel.empty(),
     categoryId: '',
     description: '',
     averageRating: 0.0,
@@ -114,9 +122,10 @@ class PlaceModel {
       'Title': title,
       'Description': description,
       'UserId': userId,
-      'Location': location,
+      // 'Location': location,
+      'Address': address.toJson(),
       'CategoryId': categoryId,
-      'AverageRating': averageRating,
+      // 'AverageRating': averageRating,
       'Thumbnail': thumbnail,
       'Images': images ?? [],
       'Tags': tags ?? [],
@@ -142,12 +151,14 @@ class PlaceModel {
 
     int totalReviews = distribution.values.fold<int>(
       0,
-      (sum, count) => sum + count,
+      (int sum, int count) => sum + count,
     );
 
     if (totalReviews == 0) return 0.0;
 
-    return totalScore / totalReviews;
+    // Calculate, then round the result to 2 decimal places
+    double rawAverage = totalScore / totalReviews;
+    return double.parse(rawAverage.toStringAsFixed(2));
   }
 
   /// -- Map Json oriented document snapshot from Firebase to Model
@@ -175,12 +186,25 @@ class PlaceModel {
       (int sum, int count) => sum + count,
     );
 
+    final addressMap = data['Address'] as Map<String, dynamic>?;
+
+    // If we have valid address data, we use AddressModel.fromMap() to load it.
+    // Otherwise, we load an empty AddressModel to prevent null errors.
+    final loadedAddress = (addressMap != null)
+        ? AddressModel.fromJson(addressMap)
+        : AddressModel.empty();
+    print('Raw Place Map Keys: ${data.keys.toList()}');
+    print('Is "address" key present and valid? ${addressMap != null}');
+
+    debugPrint('loadedAddress: $loadedAddress');
     return PlaceModel(
       id: document.id,
       title: data['Title'] ?? '',
       userId: data['UserId'] ?? '',
       description: data['Description'] ?? '',
-      location: data['Location'] ?? '',
+      // location: data['Location'] ?? '',
+      // address: AddressModel.fromJson(data['address'] ?? {}),
+      address: loadedAddress,
       categoryId: data['CategoryId'] ?? '',
       // averageRating: double.parse((data['Rating'] ?? 0.0).toString()),
       // reviewsCount: (data['ReviewCount'] ?? 0).toInt(),
@@ -226,12 +250,24 @@ class PlaceModel {
       0,
       (int sum, int count) => sum + count,
     );
+
+    final addressMap = data['Address'] as Map<String, dynamic>?;
+
+    // If we have valid address data, we use AddressModel.fromMap() to load it.
+    // Otherwise, we load an empty AddressModel to prevent null errors.
+    final loadedAddress = (addressMap != null)
+        ? AddressModel.fromJson(addressMap)
+        : AddressModel.empty();
+
     return PlaceModel(
       id: document.id,
       title: data['Title'] ?? '',
       userId: data['UserId'] ?? '',
       description: data['Description'] ?? '',
-      location: data['Location'] ?? '',
+      // location: data['Location'] ?? '',
+      // address: AddressModel.fromJson(data['address'] ?? {}),
+      address: loadedAddress,
+
       categoryId: data['CategoryId'] ?? '',
       // averageRating: double.parse((data['Rating'] ?? 0.0).toString()),
       // reviewsCount: (data['ReviewCount'] ?? 0).toInt(),
@@ -252,5 +288,10 @@ class PlaceModel {
       phoneNumber: data['PhoneNumber'] ?? '',
       // openingHourse: data['OpeningHourse'] ?? '',
     );
+  }
+
+  @override
+  String toString() {
+    return address.toString();
   }
 }

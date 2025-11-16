@@ -156,7 +156,9 @@ class SmallPlaceCard extends StatelessWidget {
               ),
               child: PlaceTitleText(
                 title: place.title,
-                location: place.location,
+                // location: place.location,
+                // location: place.address.toString(),
+                location: place.address.shortAddress,
                 isDarkBackground: false,
                 isVerified: true,
                 placeTitleSize: TextSizes.small,

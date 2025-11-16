@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:reviews_app/features/review/screens/notifications/widgets/user_avatars_list.dart';
 
@@ -14,7 +13,8 @@ class NotificationContent extends StatelessWidget {
   final MilestoneBadge? milestoneBadge;
   final String? followingText;
 
-  const NotificationContent({super.key,
+  const NotificationContent({
+    super.key,
     required this.title,
     required this.timeAgo,
     required this.description,
@@ -32,18 +32,22 @@ class NotificationContent extends StatelessWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(
-              title,
-              style: Theme.of(
-                context,
-              ).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w600),
-            ),
-            Text(
-              timeAgo,
-              style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                color: Theme.of(
+            Flexible(
+              child: Text(
+                title,
+                style: Theme.of(
                   context,
-                ).colorScheme.onSurface.withValues(alpha: 0.6),
+                ).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w600),
+              ),
+            ),
+            Flexible(
+              child: Text(
+                timeAgo,
+                style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                  color: Theme.of(
+                    context,
+                  ).colorScheme.onSurface.withValues(alpha: 0.6),
+                ),
               ),
             ),
           ],

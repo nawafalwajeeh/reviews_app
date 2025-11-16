@@ -7,9 +7,10 @@ import 'package:reviews_app/utils/constants/sizes.dart';
 import 'package:reviews_app/utils/helpers/helper_functions.dart';
 import '../../../../../common/widgets/custom_shapes/containers/rounded_container.dart';
 import '../../../../../utils/validators/validation.dart';
-import 'billing_address_section.dart';
-import 'billing_payment_section.dart';
+import 'place_address_section.dart';
+import 'place_payment_section.dart';
 import 'label_chip.dart';
+import 'label_location_picker.dart';
 // import 'label_location_picker.dart';
 
 class PlaceForm extends StatelessWidget {
@@ -35,49 +36,103 @@ class PlaceForm extends StatelessWidget {
         ),
         const SizedBox(height: AppSizes.spaceBtwInputFields),
 
-        DropdownButtonFormField(
-          decoration: InputDecoration(
-            border: OutlineInputBorder(
-              borderSide: BorderSide(
-                width: 1,
-                color: AppHelperFunctions.isDarkMode(context)
-                    ? AppColors.grey
-                    : AppColors.darkGrey,
+        // Obx(
+        //   () => DropdownButtonFormField(
+        //     decoration: InputDecoration(
+        //       border: OutlineInputBorder(
+        //         borderSide: BorderSide(
+        //           width: 1,
+        //           color: AppHelperFunctions.isDarkMode(context)
+        //               ? AppColors.grey
+        //               : AppColors.darkGrey,
+        //         ),
+        //       ),
+        //     ),
+        //     initialValue: controller.selectedCategoryId.value.isNotEmpty
+        //         ? categoryController.categoryModels
+        //               .firstWhereOrNull(
+        //                 (cat) => cat.id == controller.selectedCategoryId.value,
+        //               )
+        //               ?.name
+        //         : categoryController.selectedCategoryName.value,
+        //     onChanged: (String? selectedName) {
+        //       if (selectedName != null) {
+        //         final matchingCategory = categoryController.categoryModels
+        //             .firstWhereOrNull(
+        //               (category) => category.name == selectedName,
+        //             );
+        //         if (matchingCategory != null) {
+        //           controller.selectedCategoryId.value = matchingCategory.id;
+        //         } else {
+        //           controller.selectedCategoryId.value = '';
+        //         }
+        //       } else {
+        //         controller.selectedCategoryId.value = '';
+        //       }
+        //     },
+        //     items: categoryController.categoryNames
+        //         .map(
+        //           (option) =>
+        //               DropdownMenuItem(value: option, child: Text(option)),
+        //         )
+        //         .toList(),
+        //   ),
+        // ),
+        Obx(() {
+          // 1. Get the current value from the controller.
+          // This value must be null or match an item in the list.
+          final String? currentDropdownValue =
+              controller.selectedCategoryName.value.isEmpty
+              ? null
+              : controller.selectedCategoryName.value;
+
+          return DropdownButtonFormField<String>(
+            // Use 'value' instead of 'initialValue'.
+            // This is necessary when the value changes based on the state.
+            initialValue: currentDropdownValue,
+
+            decoration: InputDecoration(
+              border: OutlineInputBorder(
+                borderSide: BorderSide(
+                  width: 1,
+                  color: AppHelperFunctions.isDarkMode(context)
+                      ? AppColors.grey
+                      : AppColors.darkGrey,
+                ),
               ),
             ),
-          ),
-          initialValue: controller.selectedCategoryId.value.isNotEmpty
-              ? categoryController.categoryModels
+
+            // Ensure the onChanged logic updates the Name AND the ID.
+            onChanged: (String? selectedName) {
+              // Update the name variable
+              controller.selectedCategoryName.value = selectedName ?? '';
+
+              if (selectedName != null) {
+                final matchingCategory = categoryController.categoryModels
                     .firstWhereOrNull(
-                      (cat) => cat.id == controller.selectedCategoryId.value,
-                    )
-                    ?.name
-              : categoryController.selectedCategoryName.value,
-          onChanged: (String? selectedName) {
-            if (selectedName != null) {
-              final matchingCategory = categoryController.categoryModels
-                  .firstWhereOrNull(
-                    (category) => category.name == selectedName,
-                  );
-              if (matchingCategory != null) {
-                controller.selectedCategoryId.value = matchingCategory.id;
+                      (category) => category.name == selectedName,
+                    );
+
+                // Update the ID variable
+                controller.selectedCategoryId.value =
+                    matchingCategory?.id ?? '';
               } else {
                 controller.selectedCategoryId.value = '';
               }
-            } else {
-              controller.selectedCategoryId.value = '';
-            }
-          },
-          items: categoryController.categoryNames
-              .map(
-                (option) =>
-                    DropdownMenuItem(value: option, child: Text(option)),
-              )
-              .toList(),
-        ),
+            },
+
+            items: categoryController.categoryNames
+                .map(
+                  (option) =>
+                      DropdownMenuItem(value: option, child: Text(option)),
+                )
+                .toList(),
+          );
+        }),
 
         const SizedBox(height: AppSizes.spaceBtwInputFields),
         // LabeledLocationPicker(label: 'Location'),
+
         /// Billing Section
         AppRoundedContainer(
           padding: const EdgeInsets.all(AppSizes.md),
@@ -88,17 +143,12 @@ class PlaceForm extends StatelessWidget {
           child: Column(
             spacing: AppSizes.spaceBtwItems,
             children: [
-              /// Divider
-              const Divider(),
-              // SizedBox(height: AppSizes.spaceBtwItems),
-
               /// Payment Methods
-              const BillingPaymentSection(),
-              // SizedBox(height: AppSizes.spaceBtwItems),
+              const PlacePaymentSection(),
+              const Divider(),
 
               /// Address
-              const BillingAddressSection(),
-              // SizedBox(height: AppSizes.spaceBtwItems),
+              const PlaceAddressSection(),
             ],
           ),
         ),

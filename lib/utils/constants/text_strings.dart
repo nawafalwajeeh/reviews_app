@@ -15,7 +15,6 @@ final class AppTexts {
   static const String placesStoragePath = '/Places';
   static const String usersStoragePath = '/Users';
 
-
   // -- OnBoarding Texts
   static const String onBoardingTitle1 = "Discover Local Gems";
   static const String onBoardingTitle2 = "Share Your Honest Reviews";
@@ -42,6 +41,7 @@ final class AppTexts {
   static const String forgetPassword = "Forget Password?";
   static const String signIn = "Sign In";
   static const String createAccount = "Create Account";
+  // static const String createAccount = "إنشاء حساب";
   static const String orSignInWith = "or sign in with";
   static const String orSignUpWith = "or sign up with";
   static const String iAgreeTo = "I agree to";

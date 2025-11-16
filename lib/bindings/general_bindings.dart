@@ -3,7 +3,6 @@ import 'package:reviews_app/features/review/controllers/category_controller.dart
 import 'package:reviews_app/features/review/controllers/favourite_controller.dart';
 import 'package:reviews_app/features/review/controllers/gallery_controller.dart';
 import 'package:reviews_app/features/review/controllers/map_controller.dart';
-import 'package:reviews_app/features/review/controllers/notification_controller.dart';
 import 'package:reviews_app/features/review/controllers/place_controller.dart';
 import 'package:reviews_app/utils/helpers/network_manager.dart';
 import '../features/personalization/controllers/address_controller.dart';
@@ -15,7 +14,7 @@ class GeneralBindings extends Bindings {
   void dependencies() {
     /// -- Core
     Get.put(AppNetworkManager(), permanent: true);
-    Get.put(NotificationController());
+    // Get.put(NotificationController());
 
     /// -- User
     Get.put(UserController());
@@ -23,10 +22,10 @@ class GeneralBindings extends Bindings {
 
     /// -- Place
     Get.put(ImagesController());
-    Get.put(MapController());
+    Get.lazyPut(() => MapController());
     Get.put(CategoryController());
     Get.put(PlaceController());
-    Get.put(GalleryController());
-    Get.put(FavouritesController());
+    Get.lazyPut(() => GalleryController());
+    Get.lazyPut(() => FavouritesController());
   }
 }

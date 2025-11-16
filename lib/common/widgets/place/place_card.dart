@@ -100,7 +100,8 @@ class PlaceCard extends StatelessWidget {
                     bottom: 16,
                     child: PlaceTitleText(
                       title: place.title,
-                      location: place.location,
+                      // location: place.location,
+                      location: place.address.shortAddress,
                       isVerified: true,
                       placeTitleSize: TextSizes.medium,
                       isDarkBackground: true,
@@ -141,6 +142,7 @@ class PlaceCard extends StatelessWidget {
                     padding: const EdgeInsets.symmetric(horizontal: 16),
                     child: Text(
                       'View Details',
+                      // 'عرض التفاصيل',
                       style: Theme.of(
                         context,
                       ).textTheme.bodySmall?.apply(color: AppColors.light),

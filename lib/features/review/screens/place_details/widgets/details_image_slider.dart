@@ -93,7 +93,8 @@ class PlaceImageSlider extends StatelessWidget {
                     children: [
                       PlaceTitleText(
                         title: place.title,
-                        location: place.location,
+                        // location: place.location,
+                        location: place.address.toString(),
                         isVerified: true,
                         isDarkBackground: true,
                         placeTitleSize: TextSizes.large,
