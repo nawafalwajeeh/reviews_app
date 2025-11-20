@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:reviews_app/data/repositories/review/review_repository.dart'
     show ReviewRepository;
+import 'package:reviews_app/features/personalization/controllers/user_controller.dart';
 import 'package:reviews_app/utils/constants/image_strings.dart';
 
 import '../../../data/repositories/authentication/authentication_repository.dart';
@@ -20,7 +21,7 @@ class ReviewController extends GetxController {
   static ReviewController get instance => Get.find();
 
   final _authRepo = AuthenticationRepository.instance;
-  final _reviewRepo = Get.put(ReviewRepository());
+  final reviewRepo = Get.put(ReviewRepository());
   final _placeRepo = PlaceRepository.instance;
 
   // Non-reactive controller for input field
@@ -54,7 +55,7 @@ class ReviewController extends GetxController {
     debugPrint('UserId: $userId');
     if (userId.isEmpty) return;
     try {
-      final existing = await _reviewRepo.getExistingReview(userId, placeId);
+      final existing = await reviewRepo.getExistingReview(userId, placeId);
       debugPrint('reviewUserId: ${existing?.userId}');
       if (existing != null) {
         // Update reactive states
@@ -139,9 +140,8 @@ class ReviewController extends GetxController {
       final newRating = rating.value;
       final oldRating = originalRating.value;
 
-      // 2. Get current user data (simplified placeholder)
-      final userName = 'Current User (ID: ${userId.substring(0, 8)}...)';
-      final userAvatar = 'https://placehold.co/40x40/007AFF/FFFFFF?text=U';
+      final userName = UserController.instance.user.value.fullName;
+      final userAvatar = UserController.instance.user.value.profilePicture;
 
       // 3. Create ReviewModel
       final reviewToSubmit = ReviewModel(
@@ -160,7 +160,7 @@ class ReviewController extends GetxController {
 
       if (isUpdating) {
         // A. Update the review document
-        await _reviewRepo.updateReview(reviewToSubmit);
+        await reviewRepo.updateReview(reviewToSubmit);
 
         // B. Update the Place's statistics if the rating has changed
         if (newRating.round() != oldRating.round()) {
@@ -173,11 +173,32 @@ class ReviewController extends GetxController {
         }
       } else {
         // A. Add the review document (Fix: removed duplicate call)
-        await _reviewRepo.addReview(reviewToSubmit);
+        await reviewRepo.addReview(reviewToSubmit);
 
         // B. Update the Place's statistics for a NEW review
         // This method must now perform: ReviewCount + 1 AND RatingDistribution[newRating] + 1
         await _placeRepo.updatePlaceRatingStatistics(placeId, newRating);
+
+        // --- NOTIFICATION LOGIC: NEW REVIEW ---
+        // final placeOwnerId = await _placeRepo.getPlaceOwnerId(placeId);
+        // const placeTitle = 'Central Park Cafe'; // Mock place title
+
+        // if (placeOwnerId != userId) { // Check reviewer is not the owner
+        //   await _notificationController.sendNotification(
+        //     toUserId: placeOwnerId,
+        //     type: 'new_review',
+        //     title: 'New ${newRating.round()} Star Review!',
+        //     body: '$userName reviewed "$placeTitle" with a rating of ${newRating.round()} stars.',
+        //     senderName: userName,
+        //     senderAvatar: userAvatar,
+        //     targetId: placeId,
+        //     targetType: 'place',
+        //     extraData: {
+        //       'reviewId': reviewToSubmit.id,
+        //       'rating': newRating.toString()
+        //     },
+        //   );
+        // }
       }
 
       // 5. Success feedback
@@ -219,7 +240,7 @@ class ReviewController extends GetxController {
       // in the Place document.
       await _placeRepo.removeReviewRating(placeId, rating.value.round());
 
-      await _reviewRepo.deleteReview(existingReviewId.value);
+      await reviewRepo.deleteReview(existingReviewId.value);
 
       // Reset state
       existingReviewId.value = '';

@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:reviews_app/common/widgets/custom_shapes/containers/primary_header_container.dart';
 import 'package:reviews_app/common/widgets/texts/section_heading.dart';
+import 'package:reviews_app/features/review/controllers/notification_controller.dart';
 import '../../../../common/widgets/custom_shapes/containers/search_container.dart';
 import '../../../../common/widgets/shimmers/trending_list_shimmer.dart';
 import '../../../../utils/constants/sizes.dart';
 import '../../controllers/place_controller.dart';
+import '../search/search.dart';
 import 'widgets/business_card.dart';
 import 'widgets/home_appbar.dart';
 import 'widgets/home_categories.dart';
@@ -17,6 +19,7 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = Get.put(PlaceController());
+    final _ = Get.put(NotificationController());
     return GestureDetector(
       onTap: () {},
       child: Scaffold(
@@ -34,7 +37,7 @@ class HomeScreen extends StatelessWidget {
                     /// -- SearchBar
                     AppSearchContainer(
                       text: 'Search for Places',
-                      // onTap: () => Get.to(() => SearchScreen()),
+                      onTap: () => Get.to(() => SearchScreen()),
                     ),
                     const SizedBox(height: AppSizes.spaceBtwSections),
                   ],

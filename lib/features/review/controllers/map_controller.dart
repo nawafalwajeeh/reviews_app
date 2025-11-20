@@ -1,100 +1,341 @@
 import 'dart:async';
+import 'dart:convert';
+import 'dart:io';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 import 'package:uuid/uuid.dart';
-
+import 'package:http/http.dart' as http;
+import 'package:geocoding/geocoding.dart' hide Location;
 import '../../../utils/constants/api_constants.dart';
 import '../../../utils/constants/colors.dart';
+import '../../../utils/device/device_utility.dart';
+import '../../../utils/logging/logger.dart';
 import '../../personalization/models/address_model.dart';
-// NOTE: Some imports are required for the code to compile,
-// but their logic is simplified or mocked below for runnable Flutter Dart.
 
-// --- MOCK CLASSES for Compilation (as per previous context) ---
-class PointLatLng {
-  const PointLatLng(this.latitude, this.longitude);
-  final double latitude;
-  final double longitude;
-}
+// --- SEARCH RELATED CLASSES ---
+class SearchSuggestion {
+  final String id;
+  final String title;
+  final String? subtitle;
+  final LatLng? location;
+  final String type; // 'place', 'address', 'recent', 'current_location'
+  final String? placeId;
+  final String? icon;
 
-enum TravelMode { driving }
-
-class RoutesApiRequest {
-  const RoutesApiRequest({
-    required this.origin,
-    required this.destination,
-    required this.travelMode,
+  SearchSuggestion({
+    required this.id,
+    required this.title,
+    this.subtitle,
+    this.location,
+    required this.type,
+    this.placeId,
+    this.icon,
   });
-  final PointLatLng origin;
-  final PointLatLng destination;
-  final TravelMode travelMode;
+
+  @override
+  String toString() {
+    return 'SearchSuggestion{title: $title, type: $type, location: $location}';
+  }
 }
 
-class PolylinePoints {
-  PolylinePoints({required String apiKey});
-  Future<RoutesApiResponse> getRouteBetweenCoordinatesV2({
-    required RoutesApiRequest request,
+class PlaceDetails {
+  final String name;
+  final String? address;
+  final LatLng location;
+  final String? phoneNumber;
+  final String? website;
+  final double? rating;
+  final int? totalRatings;
+  final List<String>? photos;
+  final String? placeId;
+
+  PlaceDetails({
+    required this.name,
+    this.address,
+    required this.location,
+    this.phoneNumber,
+    this.website,
+    this.rating,
+    this.totalRatings,
+    this.photos,
+    this.placeId,
+  });
+}
+
+// Google Places API Service
+class GooglePlacesService {
+  static const String _baseUrl = 'https://maps.googleapis.com/maps/api/place';
+  static final http.Client _client = http.Client();
+
+  bool get currentPlatform => AppDeviceUtils.isAndroid();
+
+  /// Search places using Google Places Autocomplete API
+  static Future<List<SearchSuggestion>> searchPlaces(
+    String query, {
+    LatLng? location,
   }) async {
-    return const RoutesApiResponse(routes: []);
-  }
-}
+    try {
+      if (query.isEmpty) {
+        return _getDefaultSuggestions();
+      }
 
-class RoutesApiResponse {
-  final List<dynamic> routes;
-  const RoutesApiResponse({this.routes = const []});
-}
+      final params = {
+        'input': query,
+        'key': Platform.isAndroid
+            ? ApiConstants.googleMapAndroidApikey
+            : ApiConstants.googleMapIOSApikey,
+        'types': 'establishment|geocode',
+        'components': 'country:uk', // Optional: restrict to specific country
+      };
 
-class AppLoggerHelper {
-  static void info(String message) {
-    print('INFO: $message');
-  }
+      if (location != null) {
+        params['location'] = '${location.latitude},${location.longitude}';
+        params['radius'] = '50000'; // 50km radius
+      }
 
-  static void error(String message) {
-    print('ERROR: $message');
-  }
-}
+      final uri = Uri.parse(
+        '$_baseUrl/autocomplete/json',
+      ).replace(queryParameters: params);
+      final response = await _client.get(uri);
 
-class AppLoaders {
-  static void errorSnackBar({required String title, required String message}) {}
-}
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        if (data['status'] == 'OK') {
+          final predictions = data['predictions'] as List;
+          final suggestions = <SearchSuggestion>[];
 
-// --- MOCK Geocoding for concept demonstration (replace with actual 'geocoding' package logic) ---
-class Placemark {
-  final String? locality;
-  final String? country;
-  const Placemark({this.locality, this.country});
-}
-
-class GeocodingPlatform {
-  static Future<List<Placemark>> placemarkFromCoordinates(
-    double latitude,
-    double longitude,
-  ) async {
-    // Mocking reverse geocoding results based on known coordinates
-    if (latitude == 51.5074 && longitude == 0.1278) {
-      return [const Placemark(locality: 'London', country: 'United Kingdom')];
+          for (final prediction in predictions) {
+            suggestions.add(
+              SearchSuggestion(
+                id:
+                    prediction['place_id'] ??
+                    prediction['id'] ??
+                    const Uuid().v4(),
+                title: prediction['description'],
+                subtitle: _extractSubtitle(prediction),
+                type: 'place',
+                placeId: prediction['place_id'],
+                icon: _getPlaceIcon(prediction['types']),
+              ),
+            );
+          }
+          return suggestions;
+        } else {
+          throw Exception('Places API error: ${data['status']}');
+        }
+      } else {
+        throw Exception('HTTP error: ${response.statusCode}');
+      }
+    } catch (e) {
+      AppLoggerHelper.error('Places search error: $e');
+      // Fallback to geocoding if Places API fails
+      return await _fallbackGeocodingSearch(query);
     }
+  }
+
+  /// Get place details using Google Places Details API
+  static Future<PlaceDetails?> getPlaceDetails(String placeId) async {
+    try {
+      final params = {
+        'place_id': placeId,
+        'key': Platform.isAndroid
+            ? ApiConstants.googleMapAndroidApikey
+            : ApiConstants.googleMapIOSApikey,
+        'fields':
+            'name,formatted_address,geometry,international_phone_number,website,rating,user_ratings_total,photo',
+      };
+
+      final uri = Uri.parse(
+        '$_baseUrl/details/json',
+      ).replace(queryParameters: params);
+      final response = await _client.get(uri);
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        if (data['status'] == 'OK') {
+          final result = data['result'];
+          final geometry = result['geometry']['location'];
+
+          return PlaceDetails(
+            name: result['name'] ?? 'Unknown Place',
+            address: result['formatted_address'],
+            location: LatLng(geometry['lat'], geometry['lng']),
+            phoneNumber: result['international_phone_number'],
+            website: result['website'],
+            rating: result['rating'] != null
+                ? double.parse(result['rating'].toString())
+                : null,
+            totalRatings: result['user_ratings_total'],
+            placeId: placeId,
+          );
+        }
+      }
+      return null;
+    } catch (e) {
+      AppLoggerHelper.error('Place details error: $e');
+      return null;
+    }
+  }
+
+  /// Extract subtitle from prediction
+  static String? _extractSubtitle(Map<String, dynamic> prediction) {
+    final description = prediction['description'] as String?;
+    if (description != null) {
+      final parts = description.split(',');
+      if (parts.length > 1) {
+        return parts.sublist(1).join(',').trim();
+      }
+    }
+    return null;
+  }
+
+  /// Get appropriate icon based on place types
+  static String? _getPlaceIcon(List<dynamic>? types) {
+    if (types == null || types.isEmpty) return 'place';
+
+    final typeList = types.map((e) => e.toString()).toList();
+
+    if (typeList.any(
+      (type) =>
+          type.contains('restaurant') ||
+          type.contains('food') ||
+          type.contains('cafe'),
+    )) {
+      return 'restaurant';
+    } else if (typeList.any(
+      (type) => type.contains('bar') || type.contains('night_club'),
+    )) {
+      return 'local_bar';
+    } else if (typeList.any(
+      (type) => type.contains('hotel') || type.contains('lodging'),
+    )) {
+      return 'hotel';
+    } else if (typeList.any(
+      (type) => type.contains('store') || type.contains('shopping_mall'),
+    )) {
+      return 'store';
+    } else if (typeList.any(
+      (type) => type.contains('park') || type.contains('amusement_park'),
+    )) {
+      return 'park';
+    } else if (typeList.any(
+      (type) => type.contains('museum') || type.contains('art_gallery'),
+    )) {
+      return 'museum';
+    } else if (typeList.any(
+      (type) => type.contains('hospital') || type.contains('health'),
+    )) {
+      return 'local_hospital';
+    } else if (typeList.any(
+      (type) => type.contains('school') || type.contains('university'),
+    )) {
+      return 'school';
+    } else if (typeList.any((type) => type.contains('gas_station'))) {
+      return 'local_gas_station';
+    } else if (typeList.any(
+      (type) => type.contains('bank') || type.contains('atm'),
+    )) {
+      return 'account_balance';
+    }
+
+    return 'place';
+  }
+
+  /// Get default suggestions
+  static List<SearchSuggestion> _getDefaultSuggestions() {
     return [
-      const Placemark(locality: 'Unknown City', country: 'Unknown Country'),
+      SearchSuggestion(
+        id: 'current_location',
+        title: 'Your Current Location',
+        subtitle: 'Based on your device location',
+        type: 'current_location',
+        icon: 'my_location',
+      ),
     ];
   }
+
+  /// Fallback search using geocoding
+  static Future<List<SearchSuggestion>> _fallbackGeocodingSearch(
+    String query,
+  ) async {
+    try {
+      return await geocodeAddress(query);
+    } catch (e) {
+      AppLoggerHelper.error('Fallback search error: $e');
+      return [];
+    }
+  }
+
+  /// Forward geocoding to get coordinates from address
+  static Future<List<SearchSuggestion>> geocodeAddress(String address) async {
+    try {
+      final locations = await locationFromAddress(address);
+      final suggestions = <SearchSuggestion>[];
+
+      for (int i = 0; i < locations.length; i++) {
+        final location = locations[i];
+        final placemarks = await placemarkFromCoordinates(
+          location.latitude,
+          location.longitude,
+        );
+
+        String addressName = address;
+        if (placemarks.isNotEmpty) {
+          final place = placemarks.first;
+          addressName = '${place.street ?? ''}, ${place.locality ?? ''}'
+              .replaceAll(RegExp(r'^,\s*|\s*,?\s*$'), '');
+        }
+
+        suggestions.add(
+          SearchSuggestion(
+            id: 'geocode_$i',
+            title: addressName,
+            subtitle: 'Address',
+            location: LatLng(location.latitude, location.longitude),
+            type: 'address',
+            icon: 'location',
+          ),
+        );
+      }
+
+      return suggestions;
+    } catch (e) {
+      AppLoggerHelper.error('Geocoding error: $e');
+      return [];
+    }
+  }
+
+  /// Reverse geocoding to get address from coordinates
+  static Future<String?> getAddressFromLatLng(LatLng location) async {
+    try {
+      final placemarks = await placemarkFromCoordinates(
+        location.latitude,
+        location.longitude,
+      );
+
+      if (placemarks.isNotEmpty) {
+        final place = placemarks.first;
+        return '${place.street ?? ''}, ${place.locality ?? ''}, ${place.country ?? ''}'
+            .replaceAll(RegExp(r'^,\s*|\s*,?\s*$'), '')
+            .replaceAll(RegExp(r',\s*,', caseSensitive: false), ',');
+      }
+      return null;
+    } catch (e) {
+      AppLoggerHelper.error('Reverse geocoding error: $e');
+      return null;
+    }
+  }
 }
-// --- END MOCK CLASSES ---
 
 class MapController extends GetxController {
   static MapController get instance => Get.find();
 
   /// -- Static/ Helper Variables
-  static const LatLng defaultLocation = LatLng(
-    51.5074,
-    0.1278,
-  ); // Center of London (Fallback)
-  static const LatLng sourceLocation = LatLng(13.57952, 44.02091);
-  static const LatLng destination = LatLng(12.77944, 45.03667);
+  static const LatLng defaultLocation = LatLng(51.5074, 0.1278);
 
   /// VARIABLES
-  // CRITICAL FIX: Initialize currentLocation with a guaranteed non-null default value.
   final currentLocation = Rx<LocationData?>(
     LocationData.fromMap({
       'latitude': defaultLocation.latitude,
@@ -104,13 +345,18 @@ class MapController extends GetxController {
     }),
   );
 
-  // Also initialize pickedLocation to the default so the confirm button can potentially be enabled immediately
   final pickedLocation = Rx<LatLng?>(defaultLocation);
-  final locationName =
-      'Default Location (London)'.obs; // Holds the geocoded name
-
+  final locationName = 'Default Location (London)'.obs;
   final markers = <Marker>{}.obs;
   final polylines = <Polyline>{}.obs;
+  final isLoading = false.obs;
+
+  // Search functionality
+  final searchQuery = ''.obs;
+  final searchSuggestions = <SearchSuggestion>[].obs;
+  final isSearching = false.obs;
+  final selectedPlaceDetails = Rx<PlaceDetails?>(null);
+  final showLocationDetails = false.obs;
 
   StreamSubscription<LocationData>? _locationSubscription;
   final mapControllerCompleter = Completer<GoogleMapController>();
@@ -120,50 +366,197 @@ class MapController extends GetxController {
   BitmapDescriptor destinationIcon = BitmapDescriptor.defaultMarker;
   BitmapDescriptor currentLocationIcon = BitmapDescriptor.defaultMarker;
 
-  // Flag to prevent redundant initial map setup
   bool _isInitialMapSetupComplete = false;
+  Timer? _searchDebounceTimer;
 
-  /// -- LIFECYCLE AND INITIALIZATION
   @override
   void onInit() {
     super.onInit();
-    // Start fetching location immediately (runs in parallel with map loading)
     getCurrentLocation();
-    getPolyPoints();
   }
 
-  /// -- MAP CREATION AND CAMERA LOGIC
+  @override
+  void onClose() {
+    _locationSubscription?.cancel();
+    _searchDebounceTimer?.cancel();
+    if (googleMapController != null) {
+      googleMapController!.dispose();
+    }
+    super.onClose();
+  }
+
+  // --- SEARCH FUNCTIONALITY ---
+
+  /// Handle search query changes with debounce
+  void onSearchQueryChanged(String query) {
+    searchQuery.value = query;
+
+    // Cancel previous timer
+    _searchDebounceTimer?.cancel();
+
+    if (query.isEmpty) {
+      searchSuggestions.clear();
+      isSearching.value = false;
+      return;
+    }
+
+    isSearching.value = true;
+
+    // Debounce search to avoid too many API calls
+    _searchDebounceTimer = Timer(const Duration(milliseconds: 500), () {
+      _performSearch(query);
+    });
+  }
+
+  /// Perform actual search
+  Future<void> _performSearch(String query) async {
+    try {
+      LatLng? searchLocation;
+      if (currentLocation.value?.latitude != null &&
+          currentLocation.value?.longitude != null) {
+        searchLocation = LatLng(
+          currentLocation.value!.latitude!,
+          currentLocation.value!.longitude!,
+        );
+      }
+
+      final suggestions = await GooglePlacesService.searchPlaces(
+        query,
+        location: searchLocation,
+      );
+      searchSuggestions.assignAll(suggestions);
+    } catch (e) {
+      AppLoggerHelper.error('Search error: $e');
+      searchSuggestions.clear();
+    } finally {
+      isSearching.value = false;
+    }
+  }
+
+  /// Handle suggestion selection
+  Future<void> onSuggestionSelected(SearchSuggestion suggestion) async {
+    searchQuery.value = suggestion.title;
+    searchSuggestions.clear();
+    isSearching.value = false;
+
+    try {
+      if (suggestion.type == 'current_location') {
+        // Move to current location
+        if (currentLocation.value?.latitude != null &&
+            currentLocation.value?.longitude != null) {
+          final latLng = LatLng(
+            currentLocation.value!.latitude!,
+            currentLocation.value!.longitude!,
+          );
+          _moveCameraToLatLng(latLng);
+          _addMarkerForLocation(latLng, suggestion.title);
+        }
+      } else if (suggestion.placeId != null) {
+        // Get place details and move to location
+        final details = await GooglePlacesService.getPlaceDetails(
+          suggestion.placeId!,
+        );
+        if (details != null) {
+          _moveCameraToLatLng(details.location);
+          _addMarkerForLocation(details.location, details.name);
+          selectedPlaceDetails.value = details;
+          showLocationDetails.value = true;
+        }
+      } else if (suggestion.location != null) {
+        // Move to the suggested location
+        _moveCameraToLatLng(suggestion.location!);
+        _addMarkerForLocation(suggestion.location!, suggestion.title);
+
+        // Get address details for the location
+        final address = await GooglePlacesService.getAddressFromLatLng(
+          suggestion.location!,
+        );
+        selectedPlaceDetails.value = PlaceDetails(
+          name: suggestion.title,
+          address: address,
+          location: suggestion.location!,
+        );
+        showLocationDetails.value = true;
+      }
+    } catch (e) {
+      AppLoggerHelper.error('Suggestion selection error: $e');
+      // Show error snackbar
+      Get.snackbar(
+        'Error',
+        'Could not load location details',
+        backgroundColor: AppColors.error.withOpacity(0.9),
+        colorText: AppColors.white,
+      );
+    }
+  }
+
+  /// Add marker for a specific location
+  void _addMarkerForLocation(LatLng location, String title) {
+    const markerId = MarkerId('search_result');
+    final marker = Marker(
+      markerId: markerId,
+      position: location,
+      icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
+      infoWindow: InfoWindow(title: title),
+    );
+
+    markers.removeWhere((m) => m.markerId == markerId);
+    markers.add(marker);
+    markers.refresh();
+  }
+
+  /// Clear search and markers
+  void clearSearch() {
+    searchQuery.value = '';
+    searchSuggestions.clear();
+    isSearching.value = false;
+    showLocationDetails.value = false;
+    selectedPlaceDetails.value = null;
+
+    // Remove search result markers but keep selection marker
+    markers.removeWhere((m) => m.markerId.value == 'search_result');
+    markers.refresh();
+  }
+
+  /// Select this location for picking
+  void selectCurrentLocationForPicking() {
+    if (selectedPlaceDetails.value != null) {
+      pickedLocation.value = selectedPlaceDetails.value!.location;
+      _updateSelectionMarker(selectedPlaceDetails.value!.location);
+      locationName.value = selectedPlaceDetails.value!.name;
+      hideLocationDetails();
+    }
+  }
+
+  /// Hide location details
+  void hideLocationDetails() {
+    showLocationDetails.value = false;
+  }
+
+  // --- MAP FUNCTIONALITY ---
+
   void onMapCreated(GoogleMapController controller) async {
     if (!mapControllerCompleter.isCompleted) {
       googleMapController = controller;
       mapControllerCompleter.complete(controller);
-      AppLoggerHelper.info("MapController successfully created and completed.");
 
-      // Delay to allow the native platform view to stabilize.
-      AppLoggerHelper.info("Waiting 1000ms for Platform View stabilization...");
       await Future.delayed(const Duration(milliseconds: 1000));
-
-      // Run the initial setup only once
       _performInitialMapSetup();
     }
   }
 
-  /// Consolidates initial camera move and marker drawing after map is ready
   void _performInitialMapSetup() {
+    isLoading.value = true;
     if (_isInitialMapSetupComplete) return;
 
     final targetLocation = currentLocation.value;
-
-    // The location value is now guaranteed non-null due to initialization
     final LatLng target = LatLng(
       targetLocation!.latitude!,
       targetLocation.longitude!,
     );
 
-    // If the map is opened in Picker Mode, ensure the first picked location is set for the marker/button
     if (pickedLocation.value == null) {
       pickedLocation.value = target;
-      // Also update the selection marker when the map first loads
       _updateSelectionMarker(target);
     }
 
@@ -171,88 +564,93 @@ class MapController extends GetxController {
     _updateAllMarkers();
 
     _isInitialMapSetupComplete = true;
-    AppLoggerHelper.info(
-      'Initial map setup complete: Camera moved and markers drawn.',
-    );
+    isLoading.value = false;
   }
 
   void _moveCameraToLatLng(LatLng target) {
     googleMapController?.animateCamera(
-      CameraUpdate.newCameraPosition(
-        CameraPosition(zoom: 13.5, target: target),
-      ),
+      CameraUpdate.newCameraPosition(CameraPosition(zoom: 15, target: target)),
     );
   }
 
-  void _moveCameraToLocation(LocationData location) {
-    _moveCameraToLatLng(LatLng(location.latitude!, location.longitude!));
-  }
-
-  /// -- PICKING LOGIC
   void onMapTap(LatLng position) {
     pickedLocation.value = position;
     _updateSelectionMarker(position);
-    _getLocationName(
-      position.latitude,
-      position.longitude,
-    ); // Geocode the tapped location
-    AppLoggerHelper.info(
-      'Location selected: ${position.latitude}, ${position.longitude}',
-    );
+    _getLocationName(position.latitude, position.longitude);
+
+    // Show location details for tapped location
+    _showDetailsForTappedLocation(position);
   }
 
-  void savePickedLocation() {
-    if (pickedLocation.value == null) return;
-
-    final LatLng position = pickedLocation.value!;
-
-    // 1. Create a temporary AddressModel using the picked coordinates.
-    // The locationName.value is kept up-to-date by _getLocationName (called in onMapTap)
-    final newMapAddress = AddressModel(
-      id: 'Map_${const Uuid().v4()}',
-      name: 'Map Location',
-      phoneNumber: 'N/A',
-      street: locationName.value.isNotEmpty
-          ? locationName.value
-          : 'Picked location at Lat ${position.latitude.toStringAsFixed(4)}, Lng ${position.longitude.toStringAsFixed(4)}',
-      city: '',
-      state: '',
-      postalCode: '',
-      country: '',
-      latitude: position.latitude, // Set the coordinates
-      longitude: position.longitude, // Set the coordinates
-      selectedAddress: true,
-    );
-
-    // 2. Use Get.back() to return the AddressModel to the caller (AddressController)
-    Get.back(result: newMapAddress);
-  }
-
-  /// -- REVERSE GEOCODING LOGIC
-  Future<void> _getLocationName(double latitude, double longitude) async {
+  Future<void> _showDetailsForTappedLocation(LatLng position) async {
     try {
-      final placemarks = await GeocodingPlatform.placemarkFromCoordinates(
-        latitude,
-        longitude,
+      final address = await GooglePlacesService.getAddressFromLatLng(position);
+      selectedPlaceDetails.value = PlaceDetails(
+        name: 'Selected Location',
+        address: address,
+        location: position,
       );
-      if (placemarks.isNotEmpty) {
-        final place = placemarks.first;
-        // Construct a readable name (e.g., City, Country)
-        final name = '${place.locality ?? ''}, ${place.country ?? ''}'
-            .trim()
-            .replaceAll(RegExp(r'^,|, $'), '');
-        locationName.value = name.isNotEmpty ? name : 'Unnamed Location';
-        AppLoggerHelper.info('Geocoded Location Name: $name');
-      } else {
-        locationName.value = 'Location name not found';
-      }
+      showLocationDetails.value = true;
     } catch (e) {
-      AppLoggerHelper.error('Reverse Geocoding Error: $e');
-      locationName.value = 'Geocoding failed';
+      AppLoggerHelper.error('Error getting details for tapped location: $e');
     }
   }
 
-  /// -- LOCATION FETCHING LOGIC
+  void _updateSelectionMarker(LatLng position) {
+    const markerId = MarkerId('selectedLocation');
+    final selectionMarker = Marker(
+      markerId: markerId,
+      position: position,
+      icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueAzure),
+      infoWindow: const InfoWindow(title: 'Selected Location'),
+    );
+
+    markers.removeWhere((m) => m.markerId == markerId);
+    markers.add(selectionMarker);
+    markers.refresh();
+  }
+
+  void _updateAllMarkers() {
+    final LocationData currentLoc = currentLocation.value!;
+    final Set<Marker> newMarkers = {
+      Marker(
+        markerId: const MarkerId('currentLocation'),
+        icon: currentLocationIcon,
+        position: LatLng(currentLoc.latitude!, currentLoc.longitude!),
+      ),
+    };
+
+    final selectedMarker = markers
+        .where((m) => m.markerId == const MarkerId('selectedLocation'))
+        .firstOrNull;
+
+    if (selectedMarker != null) {
+      newMarkers.add(selectedMarker);
+    }
+
+    final searchMarker = markers
+        .where((m) => m.markerId.value == 'search_result')
+        .firstOrNull;
+
+    if (searchMarker != null) {
+      newMarkers.add(searchMarker);
+    }
+
+    markers.assignAll(newMarkers);
+  }
+
+  Future<void> _getLocationName(double latitude, double longitude) async {
+    try {
+      final address = await GooglePlacesService.getAddressFromLatLng(
+        LatLng(latitude, longitude),
+      );
+      locationName.value = address ?? 'Unknown Location';
+    } catch (e) {
+      AppLoggerHelper.error('Reverse Geocoding Error: $e');
+      locationName.value = 'Location name not found';
+    }
+  }
+
   void getCurrentLocation() async {
     final location = Location();
     bool serviceEnabled = await location.serviceEnabled();
@@ -268,25 +666,18 @@ class MapController extends GetxController {
     }
 
     if (serviceEnabled && permissionGranted == PermissionStatus.granted) {
-      // Try to get actual location
       try {
         newLocationData = await location.getLocation();
-        currentLocation.value =
-            newLocationData; // Update state with real location
-
-        // Also update the picked location to the user's current location initially
+        currentLocation.value = newLocationData;
         pickedLocation.value = LatLng(
           newLocationData.latitude!,
           newLocationData.longitude!,
         );
       } on PlatformException catch (e) {
         AppLoggerHelper.error('Initial Location Fetch Error: ${e.message}');
-        // If fetch fails, we rely on the default value already set in the declaration
       }
     }
-    // If permissions fail, we rely on the default value already set in the declaration
 
-    // Geocode and update name for initial/actual location (non-blocking)
     if (currentLocation.value!.latitude != null &&
         currentLocation.value!.longitude != null) {
       _getLocationName(
@@ -295,17 +686,11 @@ class MapController extends GetxController {
       );
     }
 
-    // Start listening to live location updates
     _locationSubscription = location.onLocationChanged.listen(
       (newLocation) {
         currentLocation.value = newLocation;
-
-        // Only interact with the map if the map controller is ready
         if (googleMapController != null && _isInitialMapSetupComplete) {
-          _getLocationName(
-            newLocation.latitude!,
-            newLocation.longitude!,
-          ); // Geocode new location
+          _getLocationName(newLocation.latitude!, newLocation.longitude!);
           _moveCameraToLocation(newLocation);
           _updateAllMarkers();
         }
@@ -313,118 +698,32 @@ class MapController extends GetxController {
       onError: (error) {
         AppLoggerHelper.error('Live Location Stream Error: $error');
       },
-      cancelOnError: false,
     );
   }
 
-  /// -- MARKER MANAGEMENT
-  void _updateSelectionMarker(LatLng position) {
-    const markerId = MarkerId('selectedLocation');
-    final selectionMarker = Marker(
-      markerId: markerId,
-      position: position,
-      icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueAzure),
-      infoWindow: const InfoWindow(title: 'Picked Location'),
+  void _moveCameraToLocation(LocationData location) {
+    _moveCameraToLatLng(LatLng(location.latitude!, location.longitude!));
+  }
+
+  void savePickedLocation() {
+    if (pickedLocation.value == null) return;
+
+    final LatLng position = pickedLocation.value!;
+    final newMapAddress = AddressModel(
+      id: 'Map_${const Uuid().v4()}',
+      name: 'Map Location',
+      phoneNumber: 'N/A',
+      street: locationName.value,
+      city: '',
+      state: '',
+      postalCode: '',
+      country: '',
+      latitude: position.latitude,
+      longitude: position.longitude,
+      selectedAddress: true,
     );
-    // Use .value to directly modify the Set and trigger a reactive update.
-    markers.value.removeWhere((m) => m.markerId == markerId);
-    markers.value.add(selectionMarker);
-    markers.refresh();
-  }
 
-  void clearSelectionMarkers() {
-    markers.value.removeWhere(
-      (marker) => marker.markerId == const MarkerId('selectedLocation'),
-    );
-    pickedLocation.value = null;
-    markers.refresh();
-  }
-
-  void _updateAllMarkers() {
-    // currentLocation is guaranteed non-null due to initialization
-    final LocationData currentLoc = currentLocation.value!;
-
-    final Set<Marker> newMarkers = {
-      Marker(
-        markerId: const MarkerId('currentLocation'),
-        icon: currentLocationIcon,
-        position: LatLng(currentLoc.latitude!, currentLoc.longitude!),
-      ),
-      Marker(
-        markerId: const MarkerId('source'),
-        icon: sourceIcon,
-        position: sourceLocation,
-      ),
-      Marker(
-        markerId: const MarkerId('destination'),
-        icon: destinationIcon,
-        position: destination,
-      ),
-    };
-
-    // Safely retrieve the selected marker, if it exists
-    final selectedMarker = markers
-        .where((m) => m.markerId == const MarkerId('selectedLocation'))
-        .firstOrNull;
-
-    if (selectedMarker != null) {
-      newMarkers.add(selectedMarker);
-    }
-
-    markers.assignAll(newMarkers.toSet());
-    AppLoggerHelper.info('Markers updated and drawn on the map.');
-  }
-
-  /// -- POLYLINE (ROUTE) LOGIC
-  void getPolyPoints() async {
-    // Existing polyline logic remains the same...
-    try {
-      final apiKey = GetPlatform.isAndroid
-          ? ApiConstants.googleMapAndroidApikey
-          : ApiConstants.googleMapIOSApikey;
-
-      PolylinePoints polylinePoints = PolylinePoints(apiKey: apiKey);
-
-      var routeApiRequest = RoutesApiRequest(
-        origin: PointLatLng(sourceLocation.latitude, sourceLocation.longitude),
-        destination: PointLatLng(destination.latitude, destination.longitude),
-        travelMode: TravelMode.driving,
-      );
-
-      RoutesApiResponse result = await polylinePoints
-          .getRouteBetweenCoordinatesV2(request: routeApiRequest);
-
-      List<LatLng> polylineCoordinates = [];
-      if (result.routes.isNotEmpty) {
-        // Mocked PolylinePoints for compilation stability
-        // NOTE: In a real app, you would parse the actual points from the API response
-        polylineCoordinates = [
-          sourceLocation,
-          const LatLng(13.0, 44.5),
-          destination,
-        ];
-
-        // Update the reactive polylines set
-        polylines.assign(
-          Polyline(
-            polylineId: const PolylineId('route'),
-            points: polylineCoordinates,
-            color: AppColors.primaryColor,
-            width: 6,
-          ),
-        );
-      }
-    } catch (e) {
-      AppLoggerHelper.error('Polyline Fetch Error: $e');
-    }
-  }
-
-  @override
-  void onClose() {
-    _locationSubscription?.cancel();
-    if (googleMapController != null) {
-      googleMapController!.dispose();
-    }
-    super.onClose();
+    Get.back(result: newMapAddress);
   }
 }
+        

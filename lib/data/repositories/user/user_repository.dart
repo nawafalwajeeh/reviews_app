@@ -120,6 +120,29 @@ class UserRepository extends GetxController {
     }
   }
 
+  /// Function to fetch all User IDs from Firestore
+  Future<List<String>> getAllUserIds() async {
+    try {
+      // fetch all documents from the 'Users' collection
+      final querySnapshot = await _db.collection('Users').get();
+
+      final List<String> userIds = querySnapshot.docs
+          .map((document) => document.id)
+          .toList();
+      return userIds;
+    } on FirebaseAuthException catch (e) {
+      throw AppFirebaseAuthException(e.code).message;
+    } on FirebaseException catch (e) {
+      throw AppFirebaseException(e.code).message;
+    } on FormatException catch (_) {
+      throw AppFormatException();
+    } on PlatformException catch (e) {
+      throw AppPlatformException(e.code).message;
+    } catch (e) {
+      throw 'Something went wrong. Please try again.';
+    }
+  }
+
   /// Upload any Image
   Future<String> uploadImage(
     String path,

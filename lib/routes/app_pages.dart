@@ -14,7 +14,7 @@ import 'package:reviews_app/features/review/screens/place_details/place_details.
 import 'package:reviews_app/features/review/screens/search/search.dart';
 import 'package:reviews_app/features/review/screens/wishlist/wishlist.dart';
 import '../features/review/models/place_model.dart';
-import '../features/review/screens/place_reviews/place_reviews.dart';
+import '../features/review/screens/place_reviews/place_comments.dart';
 import 'app_routes.dart';
 
 class AppPages {
@@ -31,7 +31,7 @@ class AppPages {
     ),
     GetPage(
       name: AppRoutes.placeReviews,
-      page: () => PlaceReviewsScreen(place: PlaceModel.empty()),
+      page: () => PlaceCommentsScreen(place: PlaceModel.empty()),
     ),
     GetPage(name: AppRoutes.userProfile, page: () => const ProfileScreen()),
     GetPage(name: AppRoutes.userAddress, page: () => const UserAddressScreen()),

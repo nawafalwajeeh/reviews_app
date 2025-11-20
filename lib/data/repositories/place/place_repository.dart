@@ -293,7 +293,7 @@ class PlaceRepository extends GetxController {
     }
   }
 
-    /// not for changes within the *Place document* itself (e.g., a rating update).
+  /// not for changes within the *Place document* itself (e.g., a rating update).
   Stream<List<PlaceModel>> streamPlacesForCategory({
     required String categoryId,
   }) {
@@ -312,8 +312,8 @@ class PlaceRepository extends GetxController {
           // The result (Future<List<PlaceModel>>) is awaited by asyncMap,
           // which resolves the final Stream element type to List<PlaceModel>.
           return await _fetchPlacesByIds(placeIds);
-
-        }).handleError((error) {
+        })
+        .handleError((error) {
           // Handle errors specific to the stream operation
           if (error is FirebaseException) {
             throw AppFirebaseException(error.code).message;
@@ -324,7 +324,7 @@ class PlaceRepository extends GetxController {
         });
   }
 
-    /// to respect the Firestore limit of 10 items in a 'whereIn' clause.
+  /// to respect the Firestore limit of 10 items in a 'whereIn' clause.
   Future<List<PlaceModel>> _fetchPlacesByIds(List<String> placeIds) async {
     if (placeIds.isEmpty) return const [];
 
@@ -345,13 +345,12 @@ class PlaceRepository extends GetxController {
           .get();
 
       allPlaces.addAll(
-          placesQuery.docs.map((doc) => PlaceModel.fromSnapshot(doc)).toList());
+        placesQuery.docs.map((doc) => PlaceModel.fromSnapshot(doc)).toList(),
+      );
     }
 
     return allPlaces;
   }
-
-
 
   /// Required for Details Screen: Stream a single Place document for real-time updates
   Stream<PlaceModel> streamSinglePlace(String placeId) {
@@ -361,11 +360,11 @@ class PlaceRepository extends GetxController {
         .snapshots()
         .map((snapshot) => PlaceModel.fromSnapshot(snapshot))
         .handleError((e) {
-      if (e is FirebaseException) {
-        throw AppFirebaseException(e.code).message;
-      }
-      throw 'Error streaming single place: $e';
-    });
+          if (e is FirebaseException) {
+            throw AppFirebaseException(e.code).message;
+          }
+          throw 'Error streaming single place: $e';
+        });
   }
 
   /// -- Create new place
@@ -645,5 +644,110 @@ class PlaceRepository extends GetxController {
     } catch (e) {
       throw 'Something went wrong while updating place rating. Please try again.';
     }
+  }
+
+  /// -- Get Single Place by ID
+
+  Future<PlaceModel?> getPlaceById(String placeId) async {
+    try {
+      final documentSnapshot = await _db
+          .collection('Places')
+          .doc(placeId)
+          .get();
+
+      if (documentSnapshot.exists) {
+        return PlaceModel.fromSnapshot(documentSnapshot);
+      }
+
+      return null;
+    } on FirebaseException catch (e) {
+      throw AppFirebaseException(e.code).message;
+    } on PlatformException catch (e) {
+      throw AppPlatformException(e.code).message;
+    } catch (e) {
+      throw 'Something went wrong. Failed to fetch place: $e';
+    }
+  }
+
+  /// Firestore path to the current user's like document for a specific place.
+
+  DocumentReference _getUserLikeDocRef(String placeId, String userId) {
+    return _db
+        .collection('Places')
+        .doc(placeId)
+        .collection('Likes')
+        .doc(userId);
+  }
+
+  /// Toggles the like status and updates the count using a transaction.
+
+  /// [isLiking] is true if the user is performing a LIKE action, false for UNLIKE.
+
+  Future<void> togglePlaceLikeStatus(
+    String placeId,
+    String userId,
+    bool isLiking,
+  ) async {
+    final likeDocRef = _getUserLikeDocRef(placeId, userId);
+
+    final placeDocRef = _db.collection('Places').doc(placeId);
+
+    try {
+      await _db.runTransaction((transaction) async {
+        // 1. Update the Like subcollection
+
+        if (isLiking) {
+          // User is liking the place, create the like document
+
+          transaction.set(likeDocRef, {
+            'UserId': userId,
+            'timestamp': FieldValue.serverTimestamp(),
+          });
+
+          // 2. Update the likeCount on the main Place document
+
+          transaction.update(placeDocRef, {
+            'LikeCount': FieldValue.increment(1),
+          });
+        } else {
+          // User is unliking the place, delete the like document
+
+          transaction.delete(likeDocRef);
+
+          // 2. Update the likeCount on the main Place document
+
+          transaction.update(placeDocRef, {
+            'LikeCount': FieldValue.increment(-1),
+          });
+        }
+      });
+    } on FirebaseException catch (e) {
+      throw AppFirebaseException(e.code).message;
+    } on PlatformException catch (e) {
+      throw AppPlatformException(e.code).message;
+    } catch (e) {
+      throw 'Something went wrong while updating like status. Please try again.';
+    }
+  }
+
+  /// Gets a stream of the current user's like status for a place.
+
+  Stream<bool> getPlaceLikeStatusStream(String placeId, String userId) {
+    return _getUserLikeDocRef(
+      placeId,
+      userId,
+    ).snapshots().map((snapshot) => snapshot.exists);
+  }
+
+  /// Gets a stream of the total like count for a place.
+
+  Stream<int> getPlaceLikeCountStream(String placeId) {
+    return _db.collection('Places').doc(placeId).snapshots().map((snapshot) {
+      if (snapshot.exists && snapshot.data() != null) {
+        return (snapshot.data()!['LikeCount'] as int? ?? 0);
+      }
+
+      return 0;
+    });
   }
 }

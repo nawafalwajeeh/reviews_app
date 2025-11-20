@@ -133,6 +133,8 @@ class AddressController extends GetxController {
         postalCode: postalCode.text.trim(),
         country: country.text.trim(),
         selectedAddress: true,
+        latitude: 0.0,
+        longitude: 0.0,
       );
       final id = await addressRepository.addAddress(address);
 

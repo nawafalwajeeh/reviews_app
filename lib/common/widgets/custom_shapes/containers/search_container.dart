@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:reviews_app/utils/constants/colors.dart';
 import 'package:reviews_app/utils/constants/sizes.dart';
 import 'package:reviews_app/utils/device/device_utility.dart';
 import 'package:reviews_app/utils/helpers/helper_functions.dart';
+
+import '../../../../features/review/controllers/search_controller.dart';
 
 class AppSearchContainer extends StatelessWidget {
   const AppSearchContainer({
@@ -26,6 +29,7 @@ class AppSearchContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final searchController = AppSearchController.instance;
     final dark = AppHelperFunctions.isDarkMode(context);
 
     return GestureDetector(
@@ -48,17 +52,24 @@ class AppSearchContainer extends StatelessWidget {
             children: [
               Icon(icon, color: dark ? AppColors.darkerGrey : AppColors.grey),
               const SizedBox(width: AppSizes.spaceBtwItems),
-              Text(
-                text,
-                style: Theme.of(context).textTheme.bodySmall,
-                overflow: TextOverflow.ellipsis,
+              Expanded(
+                child: Obx(
+                  () => Text(
+                    searchController.searchQuery.value.isNotEmpty
+                        ? searchController.searchQuery.value
+                        : text,
+                    style: Theme.of(
+                      context,
+                    ).textTheme.bodySmall?.copyWith(fontSize: 13),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
               ),
 
-              Expanded(child: SizedBox()),
-
               Icon(
-                Icons.tune_rounded,
+                Icons.mic,
                 color: dark ? AppColors.darkerGrey : AppColors.grey,
+                size: 18,
               ),
             ],
           ),

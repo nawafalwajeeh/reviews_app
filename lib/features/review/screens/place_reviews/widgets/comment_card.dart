@@ -12,14 +12,14 @@ class CommentCard extends StatelessWidget {
   final CommentModel comment;
   final bool isReply;
   final double? rating;
-  final int nestLevel; // NEW: Track nesting level for indentation
+  final int nestLevel;
 
   const CommentCard({
     super.key,
     required this.comment,
     this.isReply = false,
     this.rating,
-    this.nestLevel = 0, // NEW: Default to 0 (top level)
+    this.nestLevel = 0,
   });
 
   @override
@@ -235,9 +235,7 @@ class CommentCard extends StatelessWidget {
                                 (reply) => CommentCard(
                                   comment: reply,
                                   isReply: true,
-                                  nestLevel:
-                                      nestLevel +
-                                      1, // NEW: Increment nest level
+                                  nestLevel: nestLevel + 1,
                                 ),
                               )
                               .toList(),

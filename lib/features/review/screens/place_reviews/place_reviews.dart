@@ -1,15 +1,14 @@
-// screens/place_comments_screen.dart
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:reviews_app/common/widgets/appbar/appbar.dart';
 import 'package:reviews_app/common/widgets/place/rating/rating_indicator.dart';
+import 'package:reviews_app/features/review/screens/place_reviews/widgets/user_review_card.dart';
 import 'package:reviews_app/utils/constants/sizes.dart';
-import '../../controllers/comment_controller.dart';
-import '../../models/place_model.dart';
-import '../place_reviews/widgets/comment_input_field.dart';
-import 'widgets/comment_card.dart';
 
-import 'widgets/rating_progress_indicator.dart'; // Add this import
+import '../../models/place_model.dart';
+import '../../models/review_model.dart';
+import '../../controllers/review_controller.dart'; // Import the controller
+import 'widgets/rating_progress_indicator.dart';
 
 class PlaceReviewsScreen extends StatelessWidget {
   final PlaceModel place;
@@ -18,13 +17,9 @@ class PlaceReviewsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final CommentController commentController = Get.put(CommentController());
-    final double keyboardOffset = MediaQuery.of(context).viewInsets.bottom;
-
-    // Initialize comments when screen loads
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      commentController.initializeComments(place.id);
-    });
+    // 1. Initialize the controller (GetX handles lifecycle and instance).
+    // Assuming place.id is available and correct.
+    final controller = Get.put(ReviewController(placeId: place.id));
 
     return Scaffold(
       resizeToAvoidBottomInset: true,
@@ -41,17 +36,17 @@ class PlaceReviewsScreen extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  /// Title (EXACTLY like your reviews screen)
+                  /// Title
                   const Text(
                     'Ratings and reviews are verified and are from people who use the same type of device that you use.',
                   ),
                   const SizedBox(height: AppSizes.spaceBtwItems),
 
+                  /// Overall Rating Indicator
                   OverallPlaceRating(
                     rating: place.averageRating.toStringAsFixed(1),
                     totalReviews: place.reviewsCount,
-                    ratingDistribution:
-                        place.ratingDistribution, // PASS REAL DATA
+                    ratingDistribution: place.ratingDistribution,
                   ),
 
                   /// Rating Bar Indicator
@@ -63,78 +58,57 @@ class PlaceReviewsScreen extends StatelessWidget {
 
                   const SizedBox(height: AppSizes.spaceBtwSections),
 
-                  /// Comments List
-                  _buildCommentsSection(commentController),
+                  /// User Reviews List - StreamBuilder for Real-time Data
+                  StreamBuilder<List<ReviewModel>>(
+                    // Assumes a public getter `reviewRepository` exists in ReviewController
+                    stream: controller.reviewRepo.streamReviewsForPlace(
+                      place.id,
+                    ),
+                    builder: (context, snapshot) {
+                      // 1. Loading State
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const Center(child: CircularProgressIndicator());
+                      }
+
+                      // 2. Error State
+                      if (snapshot.hasError) {
+                        return Center(
+                          child: Text(
+                            'Error loading reviews: ${snapshot.error}',
+                          ),
+                        );
+                      }
+
+                      final reviews = snapshot.data;
+
+                      // 3. No Data State
+                      if (reviews == null || reviews.isEmpty) {
+                        return const Center(
+                          child: Text('No reviews found for this place.'),
+                        );
+                      }
+
+                      // 4. Data Loaded State - Display the List of Reviews
+                      return ListView.separated(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemCount: reviews.length,
+                        separatorBuilder: (_, _) =>
+                            const SizedBox(height: AppSizes.spaceBtwSections),
+                        itemBuilder: (_, index) {
+                          final review = reviews[index];
+                          // Pass the fetched ReviewModel to the UserReviewCard
+                          return UserReviewCard(review: review);
+                        },
+                      );
+                    },
+                  ),
                 ],
               ),
             ),
           ),
-
-          /// -- Comment Input Field
-          Obx(() {
-            return BottomCommentInputField(
-              isReplying: false,
-              onCancelReply: () {},
-              onSend: (text) {
-                commentController.addComment(text);
-              },
-              isLoading: commentController.isLoading,
-            );
-          }),
-
-          if (keyboardOffset == 0)
-            SizedBox(height: MediaQuery.of(context).padding.bottom),
         ],
       ),
     );
-  }
-
-  Widget _buildCommentsSection(CommentController commentController) {
-    return Obx(() {
-      if (commentController.isLoading && commentController.comments.isEmpty) {
-        return const Center(child: CircularProgressIndicator());
-      }
-
-      if (commentController.comments.isEmpty) {
-        return const Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(Icons.comment, size: 64, color: Colors.grey),
-              SizedBox(height: 16),
-              Text(
-                'No comments yet',
-                style: TextStyle(fontSize: 16, color: Colors.grey),
-              ),
-              Text(
-                'Be the first to comment!',
-                style: TextStyle(color: Colors.grey),
-              ),
-            ],
-          ),
-        );
-      }
-
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'Comments (${commentController.comments.length})',
-            style: Theme.of(Get.context!).textTheme.headlineSmall,
-          ),
-          const SizedBox(height: AppSizes.spaceBtwItems),
-
-          ListView.builder(
-            itemCount: commentController.comments.length,
-            physics: const NeverScrollableScrollPhysics(),
-            shrinkWrap: true,
-            itemBuilder: (context, index) {
-              final comment = commentController.comments[index];
-              return CommentCard(comment: comment);
-            },
-          ),
-        ],
-      );
-    });
   }
 }

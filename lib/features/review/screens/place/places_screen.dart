@@ -9,6 +9,7 @@ import '../../../../utils/constants/colors.dart';
 import '../../../../utils/constants/sizes.dart';
 import '../../controllers/category_controller.dart';
 import '../gallery/gallery.dart';
+import '../search/search.dart';
 import 'add_new_place.dart';
 import 'widgets/place_list_tab.dart';
 
@@ -58,12 +59,14 @@ class AllPlacesScreen extends StatelessWidget {
                       CustomHeader(
                         title: 'Discover Places',
                         icon: Iconsax.image,
-                        onPressed: () =>
-                            Get.to(() =>  ImageGalleryScreen()),
+                        onPressed: () => Get.to(() => ImageGalleryScreen()),
                       ),
 
                       // Search Container
-                      const AppSearchContainer(text: 'Search for place'),
+                      AppSearchContainer(
+                        text: 'Search for place',
+                        onTap: () => Get.to(() => SearchScreen()),
+                      ),
                       const SizedBox(height: AppSizes.spaceBtwItems / 2),
                     ],
                   ),

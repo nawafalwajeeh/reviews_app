@@ -21,7 +21,8 @@ class AuthenticationRepository extends GetxController {
 
   /// Variables
   final deviceStorage = GetStorage();
-  late final Rx<User?> _firebaseUser;
+  // late final Rx<User?> _firebaseUser;
+  late final Rx<User?> _firebaseUser = Rx<User?>(_auth.currentUser);
   final _auth = FirebaseAuth.instance;
 
   /// getters
@@ -39,6 +40,8 @@ class AuthenticationRepository extends GetxController {
 
   String get getPhoneNo => _firebaseUser.value?.phoneNumber ?? "";
 
+  String get getPhotoUrl => _firebaseUser.value?.photoURL ?? "";
+
   bool get isCurrentUser => getUserID == _firebaseUser.value?.uid;
 
   /// Called Immediately when the [AuthenticationRepository]
@@ -46,7 +49,8 @@ class AuthenticationRepository extends GetxController {
   @override
   void onReady() {
     super.onReady();
-    _firebaseUser = Rx<User?>(_auth.currentUser);
+    // _firebaseUser = Rx<User?>(_auth.currentUser);
+    _firebaseUser.value = Rx<User?>(_auth.currentUser).value;
     _firebaseUser.bindStream(_auth.userChanges());
     FlutterNativeSplash.remove();
     screenRedirect();

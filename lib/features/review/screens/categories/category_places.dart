@@ -5,9 +5,7 @@ import 'package:reviews_app/common/widgets/shimmers/horizontal_place_shimmer.dar
 import 'package:reviews_app/utils/constants/sizes.dart';
 import 'package:reviews_app/features/review/controllers/category_controller.dart';
 import 'package:reviews_app/features/review/models/category_model.dart';
-import 'package:reviews_app/features/review/models/place_model.dart';
 import 'package:reviews_app/utils/helpers/cloud_helper_functions.dart';
-
 import '../../../../common/widgets/place/category/category_card.dart';
 import '../../../../data/repositories/authentication/authentication_repository.dart';
 import '../../controllers/place_controller.dart';

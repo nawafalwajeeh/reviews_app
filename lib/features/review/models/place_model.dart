@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/material.dart';
 
 import '../../personalization/models/address_model.dart';
 
@@ -12,7 +11,6 @@ class PlaceModel {
   final List<String>? images;
   final bool? isFeatured;
   final DateTime? dateAdded;
-  // final String location;
   final AddressModel address;
   final String categoryId;
   final double averageRating;
@@ -24,12 +22,16 @@ class PlaceModel {
   final Map<String, int> ratingDistribution;
   bool isFavorite;
   String? phoneNumber;
-  // String? openingHourse;
+
+  // -- NEW FIELDS FOR CREATOR/SOCIAL DATA --
+  final String creatorName;
+  final String creatorAvatarUrl;
+  int likeCount;
+  final int followerCount;
 
   PlaceModel({
     required this.id,
     required this.title,
-    // required this.location,
     required this.address,
     required this.categoryId,
     required this.description,
@@ -47,7 +49,12 @@ class PlaceModel {
     this.longitude,
     this.websiteUrl,
     this.phoneNumber,
-    // this.openingHourse,
+
+    // New required fields with default safe values
+    this.creatorName = 'Unknown Creator',
+    this.creatorAvatarUrl = '', // Placeholder for no avatar
+    this.likeCount = 0,
+    this.followerCount = 0,
   }) : isFavorite = isFavorite ?? false;
 
   /// Creates a new instance of PlaceModel with optional new values,
@@ -61,7 +68,6 @@ class PlaceModel {
     List<String>? images,
     bool? isFeatured,
     DateTime? dateAdded,
-    // String? location,
     AddressModel? address,
     String? categoryId,
     double? averageRating,
@@ -73,6 +79,11 @@ class PlaceModel {
     Map<String, int>? ratingDistribution,
     bool? isFavorite,
     String? phoneNumber,
+    // New CopyWith arguments
+    String? creatorName,
+    String? creatorAvatarUrl,
+    int? likeCount,
+    int? followerCount,
   }) {
     return PlaceModel(
       id: id ?? this.id,
@@ -83,7 +94,6 @@ class PlaceModel {
       images: images ?? this.images,
       isFeatured: isFeatured ?? this.isFeatured,
       dateAdded: dateAdded ?? this.dateAdded,
-      // location: location ?? this.location,
       address: address ?? this.address,
       categoryId: categoryId ?? this.categoryId,
       averageRating: averageRating ?? this.averageRating,
@@ -95,6 +105,12 @@ class PlaceModel {
       websiteUrl: websiteUrl ?? this.websiteUrl,
       isFavorite: isFavorite ?? this.isFavorite,
       phoneNumber: phoneNumber ?? this.phoneNumber,
+
+      // Initialize new fields
+      creatorName: creatorName ?? this.creatorName,
+      creatorAvatarUrl: creatorAvatarUrl ?? this.creatorAvatarUrl,
+      likeCount: likeCount ?? this.likeCount,
+      followerCount: followerCount ?? this.followerCount,
     );
   }
 
@@ -103,16 +119,19 @@ class PlaceModel {
     id: '',
     title: '',
     userId: '',
-    // location: '',
     address: AddressModel.empty(),
     categoryId: '',
     description: '',
     averageRating: 0.0,
-    reviewsCount: 0, // Default count
+    reviewsCount: 0,
     thumbnail: '',
     images: [],
     tags: [],
     ratingDistribution: {'5': 0, '4': 0, '3': 0, '2': 0, '1': 0},
+    creatorName: 'No Creator',
+    creatorAvatarUrl: '',
+    likeCount: 0,
+    followerCount: 0,
   );
 
   /// -- Json Format (To save data to Firestore)
@@ -122,10 +141,8 @@ class PlaceModel {
       'Title': title,
       'Description': description,
       'UserId': userId,
-      // 'Location': location,
       'Address': address.toJson(),
       'CategoryId': categoryId,
-      // 'AverageRating': averageRating,
       'Thumbnail': thumbnail,
       'Images': images ?? [],
       'Tags': tags ?? [],
@@ -137,7 +154,11 @@ class PlaceModel {
       'PhoneNumber': phoneNumber,
       'ReviewCount': reviewsCount,
       'RatingDistribution': ratingDistribution,
-      // 'OpeningHourse': openingHourse,
+      // New fields for Firestore storage (optional, as they might be aggregated elsewhere)
+      'CreatorName': creatorName,
+      'CreatorAvatarUrl': creatorAvatarUrl,
+      'LikeCount': likeCount,
+      'FollowerCount': followerCount,
     };
   }
 
@@ -168,7 +189,6 @@ class PlaceModel {
     if (document.data() == null) return PlaceModel.empty();
     final data = document.data()!;
 
-    // Handle rating distribution
     final ratingDistributionData =
         data['RatingDistribution'] ?? {'5': 0, '4': 0, '3': 0, '2': 0, '1': 0};
     final Map<String, int> ratingDistribution = {
@@ -179,7 +199,6 @@ class PlaceModel {
       '1': (ratingDistributionData['1'] ?? 0).toInt(),
     };
 
-    // 2. Calculate the definitive average rating and total count from the distribution map
     final calculatedAverageRating = _calculateAverageRating(ratingDistribution);
     final calculatedReviewCount = ratingDistribution.values.fold<int>(
       0,
@@ -188,26 +207,17 @@ class PlaceModel {
 
     final addressMap = data['Address'] as Map<String, dynamic>?;
 
-    // If we have valid address data, we use AddressModel.fromMap() to load it.
-    // Otherwise, we load an empty AddressModel to prevent null errors.
     final loadedAddress = (addressMap != null)
         ? AddressModel.fromJson(addressMap)
         : AddressModel.empty();
-    print('Raw Place Map Keys: ${data.keys.toList()}');
-    print('Is "address" key present and valid? ${addressMap != null}');
 
-    debugPrint('loadedAddress: $loadedAddress');
     return PlaceModel(
       id: document.id,
       title: data['Title'] ?? '',
       userId: data['UserId'] ?? '',
       description: data['Description'] ?? '',
-      // location: data['Location'] ?? '',
-      // address: AddressModel.fromJson(data['address'] ?? {}),
       address: loadedAddress,
       categoryId: data['CategoryId'] ?? '',
-      // averageRating: double.parse((data['Rating'] ?? 0.0).toString()),
-      // reviewsCount: (data['ReviewCount'] ?? 0).toInt(),
       averageRating: calculatedAverageRating,
       reviewsCount: calculatedReviewCount,
       thumbnail: data['Thumbnail'] ?? '',
@@ -223,7 +233,12 @@ class PlaceModel {
       tags: data['Tags'] != null ? List<String>.from(data['Tags']) : [],
       isFavorite: false,
       phoneNumber: data['PhoneNumber'] ?? '',
-      // openingHourse: data['OpeningHourse'] ?? '',
+
+      // NEW: Parse creator and social fields
+      creatorName: data['CreatorName'] ?? 'Unknown Creator',
+      creatorAvatarUrl: data['CreatorAvatarUrl'] ?? '',
+      likeCount: (data['LikeCount'] ?? 0).toInt(),
+      followerCount: (data['FollowerCount'] ?? 0).toInt(),
     );
   }
 
@@ -233,7 +248,6 @@ class PlaceModel {
   ) {
     final data = document.data() as Map<String, dynamic>;
 
-    // Handle rating distribution
     final ratingDistributionData =
         data['RatingDistribution'] ?? {'5': 0, '4': 0, '3': 0, '2': 0, '1': 0};
     final Map<String, int> ratingDistribution = {
@@ -244,7 +258,6 @@ class PlaceModel {
       '1': (ratingDistributionData['1'] ?? 0).toInt(),
     };
 
-    // 2. Calculate the definitive average rating and total count from the distribution map
     final calculatedAverageRating = _calculateAverageRating(ratingDistribution);
     final calculatedReviewCount = ratingDistribution.values.fold<int>(
       0,
@@ -253,8 +266,6 @@ class PlaceModel {
 
     final addressMap = data['Address'] as Map<String, dynamic>?;
 
-    // If we have valid address data, we use AddressModel.fromMap() to load it.
-    // Otherwise, we load an empty AddressModel to prevent null errors.
     final loadedAddress = (addressMap != null)
         ? AddressModel.fromJson(addressMap)
         : AddressModel.empty();
@@ -264,13 +275,8 @@ class PlaceModel {
       title: data['Title'] ?? '',
       userId: data['UserId'] ?? '',
       description: data['Description'] ?? '',
-      // location: data['Location'] ?? '',
-      // address: AddressModel.fromJson(data['address'] ?? {}),
       address: loadedAddress,
-
       categoryId: data['CategoryId'] ?? '',
-      // averageRating: double.parse((data['Rating'] ?? 0.0).toString()),
-      // reviewsCount: (data['ReviewCount'] ?? 0).toInt(),
       averageRating: calculatedAverageRating,
       reviewsCount: calculatedReviewCount,
       thumbnail: data['Thumbnail'] ?? '',
@@ -286,7 +292,12 @@ class PlaceModel {
       tags: data['Tags'] != null ? List<String>.from(data['Tags']) : [],
       isFavorite: false,
       phoneNumber: data['PhoneNumber'] ?? '',
-      // openingHourse: data['OpeningHourse'] ?? '',
+
+      // NEW: Parse creator and social fields
+      creatorName: data['CreatorName'] ?? 'Unknown Creator',
+      creatorAvatarUrl: data['CreatorAvatarUrl'] ?? '',
+      likeCount: (data['LikeCount'] ?? 0).toInt(),
+      followerCount: (data['FollowerCount'] ?? 0).toInt(),
     );
   }
 

@@ -100,7 +100,6 @@ class PlaceCard extends StatelessWidget {
                     bottom: 16,
                     child: PlaceTitleText(
                       title: place.title,
-                      // location: place.location,
                       location: place.address.shortAddress,
                       isVerified: true,
                       placeTitleSize: TextSizes.medium,
@@ -111,7 +110,8 @@ class PlaceCard extends StatelessWidget {
               ),
             ),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
+              // *** FIX: Reduced vertical padding from 18 to 14 to prevent 6.0 pixel overflow ***
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -119,12 +119,41 @@ class PlaceCard extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+                        /// Category Name (Moved up)
                         CategoryNameText(categoryId: place.categoryId),
-                        const SizedBox(height: 2),
-                        Text(
-                          place.description,
-                          overflow: TextOverflow.ellipsis,
-                          style: Theme.of(context).textTheme.bodySmall,
+                        const SizedBox(height: AppSizes.sm),
+
+                        /// Creator Avatar and Name
+                        Row(
+                          children: [
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(50),
+                              child: CachedNetworkImage(
+                                imageUrl: place.creatorAvatarUrl,
+                                placeholder: (context, url) =>
+                                    const Icon(Icons.person, size: 24),
+                                errorWidget: (context, url, error) =>
+                                    const Icon(Icons.person, size: 24),
+                                width: 24,
+                                height: 24,
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                            const SizedBox(width: AppSizes.spaceBtwItems / 2),
+                            Expanded(
+                              child: Text(
+                                place.creatorName,
+                                style: Theme.of(context).textTheme.labelMedium!
+                                    .apply(
+                                      color: dark
+                                          ? AppColors.lightGrey
+                                          : AppColors.darkGrey,
+                                      fontSizeFactor: 1.1,
+                                    ),
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                          ],
                         ),
                       ],
                     ),
@@ -142,7 +171,6 @@ class PlaceCard extends StatelessWidget {
                     padding: const EdgeInsets.symmetric(horizontal: 16),
                     child: Text(
                       'View Details',
-                      // 'عرض التفاصيل',
                       style: Theme.of(
                         context,
                       ).textTheme.bodySmall?.apply(color: AppColors.light),

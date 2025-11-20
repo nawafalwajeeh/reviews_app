@@ -10,8 +10,6 @@ import '../../../../../utils/validators/validation.dart';
 import 'place_address_section.dart';
 import 'place_payment_section.dart';
 import 'label_chip.dart';
-import 'label_location_picker.dart';
-// import 'label_location_picker.dart';
 
 class PlaceForm extends StatelessWidget {
   final bool isEditMode;

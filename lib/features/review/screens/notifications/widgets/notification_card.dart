@@ -1,7 +1,5 @@
 // Update your existing notification_card.dart
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
 
 import 'milestone_badge.dart';
 import 'notification_action_button.dart';

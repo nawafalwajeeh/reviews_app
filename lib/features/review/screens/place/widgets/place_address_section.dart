@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:reviews_app/features/personalization/models/address_model.dart';
 import 'package:reviews_app/features/review/controllers/place_controller.dart';
 import 'package:reviews_app/utils/constants/sizes.dart';
 import '../../../../../common/widgets/texts/section_heading.dart';

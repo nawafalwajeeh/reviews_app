@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import '../../../data/repositories/comment/comment_repository.dart';
 import '../../../utils/popups/loaders.dart';
 import '../../authentication/screens/signup/signup_screen.dart';
+import '../../personalization/controllers/user_controller.dart';
 import '../models/comment_model.dart';
 import '../../../data/repositories/authentication/authentication_repository.dart';
 
@@ -10,7 +11,7 @@ class CommentController extends GetxController {
   static CommentController get instance => Get.find();
 
   final _commentRepository = Get.put(CommentRepository());
-  final AuthenticationRepository authRepo = AuthenticationRepository.instance;
+  final authRepo = AuthenticationRepository.instance;
 
   // Reactive state
   final RxList<CommentModel> _comments = <CommentModel>[].obs;
@@ -130,12 +131,15 @@ class CommentController extends GetxController {
         return;
       }
 
+      final userName = UserController.instance.user.value.fullName;
+      final userAvatar = UserController.instance.user.value.profilePicture;
+
       final comment = CommentModel(
         id: DateTime.now().millisecondsSinceEpoch.toString(),
         placeId: _currentPlaceId.value,
         userId: userId,
-        userName: _getCurrentUserName(),
-        userAvatar: _getCurrentUserAvatar(),
+        userName: userName,
+        userAvatar: userAvatar,
         commentText: commentText,
         timestamp: DateTime.now(),
         updatedAt: DateTime.now(),
@@ -163,7 +167,65 @@ class CommentController extends GetxController {
     }
   }
 
-  // NEW: Recursively update parent comment reply counts
+  /*
+  // Modified addComment function
+  Future<void> addComment(String commentText, {String? parentCommentId}) async {
+    final userId = 'current_user_456'; // Mock User ID
+    final userName = _getCurrentUserName();
+    final userAvatar = _getCurrentUserAvatar();
+
+    final comment = CommentModel(
+      id: DateTime.now().millisecondsSinceEpoch.toString(),
+      placeId: _currentPlaceId.value,
+      userId: userId,
+      userName: userName,
+      userAvatar: userAvatar,
+      commentText: commentText,
+      timestamp: DateTime.now(),
+      updatedAt: DateTime.now(),
+      parentCommentId: parentCommentId,
+    );
+
+    // await _commentRepository.addComment(comment); // Assume success
+
+    // --- NOTIFICATION LOGIC: NEW COMMENT OR REPLY ---
+    if (parentCommentId == null) {
+      // 1. New Top-Level Comment: Notify Place Owner
+      final placeOwnerId = await _placeRepo.getPlaceOwnerId(_currentPlaceId.value);
+      if (placeOwnerId != userId) {
+        await _notificationController.sendNotification(
+          toUserId: placeOwnerId,
+          type: 'new_comment',
+          title: 'New Comment on Your Place',
+          body: '$userName commented on your listing: "${commentText.substring(0, 30)}..."',
+          senderName: userName,
+          senderAvatar: userAvatar,
+          targetId: _currentPlaceId.value,
+          targetType: 'place',
+        );
+      }
+    } else {
+      // 2. New Reply: Notify Original Comment Author
+      final parentComment = _getCommentById(parentCommentId);
+      final originalAuthorId = parentComment?.userId;
+
+      if (originalAuthorId != null && originalAuthorId != userId) {
+        await _notificationController.sendNotification(
+          toUserId: originalAuthorId,
+          type: 'comment_replied',
+          title: 'New Reply to Your Comment',
+          body: '$userName replied to your comment: "${_getCommentText(parentCommentId).substring(0, 30)}..."',
+          senderName: userName,
+          senderAvatar: userAvatar,
+          targetId: comment.id,
+          targetType: 'comment',
+          extraData: {'parentCommentId': parentCommentId},
+        );
+      }
+    }
+  */
+
+  // Recursively update parent comment reply counts
   Future<void> _updateParentReplyCounts(String commentId, int change) async {
     String currentCommentId = commentId;
 
