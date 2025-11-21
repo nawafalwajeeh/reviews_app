@@ -54,6 +54,53 @@ class AddressController extends GetxController {
   }
 
   /// Select specific address and update in the firestore and ui
+  // Future<void> selectAddress(AddressModel newSelectedAddress) async {
+  //   try {
+  //     // Start circular loader
+  //     Get.defaultDialog(
+  //       title: '',
+  //       onWillPop: () async => false,
+  //       barrierDismissible: false,
+  //       backgroundColor: Colors.transparent,
+  //       content: const AppCircularLoader(),
+  //     );
+
+  //     // Check Internet Connectivity
+  //     final isConnected = await AppNetworkManager.instance.isConnected();
+  //     if (!isConnected) {
+  //       // show warningSnackbar('No Internet Connection') by default
+  //       // becuase the _connectivitySubscription still call _updateConnectionStatus again and again.
+  //       return;
+  //     }
+
+  //     // Clear the 'selected' field
+  //     if (selectedAddress.value.id.isNotEmpty) {
+  //       await addressRepository.updateSelectedField(
+  //         selectedAddress.value.id,
+  //         false,
+  //       );
+  //     }
+
+  //     // Assign selected address
+  //     newSelectedAddress.selectedAddress = true;
+  //     selectedAddress.value = newSelectedAddress;
+
+  //     // set the 'selected' field to true for the newly selected address
+  //     await addressRepository.updateSelectedField(
+  //       selectedAddress.value.id,
+  //       true,
+  //     );
+  //     // close the loading dialog after operation completed
+  //     Get.back();
+  //   } catch (e) {
+  //     AppLoaders.errorSnackBar(
+  //       title: 'Error in Selection!',
+  //       message: e.toString(),
+  //     );
+  //   }
+  // }
+
+  /// Select specific address and update in the firestore and ui
   Future<void> selectAddress(AddressModel newSelectedAddress) async {
     try {
       // Start circular loader
@@ -68,13 +115,14 @@ class AddressController extends GetxController {
       // Check Internet Connectivity
       final isConnected = await AppNetworkManager.instance.isConnected();
       if (!isConnected) {
-        // show warningSnackbar('No Internet Connection') by default
-        // becuase the _connectivitySubscription still call _updateConnectionStatus again and again.
+        Get.back();
         return;
       }
 
-      // Clear the 'selected' field
-      if (selectedAddress.value.id.isNotEmpty) {
+      // --- CRITICAL FIX: Only update Firestore for addresses that exist in Firestore ---
+      if (selectedAddress.value.id.isNotEmpty &&
+          !selectedAddress.value.id.startsWith('Map_')) {
+        // Clear the 'selected' field only for existing Firestore addresses
         await addressRepository.updateSelectedField(
           selectedAddress.value.id,
           false,
@@ -85,20 +133,101 @@ class AddressController extends GetxController {
       newSelectedAddress.selectedAddress = true;
       selectedAddress.value = newSelectedAddress;
 
-      // set the 'selected' field to true for the newly selected address
-      await addressRepository.updateSelectedField(
-        selectedAddress.value.id,
-        true,
-      );
+      // --- CRITICAL FIX: Only update Firestore for addresses that exist in Firestore ---
+      if (!newSelectedAddress.id.startsWith('Map_')) {
+        // set the 'selected' field to true for the newly selected address
+        await addressRepository.updateSelectedField(
+          newSelectedAddress.id,
+          true,
+        );
+      }
+
       // close the loading dialog after operation completed
       Get.back();
+
+      // Show success message
+      AppLoaders.successSnackBar(
+        title: 'Location Selected',
+        message: newSelectedAddress.id.startsWith('Map_')
+            ? 'Map location selected successfully'
+            : 'Address selected successfully',
+      );
     } catch (e) {
+      Get.back(); // Close loading dialog
       AppLoaders.errorSnackBar(
         title: 'Error in Selection!',
         message: e.toString(),
       );
     }
   }
+
+  /// Add new address
+  // Future<void> addNewAddress() async {
+  //   try {
+  //     // Start loader
+  //     AppFullScreenLoader.openLoadingDialog(
+  //       'Storing Address...',
+  //       AppImages.docerAnimation,
+  //     );
+
+  //     // Check Internet Connectivity
+  //     final isConnected = await AppNetworkManager.instance.isConnected();
+  //     if (!isConnected) {
+  //       AppFullScreenLoader.stopLoading();
+  //       return;
+  //     }
+
+  //     // Check Form validation
+  //     if (!addressFormKey.currentState!.validate()) {
+  //       AppFullScreenLoader.stopLoading();
+  //       return;
+  //     }
+
+  //     // Save address data
+  //     final address = AddressModel(
+  //       id: '',
+  //       name: name.text.trim(),
+  //       phoneNumber: phoneNumber.text.trim(),
+  //       street: street.text.trim(),
+  //       city: city.text.trim(),
+  //       state: state.text.trim(),
+  //       postalCode: postalCode.text.trim(),
+  //       country: country.text.trim(),
+  //       selectedAddress: true,
+  //       latitude: 0.0,
+  //       longitude: 0.0,
+  //     );
+  //     final id = await addressRepository.addAddress(address);
+
+  //     // Update selected address status
+  //     address.id = id;
+  //     await selectAddress(address);
+
+  //     // Remove Loader
+  //     AppFullScreenLoader.stopLoading();
+
+  //     // show success message
+  //     AppLoaders.successSnackBar(
+  //       title: 'Congratulations',
+  //       message: 'your address has been saved successfully.',
+  //     );
+
+  //     // Refresh Address data
+  //     refreshData.toggle();
+
+  //     // Reset Fields
+  //     resetFormFields();
+
+  //     // Redirect to the previous screen
+  //     Navigator.of(Get.context!).pop();
+  //   } catch (e) {
+  //     AppFullScreenLoader.stopLoading();
+  //     AppLoaders.errorSnackBar(
+  //       title: 'Address not found',
+  //       message: e.toString(),
+  //     );
+  //   }
+  // }
 
   /// Add new address
   Future<void> addNewAddress() async {
@@ -122,9 +251,16 @@ class AddressController extends GetxController {
         return;
       }
 
-      // Save address data
+      // --- FIX: Handle map addresses properly ---
+      final bool isMapAddress = selectedAddress.value.id.startsWith('Map_');
+
+      // Save address data - use coordinates from map if available
       final address = AddressModel(
-        id: '',
+        id: isMapAddress
+            ? ''
+            : selectedAddress
+                  .value
+                  .id, // Clear ID for map addresses to create new
         name: name.text.trim(),
         phoneNumber: phoneNumber.text.trim(),
         street: street.text.trim(),
@@ -133,12 +269,14 @@ class AddressController extends GetxController {
         postalCode: postalCode.text.trim(),
         country: country.text.trim(),
         selectedAddress: true,
-        latitude: 0.0,
-        longitude: 0.0,
+        // Use coordinates from map if available, otherwise default to 0.0
+        latitude: isMapAddress ? selectedAddress.value.latitude : 0.0,
+        longitude: isMapAddress ? selectedAddress.value.longitude : 0.0,
       );
+
       final id = await addressRepository.addAddress(address);
 
-      // Update selected address status
+      // Update selected address status with the new Firestore ID
       address.id = id;
       await selectAddress(address);
 
@@ -148,7 +286,7 @@ class AddressController extends GetxController {
       // show success message
       AppLoaders.successSnackBar(
         title: 'Congratulations',
-        message: 'your address has been saved successfully.',
+        message: 'Your address has been saved successfully.',
       );
 
       // Refresh Address data
@@ -181,15 +319,51 @@ class AddressController extends GetxController {
   }
 
   /// Navigates to the Map Picker Screen and processes the result.
-  void navigateToMapPicker() {
-    // Use Get.to and then() to capture the returned value (the AddressModel)
-    // The result is the AddressModel created in MapPickerScreen
-    Get.to(() => MapScreen(isPickerMode: true))?.then((result) {
+  // void navigateToMapPicker() {
+  //   // Use Get.to and then() to capture the returned value (the AddressModel)
+  //   // The result is the AddressModel created in MapPickerScreen
+  //   Get.to(() => MapScreen(isPickerMode: true))?.then((result) {
+  //     if (result != null && result is AddressModel) {
+  //       // Use the unified selectAddress function to update the selectedAddress.value
+  //       selectAddress(result);
+  //     }
+  //   });
+  // }
+
+  /// Navigates to the Map Picker Screen and processes the result.
+  /// Navigates to the Map Picker Screen and processes the result.
+  Future<void> navigateToMapPicker() async {
+    await Get.to(() => MapScreen(isPickerMode: true))?.then((result) {
       if (result != null && result is AddressModel) {
-        // Use the unified selectAddress function to update the selectedAddress.value
-        selectAddress(result);
+        if (result.id.startsWith('Map_')) {
+          // Use separate method for map addresses
+          selectMapAddress(result);
+        } else {
+          // Use regular method for Firestore addresses
+          selectAddress(result);
+        }
       }
     });
+  }
+
+  /// Handle map address selection separately
+  Future<void> selectMapAddress(AddressModel mapAddress) async {
+    try {
+      // Simply update the selected address without Firestore operations
+      selectedAddress.value = mapAddress;
+
+      // Show success message
+      AppLoaders.successSnackBar(
+        title: 'Map Location Selected',
+        message:
+            'Map location has been selected. Save the address to persist it.',
+      );
+    } catch (e) {
+      AppLoaders.errorSnackBar(
+        title: 'Error selecting map location',
+        message: e.toString(),
+      );
+    }
   }
 
   /// Show adresses ModalBottomSheet on Checkout
@@ -254,6 +428,39 @@ class AddressController extends GetxController {
           ],
         ),
       ),
+    );
+  }
+
+  /// Update address form with coordinates from map
+  void updateAddressWithMapCoordinates(AddressModel mapAddress) {
+    // Update the selected address with map coordinates
+    selectedAddress.value = mapAddress;
+
+    // Auto-fill form fields if they're empty and map provides address data
+    if (name.text.isEmpty &&
+        mapAddress.name.isNotEmpty &&
+        mapAddress.name != 'N/A') {
+      name.text = mapAddress.name;
+    }
+
+    if (street.text.isEmpty && mapAddress.street.isNotEmpty) {
+      street.text = mapAddress.street;
+    }
+
+    if (city.text.isEmpty && mapAddress.city.isNotEmpty) {
+      city.text = mapAddress.city;
+    }
+
+    if (country.text.isEmpty && mapAddress.country.isNotEmpty) {
+      country.text = mapAddress.country;
+    }
+
+    // Show success message
+    Get.snackbar(
+      'Location Selected',
+      'Coordinates have been set from map',
+      backgroundColor: AppColors.success.withValues(alpha: 0.9),
+      colorText: AppColors.white,
     );
   }
 }

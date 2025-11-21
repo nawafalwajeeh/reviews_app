@@ -12,8 +12,8 @@ class AddressModel {
   final String country;
   final DateTime? dateTime;
   bool selectedAddress;
-  final double latitude;
-  final double longitude;
+  double latitude;
+  double longitude;
   AddressModel({
     required this.id,
     required this.name,
@@ -44,7 +44,39 @@ class AddressModel {
     longitude: 0.0,
   );
 
-  Map<String, dynamic> toJson() {
+
+
+    AddressModel copyWith({
+    String? id,
+    String? name,
+    String? phoneNumber,
+    String? street,
+    String? city,
+    String? state,
+    String? postalCode,
+    String? country,
+    DateTime? dateTime,
+    bool? selectedAddress,
+    double? latitude,
+    double? longitude,
+  }) {
+    return AddressModel(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      phoneNumber: phoneNumber ?? this.phoneNumber,
+      street: street ?? this.street,
+      city: city ?? this.city,
+      state: state ?? this.state,
+      postalCode: postalCode ?? this.postalCode,
+      country: country ?? this.country,
+      dateTime: dateTime ?? this.dateTime,
+      selectedAddress: selectedAddress ?? this.selectedAddress,
+      latitude: latitude ?? this.latitude,
+      longitude: longitude ?? this.longitude,
+    );
+  }
+
+    Map<String, dynamic> toJson() {
     return {
       'Name': name,
       'PhoneNumber': phoneNumber,

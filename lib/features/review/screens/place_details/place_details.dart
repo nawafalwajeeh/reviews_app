@@ -1,36 +1,21 @@
-// Added import for StreamSubscription
-
 import 'package:flutter/material.dart';
-
 import 'package:get/get.dart';
-
 import 'package:iconsax/iconsax.dart';
-
 import 'package:readmore/readmore.dart';
-
-import 'package:reviews_app/common/widgets/texts/section_heading.dart';
-
-import 'package:reviews_app/data/repositories/authentication/authentication_repository.dart';
-
-import 'package:reviews_app/features/review/models/place_model.dart';
-
-import 'package:reviews_app/utils/constants/colors.dart' show AppColors;
-
+import '../../../../common/widgets/texts/section_heading.dart';
+import '../../../../data/repositories/authentication/authentication_repository.dart';
+import '../../../../utils/constants/colors.dart';
 import '../../../../utils/constants/sizes.dart';
-
+import '../../models/place_model.dart';
 import '../place_reviews/place_comments.dart';
-
 import '../place_reviews/place_reviews.dart';
-
+import 'widgets/barcode_section.dart';
 import 'widgets/details_image_slider.dart';
-
 import 'widgets/like_button.dart';
 import 'widgets/place_aminities.dart';
-
+import 'widgets/place_map_section.dart';
 import 'widgets/place_meta_data.dart';
-
 import 'widgets/rating_share.dart';
-
 import 'widgets/write_review.dart';
 
 class PlaceDetailsScreen extends StatelessWidget {
@@ -40,23 +25,18 @@ class PlaceDetailsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // final controller = PlaceController.instance;
-
     final userId = AuthenticationRepository.instance.getUserID;
-
     final creatorId = place.userId;
 
     debugPrint('UserId: $userId, creatorId: $creatorId');
 
     return Scaffold(
       extendBodyBehindAppBar: true,
-
       body: Stack(
         children: [
           SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-
               children: [
                 /// -- Place Image Slider & Custom AppBar
                 PlaceImageSlider(place: place),
@@ -64,14 +44,11 @@ class PlaceDetailsScreen extends StatelessWidget {
                 /// -- Details Content Section
                 Padding(
                   padding: const EdgeInsets.all(AppSizes.defaultSpace),
-
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-
                     children: [
                       /// -- Place Metadata (Title, Location, Category)
                       PlaceMetadata(place: place),
-
                       const SizedBox(height: AppSizes.spaceBtwItems),
 
                       /// -- Rating, Share, and **Like Widget**
@@ -88,7 +65,6 @@ class PlaceDetailsScreen extends StatelessWidget {
                       /// -- Overview & Description
                       const AppSectionHeading(
                         title: 'Description',
-
                         showActionButton: false,
                       ),
 
@@ -96,109 +72,79 @@ class PlaceDetailsScreen extends StatelessWidget {
 
                       ReadMoreText(
                         place.description,
-
                         trimLines: 2,
-
                         trimMode: TrimMode.Line,
-
                         trimCollapsedText: ' Show more',
-
                         trimExpandedText: ' Less',
-
                         moreStyle: TextStyle(
                           color: AppColors.primaryColor,
-
                           fontSize: 14,
-
                           fontWeight: FontWeight.w800,
                         ),
-
                         lessStyle: TextStyle(
                           color: AppColors.primaryColor,
-
                           fontSize: 14,
-
                           fontWeight: FontWeight.w800,
                         ),
                       ),
 
                       const SizedBox(height: AppSizes.spaceBtwSections),
 
+                      /// -- Map Section (NEW)
+                      if (place.latitude != 0.0 && place.longitude != 0.0)
+                        Column(
+                          children: [
+                            PlaceMapSection(
+                              latitude: place.latitude ?? 0.0,
+                              longitude: place.longitude ?? 0.0,
+                              placeName: place.title,
+                            ),
+                            const SizedBox(height: AppSizes.spaceBtwSections),
+                          ],
+                        ),
+
+                      /// -- Tags Section
                       const AppSectionHeading(
                         title: 'Tags',
-
                         showActionButton: false,
                       ),
 
                       AmenitiesSection(tags: place.tags ?? []),
-
                       const SizedBox(height: AppSizes.spaceBtwSections),
 
-                      /// -- Map Section Placeholder
+                      /// -- Review Section
+                      WriteReviewWithQuestionsSection(
+                        placeId: place.id,
+                        place: place,
+                      ),
 
-                      // const AppSectionHeading(
+                      const SizedBox(height: AppSizes.spaceBtwItems),
 
-                      //   title: 'Location on Map',
-
-                      //   showActionButton: false,
-
-                      // ),
-
-                      // const SizedBox(height: AppSizes.spaceBtwItems),
-
-                      // Container(
-
-                      //   height: 200,
-
-                      //   decoration: BoxDecoration(
-
-                      //     color: Colors.grey.shade200,
-
-                      //     borderRadius: BorderRadius.circular(
-
-                      //       AppSizes.cardRadiusMd,
-
-                      //     ),
-
-                      //   ),
-
-                      //   alignment: Alignment.center,
-
-                      //   child: Text(
-
-                      //     'Map View Placeholder',
-
-                      //     style: Theme.of(context).textTheme.titleMedium,
-
-                      //   ),
-
-                      // ),
-
-                      ///
-                      WriteReviewSection(placeId: place.id),
-
-                      SizedBox(height: AppSizes.spaceBtwItems),
+                      /// -- Barcode Section
+                      if (place.barcodeData.isNotEmpty)
+                        Column(
+                          children: [
+                            BarcodeSection(place: place),
+                            const SizedBox(height: AppSizes.spaceBtwItems),
+                          ],
+                        ),
 
                       const Divider(),
 
+                      /// -- Navigation Section
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-
                         children: [
                           InkWell(
                             onTap: () =>
                                 Get.to(() => PlaceReviewsScreen(place: place)),
-
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-
                               children: [
                                 AppSectionHeading(
-                                  // title: 'Reviews(${place.reviewsCount})',
                                   title: 'Reviews',
                                   showActionButton: false,
                                 ),
-
                                 Icon(Iconsax.arrow_right_3, size: 18),
                               ],
                             ),
@@ -207,17 +153,13 @@ class PlaceDetailsScreen extends StatelessWidget {
                           InkWell(
                             onTap: () =>
                                 Get.to(() => PlaceCommentsScreen(place: place)),
-
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-
                               children: [
                                 AppSectionHeading(
-                                  // title: 'Reviews(${place.reviewsCount})',
                                   title: 'Comments',
                                   showActionButton: false,
                                 ),
-
                                 Icon(Iconsax.arrow_right_3, size: 18),
                               ],
                             ),
@@ -236,7 +178,10 @@ class PlaceDetailsScreen extends StatelessWidget {
   }
 }
 
-//---------------------------
+
+
+//--------------------------------
+// // Added import for StreamSubscription
 // import 'package:flutter/material.dart';
 // import 'package:get/get.dart';
 // import 'package:iconsax/iconsax.dart';
@@ -248,7 +193,9 @@ class PlaceDetailsScreen extends StatelessWidget {
 // import '../../../../utils/constants/sizes.dart';
 // import '../place_reviews/place_comments.dart';
 // import '../place_reviews/place_reviews.dart';
+// import 'widgets/barcode_section.dart';
 // import 'widgets/details_image_slider.dart';
+// import 'widgets/like_button.dart';
 // import 'widgets/place_aminities.dart';
 // import 'widgets/place_meta_data.dart';
 // import 'widgets/rating_share.dart';
@@ -264,6 +211,7 @@ class PlaceDetailsScreen extends StatelessWidget {
 //     // final controller = PlaceController.instance;
 //     final userId = AuthenticationRepository.instance.getUserID;
 //     final creatorId = place.userId;
+
 //     debugPrint('UserId: $userId, creatorId: $creatorId');
 
 //     return Scaffold(
@@ -287,8 +235,15 @@ class PlaceDetailsScreen extends StatelessWidget {
 //                       PlaceMetadata(place: place),
 //                       const SizedBox(height: AppSizes.spaceBtwItems),
 
-//                       /// -- Rating and Share Widget
+//                       /// -- Rating, Share, and **Like Widget**
 //                       RatingAndShareWidget(place: place),
+//                       const SizedBox(height: AppSizes.spaceBtwItems),
+
+//                       Align(
+//                         alignment: Alignment.center,
+//                         child: PlaceLikeButton(placeId: place.id),
+//                       ),
+
 //                       const SizedBox(height: AppSizes.spaceBtwSections),
 
 //                       /// -- Overview & Description
@@ -296,7 +251,9 @@ class PlaceDetailsScreen extends StatelessWidget {
 //                         title: 'Description',
 //                         showActionButton: false,
 //                       ),
+
 //                       const SizedBox(height: AppSizes.spaceBtwItems),
+
 //                       ReadMoreText(
 //                         place.description,
 //                         trimLines: 2,
@@ -319,6 +276,7 @@ class PlaceDetailsScreen extends StatelessWidget {
 //                         title: 'Tags',
 //                         showActionButton: false,
 //                       ),
+
 //                       AmenitiesSection(tags: place.tags ?? []),
 //                       const SizedBox(height: AppSizes.spaceBtwSections),
 
@@ -327,6 +285,7 @@ class PlaceDetailsScreen extends StatelessWidget {
 //                       //   title: 'Location on Map',
 //                       //   showActionButton: false,
 //                       // ),
+
 //                       // const SizedBox(height: AppSizes.spaceBtwItems),
 //                       // Container(
 //                       //   height: 200,
@@ -342,14 +301,24 @@ class PlaceDetailsScreen extends StatelessWidget {
 //                       //     style: Theme.of(context).textTheme.titleMedium,
 //                       //   ),
 //                       // ),
-//                       ///
-//                       WriteReviewSection(placeId: place.id),
-//                       SizedBox(height: AppSizes.spaceBtwItems),
 
+//                       // WriteReviewSection(placeId: place.id),
+//                       WriteReviewWithQuestionsSection(
+//                         placeId: place.id,
+//                         place: place,
+//                       ),
+
+//                       SizedBox(height: AppSizes.spaceBtwItems),
+//                       // Barcode Section
+//                       if (place.barcodeData.isNotEmpty)
+//                         BarcodeSection(place: place),
+
+//                       SizedBox(height: AppSizes.spaceBtwItems),
 //                       const Divider(),
 
 //                       Row(
 //                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+
 //                         children: [
 //                           InkWell(
 //                             onTap: () =>
@@ -366,6 +335,7 @@ class PlaceDetailsScreen extends StatelessWidget {
 //                               ],
 //                             ),
 //                           ),
+
 //                           InkWell(
 //                             onTap: () =>
 //                                 Get.to(() => PlaceCommentsScreen(place: place)),
@@ -373,7 +343,6 @@ class PlaceDetailsScreen extends StatelessWidget {
 //                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
 //                               children: [
 //                                 AppSectionHeading(
-//                                   // title: 'Reviews(${place.reviewsCount})',
 //                                   title: 'Comments',
 //                                   showActionButton: false,
 //                                 ),

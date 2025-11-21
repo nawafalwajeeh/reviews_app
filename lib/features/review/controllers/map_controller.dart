@@ -1,3 +1,5 @@
+
+
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
@@ -12,6 +14,7 @@ import '../../../utils/constants/api_constants.dart';
 import '../../../utils/constants/colors.dart';
 import '../../../utils/device/device_utility.dart';
 import '../../../utils/logging/logger.dart';
+import '../../../utils/popups/loaders.dart';
 import '../../personalization/models/address_model.dart';
 
 // --- SEARCH RELATED CLASSES ---
@@ -573,6 +576,15 @@ class MapController extends GetxController {
     );
   }
 
+  // void onMapTap(LatLng position) {
+  //   pickedLocation.value = position;
+  //   _updateSelectionMarker(position);
+  //   _getLocationName(position.latitude, position.longitude);
+
+  //   // Show location details for tapped location
+  //   _showDetailsForTappedLocation(position);
+  // }
+
   void onMapTap(LatLng position) {
     pickedLocation.value = position;
     _updateSelectionMarker(position);
@@ -709,15 +721,17 @@ class MapController extends GetxController {
     if (pickedLocation.value == null) return;
 
     final LatLng position = pickedLocation.value!;
+
+    // Create address with proper data
     final newMapAddress = AddressModel(
       id: 'Map_${const Uuid().v4()}',
-      name: 'Map Location',
+      name: locationName.value.isNotEmpty ? locationName.value : 'Map Location',
       phoneNumber: 'N/A',
-      street: locationName.value,
-      city: '',
+      street: _extractStreetFromAddress(locationName.value),
+      city: _extractCityFromAddress(locationName.value),
       state: '',
       postalCode: '',
-      country: '',
+      country: _extractCountryFromAddress(locationName.value),
       latitude: position.latitude,
       longitude: position.longitude,
       selectedAddress: true,
@@ -725,5 +739,23 @@ class MapController extends GetxController {
 
     Get.back(result: newMapAddress);
   }
+
+  // Helper methods to parse address components
+  String _extractStreetFromAddress(String address) {
+    if (address.isEmpty) return '';
+    final parts = address.split(',');
+    return parts.isNotEmpty ? parts.first.trim() : '';
+  }
+
+  String _extractCityFromAddress(String address) {
+    if (address.isEmpty) return '';
+    final parts = address.split(',');
+    return parts.length > 1 ? parts[1].trim() : '';
+  }
+
+  String _extractCountryFromAddress(String address) {
+    if (address.isEmpty) return '';
+    final parts = address.split(',');
+    return parts.isNotEmpty ? parts.last.trim() : '';
+  }
 }
-        

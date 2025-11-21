@@ -1,3 +1,5 @@
+
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -533,7 +535,7 @@ class MapScreen extends StatelessWidget {
     );
   }
 
-  /// Build location info card
+  // In _buildLocationInfoCard, make it more prominent:
   Widget _buildLocationInfoCard(
     BuildContext context,
     MapController controller,
@@ -543,42 +545,60 @@ class MapScreen extends StatelessWidget {
       left: AppSizes.defaultSpace,
       right: AppSizes.defaultSpace,
       child: Obx(
-        () => AnimatedOpacity(
-          opacity: controller.pickedLocation.value != null ? 1.0 : 0.0,
+        () => AnimatedContainer(
           duration: const Duration(milliseconds: 300),
+          transform: Matrix4.translationValues(
+            0,
+            controller.pickedLocation.value != null ? 0 : -100,
+            0,
+          ),
           child: Card(
-            elevation: 4,
+            elevation: 8,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(AppSizes.cardRadiusLg),
             ),
+            color: AppColors.white,
             child: Padding(
               padding: const EdgeInsets.all(AppSizes.md),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    'Selected Location',
-                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
+                  Row(
+                    children: [
+                      Icon(
+                        Icons.location_pin,
+                        color: AppColors.primaryColor,
+                        size: 20,
+                      ),
+                      const SizedBox(width: AppSizes.sm),
+                      Text(
+                        'Selected Location',
+                        style: Theme.of(context).textTheme.titleMedium
+                            ?.copyWith(
+                              fontWeight: FontWeight.bold,
+                              color: AppColors.primaryColor,
+                            ),
+                      ),
+                    ],
                   ),
-                  const SizedBox(height: AppSizes.xs),
+                  const SizedBox(height: AppSizes.sm),
                   Text(
                     controller.locationName.value,
                     style: Theme.of(context).textTheme.bodyMedium,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
                   ),
-                  const SizedBox(height: AppSizes.sm),
-                  if (controller.pickedLocation.value != null)
+                  if (controller.pickedLocation.value != null) ...[
+                    const SizedBox(height: AppSizes.sm),
                     Text(
                       'Lat: ${controller.pickedLocation.value!.latitude.toStringAsFixed(6)}\n'
                       'Lng: ${controller.pickedLocation.value!.longitude.toStringAsFixed(6)}',
-                      softWrap: true,
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
                         color: AppColors.darkGrey,
+                        fontFamily: 'monospace',
                       ),
                     ),
+                  ],
                 ],
               ),
             ),

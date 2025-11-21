@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-
+import 'question_answer_model.dart';
 import 'reply_model.dart';
 
 /// Model for a single place review.
@@ -16,6 +16,7 @@ class ReviewModel {
   List<String> dislikes; // List of User IDs who disliked the review
   int repliesCount;
   List<ReplyModel> replies; // Nested replies
+    List<QuestionAnswer> questionAnswers; // Add this field
 
   ReviewModel({
     required this.id,
@@ -30,6 +31,8 @@ class ReviewModel {
     this.dislikes = const [],
     this.replies = const [],
     this.repliesCount = 0, // Initialize the new field
+        this.questionAnswers = const [], // Initialize with empty list
+
   });
 
   /// Factory constructor to create a ReviewModel from a Firestore DocumentSnapshot
@@ -37,6 +40,13 @@ class ReviewModel {
     DocumentSnapshot<Map<String, dynamic>> document,
   ) {
     final data = document.data()!;
+      // Parse question answers
+    final questionAnswersData = data['questionAnswers'] as List<dynamic>?;
+    final List<QuestionAnswer> questionAnswers = questionAnswersData != null
+        ? questionAnswersData.map((qa) => QuestionAnswer.fromJson(qa)).toList()
+        : [];
+  
+
     return ReviewModel(
       id: document.id,
       placeId: data['placeId'] ?? 'unknown',
@@ -51,6 +61,8 @@ class ReviewModel {
       repliesCount: data['repliesCount'] as int? ?? 0,
       replies:
           [], // Replies are handled in the controller by fetching separately
+          questionAnswers: questionAnswers,
+
     );
   }
 
@@ -67,6 +79,7 @@ class ReviewModel {
       'likes': likes,
       'dislikes': dislikes,
       'repliesCount': repliesCount,
+       'questionAnswers': questionAnswers.map((qa) => qa.toJson()).toList(),
       // Replies are stored in a sub-collection, not in the parent document
     };
   }

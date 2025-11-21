@@ -33,49 +33,6 @@ class PlaceForm extends StatelessWidget {
           ),
         ),
         const SizedBox(height: AppSizes.spaceBtwInputFields),
-
-        // Obx(
-        //   () => DropdownButtonFormField(
-        //     decoration: InputDecoration(
-        //       border: OutlineInputBorder(
-        //         borderSide: BorderSide(
-        //           width: 1,
-        //           color: AppHelperFunctions.isDarkMode(context)
-        //               ? AppColors.grey
-        //               : AppColors.darkGrey,
-        //         ),
-        //       ),
-        //     ),
-        //     initialValue: controller.selectedCategoryId.value.isNotEmpty
-        //         ? categoryController.categoryModels
-        //               .firstWhereOrNull(
-        //                 (cat) => cat.id == controller.selectedCategoryId.value,
-        //               )
-        //               ?.name
-        //         : categoryController.selectedCategoryName.value,
-        //     onChanged: (String? selectedName) {
-        //       if (selectedName != null) {
-        //         final matchingCategory = categoryController.categoryModels
-        //             .firstWhereOrNull(
-        //               (category) => category.name == selectedName,
-        //             );
-        //         if (matchingCategory != null) {
-        //           controller.selectedCategoryId.value = matchingCategory.id;
-        //         } else {
-        //           controller.selectedCategoryId.value = '';
-        //         }
-        //       } else {
-        //         controller.selectedCategoryId.value = '';
-        //       }
-        //     },
-        //     items: categoryController.categoryNames
-        //         .map(
-        //           (option) =>
-        //               DropdownMenuItem(value: option, child: Text(option)),
-        //         )
-        //         .toList(),
-        //   ),
-        // ),
         Obx(() {
           // 1. Get the current value from the controller.
           // This value must be null or match an item in the list.
@@ -178,16 +135,87 @@ class PlaceForm extends StatelessWidget {
         const SizedBox(height: AppSizes.spaceBtwInputFields),
 
         const SizedBox(height: AppSizes.spaceBtwInputFields),
+        // In PlaceForm widget, update the LabeledChips:
         LabeledChips(
           label: 'Tags',
           tags: const [
+            // General
             'Family Friendly',
             'Pet Friendly',
-            'Outdoor',
-            'Indoor',
-            'Romantic',
             'Budget Friendly',
             'Luxury',
+            'Romantic',
+            'Business',
+            'Student Friendly',
+
+            // Location Types
+            'Outdoor',
+            'Indoor',
+            'Beachfront',
+            'Mountain View',
+            'City Center',
+            'Suburban',
+            'Rural',
+
+            // Amenities
+            'Free WiFi',
+            'Parking Available',
+            'Wheelchair Accessible',
+            'Air Conditioned',
+            'Heating',
+            'Swimming Pool',
+            'Gym',
+            'Spa',
+
+            // Activities
+            'Live Music',
+            'Sports Bar',
+            'Gaming',
+            'Karaoke',
+            'Dance Floor',
+            'Quiet Atmosphere',
+
+            // Food & Drink
+            'Vegetarian Options',
+            'Vegan Options',
+            'Gluten-Free Options',
+            'Halal',
+            'Alcohol Served',
+            'Coffee Shop',
+            'Fine Dining',
+            'Fast Food',
+            'Buffet',
+
+            // Accommodation
+            'Hotel',
+            'Hostel',
+            'Resort',
+            'Vacation Rental',
+            'Camping',
+
+            // Entertainment
+            'Cinema',
+            'Theater',
+            'Museum',
+            'Art Gallery',
+            'Shopping',
+            'Amusement Park',
+
+            // Services
+            '24/7',
+            'Delivery',
+            'Takeaway',
+            'Reservations',
+            'Catering',
+            'Event Space',
+
+            // Special Features
+            'Historic',
+            'Modern',
+            'Traditional',
+            'Eco-Friendly',
+            'LGBTQ+ Friendly',
+            'Kid Friendly',
           ],
           selectedTags: controller.selectedTags,
           onSelected: controller.toggleTag,

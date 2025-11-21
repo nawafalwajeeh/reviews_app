@@ -59,11 +59,15 @@ class PlaceAddressSection extends StatelessWidget {
                           size: 16,
                         ),
                         const SizedBox(width: AppSizes.spaceBtwItems),
-                        Text(
-                          // 'South Liana, Maine 87695, USA',
-                          controller.selectedAddress.value.toString(),
-                          softWrap: true,
-                          style: Theme.of(context).textTheme.bodyMedium,
+                        Flexible(
+                          child: Text(
+                            // 'South Liana, Maine 87695, USA',
+                            controller.selectedAddress.value.toString(),
+                            softWrap: true,
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                            style: Theme.of(context).textTheme.bodyMedium,
+                          ),
                         ),
                       ],
                     ),

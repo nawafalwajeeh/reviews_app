@@ -41,7 +41,9 @@ class PlaceLikeButton extends StatelessWidget {
                   ) // Show loading indicator
                 : Icon(
                     isLiked ? Iconsax.heart5 : Iconsax.heart,
-                    color: isLiked ? AppColors.error : AppColors.darkGrey,
+                    color: isLiked
+                        ? AppColors.favoriteColor
+                        : AppColors.darkGrey,
                     size: AppSizes.iconLg,
                   ),
           ),
@@ -52,10 +54,7 @@ class PlaceLikeButton extends StatelessWidget {
           Text(
             sharedController.formatCount(controller.likeCount.value),
             style: Theme.of(context).textTheme.labelSmall!.apply(
-              color: isLiked
-                  ? AppColors
-                        .error // Using error color for favorite consistent with the icon
-                  : AppColors.darkGrey,
+              color: isLiked ? AppColors.favoriteColor : AppColors.darkGrey,
             ),
           ),
         ],

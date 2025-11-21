@@ -338,7 +338,7 @@ void startListening() async {
       searchResults.assignAll(results);
 
       // Clear category results when searching by category
-      if (categoryId != null && categoryId.isNotEmpty) {
+      if (categoryId.isNotEmpty) {
         categoryResults.clear();
       }
 

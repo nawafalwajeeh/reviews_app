@@ -32,3 +32,9 @@ enum NotificationType {
   newFollower,
   systemAnnouncement,
 }
+
+enum QuestionType {
+  rating,
+  yesOrNo,
+  text,
+}

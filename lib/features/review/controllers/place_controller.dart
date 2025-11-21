@@ -16,7 +16,9 @@ import 'package:reviews_app/features/review/models/place_category_model.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../../data/repositories/place/place_repository.dart';
+import '../../../data/services/barcode/barcode_service.dart';
 import '../../../utils/constants/colors.dart';
+import '../../../utils/constants/enums.dart';
 import '../../../utils/constants/image_strings.dart';
 import '../../../utils/helpers/network_manager.dart';
 import '../../../utils/logging/logger.dart';
@@ -24,6 +26,7 @@ import '../../../utils/popups/full_screen_loader.dart';
 import '../../../utils/popups/loaders.dart';
 import '../../authentication/screens/signup/signup_screen.dart';
 import '../models/category_model.dart';
+import '../models/custom_questions_model.dart';
 import '../models/place_model.dart';
 
 class PlaceController extends GetxController {
@@ -61,6 +64,12 @@ class PlaceController extends GetxController {
   TextEditingController locationController = TextEditingController();
   TextEditingController phoneController = TextEditingController();
   TextEditingController websiteUrlController = TextEditingController();
+
+  // New controllers for custom questions
+  final RxList<CustomQuestion> customQuestions = <CustomQuestion>[].obs;
+  final List<TextEditingController> questionControllers = [];
+  final List<Rx<QuestionType>> questionTypes = [];
+  final List<RxBool> questionRequired = [];
 
   // Central state for the place's location, ensuring coordinates are initialized to 0.0
   final Rx<AddressModel> selectedAddress = AddressModel.empty().obs;
@@ -290,6 +299,59 @@ class PlaceController extends GetxController {
     }
   }
 
+  void addCustomQuestion() {
+    // Limit to 4 questions
+    if (customQuestions.length >= 4) {
+      AppLoaders.warningSnackBar(
+        title: 'Limit Reached',
+        message: 'You can only add up to 4 custom questions.',
+      );
+      return;
+    }
+
+    final id = const Uuid().v4();
+    customQuestions.add(
+      CustomQuestion(id: id, question: '', type: QuestionType.yesOrNo),
+    );
+    questionControllers.add(TextEditingController());
+    questionTypes.add(QuestionType.yesOrNo.obs);
+    questionRequired.add(false.obs);
+  }
+
+  void removeCustomQuestion(int index) {
+    if (index < customQuestions.length) {
+      customQuestions.removeAt(index);
+
+      // Dispose and remove controllers safely
+      if (index < questionControllers.length) {
+        questionControllers[index].dispose();
+        questionControllers.removeAt(index);
+      }
+      if (index < questionTypes.length) {
+        questionTypes.removeAt(index);
+      }
+      if (index < questionRequired.length) {
+        questionRequired.removeAt(index);
+      }
+    }
+  }
+
+  void updateQuestion(
+    int index,
+    String question,
+    QuestionType type,
+    bool isRequired,
+  ) {
+    if (index < customQuestions.length) {
+      customQuestions[index] = CustomQuestion(
+        id: customQuestions[index].id,
+        question: question,
+        type: type,
+        isRequired: isRequired,
+      );
+    }
+  }
+
   /// -- Create new place
   Future<void> createPlace() async {
     try {
@@ -322,12 +384,24 @@ class PlaceController extends GetxController {
         return;
       }
 
-      if (selectedAddress.value == AddressModel.empty()) {
+      // if (selectedAddress.value == AddressModel.empty()) {
+      //   AppFullScreenLoader.stopLoading();
+      //   AppLoaders.warningSnackBar(
+      //     title: 'Location Missing',
+      //     message:
+      //         'Please use the map picker or select a saved address to set the place location.',
+      //   );
+      //   return;
+      // }
+
+      if (selectedAddress.value == AddressModel.empty() ||
+          selectedAddress.value.latitude == 0.0 ||
+          selectedAddress.value.longitude == 0.0) {
         AppFullScreenLoader.stopLoading();
         AppLoaders.warningSnackBar(
           title: 'Location Missing',
           message:
-              'Please use the map picker or select a saved address to set the place location.',
+              'Please use the map picker to select a valid location with coordinates.',
         );
         return;
       }
@@ -366,6 +440,10 @@ class PlaceController extends GetxController {
       // 3. Prepare Place Model - Using selectedAddress for location
       final AddressModel placeLocation = selectedAddress.value;
 
+      // Generate barcode data
+      final barcodeService = BarcodeService();
+      final barcodeData = barcodeService.generateBarcodeData(placeId);
+
       final newPlace = PlaceModel(
         id: placeId,
         title: titleController.text.trim(),
@@ -381,9 +459,8 @@ class PlaceController extends GetxController {
         tags: selectedTags.toList(),
 
         // Coordinates (sourced directly from the selectedAddress)
-        latitude: placeLocation.latitude,
-        longitude: placeLocation.longitude,
-
+        // latitude: placeLocation.latitude,
+        // longitude: placeLocation.longitude,
         websiteUrl: websiteUrlController.text.trim().isEmpty
             ? null
             : websiteUrlController.text.trim(),
@@ -397,6 +474,9 @@ class PlaceController extends GetxController {
         creatorName: userName,
         creatorAvatarUrl: userAvatar,
         likeCount: 0,
+        customQuestions: customQuestions.toList(),
+        barcodeData: barcodeData,
+        uniqueBarcode: 'QR_$placeId', // or generate actual barcode image URL
       );
 
       // 4. Save Place Data to Firestore
@@ -461,6 +541,14 @@ class PlaceController extends GetxController {
     placeFormKey.currentState?.reset();
     selectedLocalImageFiles.clear();
     selectedAddress.value = AddressModel.empty(); // Reset location
+    // Clear custom questions
+    customQuestions.clear();
+    for (var controller in questionControllers) {
+      controller.dispose();
+    }
+    questionControllers.clear();
+    questionTypes.clear();
+    questionRequired.clear();
   }
 
   void removeLocalImage(int index) {
@@ -595,9 +683,8 @@ class PlaceController extends GetxController {
         tags: selectedTags.toList(),
 
         // Coordinates (sourced directly from the selectedAddress)
-        latitude: placeLocation.latitude,
-        longitude: placeLocation.longitude,
-
+        // latitude: placeLocation.latitude,
+        // longitude: placeLocation.longitude,
         websiteUrl: websiteUrlController.text.trim().isEmpty
             ? null
             : websiteUrlController.text.trim(),
