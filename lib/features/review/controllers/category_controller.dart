@@ -15,7 +15,7 @@ import '../models/place_model.dart';
 class CategoryController extends GetxController {
   static CategoryController get instance => Get.find();
 
-  final _categoryRepository = CategoryRepository();
+  final _categoryRepository = Get.put(CategoryRepository());
   final Uuid uuid = const Uuid();
   final GlobalKey<FormState> categoryFormKey = GlobalKey<FormState>();
   final nameController = TextEditingController();

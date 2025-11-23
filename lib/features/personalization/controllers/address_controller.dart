@@ -15,6 +15,7 @@ import 'package:reviews_app/utils/popups/loaders.dart';
 
 import '../../../utils/constants/colors.dart';
 import '../../review/screens/map/map.dart';
+import '../../review/screens/map/map.dart';
 
 class AddressController extends GetxController {
   static AddressController get instance => Get.find();
@@ -333,8 +334,24 @@ class AddressController extends GetxController {
   /// Navigates to the Map Picker Screen and processes the result.
   /// Navigates to the Map Picker Screen and processes the result.
   Future<void> navigateToMapPicker() async {
+    // await Get.to(() => MapScreen(isPickerMode: true))?.then((result) {
+
     await Get.to(() => MapScreen(isPickerMode: true))?.then((result) {
       if (result != null && result is AddressModel) {
+        if (result.id.startsWith('Map_')) {
+          // Use separate method for map addresses
+          selectMapAddress(result);
+        } else {
+          // Use regular method for Firestore addresses
+          selectAddress(result);
+        }
+      }
+    });
+  }
+
+  void _openLocationPicker() async {
+    await MapScreen.openLocationPicker().then((result) {
+      if (result != null) {
         if (result.id.startsWith('Map_')) {
           // Use separate method for map addresses
           selectMapAddress(result);
@@ -385,7 +402,8 @@ class AddressController extends GetxController {
                 label: const Text('Pick Location on Map'),
                 onPressed: () {
                   Get.back(); // Close the bottom sheet first
-                  navigateToMapPicker(); // Navigate to the Map screen
+                  // navigateToMapPicker(); // Navigate to the Map screen
+                  _openLocationPicker();
                 },
               ),
             ),

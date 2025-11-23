@@ -16,6 +16,7 @@ class GeneralBindings extends Bindings {
   void dependencies() {
     /// -- Core
     Get.put(AppNetworkManager(), permanent: true);
+    Get.put(CategoryController());
     Get.lazyPut(() => NotificationController());
 
     /// -- User
@@ -24,9 +25,8 @@ class GeneralBindings extends Bindings {
 
     /// -- Place
     Get.put(ImagesController());
-    Get.lazyPut(() => MapController());
-    Get.put(CategoryController());
     Get.put(PlaceController());
+    Get.put(MapController(), permanent: true);
     Get.lazyPut(() => GalleryController());
     Get.lazyPut(() => FavouritesController());
     Get.lazyPut(() => AppSearchController());

@@ -25,6 +25,7 @@ class AppPages {
     GetPage(name: AppRoutes.search, page: () => SearchScreen()),
     GetPage(name: AppRoutes.allPlacess, page: () => const AllPlacesScreen()),
     GetPage(name: AppRoutes.gallery, page: () => const ImageGalleryScreen()),
+    // GetPage(name: AppRoutes.gallery, page: () => const ImageGalleryScreen()),
     GetPage(
       name: AppRoutes.placesDetail,
       page: () => PlaceDetailsScreen(place: PlaceModel.empty()),

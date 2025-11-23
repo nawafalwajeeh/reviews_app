@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:reviews_app/features/review/screens/home/home.dart';
+// import 'package:reviews_app/features/review/screens/map/enhanced_map.dart';
 import 'package:reviews_app/features/review/screens/place/places_screen.dart';
 import 'package:reviews_app/utils/constants/colors.dart';
 import 'package:reviews_app/utils/helpers/helper_functions.dart';
@@ -57,6 +58,7 @@ class NavigationController extends GetxController {
     HomeScreen(),
     AllPlacesScreen(),
     MapScreen(),
+    // EnhancedMapScreen(),
     FavouriteScreen(),
     SettingsScreen(),
   ];

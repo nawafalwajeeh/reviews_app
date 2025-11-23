@@ -33,8 +33,10 @@ enum NotificationType {
   systemAnnouncement,
 }
 
-enum QuestionType {
-  rating,
-  yesOrNo,
-  text,
-}
+enum QuestionType { rating, yesOrNo, text }
+
+// enum MapType { normal, satellite, terrain, hybrid }
+
+enum MapDetail { transit, traffic, bicycling, map3D }
+
+enum BottomNavItem { explore, contribute, you }

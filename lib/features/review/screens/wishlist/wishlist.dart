@@ -6,6 +6,7 @@ import 'package:reviews_app/common/widgets/layouts/grid_layout.dart';
 import 'package:reviews_app/common/widgets/place/small_place_card.dart';
 import 'package:reviews_app/common/widgets/shimmers/vertical_place_shimmer.dart';
 import 'package:reviews_app/features/review/controllers/favourite_controller.dart';
+import 'package:reviews_app/features/review/screens/search/search.dart';
 import 'package:reviews_app/utils/constants/sizes.dart';
 import '../../../../common/widgets/custom_shapes/containers/search_container.dart';
 import '../../../../common/widgets/loaders/animation_loader.dart';
@@ -35,7 +36,10 @@ class FavouriteScreen extends StatelessWidget {
           ),
 
           const SizedBox(height: AppSizes.spaceBtwItems),
-          AppSearchContainer(text: 'Search for favorite place'),
+          AppSearchContainer(
+            text: 'Search for favorite place',
+            onTap: () => Get.to(() => SearchScreen()),
+          ),
           const SizedBox(height: AppSizes.spaceBtwItems),
 
           /// -- GridView Expanded ensures grid takes all remaining space

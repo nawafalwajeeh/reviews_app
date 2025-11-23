@@ -27,8 +27,6 @@ class App extends StatelessWidget {
         themeMode: controller.themeMode,
         initialBinding: GeneralBindings(),
         getPages: AppPages.pages,
-        // home: const OnBoardingScreen(),
-        // home: const NavigationMenu(),
         home: const Scaffold(
           backgroundColor: AppColors.primaryColor,
           body: Center(
