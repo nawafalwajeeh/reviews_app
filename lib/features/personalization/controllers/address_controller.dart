@@ -6,6 +6,7 @@ import 'package:reviews_app/data/repositories/address/address_repository.dart';
 import 'package:reviews_app/features/personalization/models/address_model.dart';
 import 'package:reviews_app/features/personalization/screens/address/add_new_address.dart';
 import 'package:reviews_app/features/personalization/screens/address/widgets/single_address.dart';
+import 'package:reviews_app/features/review/screens/map/place_map.dart';
 import 'package:reviews_app/utils/constants/image_strings.dart';
 import 'package:reviews_app/utils/constants/sizes.dart';
 import 'package:reviews_app/utils/helpers/cloud_helper_functions.dart';
@@ -14,8 +15,6 @@ import 'package:reviews_app/utils/popups/full_screen_loader.dart';
 import 'package:reviews_app/utils/popups/loaders.dart';
 
 import '../../../utils/constants/colors.dart';
-import '../../review/screens/map/map.dart';
-import '../../review/screens/map/map.dart';
 
 class AddressController extends GetxController {
   static AddressController get instance => Get.find();
@@ -323,34 +322,18 @@ class AddressController extends GetxController {
   // void navigateToMapPicker() {
   //   // Use Get.to and then() to capture the returned value (the AddressModel)
   //   // The result is the AddressModel created in MapPickerScreen
-  //   Get.to(() => MapScreen(isPickerMode: true))?.then((result) {
+  //   Get.to(() => PlacesMapScreen(isPickerMode: true))?.then((result) {
   //     if (result != null && result is AddressModel) {
   //       // Use the unified selectAddress function to update the selectedAddress.value
+  //     } else {
   //       selectAddress(result);
   //     }
   //   });
   // }
 
   /// Navigates to the Map Picker Screen and processes the result.
-  /// Navigates to the Map Picker Screen and processes the result.
-  Future<void> navigateToMapPicker() async {
-    // await Get.to(() => MapScreen(isPickerMode: true))?.then((result) {
-
-    await Get.to(() => MapScreen(isPickerMode: true))?.then((result) {
-      if (result != null && result is AddressModel) {
-        if (result.id.startsWith('Map_')) {
-          // Use separate method for map addresses
-          selectMapAddress(result);
-        } else {
-          // Use regular method for Firestore addresses
-          selectAddress(result);
-        }
-      }
-    });
-  }
-
-  void _openLocationPicker() async {
-    await MapScreen.openLocationPicker().then((result) {
+  void openLocationPicker() async {
+    await PlacesMapScreen.openLocationPicker().then((result) {
       if (result != null) {
         if (result.id.startsWith('Map_')) {
           // Use separate method for map addresses
@@ -403,7 +386,7 @@ class AddressController extends GetxController {
                 onPressed: () {
                   Get.back(); // Close the bottom sheet first
                   // navigateToMapPicker(); // Navigate to the Map screen
-                  _openLocationPicker();
+                  openLocationPicker();
                 },
               ),
             ),

@@ -2,23 +2,26 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:iconsax/iconsax.dart';
-import 'package:reviews_app/features/review/controllers/map_controller.dart';
+import 'package:reviews_app/features/review/screens/place_details/place_details.dart';
 import 'package:reviews_app/utils/constants/colors.dart';
 import 'package:reviews_app/utils/constants/sizes.dart';
 import '../../../../utils/constants/enums.dart';
 import '../../../personalization/models/address_model.dart';
+import '../../controllers/place_map_controller.dart';
+import '../../models/search_suggestion.dart';
 import 'widgets/map_search_container.dart';
 import 'widgets/voice_search_overlay.dart';
-import 'widgets/loading_overlay.dart';
+import 'widgets/place_bottom_sheet.dart';
+import 'widgets/category_filter_sheet.dart';
 
-class MapScreen extends StatelessWidget {
+class PlacesMapScreen extends StatelessWidget {
   final bool isPickerMode;
-  const MapScreen({super.key, this.isPickerMode = false});
+  const PlacesMapScreen({super.key, this.isPickerMode = false});
 
   // Static method to open as picker
   static Future<AddressModel?> openLocationPicker() async {
     return await Get.to<AddressModel?>(
-      () => const MapScreen(isPickerMode: true),
+      () => const PlacesMapScreen(isPickerMode: true),
       transition: Transition.cupertino,
       duration: const Duration(milliseconds: 300),
     );
@@ -26,7 +29,7 @@ class MapScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.put(MapController());
+    final controller = PlacesMapController.instance;
 
     return Scaffold(
       backgroundColor: AppColors.white,
@@ -47,8 +50,8 @@ class MapScreen extends StatelessWidget {
           /// Map Type Controls
           _buildMapTypeControls(context, controller),
 
-          /// Current Location FAB
-          // _buildCurrentLocationFAB(controller),
+          /// Places Bottom Sheet
+          _buildPlacesBottomSheet(context, controller),
 
           /// Picker Bottom Sheet
           if (isPickerMode) _buildPickerBottomSheet(context, controller),
@@ -58,113 +61,151 @@ class MapScreen extends StatelessWidget {
 
           /// Picker Mode Back Button
           if (isPickerMode) _buildPickerAppBar(),
+
+          /// Category Filter Button
+          if (!isPickerMode) _buildCategoryFilterButton(context, controller),
         ],
       ),
-      floatingActionButton: FloatingActionButton(
-        heroTag: 'location_fab_${isPickerMode ? 'picker' : 'explore'}',
-        onPressed: () => controller.moveToCurrentLocation(),
-        backgroundColor: AppColors.white,
-        foregroundColor: AppColors.primaryColor,
-        elevation: 4,
-        child: const Icon(Iconsax.location, size: AppSizes.iconMd),
-      ),
+      floatingActionButton: _buildFloatingActionButtons(controller),
     );
   }
 
-  Widget _buildMap(MapController controller) {
+  // Widget _buildMap(PlacesMapController controller) {
+  //   return Obx(() {
+  //     if (controller.isLoading.value &&
+  //         controller.currentLocation.value == null) {
+  //       return _buildLoadingState();
+  //     }
+
+  //     final initialLocation = controller.currentLocation.value;
+  //     final initialPosition = CameraPosition(
+  //       target:
+  //           initialLocation != null &&
+  //               initialLocation.latitude != null &&
+  //               initialLocation.longitude != null
+  //           ? LatLng(initialLocation.latitude!, initialLocation.longitude!)
+  //           : const LatLng(51.5074, 0.1278),
+  //       zoom: isPickerMode ? 16.0 : 13.5,
+  //     );
+
+  //     return GoogleMap(
+  //       initialCameraPosition: initialPosition,
+  //       onMapCreated: controller.onMapCreated,
+  //       onTap: isPickerMode ? controller.onMapTap : null,
+  //       markers: controller.markers.toSet(),
+  //       polylines: controller.polylines.toSet(),
+  //       myLocationEnabled: true,
+  //       myLocationButtonEnabled: false,
+  //       zoomControlsEnabled: false,
+  //       compassEnabled: true,
+  //       mapType: controller.googleMapType,
+  //       buildingsEnabled: true,
+  //       indoorViewEnabled: true,
+  //       trafficEnabled: controller.enabledMapDetails.contains(
+  //         MapDetail.traffic,
+  //       ),
+  //       rotateGesturesEnabled: true,
+  //       scrollGesturesEnabled: true,
+  //       zoomGesturesEnabled: true,
+  //       tiltGesturesEnabled: true,
+  //     );
+  //   });
+  // }
+
+  // Widget _buildLoadingState() {
+  //   return const LoadingOverlay();
+  // }
+
+  Widget _buildMap(PlacesMapController controller) {
     return Obx(() {
+      // Show loading until we have current location
       if (controller.isLoading.value &&
           controller.currentLocation.value == null) {
         return _buildLoadingState();
       }
 
       final initialLocation = controller.currentLocation.value;
-      final initialPosition = CameraPosition(
-        target:
-            initialLocation != null &&
-                initialLocation.latitude != null &&
-                initialLocation.longitude != null
-            ? LatLng(initialLocation.latitude!, initialLocation.longitude!)
-            : const LatLng(51.5074, 0.1278), // London fallback
-        zoom: isPickerMode ? 16.0 : 13.5, // Higher zoom for picker mode
-      );
 
-      return GoogleMap(
-        initialCameraPosition: initialPosition,
-        onMapCreated: controller.onMapCreated,
-        onTap: isPickerMode ? controller.onMapTap : null,
-        markers: controller.markers.toSet(),
-        polylines: controller.polylines.toSet(),
-        myLocationEnabled: true,
-        myLocationButtonEnabled: false,
-        zoomControlsEnabled: false,
-        compassEnabled: true,
-        mapType: controller.googleMapType,
-        buildingsEnabled: true,
-        indoorViewEnabled: true,
-        trafficEnabled: controller.enabledMapDetails.contains(
-          MapDetail.traffic,
-        ),
-        rotateGesturesEnabled: true,
-        scrollGesturesEnabled: true,
-        zoomGesturesEnabled: true,
-        tiltGesturesEnabled: true,
+      // Show loading overlay while map is initializing
+      return Stack(
+        children: [
+          GoogleMap(
+            initialCameraPosition: CameraPosition(
+              target:
+                  initialLocation != null &&
+                      initialLocation.latitude != null &&
+                      initialLocation.longitude != null
+                  ? LatLng(
+                      initialLocation.latitude!,
+                      initialLocation.longitude!,
+                    )
+                  : const LatLng(51.5074, 0.1278),
+              zoom: isPickerMode ? 16.0 : 13.5,
+            ),
+            onMapCreated: (mapController) {
+              controller.onMapCreated(mapController);
+              // Hide loading after map is created
+              Future.delayed(const Duration(milliseconds: 500), () {
+                if (controller.isLoading.value) {
+                  controller.isLoading.value = false;
+                }
+              });
+            },
+            onTap: isPickerMode ? controller.onMapTap : null,
+            markers: controller.markers.toSet(),
+            polylines: controller.polylines.toSet(),
+            myLocationEnabled: true,
+            myLocationButtonEnabled: false,
+            zoomControlsEnabled: false,
+            compassEnabled: true,
+            mapType: controller.googleMapType,
+            buildingsEnabled: true,
+            indoorViewEnabled: true,
+            trafficEnabled: controller.enabledMapDetails.contains(
+              MapDetail.traffic,
+            ),
+            rotateGesturesEnabled: true,
+            scrollGesturesEnabled: true,
+            zoomGesturesEnabled: true,
+            tiltGesturesEnabled: true,
+            onCameraMoveStarted: () {
+              // Show loading when camera moves (optional)
+            },
+            onCameraIdle: () {
+              // Load places for current viewport (optional)
+            },
+          ),
+
+          // Loading overlay for initial load
+          if (controller.isLoading.value &&
+              controller.currentLocation.value == null)
+            _buildLoadingState(),
+        ],
       );
     });
   }
 
   Widget _buildLoadingState() {
-    return const LoadingOverlay();
-  }
-
-  Widget _buildPickerAppBar() {
-    return Positioned(
-      top: MediaQuery.of(Get.context!).padding.top,
-      left: 0,
-      right: 0,
-      child: Container(
-        padding: const EdgeInsets.symmetric(
-          horizontal: AppSizes.defaultSpace,
-          vertical: AppSizes.sm,
-        ),
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [Colors.black.withOpacity(0.6), Colors.transparent],
-          ),
-        ),
-        child: Row(
+    return Container(
+      color: AppColors.white,
+      child: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Container(
-              decoration: BoxDecoration(
-                color: AppColors.white,
-                borderRadius: BorderRadius.circular(AppSizes.cardRadiusLg),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.1),
-                    blurRadius: 8,
-                    offset: const Offset(0, 2),
-                  ),
-                ],
-              ),
-              child: IconButton(
-                icon: const Icon(Iconsax.arrow_left),
-                onPressed: () {
-                  Get.back(result: null);
-                },
-                color: AppColors.darkGrey,
-              ),
+            const CircularProgressIndicator(color: AppColors.primaryColor),
+            const SizedBox(height: AppSizes.lg),
+            Text(
+              'Loading your location...',
+              style: Theme.of(
+                Get.context!,
+              ).textTheme.titleMedium?.copyWith(color: AppColors.darkGrey),
             ),
-            const SizedBox(width: AppSizes.sm),
-            Expanded(
-              child: Text(
-                'Choose Location',
-                style: Theme.of(Get.context!).textTheme.titleLarge?.copyWith(
-                  color: AppColors.white,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
+            const SizedBox(height: AppSizes.sm),
+            Text(
+              'Please wait while we set up your map',
+              style: Theme.of(
+                Get.context!,
+              ).textTheme.bodySmall?.copyWith(color: AppColors.darkGrey),
             ),
           ],
         ),
@@ -172,7 +213,10 @@ class MapScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildTopControls(BuildContext context, MapController controller) {
+  Widget _buildTopControls(
+    BuildContext context,
+    PlacesMapController controller,
+  ) {
     return Positioned(
       top:
           MediaQuery.of(context).padding.top +
@@ -198,7 +242,7 @@ class MapScreen extends StatelessWidget {
             ],
           ),
 
-          /// Current Location Chip
+          /// Quick Access Chips
           if (!isPickerMode)
             Obx(() => _buildQuickAccessChips(context, controller)),
         ],
@@ -208,7 +252,7 @@ class MapScreen extends StatelessWidget {
 
   Widget _buildQuickAccessChips(
     BuildContext context,
-    MapController controller,
+    PlacesMapController controller,
   ) {
     if (controller.searchQuery.value.isNotEmpty) return const SizedBox();
 
@@ -223,14 +267,15 @@ class MapScreen extends StatelessWidget {
               context,
               'Current Location',
               Iconsax.location,
-              () => controller.onSuggestionSelected(
-                SearchSuggestion(
-                  id: 'current_location',
-                  title: 'Your Current Location',
-                  type: 'current_location',
-                  icon: 'my_location',
-                ),
-              ),
+              () => controller.moveToCurrentLocation(),
+            ),
+
+            /// Nearby Places Chip
+            _buildChip(
+              context,
+              'Nearby Places',
+              Iconsax.note,
+              () => controller.loadNearbyPlaces(),
             ),
 
             /// Recent Searches Chips
@@ -294,6 +339,122 @@ class MapScreen extends StatelessWidget {
     );
   }
 
+  Widget _buildCategoryFilterButton(
+    BuildContext context,
+    PlacesMapController controller,
+  ) {
+    return Positioned(
+      left: AppSizes.defaultSpace,
+      bottom: 150,
+      child: Container(
+        decoration: BoxDecoration(
+          color: AppColors.white,
+          borderRadius: BorderRadius.circular(AppSizes.cardRadiusLg),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.1),
+              blurRadius: 8,
+              offset: const Offset(0, 2),
+            ),
+          ],
+        ),
+        child: IconButton(
+          icon: Icon(
+            Iconsax.filter,
+            size: AppSizes.iconLg,
+            color: AppColors.primaryColor,
+          ),
+          onPressed: () => _showCategoryFilterSheet(context, controller),
+        ),
+      ),
+    );
+  }
+
+  void _showCategoryFilterSheet(
+    BuildContext context,
+    PlacesMapController controller,
+  ) {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      isScrollControlled: true,
+      builder: (context) => CategoryFilterSheet(
+        onCategorySelected: controller.filterByCategory,
+        selectedCategoryId: controller.selectedCategoryId.value,
+      ),
+    );
+  }
+
+  Widget _buildPlacesBottomSheet(
+    BuildContext context,
+    PlacesMapController controller,
+  ) {
+    return Obx(() {
+      if (!controller.showBottomSheet.value ||
+          controller.selectedPlace.value == null) {
+        return const SizedBox();
+      }
+
+      return PlaceBottomSheet(
+        place: controller.selectedPlace.value!,
+        onTap: () {
+          Get.to(
+            () => PlaceDetailsScreen(place: controller.selectedPlace.value!),
+          );
+        },
+        onClose: () {
+          controller.showBottomSheet.value = false;
+          controller.selectedPlace.value = null;
+        },
+      );
+    });
+  }
+
+  Widget _buildFloatingActionButtons(PlacesMapController controller) {
+    if (isPickerMode) {
+      return FloatingActionButton(
+        heroTag: 'location_fab_picker',
+        onPressed: () => controller.moveToCurrentLocation(),
+        backgroundColor: AppColors.white,
+        foregroundColor: AppColors.primaryColor,
+        elevation: 4,
+        child: const Icon(Iconsax.location, size: AppSizes.iconMd),
+      );
+    }
+
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        // Current Location FAB
+        FloatingActionButton(
+          heroTag: 'location_fab_explore',
+          onPressed: () => controller.moveToCurrentLocation(),
+          backgroundColor: AppColors.white,
+          foregroundColor: AppColors.primaryColor,
+          elevation: 4,
+          mini: true,
+          child: const Icon(Iconsax.location, size: AppSizes.iconMd),
+        ),
+        const SizedBox(height: AppSizes.sm),
+        // Nearby Places FAB
+        FloatingActionButton(
+          heroTag: 'nearby_fab',
+          onPressed: () => controller.loadNearbyPlaces(),
+          backgroundColor: AppColors.primaryColor,
+          foregroundColor: AppColors.white,
+          elevation: 4,
+          mini: true,
+          child: const Icon(Iconsax.note, size: AppSizes.iconMd),
+        ),
+      ],
+    );
+  }
+
+  // ... (Keep the rest of the existing methods from your original MapScreen)
+  // _buildSearchSuggestions, _buildVoiceSearchOverlay, _buildMapTypeControls,
+  // _buildPickerBottomSheet, _buildLoadingOverlay, _buildPickerAppBar
+  // These can remain mostly the same as in your original code
+
   IconData _getRecentSearchIcon(String type) {
     switch (type) {
       case 'place':
@@ -305,7 +466,10 @@ class MapScreen extends StatelessWidget {
     }
   }
 
-  void _handleRecentSearchTap(MapController controller, RecentSearch recent) {
+  void _handleRecentSearchTap(
+    PlacesMapController controller,
+    RecentSearch recent,
+  ) {
     if (recent.placeId != null) {
       controller.onSuggestionSelected(
         SearchSuggestion(
@@ -324,7 +488,7 @@ class MapScreen extends StatelessWidget {
 
   Widget _buildSearchSuggestions(
     BuildContext context,
-    MapController controller,
+    PlacesMapController controller,
   ) {
     return Obx(() {
       if (controller.searchSuggestions.isEmpty ||
@@ -414,7 +578,7 @@ class MapScreen extends StatelessWidget {
 
   Widget _buildSuggestionItem(
     BuildContext context,
-    MapController controller,
+    PlacesMapController controller,
     SearchSuggestion suggestion,
   ) {
     return ListTile(
@@ -486,7 +650,7 @@ class MapScreen extends StatelessWidget {
     }
   }
 
-  Widget _buildVoiceSearchOverlay(MapController controller) {
+  Widget _buildVoiceSearchOverlay(PlacesMapController controller) {
     return Obx(() {
       if (!controller.isListening.value) return const SizedBox();
 
@@ -497,221 +661,56 @@ class MapScreen extends StatelessWidget {
     });
   }
 
-  Widget _buildMapTypeControls(BuildContext context, MapController controller) {
+  Widget _buildPickerAppBar() {
     return Positioned(
-      right: AppSizes.defaultSpace,
-      bottom: isPickerMode ? 200 : 150,
-      child: Column(
-        children: [
-          _buildMapControlButton(
-            Iconsax.layer,
-            'Map Type',
-            () => _showMapTypeDialog(context, controller),
-          ),
-          const SizedBox(height: AppSizes.sm),
-          _buildMapControlButton(
-            Iconsax.filter,
-            'Map Details',
-            () => _showMapDetailsDialog(context, controller),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildMapControlButton(
-    IconData icon,
-    String tooltip,
-    VoidCallback onTap,
-  ) {
-    return Container(
-      decoration: BoxDecoration(
-        color: AppColors.white,
-        borderRadius: BorderRadius.circular(AppSizes.cardRadiusLg),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.1),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: IconButton(
-        icon: Icon(icon, size: AppSizes.iconLg, color: AppColors.primaryColor),
-        onPressed: onTap,
-      ),
-    );
-  }
-
-  void _showMapTypeDialog(BuildContext context, MapController controller) {
-    showModalBottomSheet(
-      context: context,
-      backgroundColor: Colors.transparent,
-      builder: (context) => Container(
+      top: MediaQuery.of(Get.context!).padding.top,
+      left: 0,
+      right: 0,
+      child: Container(
+        padding: const EdgeInsets.symmetric(
+          horizontal: AppSizes.defaultSpace,
+          vertical: AppSizes.sm,
+        ),
         decoration: BoxDecoration(
-          color: AppColors.white,
-          borderRadius: const BorderRadius.only(
-            topLeft: Radius.circular(AppSizes.cardRadiusLg),
-            topRight: Radius.circular(AppSizes.cardRadiusLg),
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [Colors.black.withOpacity(0.6), Colors.transparent],
           ),
         ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
+        child: Row(
           children: [
-            Padding(
-              padding: const EdgeInsets.all(AppSizes.defaultSpace),
+            Container(
+              decoration: BoxDecoration(
+                color: AppColors.white,
+                borderRadius: BorderRadius.circular(AppSizes.cardRadiusLg),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.1),
+                    blurRadius: 8,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
+              ),
+              child: IconButton(
+                icon: const Icon(Iconsax.arrow_left),
+                onPressed: () {
+                  Get.back(result: null);
+                },
+                color: AppColors.darkGrey,
+              ),
+            ),
+            const SizedBox(width: AppSizes.sm),
+            Expanded(
               child: Text(
-                'Map Type',
-                style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                  fontWeight: FontWeight.bold,
+                'Choose Location',
+                style: Theme.of(Get.context!).textTheme.titleLarge?.copyWith(
+                  color: AppColors.white,
+                  fontWeight: FontWeight.w600,
                 ),
               ),
             ),
-            _buildMapTypeOption(
-              context,
-              controller,
-              MapType.normal,
-              'Default',
-              Icons.map,
-            ),
-            _buildMapTypeOption(
-              context,
-              controller,
-              MapType.satellite,
-              'Satellite',
-              Icons.satellite,
-            ),
-            _buildMapTypeOption(
-              context,
-              controller,
-              MapType.terrain,
-              'Terrain',
-              Icons.terrain,
-            ),
-            _buildMapTypeOption(
-              context,
-              controller,
-              MapType.hybrid,
-              'Hybrid',
-              Icons.layers,
-            ),
-            const SizedBox(height: AppSizes.defaultSpace),
           ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildMapTypeOption(
-    BuildContext context,
-    MapController controller,
-    MapType type,
-    String label,
-    IconData icon,
-  ) {
-    return ListTile(
-      leading: Container(
-        width: 40,
-        height: 40,
-        decoration: BoxDecoration(
-          color: AppColors.primaryColor.withOpacity(0.1),
-          borderRadius: BorderRadius.circular(AppSizes.cardRadiusMd),
-        ),
-        child: Icon(icon, color: AppColors.primaryColor),
-      ),
-      title: Text(label),
-      trailing: controller.currentMapType.value == type
-          ? Icon(Icons.check, color: AppColors.primaryColor)
-          : null,
-      onTap: () {
-        controller.changeMapType(type);
-        Get.back();
-      },
-    );
-  }
-
-  void _showMapDetailsDialog(BuildContext context, MapController controller) {
-    showModalBottomSheet(
-      context: context,
-      backgroundColor: Colors.transparent,
-      builder: (context) => Container(
-        decoration: BoxDecoration(
-          color: AppColors.white,
-          borderRadius: const BorderRadius.only(
-            topLeft: Radius.circular(AppSizes.cardRadiusLg),
-            topRight: Radius.circular(AppSizes.cardRadiusLg),
-          ),
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(AppSizes.defaultSpace),
-              child: Text(
-                'Map Details',
-                style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-            _buildMapDetailOption(
-              context,
-              controller,
-              MapDetail.transit,
-              'Transit',
-              Icons.directions_transit,
-            ),
-            _buildMapDetailOption(
-              context,
-              controller,
-              MapDetail.traffic,
-              'Traffic',
-              Icons.traffic,
-            ),
-            _buildMapDetailOption(
-              context,
-              controller,
-              MapDetail.bicycling,
-              'Bicycling',
-              Icons.pedal_bike,
-            ),
-            _buildMapDetailOption(
-              context,
-              controller,
-              MapDetail.map3D,
-              '3D Buildings',
-              Icons.architecture,
-            ),
-            const SizedBox(height: AppSizes.defaultSpace),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildMapDetailOption(
-    BuildContext context,
-    MapController controller,
-    MapDetail detail,
-    String label,
-    IconData icon,
-  ) {
-    return Obx(
-      () => ListTile(
-        leading: Container(
-          width: 40,
-          height: 40,
-          decoration: BoxDecoration(
-            color: AppColors.primaryColor.withOpacity(0.1),
-            borderRadius: BorderRadius.circular(AppSizes.cardRadiusMd),
-          ),
-          child: Icon(icon, color: AppColors.primaryColor),
-        ),
-        title: Text(label),
-        trailing: Switch(
-          value: controller.enabledMapDetails.contains(detail),
-          onChanged: (value) => controller.toggleMapDetail(detail),
-          activeThumbColor: AppColors.primaryColor,
         ),
       ),
     );
@@ -719,7 +718,7 @@ class MapScreen extends StatelessWidget {
 
   Widget _buildPickerBottomSheet(
     BuildContext context,
-    MapController controller,
+    PlacesMapController controller,
   ) {
     return Obx(() {
       return Positioned(
@@ -1006,11 +1005,201 @@ class MapScreen extends StatelessWidget {
     });
   }
 
-  Widget _buildLoadingOverlay(MapController controller) {
+  Widget _buildMapTypeControls(
+    BuildContext context,
+    PlacesMapController controller,
+  ) {
+    return Positioned(
+      right: AppSizes.defaultSpace,
+      bottom: isPickerMode ? 200 : 150,
+      child: Column(
+        children: [
+          _buildMapControlButton(
+            Iconsax.layer,
+            'Map Type',
+            () => _showMapTypeDialog(context, controller),
+          ),
+          // const SizedBox(height: AppSizes.sm),
+          // _buildMapControlButton(
+          //   Iconsax.filter,
+          //   'Map Details',
+          //   () => _showMapDetailsDialog(context, controller),
+          // ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildMapControlButton(
+    IconData icon,
+    String tooltip,
+    VoidCallback onTap,
+  ) {
+    return Container(
+      decoration: BoxDecoration(
+        color: AppColors.white,
+        borderRadius: BorderRadius.circular(AppSizes.cardRadiusLg),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.1),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: IconButton(
+        icon: Icon(icon, size: AppSizes.iconLg, color: AppColors.primaryColor),
+        onPressed: onTap,
+      ),
+    );
+  }
+
+  void _showMapTypeDialog(
+    BuildContext context,
+    PlacesMapController controller,
+  ) {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      builder: (context) => Container(
+        decoration: BoxDecoration(
+          color: AppColors.white,
+          borderRadius: const BorderRadius.only(
+            topLeft: Radius.circular(AppSizes.cardRadiusLg),
+            topRight: Radius.circular(AppSizes.cardRadiusLg),
+          ),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(AppSizes.defaultSpace),
+              child: Text(
+                'Map Type',
+                style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+            _buildMapTypeOption(
+              context,
+              controller,
+              MapType.normal,
+              'Default',
+              Icons.map,
+            ),
+            _buildMapTypeOption(
+              context,
+              controller,
+              MapType.satellite,
+              'Satellite',
+              Icons.satellite,
+            ),
+            _buildMapTypeOption(
+              context,
+              controller,
+              MapType.terrain,
+              'Terrain',
+              Icons.terrain,
+            ),
+            _buildMapTypeOption(
+              context,
+              controller,
+              MapType.hybrid,
+              'Hybrid',
+              Icons.layers,
+            ),
+            const SizedBox(height: AppSizes.defaultSpace),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildMapTypeOption(
+    BuildContext context,
+    PlacesMapController controller,
+    MapType type,
+    String label,
+    IconData icon,
+  ) {
+    return ListTile(
+      leading: Container(
+        width: 40,
+        height: 40,
+        decoration: BoxDecoration(
+          color: AppColors.primaryColor.withOpacity(0.1),
+          borderRadius: BorderRadius.circular(AppSizes.cardRadiusMd),
+        ),
+        child: Icon(icon, color: AppColors.primaryColor),
+      ),
+      title: Text(label),
+      trailing: controller.currentMapType.value == type
+          ? Icon(Icons.check, color: AppColors.primaryColor)
+          : null,
+      onTap: () {
+        controller.changeMapType(type);
+        Get.back();
+      },
+    );
+  }
+
+  // Widget _buildLoadingOverlay(PlacesMapController controller) {
+  //   return Obx(() {
+  //     if (!controller.isLoading.value) return const SizedBox();
+
+  //     return const LoadingOverlay();
+  //   });
+  // }
+
+  Widget _buildLoadingOverlay(PlacesMapController controller) {
     return Obx(() {
       if (!controller.isLoading.value) return const SizedBox();
 
-      return const LoadingOverlay();
+      return Container(
+        color: Colors.black.withOpacity(0.7),
+        child: Center(
+          child: Container(
+            padding: const EdgeInsets.all(AppSizes.xl),
+            decoration: BoxDecoration(
+              color: AppColors.white,
+              borderRadius: BorderRadius.circular(AppSizes.cardRadiusLg),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.2),
+                  blurRadius: 20,
+                  offset: const Offset(0, 10),
+                ),
+              ],
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const CircularProgressIndicator(
+                  color: AppColors.primaryColor,
+                  strokeWidth: 3,
+                ),
+                const SizedBox(height: AppSizes.lg),
+                Text(
+                  'Loading Places...',
+                  style: Theme.of(Get.context!).textTheme.titleMedium?.copyWith(
+                    color: AppColors.darkGrey,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                const SizedBox(height: AppSizes.sm),
+                Text(
+                  'Finding the best places around you',
+                  style: Theme.of(
+                    Get.context!,
+                  ).textTheme.bodySmall?.copyWith(color: AppColors.darkGrey),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
     });
   }
+
 }

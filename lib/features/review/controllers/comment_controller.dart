@@ -435,15 +435,6 @@ class CommentController extends GetxController {
     return null;
   }
 
-  String _getCurrentUserName() {
-    final userId = authRepo.getUserID;
-    return 'User ${userId.substring(0, 8)}';
-  }
-
-  String _getCurrentUserAvatar() {
-    return 'https://placehold.co/40x40/007AFF/FFFFFF?text=U';
-  }
-
   @override
   void onClose() {
     _comments.clear();

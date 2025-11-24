@@ -152,117 +152,130 @@ class AddNewAddressScreen extends StatelessWidget {
     );
   }
 
- // And update the _buildMapLocationCard to auto-fill form fields when map address is selected
-Widget _buildMapLocationCard(BuildContext context, AddressController controller) {
-  final selectedAddress = controller.selectedAddress.value;
-  
-  // Auto-fill form fields when map address is selected
-  WidgetsBinding.instance.addPostFrameCallback((_) {
-    if (selectedAddress.id.startsWith('Map_')) {
-      _autoFillFormFromMap(controller, selectedAddress);
-    }
-  });
-  
-  // Show card only if coordinates are set from map
-  if (selectedAddress.latitude == 0.0 && selectedAddress.longitude == 0.0) {
-    return const SizedBox();
-  }
+  // And update the _buildMapLocationCard to auto-fill form fields when map address is selected
+  Widget _buildMapLocationCard(
+    BuildContext context,
+    AddressController controller,
+  ) {
+    final selectedAddress = controller.selectedAddress.value;
 
-  return Card(
-    color: AppColors.success.withOpacity(0.1),
-    margin: EdgeInsets.zero,
-    child: Padding(
-      padding: const EdgeInsets.all(AppSizes.md),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Icon(Icons.check_circle, color: AppColors.success, size: 20),
-              const SizedBox(width: AppSizes.sm),
-              Text(
-                'Location from Map',
-                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                  fontWeight: FontWeight.bold,
-                  color: AppColors.success,
-                ),
-              ),
-              const Spacer(),
-              IconButton(
-                icon: Icon(Icons.close, size: 18),
-                onPressed: () {
-                  // Clear map-selected location
-                  controller.selectedAddress.value = controller.selectedAddress.value.copyWith(
-                    latitude: 0.0,
-                    longitude: 0.0,
-                  );
-                },
-                tooltip: 'Clear map location',
-              ),
-            ],
-          ),
-          const SizedBox(height: AppSizes.sm),
-          
-          // Coordinates
-          Text(
-            'Coordinates:',
-            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-          const SizedBox(height: AppSizes.xs),
-          Text(
-            '${selectedAddress.latitude.toStringAsFixed(6)}, ${selectedAddress.longitude.toStringAsFixed(6)}',
-            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-              fontFamily: 'monospace',
-              color: AppColors.darkGrey,
-            ),
-          ),
-          
-          // Auto-filled address if available
-          if (selectedAddress.street.isNotEmpty)
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+    // Auto-fill form fields when map address is selected
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (selectedAddress.id.startsWith('Map_')) {
+        _autoFillFormFromMap(controller, selectedAddress);
+      }
+    });
+
+    // Show card only if coordinates are set from map
+    if (selectedAddress.latitude == 0.0 && selectedAddress.longitude == 0.0) {
+      return const SizedBox();
+    }
+
+    return Card(
+      color: AppColors.success.withOpacity(0.1),
+      margin: EdgeInsets.zero,
+      child: Padding(
+        padding: const EdgeInsets.all(AppSizes.md),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
               children: [
-                const SizedBox(height: AppSizes.sm),
+                Icon(Icons.check_circle, color: AppColors.success, size: 20),
+                const SizedBox(width: AppSizes.sm),
                 Text(
-                  'Address from map:',
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    fontWeight: FontWeight.w500,
+                  'Location from Map',
+                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.success,
                   ),
                 ),
-                const SizedBox(height: AppSizes.xs),
-                Text(
-                  selectedAddress.toString(),
-                  style: Theme.of(context).textTheme.bodySmall,
+                const Spacer(),
+                IconButton(
+                  icon: Icon(Icons.close, size: 18),
+                  onPressed: () {
+                    // Clear map-selected location
+                    controller.selectedAddress.value = controller
+                        .selectedAddress
+                        .value
+                        .copyWith(latitude: 0.0, longitude: 0.0);
+                  },
+                  tooltip: 'Clear map location',
                 ),
               ],
             ),
-        ],
+            const SizedBox(height: AppSizes.sm),
+
+            // Coordinates
+            Text(
+              'Coordinates:',
+              style: Theme.of(
+                context,
+              ).textTheme.bodySmall?.copyWith(fontWeight: FontWeight.w500),
+            ),
+            const SizedBox(height: AppSizes.xs),
+            Text(
+              '${selectedAddress.latitude.toStringAsFixed(6)}, ${selectedAddress.longitude.toStringAsFixed(6)}',
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                fontFamily: 'monospace',
+                color: AppColors.darkGrey,
+              ),
+            ),
+
+            // Auto-filled address if available
+            if (selectedAddress.street.isNotEmpty)
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const SizedBox(height: AppSizes.sm),
+                  Text(
+                    'Address from map:',
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  const SizedBox(height: AppSizes.xs),
+                  Text(
+                    selectedAddress.toString(),
+                    style: Theme.of(context).textTheme.bodySmall,
+                  ),
+                ],
+              ),
+          ],
+        ),
       ),
-    ),
-  );
-}
+    );
+  }
 
-void _autoFillFormFromMap(AddressController controller, AddressModel mapAddress) {
-  // Only auto-fill if fields are empty
-  if (controller.street.text.isEmpty && mapAddress.street.isNotEmpty) {
-    controller.street.text = mapAddress.street;
+  void _autoFillFormFromMap(
+    AddressController controller,
+    AddressModel mapAddress,
+  ) {
+    // Only auto-fill if fields are empty
+    if (controller.street.text.isEmpty && mapAddress.street.isNotEmpty) {
+      controller.street.text = mapAddress.street;
+    }
+    if (controller.city.text.isEmpty && mapAddress.city.isNotEmpty) {
+      controller.city.text = mapAddress.city;
+    }
+    if (controller.country.text.isEmpty && mapAddress.country.isNotEmpty) {
+      controller.country.text = mapAddress.country;
+    }
+    if (controller.name.text.isEmpty &&
+        mapAddress.name.isNotEmpty &&
+        mapAddress.name != 'N/A') {
+      controller.name.text =
+          'Map Location ${DateTime.now().hour}:${DateTime.now().minute}';
+    }
   }
-  if (controller.city.text.isEmpty && mapAddress.city.isNotEmpty) {
-    controller.city.text = mapAddress.city;
-  }
-  if (controller.country.text.isEmpty && mapAddress.country.isNotEmpty) {
-    controller.country.text = mapAddress.country;
-  }
-  if (controller.name.text.isEmpty && mapAddress.name.isNotEmpty && mapAddress.name != 'N/A') {
-    controller.name.text = 'Map Location ${DateTime.now().hour}:${DateTime.now().minute}';
-  }
-}
 
-  void _pickLocationFromMap(BuildContext context, AddressController controller) {
-  controller.navigateToMapPicker();
-}
+  void _pickLocationFromMap(
+    BuildContext context,
+    AddressController controller,
+  ) {
+    // controller.navigateToMapPicker();
+    controller.openLocationPicker();
+  }
 }
 //---------------------------
 // import 'package:flutter/material.dart';

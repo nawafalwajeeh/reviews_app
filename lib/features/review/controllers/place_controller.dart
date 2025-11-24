@@ -170,6 +170,7 @@ class PlaceController extends GetxController {
         .listen(
           (placesList) {
             featuredPlaces.assignAll(placesList);
+            places.assignAll(placesList);
             isLoading.value = false;
             AppLoggerHelper.info(
               'Featured Places Stream: ${placesList.length} places received.',
@@ -197,6 +198,7 @@ class PlaceController extends GetxController {
     // ... existing implementation ...
     try {
       final places = await placeRepository.getAllFeaturedPlaces();
+      featuredPlaces.assignAll(places);
       return places;
     } catch (e) {
       AppLoaders.errorSnackBar(title: 'Oh Snap!', message: e.toString());
@@ -211,6 +213,7 @@ class PlaceController extends GetxController {
       if (query == null) return [];
 
       final places = await placeRepository.fetchPlacesByQuery(query);
+      featuredPlaces.assignAll(places);
       return places;
     } catch (e) {
       AppLoaders.errorSnackBar(title: 'Oh Snap!', message: e.toString());
@@ -496,10 +499,10 @@ class PlaceController extends GetxController {
       );
 
       final allUserIds = await UserRepository.instance.getAllUserIds();
-      final senderName = newPlace.userId.substring(
-        0,
-        8,
-      ); // Simplified sender name
+      // final senderName = newPlace.userId.substring(
+      //   0,
+      //   8,
+      // ); // Simplified sender name
       final placeTitle = newPlace.title;
 
       for (final userId in allUserIds) {
@@ -709,6 +712,7 @@ class PlaceController extends GetxController {
       );
 
       clearEditForm();
+      update();
       Get.back();
     } catch (e) {
       AppLoaders.errorSnackBar(title: 'Update Failed', message: e.toString());
@@ -758,6 +762,7 @@ class PlaceController extends GetxController {
         title: 'Success!',
         message: 'Place "${place.title}" has been deleted',
       );
+      update();
     } catch (e) {
       AppLoaders.errorSnackBar(title: 'Delete Failed', message: e.toString());
     } finally {

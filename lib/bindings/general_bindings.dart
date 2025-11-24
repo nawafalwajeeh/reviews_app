@@ -2,8 +2,8 @@ import 'package:get/get.dart';
 import 'package:reviews_app/features/review/controllers/category_controller.dart';
 import 'package:reviews_app/features/review/controllers/favourite_controller.dart';
 import 'package:reviews_app/features/review/controllers/gallery_controller.dart';
-import 'package:reviews_app/features/review/controllers/map_controller.dart';
 import 'package:reviews_app/features/review/controllers/place_controller.dart';
+import 'package:reviews_app/features/review/controllers/place_map_controller.dart';
 import 'package:reviews_app/features/review/controllers/search_controller.dart';
 import 'package:reviews_app/utils/helpers/network_manager.dart';
 import '../features/personalization/controllers/address_controller.dart';
@@ -26,7 +26,7 @@ class GeneralBindings extends Bindings {
     /// -- Place
     Get.put(ImagesController());
     Get.put(PlaceController());
-    Get.put(MapController(), permanent: true);
+    Get.put(PlacesMapController());
     Get.lazyPut(() => GalleryController());
     Get.lazyPut(() => FavouritesController());
     Get.lazyPut(() => AppSearchController());
