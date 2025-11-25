@@ -243,7 +243,7 @@ class PlacesMapController extends GetxController {
   }
 
   void _addHighlightMarker(PlaceModel place) {
-    final markerId = MarkerId('highlighted_${place.id}');
+    final _ = MarkerId('highlighted_${place.id}');
 
     // Remove any existing highlight marker
     markers.removeWhere((m) => m.markerId.value.startsWith('highlighted_'));
