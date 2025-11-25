@@ -2,11 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'dart:ui' as ui;
 import 'package:reviews_app/utils/constants/colors.dart';
-
 import '../../features/review/models/place_model.dart';
 
 class CustomMarkerGenerator {
-  static Future<BitmapDescriptor> createRestaurantMarker({
+  static Future<BitmapDescriptor> createPlaceMarker({
     required String title,
     required double rating,
     required bool isSelected,
@@ -164,7 +163,7 @@ class CustomMarkerGenerator {
     double pointerHeight,
   ) {
     final shadowPaint = Paint()
-      ..color = Colors.black.withOpacity(0.3)
+      ..color = Colors.black.withValues(alpha: 0.3)
       ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 8.0);
 
     final shadowRect = Rect.fromLTWH(
@@ -213,7 +212,7 @@ class CustomMarkerGenerator {
     PlaceModel place, {
     bool isSelected = false,
   }) async {
-    return createRestaurantMarker(
+    return createPlaceMarker(
       title: place.title,
       rating: place.averageRating,
       isSelected: isSelected,
@@ -229,7 +228,7 @@ class CustomMarkerGenerator {
 
     // Outer pulsing circle
     final outerPaint = Paint()
-      ..color = AppColors.primaryColor.withOpacity(0.2)
+      ..color = AppColors.primaryColor.withValues(alpha: 0.2)
       ..style = PaintingStyle.fill;
 
     canvas.drawCircle(
@@ -240,7 +239,7 @@ class CustomMarkerGenerator {
 
     // Middle circle
     final middlePaint = Paint()
-      ..color = AppColors.primaryColor.withOpacity(0.5)
+      ..color = AppColors.primaryColor.withValues(alpha: 0.5)
       ..style = PaintingStyle.fill;
 
     canvas.drawCircle(
@@ -273,7 +272,7 @@ class CustomMarkerGenerator {
 
     // Shadow
     final shadowPaint = Paint()
-      ..color = Colors.black.withOpacity(0.3)
+      ..color = Colors.black.withValues(alpha: 0.3)
       ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 4.0);
 
     canvas.drawCircle(
@@ -352,7 +351,7 @@ class CustomMarkerGenerator {
 
 //     // Draw marker shadow
 //     final shadowPaint = Paint()
-//       ..color = Colors.black.withOpacity(0.3)
+//       ..color = Colors.black.withValues(alpha: 0.3)
 //       ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 4.0);
 
 //     canvas.drawCircle(
@@ -480,7 +479,7 @@ class CustomMarkerGenerator {
 
 //     // Outer circle
 //     final outerPaint = Paint()
-//       ..color = Colors.blue.withOpacity(0.3)
+//       ..color = Colors.blue.withValues(alpha: 0.3)
 //       ..style = PaintingStyle.fill;
 
 //     canvas.drawCircle(

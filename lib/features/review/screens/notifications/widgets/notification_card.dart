@@ -45,13 +45,18 @@ class NotificationCard extends StatelessWidget {
           boxShadow: [
             BoxShadow(
               blurRadius: 8,
-              color: Colors.black.withOpacity(0.1),
+              color: Colors.black.withValues(alpha: 0.1),
               offset: const Offset(0, 2),
             ),
           ],
           borderRadius: BorderRadius.circular(16),
-          border: !isRead 
-              ? Border.all(color: Theme.of(context).colorScheme.primary.withOpacity(0.3), width: 2)
+          border: !isRead
+              ? Border.all(
+                  color: Theme.of(
+                    context,
+                  ).colorScheme.primary.withValues(alpha: 0.3),
+                  width: 2,
+                )
               : null,
         ),
         child: Stack(
@@ -96,8 +101,6 @@ class NotificationCard extends StatelessWidget {
     );
   }
 }
-
-
 
 //----------------------------
 // import 'package:flutter/material.dart';

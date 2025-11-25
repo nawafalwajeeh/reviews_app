@@ -85,7 +85,6 @@ class CategoryFilterSheet extends StatelessWidget {
 
               // Count places per category for debugging
               final categoryCounts = <String, int>{};
-              final length = mapController.placeController.places.length;
               for (final category in categoryController.mockCategories) {
                 final count = mapController.placeController.places
                     .where((place) => place.categoryId == category.id)

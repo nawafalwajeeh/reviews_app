@@ -172,7 +172,7 @@ class AddNewAddressScreen extends StatelessWidget {
     }
 
     return Card(
-      color: AppColors.success.withOpacity(0.1),
+      color: AppColors.success.withValues(alpha: 0.1),
       margin: EdgeInsets.zero,
       child: Padding(
         padding: const EdgeInsets.all(AppSizes.md),

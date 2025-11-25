@@ -4,7 +4,6 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:get_storage/get_storage.dart';
@@ -33,7 +32,6 @@ class NotificationController extends GetxController {
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
   final NotificationRepository _notificationRepository =
       NotificationRepository();
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   // Getters
   RxInt get unreadNotificationCount => _unreadNotificationCount;
@@ -113,7 +111,7 @@ class NotificationController extends GetxController {
   }
 
   Future<void> _requestNotificationPermissions() async {
-    NotificationSettings settings = await _firebaseMessaging.requestPermission(
+    NotificationSettings _ = await _firebaseMessaging.requestPermission(
       alert: true,
       badge: true,
       sound: true,
@@ -245,7 +243,7 @@ class NotificationController extends GetxController {
 
   void navigateToNotificationTarget(String type, Map<String, dynamic> data) {
     final placeId = data['placeId'];
-    final reviewId = data['reviewId'];
+    final _ = data['reviewId'];
     final userId = data['userId'];
     final commentId = data['commentId'];
 

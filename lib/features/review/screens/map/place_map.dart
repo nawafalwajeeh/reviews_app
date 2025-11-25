@@ -315,7 +315,7 @@ class PlacesMapScreen extends StatelessWidget {
             borderRadius: BorderRadius.circular(20),
             boxShadow: [
               BoxShadow(
-                color: AppColors.darkGrey.withOpacity(0.1),
+                color: AppColors.darkGrey.withValues(alpha: 0.1),
                 blurRadius: 5,
                 offset: const Offset(0, 2),
               ),
@@ -352,7 +352,7 @@ class PlacesMapScreen extends StatelessWidget {
           borderRadius: BorderRadius.circular(AppSizes.cardRadiusLg),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.1),
+              color: Colors.black.withValues(alpha: 0.1),
               blurRadius: 8,
               offset: const Offset(0, 2),
             ),
@@ -586,7 +586,7 @@ class PlacesMapScreen extends StatelessWidget {
         width: 40,
         height: 40,
         decoration: BoxDecoration(
-          color: _getSuggestionColor(suggestion.type).withOpacity(0.1),
+          color: _getSuggestionColor(suggestion.type).withValues(alpha: 0.1),
           borderRadius: BorderRadius.circular(AppSizes.cardRadiusMd),
         ),
         child: Icon(
@@ -675,7 +675,7 @@ class PlacesMapScreen extends StatelessWidget {
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
-            colors: [Colors.black.withOpacity(0.6), Colors.transparent],
+            colors: [Colors.black.withValues(alpha: 0.6), Colors.transparent],
           ),
         ),
         child: Row(
@@ -686,7 +686,7 @@ class PlacesMapScreen extends StatelessWidget {
                 borderRadius: BorderRadius.circular(AppSizes.cardRadiusLg),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.1),
+                    color: Colors.black.withValues(alpha: 0.1),
                     blurRadius: 8,
                     offset: const Offset(0, 2),
                   ),
@@ -734,7 +734,7 @@ class PlacesMapScreen extends StatelessWidget {
             ),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.2),
+                color: Colors.black.withValues(alpha: 0.2),
                 blurRadius: 20,
                 offset: const Offset(0, -5),
               ),
@@ -749,7 +749,7 @@ class PlacesMapScreen extends StatelessWidget {
                 width: 40,
                 height: 4,
                 decoration: BoxDecoration(
-                  color: AppColors.darkGrey.withOpacity(0.3),
+                  color: AppColors.darkGrey.withValues(alpha: 0.3),
                   borderRadius: BorderRadius.circular(2),
                 ),
               ),
@@ -766,7 +766,7 @@ class PlacesMapScreen extends StatelessWidget {
                           width: 40,
                           height: 40,
                           decoration: BoxDecoration(
-                            color: AppColors.primaryColor.withOpacity(0.1),
+                            color: AppColors.primaryColor.withValues(alpha: 0.1),
                             borderRadius: BorderRadius.circular(
                               AppSizes.cardRadiusMd,
                             ),
@@ -812,12 +812,12 @@ class PlacesMapScreen extends StatelessWidget {
                       width: double.infinity,
                       padding: const EdgeInsets.all(AppSizes.md),
                       decoration: BoxDecoration(
-                        color: AppColors.light.withOpacity(0.5),
+                        color: AppColors.light.withValues(alpha:0.5),
                         borderRadius: BorderRadius.circular(
                           AppSizes.cardRadiusMd,
                         ),
                         border: Border.all(
-                          color: AppColors.grey.withOpacity(0.3),
+                          color: AppColors.grey.withValues(alpha: 0.3),
                         ),
                       ),
                       child: Column(
@@ -856,7 +856,7 @@ class PlacesMapScreen extends StatelessWidget {
                             const SizedBox(height: AppSizes.sm),
                             Divider(
                               height: 1,
-                              color: AppColors.grey.withOpacity(0.3),
+                              color: AppColors.grey.withValues(alpha: 0.3),
                             ),
                             const SizedBox(height: AppSizes.sm),
                             Row(
@@ -864,7 +864,7 @@ class PlacesMapScreen extends StatelessWidget {
                                 Icon(
                                   Iconsax.gps,
                                   size: 14,
-                                  color: AppColors.darkGrey.withOpacity(0.6),
+                                  color: AppColors.darkGrey.withValues(alpha: 0.6),
                                 ),
                                 const SizedBox(width: AppSizes.xs),
                                 Expanded(
@@ -872,8 +872,8 @@ class PlacesMapScreen extends StatelessWidget {
                                     'Lat: ${controller.pickedLocation.value!.latitude.toStringAsFixed(6)}, Lng: ${controller.pickedLocation.value!.longitude.toStringAsFixed(6)}',
                                     style: Theme.of(context).textTheme.bodySmall
                                         ?.copyWith(
-                                          color: AppColors.darkGrey.withOpacity(
-                                            0.6,
+                                          color: AppColors.darkGrey.withValues(
+                                          alpha:  0.6,
                                           ),
                                           fontFamily: 'monospace',
                                         ),
@@ -909,7 +909,7 @@ class PlacesMapScreen extends StatelessWidget {
                                 vertical: AppSizes.lg,
                               ),
                               side: BorderSide(
-                                color: AppColors.primaryColor.withOpacity(0.3),
+                                color: AppColors.primaryColor.withValues(alpha: 0.3),
                               ),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(
@@ -1041,7 +1041,7 @@ class PlacesMapScreen extends StatelessWidget {
         borderRadius: BorderRadius.circular(AppSizes.cardRadiusLg),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.1),
+            color: Colors.black.withValues(alpha: 0.1),
             blurRadius: 8,
             offset: const Offset(0, 2),
           ),
@@ -1128,7 +1128,7 @@ class PlacesMapScreen extends StatelessWidget {
         width: 40,
         height: 40,
         decoration: BoxDecoration(
-          color: AppColors.primaryColor.withOpacity(0.1),
+          color: AppColors.primaryColor.withValues(alpha: 0.1),
           borderRadius: BorderRadius.circular(AppSizes.cardRadiusMd),
         ),
         child: Icon(icon, color: AppColors.primaryColor),
@@ -1157,7 +1157,7 @@ class PlacesMapScreen extends StatelessWidget {
       if (!controller.isLoading.value) return const SizedBox();
 
       return Container(
-        color: Colors.black.withOpacity(0.7),
+        color: Colors.black.withValues(alpha:0.7),
         child: Center(
           child: Container(
             padding: const EdgeInsets.all(AppSizes.xl),
@@ -1166,7 +1166,7 @@ class PlacesMapScreen extends StatelessWidget {
               borderRadius: BorderRadius.circular(AppSizes.cardRadiusLg),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.2),
+                  color: Colors.black.withValues(alpha:0.2),
                   blurRadius: 20,
                   offset: const Offset(0, 10),
                 ),
@@ -1201,5 +1201,4 @@ class PlacesMapScreen extends StatelessWidget {
       );
     });
   }
-
 }

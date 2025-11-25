@@ -16,7 +16,7 @@ class VoiceSearchOverlay extends StatelessWidget {
   Widget build(BuildContext context) {
     return Positioned.fill(
       child: Container(
-        color: AppColors.black.withOpacity(0.7),
+        color: AppColors.black.withValues(alpha: 0.7),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -25,31 +25,29 @@ class VoiceSearchOverlay extends StatelessWidget {
               width: 120,
               height: 120,
               decoration: BoxDecoration(
-                color: AppColors.primaryColor.withOpacity(0.2),
+                color: AppColors.primaryColor.withValues(alpha: 0.2),
                 shape: BoxShape.circle,
                 border: Border.all(color: AppColors.primaryColor, width: 2),
               ),
-              child: const Icon(
-                Icons.mic,
-                size: 50,
-                color: AppColors.white,
-              ),
+              child: const Icon(Icons.mic, size: 50, color: AppColors.white),
             ),
             const SizedBox(height: AppSizes.lg),
-            
+
             /// Listening Text
             Text(
               'Listening...',
-              style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                color: AppColors.white,
-              ),
+              style: Theme.of(
+                context,
+              ).textTheme.headlineSmall?.copyWith(color: AppColors.white),
             ),
             const SizedBox(height: AppSizes.md),
-            
+
             /// Speech Text
             if (speechText.isNotEmpty)
               Container(
-                margin: const EdgeInsets.symmetric(horizontal: AppSizes.defaultSpace),
+                margin: const EdgeInsets.symmetric(
+                  horizontal: AppSizes.defaultSpace,
+                ),
                 padding: const EdgeInsets.all(AppSizes.md),
                 decoration: BoxDecoration(
                   color: AppColors.white,
@@ -61,9 +59,9 @@ class VoiceSearchOverlay extends StatelessWidget {
                   style: Theme.of(context).textTheme.bodyLarge,
                 ),
               ),
-            
+
             const SizedBox(height: AppSizes.xl),
-            
+
             /// Stop Button
             ElevatedButton(
               onPressed: onStop,

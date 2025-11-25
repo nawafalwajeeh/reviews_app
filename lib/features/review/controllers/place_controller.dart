@@ -387,16 +387,6 @@ class PlaceController extends GetxController {
         return;
       }
 
-      // if (selectedAddress.value == AddressModel.empty()) {
-      //   AppFullScreenLoader.stopLoading();
-      //   AppLoaders.warningSnackBar(
-      //     title: 'Location Missing',
-      //     message:
-      //         'Please use the map picker or select a saved address to set the place location.',
-      //   );
-      //   return;
-      // }
-
       if (selectedAddress.value == AddressModel.empty() ||
           selectedAddress.value.latitude == 0.0 ||
           selectedAddress.value.longitude == 0.0) {

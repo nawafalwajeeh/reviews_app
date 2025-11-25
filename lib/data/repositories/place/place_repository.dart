@@ -9,6 +9,7 @@ import 'package:reviews_app/features/review/models/place_model.dart';
 import 'package:reviews_app/utils/exceptions/format_exceptions.dart';
 import 'package:reviews_app/utils/exceptions/platform_exceptions.dart';
 
+import '../../../features/personalization/models/address_model.dart';
 import '../../../utils/exceptions/firebase_exceptions.dart';
 import 'place_batch_writer.dart';
 
@@ -670,7 +671,6 @@ class PlaceRepository extends GetxController {
   }
 
   /// Firestore path to the current user's like document for a specific place.
-
   DocumentReference _getUserLikeDocRef(String placeId, String userId) {
     return _db
         .collection('Places')
@@ -749,5 +749,73 @@ class PlaceRepository extends GetxController {
 
       return 0;
     });
+  }
+
+  Future<void> debugRepositoryMethod(String placeId) async {
+    try {
+      debugPrint('🔧 Debugging repository method...');
+
+      // Test if we can access Firestore directly
+      final docRef = _db.collection('Places').doc(placeId);
+
+      debugPrint('📄 Document path: ${docRef.path}');
+
+      final document = await docRef.get();
+      debugPrint('📊 Document exists: ${document.exists}');
+
+      if (document.exists) {
+        final data = document.data();
+        debugPrint('📋 Document data: $data');
+
+        if (data != null) {
+          debugPrint('🏷️ Place title from direct query: ${data['title']}');
+        }
+      } else {
+        debugPrint('❌ Document does not exist in Firestore');
+
+        // List available places to see what's there
+        final querySnapshot = await _db.collection('Places').limit(5).get();
+        debugPrint('📊 Available places in database:');
+        for (final doc in querySnapshot.docs) {
+          debugPrint('   - ${doc.id}: ${doc.data()['title']}');
+        }
+      }
+    } on FirebaseException catch (e) {
+      throw AppFirebaseException(e.code).message;
+    } on PlatformException catch (e) {
+      throw AppPlatformException(e.code).message;
+    } catch (e) {
+      throw 'Something went wrong while updating like status. Please try again.';
+    }
+  }
+
+  Future<PlaceModel> fetchPlaceByIdDirect(String placeId) async {
+    try {
+      debugPrint('🚀 Using direct Firestore approach...');
+
+      final document = await _db.collection('Places').doc(placeId).get();
+
+      if (document.exists) {
+        final data = document.data();
+        if (data != null) {
+          // Create PlaceModel manually to avoid repository issues
+          return PlaceModel(
+            id: document.id,
+            title: data['Title']?.toString() ?? 'Unknown',
+            description: data['Description']?.toString() ?? '',
+            address: data['Address'], // You might need to handle this
+            categoryId: data['CategoryId']?.toString() ?? '',
+            averageRating: data['AverageRating'],
+            userId: data['UserId'],
+            thumbnail: data['Thumbnail'],
+            // ... other required fields
+          );
+        }
+      }
+      throw Exception('Place not found');
+    } catch (e) {
+      debugPrint('💥 Direct approach error: $e');
+      rethrow;
+    }
   }
 }

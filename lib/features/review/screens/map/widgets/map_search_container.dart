@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:reviews_app/utils/constants/colors.dart';
@@ -30,7 +29,7 @@ class MapSearchContainer extends StatelessWidget {
         borderRadius: BorderRadius.circular(AppSizes.cardRadiusLg),
         boxShadow: [
           BoxShadow(
-            color: AppColors.darkGrey.withOpacity(0.1),
+            color: AppColors.darkGrey.withValues(alpha: 0.1),
             blurRadius: 10,
             offset: const Offset(0, 5),
           ),
@@ -41,9 +40,9 @@ class MapSearchContainer extends StatelessWidget {
         onChanged: onChanged,
         decoration: InputDecoration(
           hintText: text,
-          hintStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(
-            color: AppColors.darkGrey,
-          ),
+          hintStyle: Theme.of(
+            context,
+          ).textTheme.bodyMedium?.copyWith(color: AppColors.darkGrey),
           border: InputBorder.none,
           prefixIcon: Icon(Iconsax.search_normal, color: AppColors.darkGrey),
           suffixIcon: Row(
@@ -69,7 +68,6 @@ class MapSearchContainer extends StatelessWidget {
     );
   }
 }
-
 
 //---------------------
 // import 'package:flutter/material.dart';

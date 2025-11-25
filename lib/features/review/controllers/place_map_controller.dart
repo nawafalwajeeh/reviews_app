@@ -197,61 +197,60 @@ class PlacesMapController extends GetxController {
   // }
 
   Future<void> _createPlaceMarkers() async {
-  markers.clear();
+    markers.clear();
 
-  // Add current location marker if available
-  if (currentLocation.value?.latitude != null) {
-    final currentLocationMarker = Marker(
-      markerId: const MarkerId('current_location'),
-      position: LatLng(
-        currentLocation.value!.latitude!,
-        currentLocation.value!.longitude!,
-      ),
-      icon: await CustomMarkerGenerator.getCurrentLocationMarker(),
-      infoWindow: const InfoWindow(title: 'Your Location'),
-      zIndexInt: 1000,
-      anchor: const Offset(0.5, 0.5),
-    );
-    markers.add(currentLocationMarker);
-  }
+    // Add current location marker if available
+    if (currentLocation.value?.latitude != null) {
+      final currentLocationMarker = Marker(
+        markerId: const MarkerId('current_location'),
+        position: LatLng(
+          currentLocation.value!.latitude!,
+          currentLocation.value!.longitude!,
+        ),
+        icon: await CustomMarkerGenerator.getCurrentLocationMarker(),
+        infoWindow: const InfoWindow(title: 'Your Location'),
+        zIndexInt: 1000,
+        anchor: const Offset(0.5, 0.5),
+      );
+      markers.add(currentLocationMarker);
+    }
 
-  // Add place markers
-  for (final place in displayedPlaces) {
-    if (place.latitude == 0.0 || place.longitude == 0.0) continue;
+    // Add place markers
+    for (final place in displayedPlaces) {
+      if (place.latitude == 0.0 || place.longitude == 0.0) continue;
 
-    final isSelected = selectedPlace.value?.id == place.id;
-    final marker = Marker(
-      markerId: MarkerId('place_${place.id}'),
-      position: LatLng(place.latitude, place.longitude),
-      infoWindow: InfoWindow(
-        title: place.title,
-        snippet: '${place.averageRating} ⭐ • ${place.address.shortAddress}',
+      final isSelected = selectedPlace.value?.id == place.id;
+      final marker = Marker(
+        markerId: MarkerId('place_${place.id}'),
+        position: LatLng(place.latitude, place.longitude),
+        infoWindow: InfoWindow(
+          title: place.title,
+          snippet: '${place.averageRating} ⭐ • ${place.address.shortAddress}',
+          onTap: () => _onPlaceMarkerTapped(place),
+        ),
+        icon: await CustomMarkerGenerator.generatePlaceMarker(
+          place,
+          isSelected: isSelected,
+        ),
         onTap: () => _onPlaceMarkerTapped(place),
-      ),
-      icon: await CustomMarkerGenerator.generatePlaceMarker(
-        place,
-        isSelected: isSelected,
-      ),
-      onTap: () => _onPlaceMarkerTapped(place),
-      zIndexInt: isSelected ? 1000 : 1,
-      anchor: const Offset(0.5, 1.0), // Anchor at bottom center for pointer
-    );
+        zIndexInt: isSelected ? 1000 : 1,
+        anchor: const Offset(0.5, 1.0), // Anchor at bottom center for pointer
+      );
 
-    markers.add(marker);
+      markers.add(marker);
+    }
+    markers.refresh();
   }
-  markers.refresh();
-}
 
-void _addHighlightMarker(PlaceModel place) {
-  final markerId = MarkerId('highlighted_${place.id}');
-  
-  // Remove any existing highlight marker
-  markers.removeWhere((m) => m.markerId.value.startsWith('highlighted_'));
-  
-  // Recreate the selected marker with highlighted style
-  _createPlaceMarkers(); // This will recreate all markers with proper selection state
-}
+  void _addHighlightMarker(PlaceModel place) {
+    final markerId = MarkerId('highlighted_${place.id}');
 
+    // Remove any existing highlight marker
+    markers.removeWhere((m) => m.markerId.value.startsWith('highlighted_'));
+
+    // Recreate the selected marker with highlighted style
+    _createPlaceMarkers(); // This will recreate all markers with proper selection state
+  }
 
   // Future<BitmapDescriptor> _createCustomPlaceMarker(PlaceModel place) async {
   //   // Create custom marker based on rating and category
@@ -926,8 +925,10 @@ void _addHighlightMarker(PlaceModel place) {
           }
         },
         listenFor: const Duration(seconds: 30),
-        cancelOnError: true,
-        partialResults: true,
+        listenOptions: stt.SpeechListenOptions(
+          partialResults: true,
+          cancelOnError: true,
+        ),
       );
     } else {
       final status = await speech.initialize();
@@ -1027,22 +1028,20 @@ void _addHighlightMarker(PlaceModel place) {
   // }
 
   void _updateSelectionMarker(LatLng position) async {
-  const markerId = MarkerId('selectedLocation');
-  final selectionMarker = Marker(
-    markerId: markerId,
-    position: position,
-    icon: await CustomMarkerGenerator.getSelectedLocationMarker(),
-    infoWindow: const InfoWindow(title: 'Selected Location'),
-    zIndex: 1000,
-    anchor: const Offset(0.5, 1.0),
-  );
+    const markerId = MarkerId('selectedLocation');
+    final selectionMarker = Marker(
+      markerId: markerId,
+      position: position,
+      icon: await CustomMarkerGenerator.getSelectedLocationMarker(),
+      infoWindow: const InfoWindow(title: 'Selected Location'),
+      zIndexInt: 1000,
+      anchor: const Offset(0.5, 1.0),
+    );
 
-  markers.removeWhere((m) => m.markerId == markerId);
-  markers.add(selectionMarker);
-  markers.refresh();
-}
-
-
+    markers.removeWhere((m) => m.markerId == markerId);
+    markers.add(selectionMarker);
+    markers.refresh();
+  }
 
   void _addMarkerForLocation(LatLng location, String title) {
     final markerId = MarkerId(

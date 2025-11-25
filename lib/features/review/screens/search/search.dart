@@ -321,7 +321,7 @@ class SearchScreen extends StatelessWidget {
                             : AppColors.grey,
                         borderRadius: BorderRadius.circular(20),
                         border: Border.all(
-                          color: AppColors.primaryColor.withOpacity(0.3),
+                          color: AppColors.primaryColor.withValues(alpha: 0.3),
                         ),
                       ),
                       child: Row(
@@ -434,7 +434,7 @@ class SearchScreen extends StatelessWidget {
               ),
               trailing: Chip(
                 label: Text('${place.averageRating}'),
-                backgroundColor: AppColors.primaryColor.withOpacity(0.2),
+                backgroundColor: AppColors.primaryColor.withValues(alpha: 0.2),
               ),
               onTap: () => Get.to(() => PlaceDetailsScreen(place: place)),
             );
@@ -540,7 +540,7 @@ class SearchScreen extends StatelessWidget {
                 height: 40,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(AppSizes.sm),
-                  color: AppColors.primaryColor.withOpacity(0.1),
+                  color: AppColors.primaryColor.withValues(alpha: 0.1),
                 ),
                 child: Icon(Icons.category, color: AppColors.primaryColor),
               ),
