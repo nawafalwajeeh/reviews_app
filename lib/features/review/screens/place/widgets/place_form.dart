@@ -99,8 +99,8 @@ class PlaceForm extends StatelessWidget {
             spacing: AppSizes.spaceBtwItems,
             children: [
               /// Payment Methods
-              const PlacePaymentSection(),
-              const Divider(),
+              // const PlacePaymentSection(),
+              // const Divider(),
 
               /// Address
               const PlaceAddressSection(),
@@ -133,9 +133,22 @@ class PlaceForm extends StatelessWidget {
           ),
         ),
         const SizedBox(height: AppSizes.spaceBtwInputFields),
-
+        // Website URL (Optional)
+        TextFormField(
+          controller: controller.websiteUrlController,
+          validator: (value) {
+            if (value != null && value.isNotEmpty) {
+              return AppValidator.validateWebsite(value);
+            }
+            return null; // Optional field
+          },
+          decoration: const InputDecoration(
+            labelText: 'Website URL (Optional)',
+            hintText: 'https://example.com',
+          ),
+          keyboardType: TextInputType.url,
+        ),
         const SizedBox(height: AppSizes.spaceBtwInputFields),
-        // In PlaceForm widget, update the LabeledChips:
         LabeledChips(
           label: 'Tags',
           tags: const [

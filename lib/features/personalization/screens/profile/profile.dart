@@ -6,13 +6,16 @@ import 'package:reviews_app/common/widgets/appbar/appbar.dart';
 import 'package:reviews_app/common/widgets/images/circular_image.dart';
 import 'package:reviews_app/common/widgets/shimmers/shimmer_effect.dart';
 import 'package:reviews_app/common/widgets/texts/section_heading.dart';
+import 'package:reviews_app/features/personalization/screens/profile/widgets/change_dob.dart';
+import 'package:reviews_app/features/personalization/screens/profile/widgets/change_gender.dart';
+import 'package:reviews_app/features/personalization/screens/profile/widgets/change_phone_number.dart';
 import 'package:reviews_app/features/personalization/screens/profile/widgets/profile_menu.dart';
 import 'package:reviews_app/utils/constants/image_strings.dart';
 import 'package:reviews_app/utils/constants/sizes.dart';
-
 import '../../../../utils/popups/loaders.dart';
 import '../../controllers/user_controller.dart';
 import 'widgets/change_name.dart';
+import 'widgets/change_username.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
@@ -77,17 +80,21 @@ class ProfileScreen extends StatelessWidget {
               ),
               const SizedBox(height: AppSizes.spaceBtwItems),
 
-              AppProfileMenu(
-                title: 'Name',
-                // value: 'Alwajeeh',
-                value: controller.user.value.fullName,
-                onPressed: () => Get.to(() => const ChangeName()),
-              ),
-              AppProfileMenu(
-                title: 'Username',
-                // value: 'Top_coder',
-                value: controller.user.value.userName,
-                onPressed: () {},
+              Obx(() {
+                return AppProfileMenu(
+                  title: 'Name',
+                  // value: 'Alwajeeh',
+                  value: controller.user.value.fullName,
+                  onPressed: () => Get.to(() => const ChangeName()),
+                );
+              }),
+              Obx(
+                () => AppProfileMenu(
+                  title: 'Username',
+                  // value: 'Top_coder',
+                  value: controller.user.value.userName,
+                  onPressed: () => Get.to(() => const ChangeUsername()),
+                ),
               ),
               const SizedBox(height: AppSizes.spaceBtwItems),
 
@@ -123,17 +130,29 @@ class ProfileScreen extends StatelessWidget {
                 value: controller.user.value.email,
                 onPressed: () {},
               ),
-              AppProfileMenu(
-                title: 'Phone Number',
-                // value: '+967-778-228445',
-                value: controller.user.value.phoneNumber,
-                onPressed: () {},
+              Obx(
+                () => AppProfileMenu(
+                  title: 'Phone Number',
+                  // value: '+967-778-228445',
+                  value: controller.user.value.phoneNumber,
+                  onPressed: () => Get.to(() => const ChangePhone()),
+                ),
               ),
-              AppProfileMenu(title: 'Gender', value: 'Male', onPressed: () {}),
-              AppProfileMenu(
-                title: 'Date of Birth',
-                value: '1 Apr, 2002',
-                onPressed: () {},
+              Obx(
+                () => AppProfileMenu(
+                  title: 'Gender',
+                  value: controller.user.value.gender.toString(),
+                  onPressed: () => Get.to(() => const ChangeGender()),
+                ),
+              ),
+              Obx(
+                () => AppProfileMenu(
+                  title: 'Date of Birth',
+                  value: controller.user.value.birthDate != null
+                      ? '${controller.user.value.birthDate!.day}/${controller.user.value.birthDate!.month}/${controller.user.value.birthDate!.year}'
+                      : 'Not set',
+                  onPressed: () => Get.to(() => const ChangeBirthDate()),
+                ),
               ),
               const Divider(),
               const SizedBox(height: AppSizes.spaceBtwItems),

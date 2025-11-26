@@ -23,11 +23,13 @@ class LabeledChips extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(label, style: Theme.of(context).textTheme.titleSmall),
-        const SizedBox(height: AppSizes.sm),
+        const SizedBox(height: AppSizes.xs),
         Obx(
           () => Wrap(
-            spacing: 8,
-            runSpacing: 8,
+            // spacing: 8,
+            // runSpacing: 8,
+            spacing: 2,
+            runSpacing: 2,
             children: tags.map((tag) {
               final isSelected = selectedTags.contains(tag);
               return AppChoiceChip(

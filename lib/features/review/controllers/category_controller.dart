@@ -31,10 +31,16 @@ class CategoryController extends GetxController {
 
   final RxList<String> categories = allCategoryNames.obs;
 
+  // @override
+  // void onInit() {
+  //   fetchCategories();
+  //   super.onInit();
+  // }
+
   @override
-  void onInit() {
+  void onReady() {
     fetchCategories();
-    super.onInit();
+    super.onReady();
   }
 
   final RxList<CategoryModel> mockCategories = allMockCategories.obs;
@@ -66,6 +72,7 @@ class CategoryController extends GetxController {
 
       // Update the observable list
       categoryModels.assignAll(categories);
+      update();
     } catch (e) {
       AppLoaders.errorSnackBar(title: 'Oh Snap!', message: e.toString());
     } finally {

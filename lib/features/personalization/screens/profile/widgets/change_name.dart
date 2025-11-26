@@ -6,14 +6,14 @@ import 'package:reviews_app/utils/constants/sizes.dart';
 import 'package:reviews_app/utils/constants/text_strings.dart';
 import 'package:reviews_app/utils/validators/validation.dart';
 
-import '../../../controllers/update_name_controller.dart';
+import '../../../controllers/update_user_data_controller.dart';
 
 class ChangeName extends StatelessWidget {
   const ChangeName({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.put(UpdateUserNameController());
+    final controller = Get.put(UpdateUserDataController());
 
     return Scaffold(
       /// CustomAppBar

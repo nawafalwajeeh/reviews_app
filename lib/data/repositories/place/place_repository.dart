@@ -9,7 +9,6 @@ import 'package:reviews_app/features/review/models/place_model.dart';
 import 'package:reviews_app/utils/exceptions/format_exceptions.dart';
 import 'package:reviews_app/utils/exceptions/platform_exceptions.dart';
 
-import '../../../features/personalization/models/address_model.dart';
 import '../../../utils/exceptions/firebase_exceptions.dart';
 import 'place_batch_writer.dart';
 
@@ -808,7 +807,6 @@ class PlaceRepository extends GetxController {
             averageRating: data['AverageRating'],
             userId: data['UserId'],
             thumbnail: data['Thumbnail'],
-            // ... other required fields
           );
         }
       }

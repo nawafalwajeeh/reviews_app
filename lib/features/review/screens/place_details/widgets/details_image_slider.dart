@@ -1,6 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
+import 'package:get/get.dart';
 import 'package:reviews_app/common/widgets/appbar/appbar.dart';
 import 'package:reviews_app/common/widgets/custom_shapes/curved_edges/curved_edges_widget.dart';
 import 'package:reviews_app/common/widgets/images/rounded_image.dart';
@@ -12,6 +12,7 @@ import 'package:reviews_app/utils/constants/sizes.dart';
 import '../../../../../utils/constants/colors.dart';
 import '../../../../../utils/helpers/helper_functions.dart';
 import '../../../controllers/images_controller.dart';
+import '../../../controllers/review_controller.dart';
 import '../../../models/place_model.dart';
 // import '../../../controllers/images_controller.dart';
 
@@ -25,6 +26,8 @@ class PlaceImageSlider extends StatelessWidget {
     final controller = ImagesController.instance;
     final images = controller.getAllPlaceImages(place);
     final dark = AppHelperFunctions.isDarkMode(context);
+    // Get the ReviewController for this place
+    final reviewController = Get.find<ReviewController>(tag: place.id);
 
     return Column(
       // Use Column to stack the header and the slider vertically
@@ -83,38 +86,86 @@ class PlaceImageSlider extends StatelessWidget {
                 ),
 
                 /// Title and Rating
+                // Positioned(
+                //   left: AppSizes.defaultSpace,
+                //   bottom: AppSizes.defaultSpace,
+                //   right: AppSizes
+                //       .defaultSpace, // Added right constraint to allow text to wrap
+                //   child: Column(
+                //     crossAxisAlignment: CrossAxisAlignment.start,
+                //     children: [
+                //       PlaceTitleText(
+                //         title: place.title,
+                //         // location: place.location,
+                //         location: place.address.toString(),
+                //         isVerified: true,
+                //         isDarkBackground: true,
+                //         placeTitleSize: TextSizes.large,
+                //         maxLines: 2,
+                //       ),
+                //       const SizedBox(height: AppSizes.sm),
+                //       Row(
+                //         children: [
+                //           const Icon(Icons.star, color: Colors.amber, size: 20),
+                //           const SizedBox(width: AppSizes.xs),
+                //           Text(
+                //             '${place.averageRating.toStringAsFixed(1)} (${place.reviewsCount} reviews)',
+                //             // '${place.reviewsCount} reviews',
+                //             style: Theme.of(context).textTheme.bodyLarge!
+                //                 .copyWith(color: Colors.white),
+                //           ),
+                //         ],
+                //       ),
+                //     ],
+                //   ),
+                // ),
+                /// Title and Rating - Use Obx for reactive updates
                 Positioned(
                   left: AppSizes.defaultSpace,
                   bottom: AppSizes.defaultSpace,
-                  right: AppSizes
-                      .defaultSpace, // Added right constraint to allow text to wrap
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      PlaceTitleText(
-                        title: place.title,
-                        // location: place.location,
-                        location: place.address.toString(),
-                        isVerified: true,
-                        isDarkBackground: true,
-                        placeTitleSize: TextSizes.large,
-                        maxLines: 2,
-                      ),
-                      const SizedBox(height: AppSizes.sm),
-                      Row(
-                        children: [
-                          const Icon(Icons.star, color: Colors.amber, size: 20),
-                          const SizedBox(width: AppSizes.xs),
-                          Text(
-                            '${place.averageRating.toStringAsFixed(1)} (${place.reviewsCount} reviews)',
-                            // '${place.reviewsCount} reviews',
-                            style: Theme.of(context).textTheme.bodyLarge!
-                                .copyWith(color: Colors.white),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
+                  right: AppSizes.defaultSpace,
+                  child: Obx(() {
+                    // Use reactive data from ReviewController if available, otherwise use initial place data
+                    final currentRating =
+                        reviewController.currentPlaceRating.value > 0
+                        ? reviewController.currentPlaceRating.value
+                        : place.averageRating;
+
+                    final currentReviewsCount =
+                        reviewController.currentPlaceReviewsCount.value > 0
+                        ? reviewController.currentPlaceReviewsCount.value
+                        : place.reviewsCount;
+
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        PlaceTitleText(
+                          title: place.title,
+                          location: place.address.toString(),
+                          isVerified: true,
+                          isDarkBackground: true,
+                          placeTitleSize: TextSizes.large,
+                          maxLines: 2,
+                        ),
+                        const SizedBox(height: AppSizes.sm),
+                        Row(
+                          children: [
+                            const Icon(
+                              Icons.star,
+                              color: Colors.amber,
+                              size: 20,
+                            ),
+                            const SizedBox(width: AppSizes.xs),
+                            Text(
+                              '${currentRating.toStringAsFixed(1)} ($currentReviewsCount reviews)',
+                              style: Theme.of(context).textTheme.bodyLarge!
+                                  .copyWith(color: Colors.white),
+                            ),
+                          ],
+                        ),
+                      ],
+                    );
+                  }),
                 ),
               ],
             ),

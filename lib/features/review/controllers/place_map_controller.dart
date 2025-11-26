@@ -1,3 +1,4 @@
+
 import 'dart:async';
 import 'dart:math';
 import 'package:flutter/services.dart';
@@ -18,6 +19,7 @@ import '../../../utils/logging/logger.dart';
 import '../../personalization/models/address_model.dart';
 import '../models/category_model.dart';
 import '../models/google_search_suggestions.dart';
+import '../models/recent_search.dart';
 
 class PlacesMapController extends GetxController {
   static PlacesMapController get instance => Get.find();
@@ -1263,22 +1265,3 @@ class PlacesMapController extends GetxController {
 }
 
 // RecentSearch model
-class RecentSearch {
-  final String id;
-  final String query;
-  final String? placeId;
-  final LatLng? location;
-  final String? address;
-  final DateTime timestamp;
-  final String type; // 'search', 'place', 'direction'
-
-  RecentSearch({
-    required this.id,
-    required this.query,
-    this.placeId,
-    this.location,
-    this.address,
-    required this.timestamp,
-    required this.type,
-  });
-}

@@ -9,12 +9,13 @@ class UserModel {
   final String? id;
   String firstName;
   String lastName;
-  final String userName;
+  String userName;
   final String email;
   String phoneNumber;
   String profilePicture;
-  // final CartModel? cart;
   final List<AddressModel>? addresses;
+  String? gender;
+  DateTime? birthDate;
 
   /// Constructor for UserModel
   UserModel({
@@ -25,8 +26,9 @@ class UserModel {
     required this.email,
     required this.phoneNumber,
     required this.profilePicture,
-    // this.cart,
     this.addresses,
+    this.gender,
+    this.birthDate,
   });
 
   /// Helper function to get the full name
@@ -72,6 +74,8 @@ class UserModel {
     'Email': email,
     'PhoneNumber': phoneNumber,
     'ProfilePicture': profilePicture,
+    'Gender': gender,
+    'BirthDate': birthDate?.toIso8601String(),
   };
 
   /// convert from [json] to  [UserModel]
@@ -88,6 +92,10 @@ class UserModel {
         email: data['Email'] ?? '',
         phoneNumber: data['PhoneNumber'] ?? '',
         profilePicture: data['ProfilePicture'] ?? '',
+        gender: data['Gender'],
+        birthDate: data['BirthDate'] != null
+            ? DateTime.parse(data['BirthDate'])
+            : null,
       );
     } else {
       return empty();

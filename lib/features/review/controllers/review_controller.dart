@@ -49,11 +49,18 @@ class ReviewController extends GetxController {
   final formKey = GlobalKey<FormState>();
   String get currentUserId => _authRepo.getUserID;
 
+  // REACTIVE VARIABLES FOR RATING UPDATES
+  final currentPlaceRating = 0.0.obs;
+  final currentPlaceRatingDistribution = <String, int>{}.obs;
+  final currentPlaceReviewsCount = 0.obs;
+
+
   @override
   void onInit() {
     super.onInit();
     // Fetch and initialize state
     fetchExistingReview();
+      _initializeRatingData();
   }
 
   void setQuestionAnswer(
@@ -209,27 +216,6 @@ class ReviewController extends GetxController {
         // B. Update the Place's statistics for a NEW review
         // This method must now perform: ReviewCount + 1 AND RatingDistribution[newRating] + 1
         await _placeRepo.updatePlaceRatingStatistics(placeId, newRating);
-
-        // --- NOTIFICATION LOGIC: NEW REVIEW ---
-        // final placeOwnerId = await _placeRepo.getPlaceOwnerId(placeId);
-        // const placeTitle = 'Central Park Cafe'; // Mock place title
-
-        // if (placeOwnerId != userId) { // Check reviewer is not the owner
-        //   await _notificationController.sendNotification(
-        //     toUserId: placeOwnerId,
-        //     type: 'new_review',
-        //     title: 'New ${newRating.round()} Star Review!',
-        //     body: '$userName reviewed "$placeTitle" with a rating of ${newRating.round()} stars.',
-        //     senderName: userName,
-        //     senderAvatar: userAvatar,
-        //     targetId: placeId,
-        //     targetType: 'place',
-        //     extraData: {
-        //       'reviewId': reviewToSubmit.id,
-        //       'rating': newRating.toString()
-        //     },
-        //   );
-        // }
       }
 
       // 5. Success feedback
@@ -239,6 +225,7 @@ class ReviewController extends GetxController {
             ? 'Your review has been successfully updated.'
             : 'Your review has been submitted.',
       );
+       await _refreshRatingData();
 
       // 6. Transition back to read-only view after successful submission/update
       await fetchExistingReview(); // Refetch to reset state, update ID (for new review), and update originalRating
@@ -254,6 +241,37 @@ class ReviewController extends GetxController {
       AppFullScreenLoader.stopLoading();
     }
   }
+
+    Future<void> _initializeRatingData() async {
+    try {
+      final place = await PlaceController.instance.placeRepository.getPlaceById(placeId);
+      if (place != null) {
+        currentPlaceRating.value = place.averageRating;
+        currentPlaceRatingDistribution.value = place.ratingDistribution;
+        currentPlaceReviewsCount.value = place.reviewsCount;
+      }
+    } catch (e) {
+      print('Error initializing rating data: $e');
+    }
+  }
+
+
+   Future<void> _refreshRatingData() async {
+    try {
+      final place = await PlaceController.instance.placeRepository.getPlaceById(placeId);
+      if (place != null) {
+        currentPlaceRating.value = place.averageRating;
+        currentPlaceRatingDistribution.value = place.ratingDistribution;
+        currentPlaceReviewsCount.value = place.reviewsCount;
+        
+        // This will update the GetBuilder
+        update();
+      }
+    } catch (e) {
+      print('Error refreshing rating data: $e');
+    }
+  }
+
 
   // NEW: Submit review with questions
   Future<void> submitReviewWithQuestions() async {
@@ -321,7 +339,8 @@ class ReviewController extends GetxController {
       await _placeRepo.removeReviewRating(placeId, rating.value.round());
 
       await reviewRepo.deleteReview(existingReviewId.value);
-
+       // ADD THIS LINE: Refresh rating data after deletion
+      await _refreshRatingData();
       // Reset state
       existingReviewId.value = '';
       rating.value = 0.0;

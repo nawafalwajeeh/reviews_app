@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:reviews_app/common/widgets/place/favourite_icon/favourite_icon.dart';
 import 'package:reviews_app/common/widgets/texts/place_title_text.dart';
 import 'package:reviews_app/features/review/models/place_model.dart';
 import 'package:reviews_app/utils/constants/colors.dart';
@@ -68,13 +69,14 @@ class PlaceBottomSheet extends StatelessWidget {
                           title: place.title,
                           location: place.address.shortAddress,
                           isVerified: true,
+                          titleColor: AppColors.black, 
                           placeTitleSize: TextSizes.medium,
                         ),
                       ),
                       IconButton(
                         icon: const Icon(Iconsax.close_circle),
                         onPressed: onClose,
-                        color: AppColors.darkGrey,
+                        color: AppColors.darkerGrey,
                       ),
                     ],
                   ),
@@ -209,20 +211,7 @@ class PlaceBottomSheet extends StatelessWidget {
                                       AppSizes.cardRadiusMd,
                                     ),
                                   ),
-                                  child: IconButton(
-                                    icon: Icon(
-                                      Iconsax.heart,
-                                      size: 20,
-                                      color: AppColors.primaryColor,
-                                    ),
-                                    onPressed: () {
-                                      // Handle favorite
-                                      Get.snackbar(
-                                        'Added to Favorites',
-                                        '${place.title} added to favorites',
-                                      );
-                                    },
-                                  ),
+                                  child: AppFavouriteIcon(),
                                 ),
                               ],
                             ),

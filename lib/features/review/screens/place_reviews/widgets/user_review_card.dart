@@ -157,7 +157,7 @@ class UserReviewCard extends StatelessWidget {
               ),
             ],
           ),
-        )).toList(),
+        )),
       ],
     );
   }

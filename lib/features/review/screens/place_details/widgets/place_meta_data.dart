@@ -50,7 +50,7 @@ class PlaceMetadata extends StatelessWidget {
           Column(
             children: [
               PlaceDetailsMetadataTile(
-                text: place.phoneNumber!,
+                text: place.phoneNumber ?? '',
                 icon: Iconsax.mobile,
                 showTrailing: true,
                 trailingIcon: Icons.phone_outlined,
@@ -65,6 +65,22 @@ class PlaceMetadata extends StatelessWidget {
           text: 'Date: ${_formatDate(place.dateAdded)}',
           icon: Iconsax.calendar,
         ),
+        if (place.websiteUrl != null && place.websiteUrl!.isNotEmpty) ...[
+          const SizedBox(height: AppSizes.spaceBtwItems),
+
+          // Website URL - Clickable link
+          PlaceDetailsMetadataTile(
+            text: _formatWebsiteUrl(place.websiteUrl ?? ''),
+            icon: Iconsax.global,
+            showTrailing: true,
+            trailingIcon: Iconsax.export_1,
+            onTap: () => _launchWebsite(place.websiteUrl ?? ''),
+            textStyle: TextStyle(
+              color: Colors.blue,
+              decoration: TextDecoration.underline,
+            ),
+          ),
+        ],
       ],
     );
   }
@@ -520,5 +536,50 @@ class PlaceMetadata extends StatelessWidget {
       final year = date.year.toString();
       return '$day/$month/$year';
     }
+  }
+
+  Future<void> _launchWebsite(String url) async {
+    try {
+      // Ensure the URL has a proper scheme
+      String formattedUrl = url;
+      if (!formattedUrl.startsWith('http://') &&
+          !formattedUrl.startsWith('https://')) {
+        formattedUrl = 'https://$formattedUrl';
+      }
+
+      final uri = Uri.parse(formattedUrl);
+
+      if (await canLaunchUrl(uri)) {
+        await launchUrl(
+          uri,
+          mode: LaunchMode.externalApplication, // Opens in browser
+        );
+      } else {
+        AppLoaders.warningSnackBar(
+          title: 'Cannot Open Link',
+          message: 'Could not launch the website: $url',
+        );
+      }
+    } catch (e) {
+      AppLoaders.errorSnackBar(
+        title: 'Error',
+        message: 'Failed to open website: ${e.toString()}',
+      );
+    }
+  }
+
+  String _formatWebsiteUrl(String url) {
+    // Remove protocol for display to make it cleaner
+    String displayUrl = url
+        .replaceAll('https://', '')
+        .replaceAll('http://', '')
+        .replaceAll('www.', '');
+
+    // Remove trailing slash if present
+    if (displayUrl.endsWith('/')) {
+      displayUrl = displayUrl.substring(0, displayUrl.length - 1);
+    }
+
+    return displayUrl;
   }
 }

@@ -92,7 +92,7 @@ class _PlaceMapSectionState extends State<PlaceMapSection> {
 
   void _onMapCreated(GoogleMapController controller) {
     _mapController = controller;
-    
+
     // Zoom to the marker position with nice animation
     Future.delayed(const Duration(milliseconds: 300), () {
       _mapController.animateCamera(
@@ -118,7 +118,7 @@ class _PlaceMapSectionState extends State<PlaceMapSection> {
           showActionButton: false,
         ),
         const SizedBox(height: AppSizes.spaceBtwItems),
-        
+
         // Map Container
         Container(
           height: 200,
@@ -127,7 +127,7 @@ class _PlaceMapSectionState extends State<PlaceMapSection> {
             border: Border.all(color: Colors.grey.shade300),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.1),
+                color: Colors.black.withValues(alpha: 0.1),
                 blurRadius: 8,
                 offset: const Offset(0, 2),
               ),
@@ -146,7 +146,7 @@ class _PlaceMapSectionState extends State<PlaceMapSection> {
                   ),
                   markers: _markers,
                   myLocationEnabled: false,
-                  zoomControlsEnabled: false,
+                  zoomControlsEnabled: true,
                   scrollGesturesEnabled: true, // Allow exploring around
                   zoomGesturesEnabled: true, // Allow zooming
                   rotateGesturesEnabled: false,
@@ -160,16 +160,18 @@ class _PlaceMapSectionState extends State<PlaceMapSection> {
                 // Loading indicator while marker is being created
                 if (_customMarker == null && _markers.isEmpty)
                   Container(
-                    color: Colors.black.withOpacity(0.05),
+                    color: Colors.black.withValues(alpha: 0.05),
                     child: Center(
                       child: Container(
                         padding: const EdgeInsets.all(AppSizes.md),
                         decoration: BoxDecoration(
                           color: Colors.white,
-                          borderRadius: BorderRadius.circular(AppSizes.cardRadiusMd),
+                          borderRadius: BorderRadius.circular(
+                            AppSizes.cardRadiusMd,
+                          ),
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.black.withOpacity(0.1),
+                              color: Colors.black.withValues(alpha: 0.1),
                               blurRadius: 8,
                             ),
                           ],
@@ -204,11 +206,7 @@ class _PlaceMapSectionState extends State<PlaceMapSection> {
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Icon(
-                Icons.location_on,
-                size: 16,
-                color: Colors.grey.shade600,
-              ),
+              Icon(Icons.location_on, size: 16, color: Colors.grey.shade600),
               const SizedBox(width: AppSizes.sm),
               Expanded(
                 child: Column(
@@ -217,23 +215,23 @@ class _PlaceMapSectionState extends State<PlaceMapSection> {
                     Text(
                       'Location Coordinates',
                       style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                            color: Colors.grey.shade600,
-                          ),
+                        color: Colors.grey.shade600,
+                      ),
                     ),
                     const SizedBox(height: 2),
                     Text(
                       'Lat: ${widget.latitude.toStringAsFixed(6)}',
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            fontFamily: 'monospace',
-                            fontWeight: FontWeight.w500,
-                          ),
+                        fontFamily: 'monospace',
+                        fontWeight: FontWeight.w500,
+                      ),
                     ),
                     Text(
                       'Lng: ${widget.longitude.toStringAsFixed(6)}',
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            fontFamily: 'monospace',
-                            fontWeight: FontWeight.w500,
-                          ),
+                        fontFamily: 'monospace',
+                        fontWeight: FontWeight.w500,
+                      ),
                     ),
                   ],
                 ),

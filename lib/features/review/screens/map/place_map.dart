@@ -8,6 +8,7 @@ import 'package:reviews_app/utils/constants/sizes.dart';
 import '../../../../utils/constants/enums.dart';
 import '../../../personalization/models/address_model.dart';
 import '../../controllers/place_map_controller.dart';
+import '../../models/recent_search.dart';
 import '../../models/search_suggestion.dart';
 import 'widgets/map_search_container.dart';
 import 'widgets/voice_search_overlay.dart';
@@ -70,52 +71,6 @@ class PlacesMapScreen extends StatelessWidget {
     );
   }
 
-  // Widget _buildMap(PlacesMapController controller) {
-  //   return Obx(() {
-  //     if (controller.isLoading.value &&
-  //         controller.currentLocation.value == null) {
-  //       return _buildLoadingState();
-  //     }
-
-  //     final initialLocation = controller.currentLocation.value;
-  //     final initialPosition = CameraPosition(
-  //       target:
-  //           initialLocation != null &&
-  //               initialLocation.latitude != null &&
-  //               initialLocation.longitude != null
-  //           ? LatLng(initialLocation.latitude!, initialLocation.longitude!)
-  //           : const LatLng(51.5074, 0.1278),
-  //       zoom: isPickerMode ? 16.0 : 13.5,
-  //     );
-
-  //     return GoogleMap(
-  //       initialCameraPosition: initialPosition,
-  //       onMapCreated: controller.onMapCreated,
-  //       onTap: isPickerMode ? controller.onMapTap : null,
-  //       markers: controller.markers.toSet(),
-  //       polylines: controller.polylines.toSet(),
-  //       myLocationEnabled: true,
-  //       myLocationButtonEnabled: false,
-  //       zoomControlsEnabled: false,
-  //       compassEnabled: true,
-  //       mapType: controller.googleMapType,
-  //       buildingsEnabled: true,
-  //       indoorViewEnabled: true,
-  //       trafficEnabled: controller.enabledMapDetails.contains(
-  //         MapDetail.traffic,
-  //       ),
-  //       rotateGesturesEnabled: true,
-  //       scrollGesturesEnabled: true,
-  //       zoomGesturesEnabled: true,
-  //       tiltGesturesEnabled: true,
-  //     );
-  //   });
-  // }
-
-  // Widget _buildLoadingState() {
-  //   return const LoadingOverlay();
-  // }
-
   Widget _buildMap(PlacesMapController controller) {
     return Obx(() {
       // Show loading until we have current location
@@ -139,13 +94,13 @@ class PlacesMapScreen extends StatelessWidget {
                       initialLocation.latitude!,
                       initialLocation.longitude!,
                     )
-                  : const LatLng(51.5074, 0.1278),
+                  : const LatLng(13.562703, 44.021232),
               zoom: isPickerMode ? 16.0 : 13.5,
             ),
             onMapCreated: (mapController) {
               controller.onMapCreated(mapController);
               // Hide loading after map is created
-              Future.delayed(const Duration(milliseconds: 500), () {
+              Future.delayed(const Duration(milliseconds: 2000), () {
                 if (controller.isLoading.value) {
                   controller.isLoading.value = false;
                 }
@@ -449,11 +404,6 @@ class PlacesMapScreen extends StatelessWidget {
       ],
     );
   }
-
-  // ... (Keep the rest of the existing methods from your original MapScreen)
-  // _buildSearchSuggestions, _buildVoiceSearchOverlay, _buildMapTypeControls,
-  // _buildPickerBottomSheet, _buildLoadingOverlay, _buildPickerAppBar
-  // These can remain mostly the same as in your original code
 
   IconData _getRecentSearchIcon(String type) {
     switch (type) {
@@ -766,7 +716,9 @@ class PlacesMapScreen extends StatelessWidget {
                           width: 40,
                           height: 40,
                           decoration: BoxDecoration(
-                            color: AppColors.primaryColor.withValues(alpha: 0.1),
+                            color: AppColors.primaryColor.withValues(
+                              alpha: 0.1,
+                            ),
                             borderRadius: BorderRadius.circular(
                               AppSizes.cardRadiusMd,
                             ),
@@ -794,8 +746,8 @@ class PlacesMapScreen extends StatelessWidget {
                                 'Tap on the map to select a location',
                                 style: Theme.of(context).textTheme.bodySmall
                                     ?.copyWith(
-                                      color: AppColors.darkGrey.withOpacity(
-                                        0.7,
+                                      color: AppColors.darkGrey.withValues(
+                                        alpha: 0.7,
                                       ),
                                     ),
                               ),
@@ -812,7 +764,7 @@ class PlacesMapScreen extends StatelessWidget {
                       width: double.infinity,
                       padding: const EdgeInsets.all(AppSizes.md),
                       decoration: BoxDecoration(
-                        color: AppColors.light.withValues(alpha:0.5),
+                        color: AppColors.light.withValues(alpha: 0.5),
                         borderRadius: BorderRadius.circular(
                           AppSizes.cardRadiusMd,
                         ),
@@ -864,7 +816,9 @@ class PlacesMapScreen extends StatelessWidget {
                                 Icon(
                                   Iconsax.gps,
                                   size: 14,
-                                  color: AppColors.darkGrey.withValues(alpha: 0.6),
+                                  color: AppColors.darkGrey.withValues(
+                                    alpha: 0.6,
+                                  ),
                                 ),
                                 const SizedBox(width: AppSizes.xs),
                                 Expanded(
@@ -873,7 +827,7 @@ class PlacesMapScreen extends StatelessWidget {
                                     style: Theme.of(context).textTheme.bodySmall
                                         ?.copyWith(
                                           color: AppColors.darkGrey.withValues(
-                                          alpha:  0.6,
+                                            alpha: 0.6,
                                           ),
                                           fontFamily: 'monospace',
                                         ),
@@ -909,7 +863,9 @@ class PlacesMapScreen extends StatelessWidget {
                                 vertical: AppSizes.lg,
                               ),
                               side: BorderSide(
-                                color: AppColors.primaryColor.withValues(alpha: 0.3),
+                                color: AppColors.primaryColor.withValues(
+                                  alpha: 0.3,
+                                ),
                               ),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(
@@ -1144,20 +1100,12 @@ class PlacesMapScreen extends StatelessWidget {
     );
   }
 
-  // Widget _buildLoadingOverlay(PlacesMapController controller) {
-  //   return Obx(() {
-  //     if (!controller.isLoading.value) return const SizedBox();
-
-  //     return const LoadingOverlay();
-  //   });
-  // }
-
   Widget _buildLoadingOverlay(PlacesMapController controller) {
     return Obx(() {
       if (!controller.isLoading.value) return const SizedBox();
 
       return Container(
-        color: Colors.black.withValues(alpha:0.7),
+        color: Colors.black.withValues(alpha: 0.7),
         child: Center(
           child: Container(
             padding: const EdgeInsets.all(AppSizes.xl),
@@ -1166,7 +1114,7 @@ class PlacesMapScreen extends StatelessWidget {
               borderRadius: BorderRadius.circular(AppSizes.cardRadiusLg),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withValues(alpha:0.2),
+                  color: Colors.black.withValues(alpha: 0.2),
                   blurRadius: 20,
                   offset: const Offset(0, 10),
                 ),

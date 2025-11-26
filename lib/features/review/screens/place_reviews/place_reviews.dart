@@ -42,18 +42,43 @@ class PlaceReviewsScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: AppSizes.spaceBtwItems),
 
-                  /// Overall Rating Indicator
-                  OverallPlaceRating(
-                    rating: place.averageRating.toStringAsFixed(1),
-                    totalReviews: place.reviewsCount,
-                    ratingDistribution: place.ratingDistribution,
-                  ),
+                  /// Overall Rating Indicator - Use GetBuilder
+                  GetBuilder<ReviewController>(
+                    tag: place.id,
+                    builder: (controller) {
+                      final currentRating =
+                          controller.currentPlaceRating.value > 0
+                          ? controller.currentPlaceRating.value
+                          : place.averageRating;
 
-                  /// Rating Bar Indicator
-                  AppRatingBarIndicator(rating: place.averageRating),
-                  Text(
-                    '${place.reviewsCount} reviews',
-                    style: Theme.of(context).textTheme.bodySmall,
+                      final currentRatingDistribution =
+                          controller.currentPlaceRatingDistribution.isNotEmpty
+                          ? controller.currentPlaceRatingDistribution
+                          : place.ratingDistribution;
+
+                      final currentReviewsCount =
+                          controller.currentPlaceReviewsCount.value > 0
+                          ? controller.currentPlaceReviewsCount.value
+                          : place.reviewsCount;
+
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          OverallPlaceRating(
+                            rating: currentRating.toStringAsFixed(1),
+                            totalReviews: currentReviewsCount,
+                            ratingDistribution: currentRatingDistribution,
+                          ),
+
+                          /// Rating Bar Indicator
+                          AppRatingBarIndicator(rating: currentRating),
+                          Text(
+                            '$currentReviewsCount reviews',
+                            style: Theme.of(context).textTheme.bodySmall,
+                          ),
+                        ],
+                      );
+                    },
                   ),
 
                   const SizedBox(height: AppSizes.spaceBtwSections),

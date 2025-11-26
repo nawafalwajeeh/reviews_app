@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
@@ -44,7 +43,7 @@ class _BarcodeScannerScreenState extends State<BarcodeScannerScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Scan QR Code'),
-        backgroundColor: Colors.black.withOpacity(0.5),
+        backgroundColor: Colors.black.withValues(alpha: 0.5),
         elevation: 0,
         actions: [
           IconButton(
@@ -301,7 +300,7 @@ class ScannerOverlayPainter extends CustomPainter {
 
     // Fill the surrounding area with semi-transparent black
     final paint = Paint()
-      ..color = Colors.black.withOpacity(0.6)
+      ..color = Colors.black.withValues(alpha: 0.6)
       ..style = PaintingStyle.fill;
 
     canvas.drawPath(path, paint);
@@ -1133,7 +1132,7 @@ class ScannerOverlayPainter extends CustomPainter {
 
 //     // Fill the surrounding area with semi-transparent black
 //     final paint = Paint()
-//       ..color = Colors.black.withOpacity(0.6)
+//       ..color = Colors.black.withValues(alpha: 0.6)
 //       ..style = PaintingStyle.fill;
 
 //     canvas.drawPath(path, paint);

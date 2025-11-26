@@ -101,5 +101,36 @@ class AppValidator {
     return null;
   }
 
+    /// Validates a website URL.
+  /// Returns null when valid (or empty since field is optional), otherwise returns an error message.
+  static String? validateWebsite(String? value) {
+    if (value == null || value.trim().isEmpty) {
+      // optional field: consider empty as valid
+      return null;
+    }
+
+    final input = value.trim();
+
+    // quick length guard
+    if (input.length > 2000) return 'URL is too long';
+
+    // Try to parse as URI. Accepts full URLs with scheme.
+    Uri? uri = Uri.tryParse(input);
+
+    bool isValid = false;
+    if (uri != null && (uri.scheme == 'http' || uri.scheme == 'https') && uri.host.isNotEmpty) {
+      // ensure host looks like a domain (contains a dot)
+      if (uri.host.contains('.')) isValid = true;
+    } else {
+      // Accept scheme-less entries like "example.com" by prefixing https:// and re-checking
+      final withScheme = Uri.tryParse('https://$input');
+      if (withScheme != null && withScheme.host.isNotEmpty && withScheme.host.contains('.')) {
+        isValid = true;
+      }
+    }
+
+    return isValid ? null : 'Please enter a valid website URL (e.g. https://example.com)';
+  }
+
   // Add more custom validators as needed for your specific requirements.
 }

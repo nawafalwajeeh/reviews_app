@@ -22,6 +22,8 @@ class AppChoiceChip extends StatelessWidget {
   Widget build(BuildContext context) {
     final isColor = AppHelperFunctions.getColor(text) != null;
 
+    debugPrint('Building ChoiceChip for "$text", isColor: $isColor');
+
     return Theme(
       data: Theme.of(context).copyWith(canvasColor: Colors.transparent),
       child: ChoiceChip(
@@ -41,10 +43,17 @@ class AppChoiceChip extends StatelessWidget {
           borderRadius: BorderRadius.circular(AppSizes.cardRadiusXlg),
         ),
         // Make icon in the center
-        labelPadding: isColor ? const EdgeInsets.all(0) : null,
-        padding: isColor ? const EdgeInsets.all(0) : null,
+        // labelPadding: isColor ? const EdgeInsets.all(0) : null,
+        labelPadding: isColor
+            ? const EdgeInsets.all(0)
+            : const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+        // padding: isColor ? const EdgeInsets.all(0) : null,
+        padding: isColor
+            ? const EdgeInsets.all(0)
+            : const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
         // backgroundColor: AppHelperFunctions.getColor(text),
         backgroundColor: selected ? AppColors.primaryColor : AppColors.grey,
+        visualDensity: VisualDensity.compact,
       ),
     );
   }

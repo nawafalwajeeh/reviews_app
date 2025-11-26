@@ -10,6 +10,7 @@ class PlaceDetailsMetadataTile extends StatelessWidget {
     this.showTrailing = false,
     this.trailingIcon = Icons.arrow_forward_ios,
     this.onTap,
+    this.textStyle,
   });
 
   final IconData icon;
@@ -17,6 +18,7 @@ class PlaceDetailsMetadataTile extends StatelessWidget {
   final bool showTrailing;
   final IconData trailingIcon;
   final VoidCallback? onTap;
+  final TextStyle? textStyle;
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +31,7 @@ class PlaceDetailsMetadataTile extends StatelessWidget {
           Expanded(
             child: Text(
               text,
-              style: Theme.of(context).textTheme.bodyMedium,
+              style: textStyle  ?? Theme.of(context).textTheme.bodyMedium,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
             ),

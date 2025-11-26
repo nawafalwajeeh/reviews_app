@@ -113,40 +113,52 @@ class GooglePlaceSuggestion {
   }
 
   static String _getPlaceIcon(List<String> types) {
-    if (types.contains('restaurant') || types.contains('food'))
+    if (types.contains('restaurant') || types.contains('food')) {
       return 'restaurant';
+    }
     if (types.contains('cafe') || types.contains('coffee')) return 'local_cafe';
-    if (types.contains('bar') || types.contains('night_club'))
+    if (types.contains('bar') || types.contains('night_club')) {
       return 'local_bar';
+    }
     if (types.contains('hotel') || types.contains('lodging')) return 'hotel';
     if (types.contains('store') ||
         types.contains('shopping_mall') ||
-        types.contains('clothing_store'))
+        types.contains('clothing_store')) {
       return 'store';
-    if (types.contains('park') || types.contains('amusement_park'))
+    }
+    if (types.contains('park') || types.contains('amusement_park')) {
       return 'park';
-    if (types.contains('museum') || types.contains('art_gallery'))
+    }
+    if (types.contains('museum') || types.contains('art_gallery')) {
       return 'museum';
+    }
     if (types.contains('hospital') ||
         types.contains('health') ||
-        types.contains('doctor'))
+        types.contains('doctor')) {
       return 'local_hospital';
+    }
     if (types.contains('school') ||
         types.contains('university') ||
-        types.contains('college'))
+        types.contains('college')) {
       return 'school';
-    if (types.contains('gas_station') || types.contains('car_wash'))
+    }
+    if (types.contains('gas_station') || types.contains('car_wash')) {
       return 'local_gas_station';
+    }
     if (types.contains('bank') ||
         types.contains('atm') ||
-        types.contains('finance'))
+        types.contains('finance')) {
       return 'account_balance';
-    if (types.contains('pharmacy') || types.contains('drugstore'))
+    }
+    if (types.contains('pharmacy') || types.contains('drugstore')) {
       return 'local_pharmacy';
-    if (types.contains('gym') || types.contains('health_club'))
+    }
+    if (types.contains('gym') || types.contains('health_club')) {
       return 'fitness_center';
-    if (types.contains('movie_theater') || types.contains('cinema'))
+    }
+    if (types.contains('movie_theater') || types.contains('cinema')) {
       return 'movie';
+    }
     if (types.contains('library')) return 'local_library';
     if (types.contains('post_office')) return 'local_post_office';
     if (types.contains('police')) return 'local_police';

@@ -6,6 +6,7 @@ import '../../../../common/widgets/texts/section_heading.dart';
 import '../../../../data/repositories/authentication/authentication_repository.dart';
 import '../../../../utils/constants/colors.dart';
 import '../../../../utils/constants/sizes.dart';
+import '../../controllers/review_controller.dart';
 import '../../models/place_model.dart';
 import '../place_reviews/place_comments.dart';
 import '../place_reviews/place_reviews.dart';
@@ -27,6 +28,7 @@ class PlaceDetailsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final userId = AuthenticationRepository.instance.getUserID;
     final creatorId = place.userId;
+    Get.put(ReviewController(placeId: place.id), tag: place.id);
 
     debugPrint('UserId: $userId, creatorId: $creatorId');
 
@@ -52,7 +54,8 @@ class PlaceDetailsScreen extends StatelessWidget {
                       const SizedBox(height: AppSizes.spaceBtwItems),
 
                       /// -- Rating, Share, and **Like Widget**
-                      RatingAndShareWidget(place: place),
+                      // RatingAndShareWidget(place: place),
+                      _buildRatingSectionWithGetBuilder(),
                       const SizedBox(height: AppSizes.spaceBtwItems),
 
                       Align(
@@ -175,6 +178,38 @@ class PlaceDetailsScreen extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+
+  /// GetBuilder for only rating-related data
+  Widget _buildRatingSectionWithGetBuilder() {
+    return GetBuilder<ReviewController>(
+      tag: place.id,
+      builder: (controller) {
+        // Use controller data if available, otherwise use initial place data
+        final currentRating = controller.currentPlaceRating.value > 0
+            ? controller.currentPlaceRating.value
+            : place.averageRating;
+
+        final currentRatingDistribution =
+            controller.currentPlaceRatingDistribution.isNotEmpty
+            ? controller.currentPlaceRatingDistribution
+            : place.ratingDistribution;
+
+        final currentReviewsCount =
+            controller.currentPlaceReviewsCount.value > 0
+            ? controller.currentPlaceReviewsCount.value
+            : place.reviewsCount;
+
+        // Create a temporary place with updated rating data
+        final updatedPlace = place.copyWith(
+          averageRating: currentRating,
+          ratingDistribution: currentRatingDistribution,
+          reviewsCount: currentReviewsCount,
+        );
+
+        return RatingAndShareWidget(place: updatedPlace);
+      },
     );
   }
 }

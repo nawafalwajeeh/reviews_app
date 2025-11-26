@@ -28,6 +28,7 @@ import '../../authentication/screens/signup/signup_screen.dart';
 import '../models/category_model.dart';
 import '../models/custom_questions_model.dart';
 import '../models/place_model.dart';
+import 'subscription_controller.dart';
 
 class PlaceController extends GetxController {
   static PlaceController get instance => Get.find();
@@ -38,6 +39,7 @@ class PlaceController extends GetxController {
   final userRepository = Get.put(UserRepository());
   final notificationController = NotificationController.instance;
   final reviewRepository = Get.put(ReviewRepository());
+  final subscriptionController = Get.put(SubscriptionController()); // ADD THIS
 
   // --- REAL-TIME OBSERVABLE LISTS ---
   RxList<PlaceModel> featuredPlaces = <PlaceModel>[].obs;
@@ -358,6 +360,15 @@ class PlaceController extends GetxController {
   /// -- Create new place
   Future<void> createPlace() async {
     try {
+      /*
+      // Check subscription first
+      final canCreate = await subscriptionController.canCreatePlace();
+      if (!canCreate) {
+        subscriptionController.showSubscriptionRequired(Get.context!);
+        return;
+      }
+      */
+
       if (AuthenticationRepository.instance.isGuestUser) {
         AppLoaders.warningSnackBar(
           title: 'Authentication Required',
