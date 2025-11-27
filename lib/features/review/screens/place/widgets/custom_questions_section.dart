@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:reviews_app/utils/constants/sizes.dart';
-
+import '../../../../../localization/app_localizations.dart';
 import '../../../controllers/place_controller.dart';
 import 'custom_question_card.dart';
 
@@ -22,12 +22,14 @@ class CustomQuestionsSection extends StatelessWidget {
             children: [
               Text(
                 'Custom Questions (Optional)',
+                // AppLocalizations.of(context).customQuestions,
                 style: Theme.of(context).textTheme.titleMedium,
               ),
               IconButton(
                 onPressed: controller.addCustomQuestion,
                 icon: const Icon(Icons.add),
-                tooltip: 'Add Question',
+                // tooltip: 'Add Question',
+                tooltip: AppLocalizations.of(context).addQuestion,
               ),
             ],
           ),
@@ -64,6 +66,7 @@ class CustomQuestionsSection extends StatelessWidget {
           const SizedBox(height: AppSizes.spaceBtwItems),
           Text(
             'No custom questions added',
+            // AppLocalizations.of(context).noCustomQuestionAdded,
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
               color: Theme.of(context).colorScheme.onSurfaceVariant,
             ),
@@ -71,6 +74,7 @@ class CustomQuestionsSection extends StatelessWidget {
           const SizedBox(height: AppSizes.spaceBtwItems),
           Text(
             'Tap the + button to add up to 4 optional questions',
+              // AppLocalizations.of(context).tap,
             textAlign: TextAlign.center,
             style: Theme.of(context).textTheme.bodySmall?.copyWith(
               color: Theme.of(

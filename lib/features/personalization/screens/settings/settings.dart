@@ -11,8 +11,9 @@ import 'package:reviews_app/features/personalization/screens/profile/profile.dar
 import 'package:reviews_app/utils/constants/colors.dart';
 import 'package:reviews_app/utils/constants/sizes.dart';
 import 'package:reviews_app/utils/constants/text_strings.dart';
-
 import '../../../../data/repositories/authentication/authentication_repository.dart';
+import '../../../../localization/app_localizations.dart';
+import 'widgets/language_switch.dart';
 import 'widgets/settings_data.dart';
 
 class SettingsScreen extends StatelessWidget {
@@ -34,6 +35,7 @@ class SettingsScreen extends StatelessWidget {
                   CustomAppBar(
                     title: Text(
                       'Account',
+                      // AppLocalizations.of(context).account,
                       style: Theme.of(
                         context,
                       ).textTheme.headlineMedium?.apply(color: AppColors.white),
@@ -108,6 +110,8 @@ class SettingsScreen extends StatelessWidget {
                       ),
                     ),
                   ),
+
+                  LanguageSwitchWidget(),
 
                   const SizedBox(height: AppSizes.spaceBtwSections),
                   SizedBox(

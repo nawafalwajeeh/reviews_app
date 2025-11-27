@@ -37,18 +37,6 @@ class ChangeGender extends StatelessWidget {
                     Iconsax.woman,
                     controller,
                   ),
-                  // _buildGenderOption(
-                  //   context,
-                  //   'Other',
-                  //   Iconsax.user,
-                  //   controller,
-                  // ),
-                  // _buildGenderOption(
-                  //   context,
-                  //   'Prefer not to say',
-                  //   Iconsax.eye_slash,
-                  //   controller,
-                  // ),
                 ],
               ),
             ),

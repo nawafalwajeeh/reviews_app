@@ -81,3 +81,20 @@ final class AppTexts {
   static const String homeAppbarTitle = "Good day for discovering";
   static const String homeAppbarSubTitle = "Nawaf Alwajeeh";
 }
+
+
+/*
+
+// Before:
+Text('Welcome back')
+
+// After:
+Text(AppLocalizations.of(context).loginTitle)
+
+// With parameters:
+Text(AppLocalizations.of(context).uploadPhotos(5))
+
+// Validation:
+AppValidator.validateEmptyText('Field Name', value, context)
+
+*/

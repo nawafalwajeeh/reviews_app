@@ -49,6 +49,12 @@
 		<string>This app needs access to location when open.</string>
 		<key>io.flutter.embedded_views_preview</key>
 		<true/>
+		<key>CFBundleLocalizations</key>
+		<array>
+			<string>en</string>
+			<string>de_DE</string>
+			...
+		</array>
 		<!-- Add Google Maps API Key -->
 		<key>GoogleMapsApiKey</key>
 		<string>AIzaSyAG9KqUxWZAXLFOROduiTWWkUvSpVcPlxg</string>

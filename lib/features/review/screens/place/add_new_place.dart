@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:reviews_app/common/widgets/appbar/appbar.dart';
 import 'package:reviews_app/utils/constants/colors.dart';
 import 'package:reviews_app/utils/constants/sizes.dart';
+import '../../../../localization/app_localizations.dart';
 import '../../controllers/place_controller.dart';
 import '../../controllers/subscription_controller.dart';
 import '../subscription/widgets/subscription_status_section.dart';
@@ -50,12 +51,14 @@ class AddNewPlaceScreen extends StatelessWidget {
                 children: [
                   const SizedBox(height: AppSizes.spaceBtwItems),
                   Text(
-                    'Create New Place',
+                    // 'Create New Place',
+                    AppLocalizations.of(context).createNewPlace,
                     style: Theme.of(context).textTheme.headlineMedium,
                   ),
                   const SizedBox(height: AppSizes.xs),
                   Text(
-                    'Share your favorite spot with the community',
+                    // 'Share your favorite spot with the community',
+                    AppLocalizations.of(context).shareFavoriteSpot,
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                       color: Theme.of(context).hintColor,
                     ),
@@ -83,7 +86,8 @@ class AddNewPlaceScreen extends StatelessWidget {
                     width: double.infinity,
                     child: ElevatedButton(
                       onPressed: () => controller.createPlace(),
-                      child: const Text('Create Place'),
+                      // child: const Text('Create Place'),
+                      child: Text(AppLocalizations.of(context).createNewPlace),
                     ),
                   ),
                   const SizedBox(height: AppSizes.spaceBtwSections),

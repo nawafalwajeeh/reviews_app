@@ -8,6 +8,7 @@ import 'package:reviews_app/utils/constants/colors.dart';
 import 'package:reviews_app/utils/helpers/helper_functions.dart';
 import 'features/personalization/screens/settings/settings.dart';
 import 'features/review/screens/wishlist/wishlist.dart';
+import 'localization/app_localizations.dart';
 
 class NavigationMenu extends StatelessWidget {
   const NavigationMenu({super.key});
@@ -29,12 +30,35 @@ class NavigationMenu extends StatelessWidget {
           indicatorColor: dark
               ? AppColors.white.withValues(alpha: 0.1)
               : AppColors.black.withValues(alpha: 0.1),
-          destinations: const [
-            NavigationDestination(icon: Icon(Iconsax.home), label: 'Home'),
-            NavigationDestination(icon: Icon(Iconsax.image), label: 'Places'),
-            NavigationDestination(icon: Icon(Iconsax.location), label: 'Map'),
-            NavigationDestination(icon: Icon(Iconsax.heart), label: 'Wishlist'),
-            NavigationDestination(icon: Icon(Iconsax.user), label: 'Profile'),
+
+          // destinations: const [
+          //   NavigationDestination(icon: Icon(Iconsax.home), label: 'Home'),
+          //   NavigationDestination(icon: Icon(Iconsax.image), label: 'Places'),
+          //   NavigationDestination(icon: Icon(Iconsax.location), label: 'Map'),
+          //   NavigationDestination(icon: Icon(Iconsax.heart), label: 'Wishlist'),
+          //   NavigationDestination(icon: Icon(Iconsax.user), label: 'Profile'),
+          // ],
+          destinations: [
+            NavigationDestination(
+              icon: const Icon(Iconsax.home),
+              label: AppLocalizations.of(context).navigationHome,
+            ),
+            NavigationDestination(
+              icon: const Icon(Iconsax.image),
+              label: AppLocalizations.of(context).navigationPlaces,
+            ),
+            NavigationDestination(
+              icon: const Icon(Iconsax.location),
+              label: AppLocalizations.of(context).navigationMap,
+            ),
+            NavigationDestination(
+              icon: const Icon(Iconsax.heart),
+              label: AppLocalizations.of(context).navigationWishlist,
+            ),
+            NavigationDestination(
+              icon: const Icon(Iconsax.user),
+              label: AppLocalizations.of(context).navigationProfile,
+            ),
           ],
         ),
 

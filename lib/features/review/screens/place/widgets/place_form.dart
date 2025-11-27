@@ -6,6 +6,7 @@ import 'package:reviews_app/utils/constants/colors.dart';
 import 'package:reviews_app/utils/constants/sizes.dart';
 import 'package:reviews_app/utils/helpers/helper_functions.dart';
 import '../../../../../common/widgets/custom_shapes/containers/rounded_container.dart';
+import '../../../../../localization/app_localizations.dart';
 import '../../../../../utils/validators/validation.dart';
 import 'place_address_section.dart';
 import 'label_chip.dart';
@@ -24,11 +25,17 @@ class PlaceForm extends StatelessWidget {
       children: [
         TextFormField(
           controller: controller.titleController,
-          validator: (value) =>
-              AppValidator.validateEmptyText('Place Name', value),
+          // validator: (value) =>
+          //     AppValidator.validateEmptyText('Place Name', value),
+          validator: (value) => AppValidator.validateEmptyText(
+            AppLocalizations.of(context).placeName,
+            value,
+          ),
           decoration: InputDecoration(
-            labelText: 'Place Name',
-            hintText: 'Enter the name of this place',
+            // labelText: 'Place Name',
+            labelText: AppLocalizations.of(context).placeName,
+            // hintText: 'Enter the name of this place',
+            hintText: AppLocalizations.of(context).enterPlaceName,
           ),
         ),
         const SizedBox(height: AppSizes.spaceBtwInputFields),
@@ -111,12 +118,18 @@ class PlaceForm extends StatelessWidget {
         TextFormField(
           maxLines: 4,
           controller: controller.descriptionController,
-          validator: (value) =>
-              AppValidator.validateEmptyText('Place Name', value),
+          // validator: (value) =>
+          //     AppValidator.validateEmptyText('Place Description', value),
+          validator: (value) => AppValidator.validateEmptyText(
+            AppLocalizations.of(context).placeDescription,
+            value,
+          ),
 
           decoration: InputDecoration(
-            labelText: 'Description',
-            hintText: 'Tell us what makes this place special...',
+            // labelText: 'Description',
+            labelText: AppLocalizations.of(context).placeDescription,
+            // hintText: 'Tell us what makes this place special...',
+            hintText: AppLocalizations.of(context).enterDescription,
           ),
         ),
 
@@ -127,8 +140,10 @@ class PlaceForm extends StatelessWidget {
           controller: controller.phoneController,
           validator: (value) => AppValidator.validatePhoneNumber(value),
           decoration: InputDecoration(
-            labelText: 'Phone Number',
-            hintText: 'Enter your phone number',
+            // labelText: 'Phone Number',
+            labelText: AppLocalizations.of(context).phoneNo,
+            // hintText: 'Enter your phone number',
+            hintText: AppLocalizations.of(context).enterPhoneNumber,
           ),
         ),
         const SizedBox(height: AppSizes.spaceBtwInputFields),
@@ -141,15 +156,17 @@ class PlaceForm extends StatelessWidget {
             }
             return null; // Optional field
           },
-          decoration: const InputDecoration(
-            labelText: 'Website URL (Optional)',
+          decoration: InputDecoration(
+            // labelText: 'Website URL (Optional)',
+            labelText: AppLocalizations.of(context).websiteUrlOptional,
             hintText: 'https://example.com',
           ),
           keyboardType: TextInputType.url,
         ),
         const SizedBox(height: AppSizes.spaceBtwInputFields),
         LabeledChips(
-          label: 'Tags',
+          // label: 'Tags',
+          label: AppLocalizations.of(context).tags,
           tags: const [
             // General
             'Family Friendly',

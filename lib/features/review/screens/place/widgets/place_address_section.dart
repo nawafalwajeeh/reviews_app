@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:reviews_app/features/review/controllers/place_controller.dart';
 import 'package:reviews_app/utils/constants/sizes.dart';
 import '../../../../../common/widgets/texts/section_heading.dart';
+import '../../../../../localization/app_localizations.dart';
 import '../../../../../utils/constants/colors.dart';
 import '../../../../personalization/controllers/address_controller.dart';
 
@@ -22,8 +23,10 @@ class PlaceAddressSection extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           AppSectionHeading(
-            title: 'Place Address',
-            buttonTitle: 'Change',
+            // title: 'Place Address',
+            title: AppLocalizations.of(context).placeAddress,
+            // buttonTitle: 'Change',
+            buttonTitle: AppLocalizations.of(context).change,
             onPressed: () => controller.selectNewAddressPopup(context),
           ),
 
@@ -74,7 +77,8 @@ class PlaceAddressSection extends StatelessWidget {
                   ],
                 )
               : Text(
-                  'Select Address',
+                  // 'Select Address',
+                  AppLocalizations.of(context).selectAddress,
                   style: Theme.of(context).textTheme.bodyMedium,
                 ),
         ],

@@ -27,7 +27,8 @@
     <application
         android:label="Places"
         android:name="${applicationName}"
-        android:icon="@mipmap/launcher_icon">
+        android:icon="@mipmap/launcher_icon"
+        android:supportsRtl="true">
             <activity
             android:name=".MainActivity"
             android:exported="true"

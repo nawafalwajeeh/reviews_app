@@ -6,6 +6,7 @@ import 'package:reviews_app/features/review/controllers/place_controller.dart';
 import 'package:reviews_app/utils/constants/colors.dart';
 import 'package:reviews_app/utils/helpers/helper_functions.dart';
 
+import '../../../../../localization/app_localizations.dart';
 import '../../../../../utils/constants/sizes.dart';
 
 class AddPhotoBox extends StatelessWidget {
@@ -60,14 +61,18 @@ class AddPhotoBox extends StatelessWidget {
             ),
             const SizedBox(height: AppSizes.sm),
             Text(
-              'Add Photos',
+              // 'Add Photos',
+              AppLocalizations.of(context).addPhotos,
               style: Theme.of(
                 context,
               ).textTheme.titleMedium?.copyWith(color: AppColors.primaryColor),
             ),
             const SizedBox(height: AppSizes.xs),
             Text(
-              'Upload up to ${PlaceController.instance.maxImages} photos of this place', // Use the constant maxImages
+              // 'Upload up to ${PlaceController.instance.maxImages} photos of this place', // Use the constant maxImages
+              AppLocalizations.of(
+                context,
+              ).uploadPhotos(PlaceController.instance.maxImages),
               style: Theme.of(context).textTheme.bodySmall?.copyWith(
                 color: AppHelperFunctions.isDarkMode(context)
                     ? AppColors.white
