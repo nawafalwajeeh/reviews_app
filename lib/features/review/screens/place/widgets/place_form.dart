@@ -8,7 +8,6 @@ import 'package:reviews_app/utils/helpers/helper_functions.dart';
 import '../../../../../common/widgets/custom_shapes/containers/rounded_container.dart';
 import '../../../../../utils/validators/validation.dart';
 import 'place_address_section.dart';
-import 'place_payment_section.dart';
 import 'label_chip.dart';
 
 class PlaceForm extends StatelessWidget {

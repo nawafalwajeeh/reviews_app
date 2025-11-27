@@ -18,7 +18,7 @@ class AddNewPlaceScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = PlaceController.instance;
-    final subscriptionController = Get.find<SubscriptionController>();
+    final subscriptionController = SubscriptionController.instance;
 
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),

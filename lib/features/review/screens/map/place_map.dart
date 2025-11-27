@@ -94,7 +94,7 @@ class PlacesMapScreen extends StatelessWidget {
                       initialLocation.latitude!,
                       initialLocation.longitude!,
                     )
-                  : const LatLng(13.562703, 44.021232),
+                  : const LatLng(13.562703, 44.021232), // Default Yemen Taiz
               zoom: isPickerMode ? 16.0 : 13.5,
             ),
             onMapCreated: (mapController) {
