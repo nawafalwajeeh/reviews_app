@@ -43,6 +43,7 @@ class PlaceForm extends StatelessWidget {
           ),
         ),
         const SizedBox(height: AppSizes.spaceBtwInputFields),
+
         // Obx(() {
         //   // 1. Get the current value from the controller.
         //   // This value must be null or match an item in the list.
@@ -94,15 +95,66 @@ class PlaceForm extends StatelessWidget {
         //         .toList(),
         //   );
         // }),
+        // Obx(() {
+        //   // Get the current localized category name
+        //   final String? currentDropdownValue =
+        //       controller.selectedCategoryName.value.isEmpty
+        //       ? null
+        //       : controller.selectedCategoryName.value;
+
+        //   return DropdownButtonFormField<String>(
+        //     initialValue: currentDropdownValue,
+        //     decoration: InputDecoration(
+        //       border: OutlineInputBorder(
+        //         borderSide: BorderSide(
+        //           width: 1,
+        //           color: AppHelperFunctions.isDarkMode(context)
+        //               ? AppColors.grey
+        //               : AppColors.darkGrey,
+        //         ),
+        //       ),
+        //       labelText: appLocalizations.selectCategory,
+        //     ),
+
+        //     onChanged: (String? selectedLocalizedName) {
+        //       if (selectedLocalizedName != null) {
+        //         // Find the category by localized name
+        //         final matchingCategory = categoryController.categoryModels
+        //             .firstWhereOrNull(
+        //               (category) =>
+        //                   category.getLocalizedName(context) ==
+        //                   selectedLocalizedName,
+        //             );
+
+        //         if (matchingCategory != null) {
+        //           // Update both name and ID
+        //           controller.selectedCategoryName.value = selectedLocalizedName;
+        //           controller.selectedCategoryId.value = matchingCategory.id;
+        //         }
+        //       } else {
+        //         controller.selectedCategoryName.value = '';
+        //         controller.selectedCategoryId.value = '';
+        //       }
+        //     },
+
+        //     items: categoryController.categoryModels.map((category) {
+        //       final localizedName = category.getLocalizedName(context);
+        //       return DropdownMenuItem(
+        //         value: localizedName,
+        //         child: Text(localizedName),
+        //       );
+        //     }).toList(),
+        //   );
+        // }),
         Obx(() {
-          // Get the current localized category name
-          final String? currentDropdownValue =
-              controller.selectedCategoryName.value.isEmpty
+          // Get the current category ID
+          final String? currentCategoryId =
+              controller.selectedCategoryId.value.isEmpty
               ? null
-              : controller.selectedCategoryName.value;
+              : controller.selectedCategoryId.value;
 
           return DropdownButtonFormField<String>(
-            initialValue: currentDropdownValue,
+            initialValue: currentCategoryId,
             decoration: InputDecoration(
               border: OutlineInputBorder(
                 borderSide: BorderSide(
@@ -115,31 +167,30 @@ class PlaceForm extends StatelessWidget {
               labelText: appLocalizations.selectCategory,
             ),
 
-            onChanged: (String? selectedLocalizedName) {
-              if (selectedLocalizedName != null) {
-                // Find the category by localized name
+            onChanged: (String? selectedCategoryId) {
+              if (selectedCategoryId != null) {
+                // Find the category by ID
                 final matchingCategory = categoryController.categoryModels
                     .firstWhereOrNull(
-                      (category) =>
-                          category.getLocalizedName(context) ==
-                          selectedLocalizedName,
+                      (category) => category.id == selectedCategoryId,
                     );
 
                 if (matchingCategory != null) {
-                  // Update both name and ID
-                  controller.selectedCategoryName.value = selectedLocalizedName;
-                  controller.selectedCategoryId.value = matchingCategory.id;
+                  // Update both ID and localized name
+                  controller.selectedCategoryId.value = selectedCategoryId;
+                  controller.selectedCategoryName.value = matchingCategory
+                      .getLocalizedName(context);
                 }
               } else {
-                controller.selectedCategoryName.value = '';
                 controller.selectedCategoryId.value = '';
+                controller.selectedCategoryName.value = '';
               }
             },
 
             items: categoryController.categoryModels.map((category) {
               final localizedName = category.getLocalizedName(context);
               return DropdownMenuItem(
-                value: localizedName,
+                value: category.id, // Use ID as value to ensure uniqueness
                 child: Text(localizedName),
               );
             }).toList(),
