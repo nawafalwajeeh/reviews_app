@@ -6,7 +6,9 @@ import 'package:reviews_app/features/review/models/category_model.dart';
 import 'package:reviews_app/features/review/screens/categories/all_categories.dart';
 import 'package:reviews_app/utils/constants/sizes.dart';
 
+import '../../../../data/services/category/category_translation_service.dart';
 import '../../../../features/review/screens/categories/category_places.dart';
+import '../../../../localization/app_localizations.dart';
 import '../../layouts/grid_layout.dart';
 import 'category_card.dart';
 
@@ -30,7 +32,8 @@ class CategoryGridList extends StatelessWidget {
       itemBuilder: (context, index) {
         if (shouldShowMore && index == limit! - 1) {
           return CategoryCard(
-            title: 'More',
+            // title: 'More',
+            title: AppLocalizations.of(context).viewAll,
             icon: Icons.more_horiz_rounded,
             gradientColors: const [
               Color(0xFFBEE6D8),
@@ -44,7 +47,11 @@ class CategoryGridList extends StatelessWidget {
         final category = categories[index];
 
         return CategoryCard(
-          title: category.name,
+          // title: category.name,
+          title: CategoryTranslationService().getTranslatedNameInContext(
+            category.name,
+            context,
+          ),
           icon: CategoryMapper.getIcon(category.iconKey),
           gradientColors: CategoryMapper.getGradientColors(
             category.gradientKey,

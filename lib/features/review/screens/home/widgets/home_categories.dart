@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 
 import '../../../../../common/widgets/place/category/category_grid_list.dart';
 import '../../../../../common/widgets/shimmers/category_grid_shimmer.dart';
+import '../../../../../localization/app_localizations.dart';
 import '../../../controllers/category_controller.dart';
 
 class HomeCategories extends StatelessWidget {
@@ -23,7 +24,8 @@ class HomeCategories extends StatelessWidget {
       if (controller.allCategories.isEmpty) {
         return Center(
           child: Text(
-            'No Categories Found!',
+            // 'No Categories Found!',
+            AppLocalizations.of(context).noCategoriesFound,
             style: Theme.of(context).textTheme.bodyMedium,
           ),
         );
@@ -37,18 +39,3 @@ class HomeCategories extends StatelessWidget {
     });
   }
 }
-//------------------------
-// import 'package:flutter/material.dart';
-// import 'package:reviews_app/common/widgets/place/category/category_grid_list.dart';
-// import 'package:reviews_app/features/review/controllers/category_controller.dart';
-
-// class HomeCategories extends StatelessWidget {
-//   const HomeCategories({super.key});
-
-//   @override
-//   Widget build(BuildContext context) {
-//     final controller = CategoryController.instance;
-//     // return CategoryGridList(categories: controller.mockCategories, limit: 8);
-//     return CategoryGridList(categories: controller.allCategories, limit: 8);
-//   }
-// }

@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:reviews_app/localization/app_localizations.dart';
 import 'package:reviews_app/utils/constants/image_strings.dart';
 import 'package:reviews_app/utils/constants/sizes.dart';
-import 'package:reviews_app/utils/constants/text_strings.dart';
+// import 'package:reviews_app/utils/constants/text_strings.dart';
 // import 'package:reviews_app/utils/helpers/helper_functions.dart';
 
 class LoginHeader extends StatelessWidget {
@@ -22,12 +23,14 @@ class LoginHeader extends StatelessWidget {
           ),
         ),
         Text(
-          AppTexts.loginTitle,
+          // AppTexts.loginTitle,
+          AppLocalizations.of(context).loginTitle,
           style: Theme.of(context).textTheme.headlineMedium,
         ),
         const SizedBox(height: AppSizes.sm),
         Text(
-          AppTexts.loginSubTitle,
+          // AppTexts.loginSubTitle,
+          AppLocalizations.of(context).loginSubTitle,
           style: Theme.of(context).textTheme.bodyMedium,
         ),
       ],

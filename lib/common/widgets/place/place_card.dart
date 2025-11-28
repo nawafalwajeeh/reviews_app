@@ -8,6 +8,7 @@ import 'package:reviews_app/features/review/screens/place_details/place_details.
 import 'package:reviews_app/utils/constants/colors.dart';
 import 'package:reviews_app/utils/constants/enums.dart';
 import 'package:reviews_app/utils/helpers/helper_functions.dart';
+import '../../../localization/app_localizations.dart';
 import '../../../utils/constants/sizes.dart';
 import '../../../features/review/models/place_model.dart';
 import 'rating/place_rating_badge.dart';
@@ -110,7 +111,7 @@ class PlaceCard extends StatelessWidget {
               ),
             ),
             Padding(
-              // *** FIX: Reduced vertical padding from 18 to 14 to prevent 6.0 pixel overflow ***
+              // Reduced vertical padding from 18 to 14 to prevent 6.0 pixel overflow ***
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -121,6 +122,7 @@ class PlaceCard extends StatelessWidget {
                       children: [
                         /// Category Name (Moved up)
                         CategoryNameText(categoryId: place.categoryId),
+                        // ReactiveCategoryNameText(categoryId: place.categoryId),
                         const SizedBox(height: AppSizes.sm),
 
                         /// Creator Avatar and Name
@@ -170,7 +172,8 @@ class PlaceCard extends StatelessWidget {
                     alignment: Alignment.center,
                     padding: const EdgeInsets.symmetric(horizontal: 16),
                     child: Text(
-                      'View Details',
+                      // 'View Details',
+                      AppLocalizations.of(context).viewDetails,
                       style: Theme.of(
                         context,
                       ).textTheme.bodySmall?.apply(color: AppColors.light),

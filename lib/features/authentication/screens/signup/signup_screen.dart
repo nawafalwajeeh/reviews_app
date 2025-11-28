@@ -5,8 +5,10 @@ import 'package:reviews_app/common/widgets/login_signup/social_button.dart';
 import 'package:reviews_app/features/authentication/screens/signup/widgets/signup_form.dart';
 import 'package:reviews_app/utils/constants/colors.dart';
 import 'package:reviews_app/utils/constants/sizes.dart';
-import 'package:reviews_app/utils/constants/text_strings.dart';
+// import 'package:reviews_app/utils/constants/text_strings.dart';
 import 'package:reviews_app/utils/helpers/helper_functions.dart';
+
+import '../../../../localization/app_localizations.dart';
 
 class SignupScreen extends StatelessWidget {
   const SignupScreen({super.key});
@@ -33,7 +35,8 @@ class SignupScreen extends StatelessWidget {
             children: [
               /// Title
               Text(
-                AppTexts.signupTitle,
+                // AppTexts.signupTitle,
+                AppLocalizations.of(context).signupTitle,
                 style: Theme.of(context).textTheme.headlineMedium,
               ),
               const SizedBox(height: AppSizes.spaceBtwSections),
@@ -43,7 +46,12 @@ class SignupScreen extends StatelessWidget {
               const SizedBox(height: AppSizes.spaceBtwSections),
 
               /// Divider
-              FormDivider(dividerText: AppTexts.orSignUpWith.capitalize!),
+              // FormDivider(dividerText: AppTexts.orSignUpWith.capitalize!),
+              FormDivider(
+                dividerText: AppLocalizations.of(
+                  context,
+                ).orSignUpWith.capitalize!,
+              ),
               const SizedBox(height: AppSizes.spaceBtwSections),
 
               /// Social Buttons

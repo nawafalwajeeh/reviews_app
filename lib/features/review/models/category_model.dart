@@ -1,4 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
+
+import '../../../data/services/category/category_translation_service.dart';
 
 class CategoryModel {
   String id;
@@ -35,6 +38,38 @@ class CategoryModel {
     gradientKey: '',
     iconColorValue: 0xFFFFFFFF,
   );
+
+
+   /// Get localized name (requires BuildContext)
+  String getName(BuildContext context) {
+    return CategoryTranslationService().getTranslatedNameInContext(name, context);
+  }
+
+  /// Create a copy with a localized name (useful for UI)
+  CategoryModel copyWith({
+    String? id,
+    String? name,
+    String? image,
+    String? parentId,
+    bool? isFeatured,
+    String? iconKey,
+    String? gradientKey,
+    int? iconColorValue,
+    String? userId,
+    String? localizedName,
+  }) {
+    return CategoryModel(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      userId: userId ?? this.userId,
+      image: image ?? this.image,
+      parentId: parentId ?? this.parentId,
+      isFeatured: isFeatured ?? this.isFeatured,
+      iconKey: iconKey ?? this.iconKey,
+      gradientKey: gradientKey ?? this.gradientKey,
+      iconColorValue: iconColorValue ?? this.iconColorValue,
+    );
+  }
 
   /// Convert Model to json structure so that you can store data in Firestore
   Map<String, dynamic> toJson() => {

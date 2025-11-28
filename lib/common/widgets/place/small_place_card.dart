@@ -133,6 +133,7 @@ class SmallPlaceCard extends StatelessWidget {
                     //   maxLines: 1,
                     // ),
                     child: CategoryNameText(categoryId: place.categoryId),
+                    //  child: ReactiveCategoryNameText(categoryId: place.categoryId),
                   ),
 
                   /// -- Subtle button to indicate tap/view details

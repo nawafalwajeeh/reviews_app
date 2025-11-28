@@ -117,7 +117,8 @@ class AddNewPlaceScreen extends StatelessWidget {
           Icon(Icons.star_rounded, size: 14, color: AppColors.primaryColor),
           const SizedBox(width: 4),
           Text(
-            'PREMIUM',
+            // 'PREMIUM',
+            AppLocalizations.of(Get.context!).premiumFeature,
             style: TextStyle(
               fontSize: 10,
               fontWeight: FontWeight.bold,
@@ -140,7 +141,8 @@ class AddNewPlaceScreen extends StatelessWidget {
           // User has subscription - show normal create button
           return ElevatedButton(
             onPressed: () => controller.createPlace(),
-            child: const Text('Create Place'),
+            // child: const Text('Create Place'),
+            child: Text(AppLocalizations.of(Get.context!).createNewPlace),
           );
         } else {
           // User doesn't have subscription - show upgrade button
@@ -148,19 +150,21 @@ class AddNewPlaceScreen extends StatelessWidget {
             onPressed: () {
               subscriptionController.showSubscriptionRequired(
                 Get.context!,
-                message: 'Create unlimited places with Premium subscription',
+                // message: 'Create unlimited places with Premium subscription',
+                message: AppLocalizations.of(Get.context!).getUnlimitedAccess,
               );
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: AppColors.primaryColor,
               foregroundColor: AppColors.white,
             ),
-            child: const Row(
+            child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Icon(Icons.star_rounded, size: 20),
                 SizedBox(width: AppSizes.sm),
-                Text('Upgrade to Create Place'),
+                // Text('Upgrade to Create Place'),
+                Text(AppLocalizations.of(Get.context!).upgradeToCreate),
               ],
             ),
           );

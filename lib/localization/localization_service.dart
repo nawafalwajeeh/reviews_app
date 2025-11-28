@@ -3,6 +3,9 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 
 class LocalizationService extends GetxService {
+  static LocalizationService get instance => Get.find();
+
+  /// Variables
   final GetStorage _storage = GetStorage();
   final RxString _currentLang = 'en'.obs;
 
@@ -26,10 +29,10 @@ class LocalizationService extends GetxService {
   String get currentLanguage => _currentLang.value;
   Locale get currentLocale => _supportedLocales[_currentLang.value]!;
 
-  // FIXED: Return List<Locale> directly from the values
+  // Return List<Locale> directly from the values
   List<Locale> get supportedLocales => _supportedLocales.values.toList();
 
-  // FIXED: Return Map<String, String> for language names
+  // Return Map<String, String> for language names
   Map<String, String> get supportedLanguages => _languageNames;
 
   Future<void> _loadSavedLanguage() async {
@@ -39,13 +42,14 @@ class LocalizationService extends GetxService {
     } else {
       // Default to device locale or English
       final deviceLocale = Get.deviceLocale;
-      if (deviceLocale != null && _supportedLocales.containsKey(deviceLocale.languageCode)) {
+      if (deviceLocale != null &&
+          _supportedLocales.containsKey(deviceLocale.languageCode)) {
         _currentLang.value = deviceLocale.languageCode;
       } else {
         _currentLang.value = 'en';
       }
     }
-    
+
     // Update GetX locale
     Get.updateLocale(currentLocale);
   }

@@ -21,8 +21,8 @@ class CustomQuestionsSection extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                'Custom Questions (Optional)',
-                // AppLocalizations.of(context).customQuestions,
+                // 'Custom Questions (Optional)',
+                AppLocalizations.of(context).customQuestionsOptional,
                 style: Theme.of(context).textTheme.titleMedium,
               ),
               IconButton(
@@ -65,16 +65,16 @@ class CustomQuestionsSection extends StatelessWidget {
           ),
           const SizedBox(height: AppSizes.spaceBtwItems),
           Text(
-            'No custom questions added',
-            // AppLocalizations.of(context).noCustomQuestionAdded,
+            // 'No custom questions added',
+            AppLocalizations.of(context).noCustomQuestions,
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
               color: Theme.of(context).colorScheme.onSurfaceVariant,
             ),
           ),
           const SizedBox(height: AppSizes.spaceBtwItems),
           Text(
-            'Tap the + button to add up to 4 optional questions',
-              // AppLocalizations.of(context).tap,
+            // 'Tap the + button to add up to 4 optional questions',
+              AppLocalizations.of(context).additionalQuestions,
             textAlign: TextAlign.center,
             style: Theme.of(context).textTheme.bodySmall?.copyWith(
               color: Theme.of(

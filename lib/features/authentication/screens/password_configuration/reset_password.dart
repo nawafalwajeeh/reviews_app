@@ -7,6 +7,7 @@ import 'package:reviews_app/utils/constants/sizes.dart';
 import 'package:reviews_app/utils/constants/text_strings.dart';
 import 'package:reviews_app/utils/helpers/helper_functions.dart';
 
+import '../../../../localization/app_localizations.dart';
 import '../login/login.dart';
 
 class ResetPasswordScreen extends StatelessWidget {
@@ -45,7 +46,8 @@ class ResetPasswordScreen extends StatelessWidget {
               ),
               const SizedBox(height: AppSizes.spaceBtwItems),
               Text(
-                AppTexts.changeYourPasswordTitle,
+                // AppTexts.changeYourPasswordTitle,
+                AppLocalizations.of(context).changeYourPasswordTitle,
                 style: Theme.of(context).textTheme.headlineMedium,
                 textAlign: TextAlign.center,
               ),
@@ -63,7 +65,8 @@ class ResetPasswordScreen extends StatelessWidget {
                 width: double.infinity,
                 child: ElevatedButton(
                   onPressed: () => Get.offAll(() => const LoginScreen()),
-                  child: const Text(AppTexts.done),
+                  // child: const Text(AppTexts.done),
+                  child: Text(AppLocalizations.of(context).done),
                 ),
               ),
               const SizedBox(height: AppSizes.spaceBtwItems),
@@ -72,7 +75,8 @@ class ResetPasswordScreen extends StatelessWidget {
                 child: TextButton(
                   onPressed: () => ForgetPasswordController.instance
                       .resendPasswordResetEmail(email),
-                  child: const Text(AppTexts.resendEmail),
+                  // child: const Text(AppTexts.resendEmail),
+                  child: Text(AppLocalizations.of(context).resendEmail),
                 ),
               ),
             ],

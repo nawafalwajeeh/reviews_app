@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:reviews_app/localization/app_localizations.dart';
 import '../../../../common/widgets/appbar/appbar.dart';
 import '../../../../common/widgets/place/category/category_grid_list.dart';
 import '../../../../common/widgets/shimmers/category_grid_shimmer.dart';
@@ -14,9 +15,10 @@ class AllCategoriesScreen extends StatelessWidget {
     final controller = CategoryController.instance;
 
     return Scaffold(
-      appBar: const CustomAppBar(
+      appBar: CustomAppBar(
         showBackArrow: true,
-        title: Text('All Categories'),
+        // title: Text('All Categories'),
+        title: Text(AppLocalizations.of(context).allCategories),
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -36,7 +38,8 @@ class AllCategoriesScreen extends StatelessWidget {
             if (controller.allCategories.isEmpty) {
               return Center(
                 child: Text(
-                  'No categories found.',
+                  // 'No categories found.',
+                  AppLocalizations.of(context).noCategoriesFound,
                   style: Theme.of(context).textTheme.bodyLarge,
                 ),
               );

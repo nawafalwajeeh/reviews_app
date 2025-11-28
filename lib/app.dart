@@ -19,12 +19,12 @@ class App extends StatelessWidget {
   Widget build(BuildContext context) {
     /// -- Initialize Settings controller to load theme mode from local Storage on app launch
     /// and change it when change theme mode button tapped in [SettingsScreen()].
-    final controller = Get.put(SettingsController());
     final localizationService = Get.put(LocalizationService());
-
+    final controller = Get.put(SettingsController());
 
     return Obx(
       () => GetMaterialApp(
+        navigatorKey: Get.key,
         title: AppTexts.appName,
         debugShowCheckedModeBanner: false,
         theme: AppTheme.lightTheme,

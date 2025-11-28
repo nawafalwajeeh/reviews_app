@@ -1,6 +1,8 @@
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:get/get.dart';
+import 'package:reviews_app/localization/app_localizations.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 /// Helper functions for cloud-related operations.
@@ -48,12 +50,16 @@ class AppCloudHelperFunctions {
 
     if (!snapshot.hasData || snapshot.data == null || snapshot.data!.isEmpty) {
       if (nothingFound != null) return nothingFound;
-      return const Center(child: Text('No Data Found!'));
+      // return const Center(child: Text('No Data Found!'));
+      return Center(child: Text(AppLocalizations.of(Get.context!).noDataFound));
     }
 
     if (snapshot.hasError) {
       if (error != null) return error;
-      return const Center(child: Text('Something went wrong.'));
+      // return const Center(child: Text('Something went wrong.'));
+      return Center(
+        child: Text(AppLocalizations.of(Get.context!).somethingWentWrong),
+      );
     }
 
     return null;
@@ -71,7 +77,8 @@ class AppCloudHelperFunctions {
     } on PlatformException catch (e) {
       throw e.message!;
     } catch (e) {
-      throw 'Something went wrong.';
+      // throw 'Something went wrong.';
+      throw AppLocalizations.of(Get.context!).somethingWentWrong;
     }
   }
 
@@ -91,7 +98,8 @@ class AppCloudHelperFunctions {
     } on PlatformException catch (e) {
       throw e.message!;
     } catch (e) {
-      throw 'Something went wrong.';
+      // throw 'Something went wrong.';
+      throw AppLocalizations.of(Get.context!).somethingWentWrong;
     }
   }
 
@@ -107,7 +115,8 @@ class AppCloudHelperFunctions {
     } on PlatformException catch (e) {
       throw e.message!;
     } catch (e) {
-      throw 'Something went wrong.';
+      // throw 'Something went wrong.';
+      throw AppLocalizations.of(Get.context!).somethingWentWrong;
     }
   }
 
@@ -127,7 +136,8 @@ class AppCloudHelperFunctions {
     } on PlatformException catch (e) {
       throw e.message!;
     } catch (e) {
-      throw 'Something went wrong.';
+      // throw 'Something went wrong.';
+      throw AppLocalizations.of(Get.context!).somethingWentWrong;
     }
   }
 }

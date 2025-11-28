@@ -102,6 +102,7 @@ class AppLocalizations {
       'Join fellow explorers...';
 
   // Authentication Forms
+  String get name => _localizedValues[locale.languageCode]!['Name'] ?? 'Name';
   String get firstName =>
       _localizedValues[locale.languageCode]!['firstName'] ?? 'First Name';
   String get lastName =>
@@ -333,7 +334,8 @@ class AppLocalizations {
   String get placeAddress =>
       _localizedValues[locale.languageCode]!['placeAddress'] ?? 'Place Address';
   String get placeDescription =>
-      _localizedValues[locale.languageCode]!['placeDescription'] ?? 'Place Description';
+      _localizedValues[locale.languageCode]!['placeDescription'] ??
+      'Place Description';
   String get change =>
       _localizedValues[locale.languageCode]!['change'] ?? 'Change';
   String get selectAddress =>
@@ -464,6 +466,361 @@ class AppLocalizations {
   String get validationWebsite =>
       _localizedValues[locale.languageCode]!['validationWebsite'] ??
       'Please enter a valid website URL...';
+  // Profile Screen Getters
+  String get profile =>
+      _localizedValues[locale.languageCode]?['profile'] ?? 'Profile';
+  String get changeProfilePicture =>
+      _localizedValues[locale.languageCode]?['changeProfilePicture'] ??
+      'Change Profile Picture';
+  String get profileInformation =>
+      _localizedValues[locale.languageCode]?['profileInformation'] ??
+      'Profile Information';
+  // String get name => _localizedValues[locale.languageCode]?['name'] ?? 'Name';
+  // String get username => _localizedValues[locale.languageCode]?['username'] ?? 'Username';
+  String get personalInformation =>
+      _localizedValues[locale.languageCode]?['personalInformation'] ??
+      'Personal Information';
+  String get userId =>
+      _localizedValues[locale.languageCode]?['userId'] ?? 'User ID';
+  // String get email => _localizedValues[locale.languageCode]?['email'] ?? 'E-mail';
+  String get phoneNumber =>
+      _localizedValues[locale.languageCode]?['phoneNumber'] ?? 'Phone Number';
+  // String get gender => _localizedValues[locale.languageCode]?['gender'] ?? 'Gender';
+  String get dateOfBirth =>
+      _localizedValues[locale.languageCode]?['dateOfBirth'] ?? 'Date of Birth';
+  String get closeAccount =>
+      _localizedValues[locale.languageCode]?['closeAccount'] ?? 'Close Account';
+  String get copied =>
+      _localizedValues[locale.languageCode]?['copied'] ?? 'Copied';
+  String get userIdCopied =>
+      _localizedValues[locale.languageCode]?['userIdCopied'] ??
+      'User ID copied to clipboard';
+  String get notSet =>
+      _localizedValues[locale.languageCode]?['notSet'] ?? 'Not set';
+  String get male => _localizedValues[locale.languageCode]?['male'] ?? 'Male';
+  String get female =>
+      _localizedValues[locale.languageCode]?['female'] ?? 'Female';
+  String get other =>
+      _localizedValues[locale.languageCode]?['other'] ?? 'Other';
+
+  // Settings Screen Getters
+  String get account =>
+      _localizedValues[locale.languageCode]?['account'] ?? 'Account';
+  String get accountSettings =>
+      _localizedValues[locale.languageCode]?['accountSettings'] ??
+      'Account Settings';
+  String get appSettings =>
+      _localizedValues[locale.languageCode]?['appSettings'] ?? 'App Settings';
+  String get darkMode =>
+      _localizedValues[locale.languageCode]?['darkMode'] ?? 'Dark Mode';
+  String get lightMode =>
+      _localizedValues[locale.languageCode]?['lightMode'] ?? 'Light Mode';
+  String get switchTheme =>
+      _localizedValues[locale.languageCode]?['switchTheme'] ??
+      'Switch dark or light mode';
+  // String get logout => _localizedValues[locale.languageCode]?['logout'] ?? 'Logout';
+
+  // Account Settings Getters
+  String get myAddresses =>
+      _localizedValues[locale.languageCode]?['myAddresses'] ?? 'My Addresses';
+  String get setDeliveryAddress =>
+      _localizedValues[locale.languageCode]?['setDeliveryAddress'] ??
+      'Set shopping delivery address';
+  String get bankAccount =>
+      _localizedValues[locale.languageCode]?['bankAccount'] ?? 'Bank Account';
+  String get withdrawBalance =>
+      _localizedValues[locale.languageCode]?['withdrawBalance'] ??
+      'Withdraw balance to registered bank account';
+  String get myCoupons =>
+      _localizedValues[locale.languageCode]?['myCoupons'] ?? 'My Coupons';
+  String get discountedCoupons =>
+      _localizedValues[locale.languageCode]?['discountedCoupons'] ??
+      'List of all the discounted coupons';
+  String get notifications =>
+      _localizedValues[locale.languageCode]?['notifications'] ??
+      'Notifications';
+  String get setNotifications =>
+      _localizedValues[locale.languageCode]?['setNotifications'] ??
+      'Set any kind of notification message';
+  String get accountPrivacy =>
+      _localizedValues[locale.languageCode]?['accountPrivacy'] ??
+      'Account Privacy';
+  String get manageDataUsage =>
+      _localizedValues[locale.languageCode]?['manageDataUsage'] ??
+      'Manage data usage and connected accounts';
+
+  // App Settings Getters
+  String get loadData =>
+      _localizedValues[locale.languageCode]?['loadData'] ?? 'Load Data';
+  String get uploadDataToCloud =>
+      _localizedValues[locale.languageCode]?['uploadDataToCloud'] ??
+      'Upload Data to your Cloud Firebase';
+  String get geolocation =>
+      _localizedValues[locale.languageCode]?['geolocation'] ?? 'Geolocation';
+  String get recommendationBasedOnLocation =>
+      _localizedValues[locale.languageCode]?['recommendationBasedOnLocation'] ??
+      'Set recommendation based on location';
+  String get safeMode =>
+      _localizedValues[locale.languageCode]?['safeMode'] ?? 'Safe Mode';
+  String get safeForAllAges =>
+      _localizedValues[locale.languageCode]?['safeForAllAges'] ??
+      'Search result is safe for all ages';
+  String get hdImageQuality =>
+      _localizedValues[locale.languageCode]?['hdImageQuality'] ??
+      'HD Image Quality';
+  String get setImageQuality =>
+      _localizedValues[locale.languageCode]?['setImageQuality'] ??
+      'Set image quality to be seen';
+
+  // User Profile Editing Getters
+  String get reAuthenticate =>
+      _localizedValues[locale.languageCode]?['reAuthenticate'] ??
+      'Re-Authenticate User';
+  String get verify =>
+      _localizedValues[locale.languageCode]?['verify'] ?? 'Verify';
+  String get changeUsername =>
+      _localizedValues[locale.languageCode]?['changeUsername'] ??
+      'Change Username';
+  String get chooseUniqueUsername =>
+      _localizedValues[locale.languageCode]?['chooseUniqueUsername'] ??
+      'Choose a unique username that represents you.';
+  String get usernameHint =>
+      _localizedValues[locale.languageCode]?['usernameHint'] ??
+      'e.g., john_doe123';
+  String get changePhoneNumber =>
+      _localizedValues[locale.languageCode]?['changePhoneNumber'] ??
+      'Change Phone Number';
+  String get addPhoneForVerification =>
+      _localizedValues[locale.languageCode]?['addPhoneForVerification'] ??
+      'Add your phone number for verification and contact purposes.';
+  String get phoneNumberHint =>
+      _localizedValues[locale.languageCode]?['phoneNumberHint'] ??
+      'e.g., +967 234 567 8900';
+  String get changeName =>
+      _localizedValues[locale.languageCode]?['changeName'] ?? 'Change Name';
+  String get useRealNameForVerification =>
+      _localizedValues[locale.languageCode]?['useRealNameForVerification'] ??
+      'Use real name for easy verification. This name will appear on several pages.';
+  String get selectGender =>
+      _localizedValues[locale.languageCode]?['selectGender'] ?? 'Select Gender';
+  String get selectBirthDate =>
+      _localizedValues[locale.languageCode]?['selectBirthDate'] ??
+      'Select Birth Date';
+  String get selected =>
+      _localizedValues[locale.languageCode]?['selected'] ?? 'Selected';
+  String get noDateSelected =>
+      _localizedValues[locale.languageCode]?['noDateSelected'] ??
+      'No date selected';
+  String get clearSelection =>
+      _localizedValues[locale.languageCode]?['clearSelection'] ??
+      'Clear Selection';
+  String get save => _localizedValues[locale.languageCode]?['save'] ?? 'Save';
+
+  // Address Screen Getters
+  String get addNewAddress =>
+      _localizedValues[locale.languageCode]?['addNewAddress'] ??
+      'Add New Address';
+  String get pickLocationFromMap =>
+      _localizedValues[locale.languageCode]?['pickLocationFromMap'] ??
+      'Pick Location from Map';
+  String get addressName =>
+      _localizedValues[locale.languageCode]?['addressName'] ?? 'Address Name';
+  String get addressNameHint =>
+      _localizedValues[locale.languageCode]?['addressNameHint'] ??
+      'Home, Work, Office, etc.';
+  String get street =>
+      _localizedValues[locale.languageCode]?['street'] ?? 'Street';
+  String get postalCode =>
+      _localizedValues[locale.languageCode]?['postalCode'] ?? 'Postal Code';
+  String get city => _localizedValues[locale.languageCode]?['city'] ?? 'City';
+  String get state =>
+      _localizedValues[locale.languageCode]?['state'] ?? 'State';
+  String get country =>
+      _localizedValues[locale.languageCode]?['country'] ?? 'Country';
+  String get saveAddress =>
+      _localizedValues[locale.languageCode]?['saveAddress'] ?? 'Save Address';
+  String get locationFromMap =>
+      _localizedValues[locale.languageCode]?['locationFromMap'] ??
+      'Location from Map';
+  String get clearMapLocation =>
+      _localizedValues[locale.languageCode]?['clearMapLocation'] ??
+      'Clear map location';
+  String get coordinates =>
+      _localizedValues[locale.languageCode]?['coordinates'] ?? 'Coordinates';
+  String get addressFromMap =>
+      _localizedValues[locale.languageCode]?['addressFromMap'] ??
+      'Address from map';
+  String get mapLocation =>
+      _localizedValues[locale.languageCode]?['mapLocation'] ?? 'Map Location';
+
+  // Forgot Password & Authentication Getters
+  // String get forgetPasswordTitle => _localizedValues[locale.languageCode]?['forgetPasswordTitle'] ?? 'Forget password';
+  // String get forgetPasswordSubTitle => _localizedValues[locale.languageCode]?['forgetPasswordSubTitle'] ?? 'Don\'t worry sometimes people can forget too, enter your email and we will send you a password reset link.';
+  String get passwordResetEmailSent =>
+      _localizedValues[locale.languageCode]?['passwordResetEmailSent'] ??
+      'Password Reset Email Sent';
+  String get accountSecurityPriority =>
+      _localizedValues[locale.languageCode]?['accountSecurityPriority'] ??
+      'Your Account Security is Our Priority! We\'ve Sent You a Secure Link to Safely Change Your Password and Keep Your Account Protected.';
+  String get verifyEmailAddress =>
+      _localizedValues[locale.languageCode]?['verifyEmailAddress'] ??
+      'Verify your email address!';
+  String get congratulationsAccountAwaits =>
+      _localizedValues[locale.languageCode]?['congratulationsAccountAwaits'] ??
+      'Congratulations! Your Account Awaits: Verify Your Email to Start Shopping and Experience a World of Unrivaled Deals and Personalized Offers.';
+  String get emailNotReceived =>
+      _localizedValues[locale.languageCode]?['emailNotReceived'] ??
+      'Didn\'t get the email? Check your junk/spam or resend it.';
+  String get accountCreatedSuccess =>
+      _localizedValues[locale.languageCode]?['accountCreatedSuccess'] ??
+      'Your account successfully created!';
+  String get welcomeToDestination =>
+      _localizedValues[locale.languageCode]?['welcomeToDestination'] ??
+      'Welcome to Your Ultimate Shopping Destination: Your Account is Created, Unleash the Joy of Seamless Online Shopping!';
+
+  // Authentication Success Getters
+  String get changeYourPasswordTitle =>
+      _localizedValues[locale.languageCode]?['changeYourPasswordTitle'] ??
+      'Password Reset Email Sent';
+  String get changeYourPasswordSubTitle =>
+      _localizedValues[locale.languageCode]?['changeYourPasswordSubTitle'] ??
+      'Your Account Security is Our Priority! We\'ve Sent You a Secure Link to Safely Change Your Password and Keep Your Account Protected.';
+  String get confirmEmail =>
+      _localizedValues[locale.languageCode]?['confirmEmail'] ??
+      'Verify your email address!';
+  String get confirmEmailSubTitle =>
+      _localizedValues[locale.languageCode]?['confirmEmailSubTitle'] ??
+      'Congratulations! Your Account Awaits: Verify Your Email to Start Shopping and Experience a World of Unrivaled Deals and Personalized Offers.';
+  String get emailNotReceivedMessage =>
+      _localizedValues[locale.languageCode]?['emailNotReceivedMessage'] ??
+      'Didn\'t get the email? Check your junk/spam or resend it.';
+  String get yourAccountCreatedTitle =>
+      _localizedValues[locale.languageCode]?['yourAccountCreatedTitle'] ??
+      'Your account successfully created!';
+  String get yourAccountCreatedSubTitle =>
+      _localizedValues[locale.languageCode]?['yourAccountCreatedSubTitle'] ??
+      'Welcome to Your Ultimate Shopping Destination: Your Account is Created, Unleash the Joy of Seamless Online Shopping!';
+  String get and => _localizedValues[locale.languageCode]?['and'] ?? 'And';
+  // Add these to your existing AppLocalizations class
+  String get removeQuestion =>
+      _localizedValues[locale.languageCode]!['removeQuestion'] ??
+      'Remove Question';
+  String get loading =>
+      _localizedValues[locale.languageCode]!['loading'] ?? 'Loading...';
+
+  // Rating & Reviews Section
+  // String get ratingReviews => _localizedValues[locale.languageCode]!['ratingReviews'] ?? 'Rating & Reviews';
+  // String get ratingsVerified => _localizedValues[locale.languageCode]!['ratingsVerified'] ?? 'Ratings and reviews are verified and are from people who use the same type of device that you use.';
+  String get loadingReviews =>
+      _localizedValues[locale.languageCode]!['loadingReviews'] ??
+      'Loading reviews...';
+  String get errorLoadingReviews =>
+      _localizedValues[locale.languageCode]!['errorLoadingReviews'] ??
+      'Error loading reviews';
+
+  // Plural-aware reviews count
+  String reviewsCount(int count) {
+    final key = 'reviewsCount';
+    final pluralKey = count == 1 ? key : '${key}_other';
+
+    final template =
+        _localizedValues[locale.languageCode]![pluralKey] ??
+        _localizedValues[locale.languageCode]![key] ??
+        '{count} reviews';
+
+    return template.replaceAll('{count}', count.toString());
+  }
+
+  // Business Card
+  String get listYourBusiness =>
+      _localizedValues[locale.languageCode]!['listYourBusiness'] ??
+      'List Your Business';
+  String get getDiscoveredByMillions =>
+      _localizedValues[locale.languageCode]!['getDiscoveredByMillions'] ??
+      'Get discovered by millions of customers and grow your business';
+  String get getStarted =>
+      _localizedValues[locale.languageCode]!['getStarted'] ?? 'Get Started';
+
+  // Categories
+  String get popularCategories =>
+      _localizedValues[locale.languageCode]!['popularCategories'] ??
+      'Popular Categories';
+  String get noCategoriesFound =>
+      _localizedValues[locale.languageCode]!['noCategoriesFound'] ??
+      'No categories found';
+
+  // QR Scanner
+  String get scanQRCode =>
+      _localizedValues[locale.languageCode]!['scanQRCode'] ?? 'Scan QR Code';
+  String get alignQRCode =>
+      _localizedValues[locale.languageCode]!['alignQRCode'] ??
+      'Align QR code within the frame';
+  String get processingQRCode =>
+      _localizedValues[locale.languageCode]!['processingQRCode'] ??
+      'Processing QR Code...';
+  String get lookingUpPlace =>
+      _localizedValues[locale.languageCode]!['lookingUpPlace'] ??
+      '🔍 Looking Up Place...';
+  String get checkingDatabase =>
+      _localizedValues[locale.languageCode]!['checkingDatabase'] ??
+      'Checking our database...';
+  String get success =>
+      _localizedValues[locale.languageCode]!['success'] ?? '✅ Success!';
+  String get scanError =>
+      _localizedValues[locale.languageCode]!['scanError'] ?? 'Scan Error';
+  String get tryAgain =>
+      _localizedValues[locale.languageCode]!['tryAgain'] ?? 'Try Again';
+  String get invalidQRCode =>
+      _localizedValues[locale.languageCode]!['invalidQRCode'] ??
+      'Invalid QR Code';
+  String get unrecognizedFormat =>
+      _localizedValues[locale.languageCode]!['unrecognizedFormat'] ??
+      'Unrecognized format.';
+  String get viewDetails =>
+      _localizedValues[locale.languageCode]!['viewDetails'] ?? 'View Details';
+  String get noTrendingPlacesFound =>
+      _localizedValues[locale.languageCode]!['noTrendingPlacesFound'] ??
+      'No trending places found.';
+
+  // Method for dynamic text with placeholders
+  String redirectingTo(String placeName) {
+    final template =
+        _localizedValues[locale.languageCode]!['redirectingTo'] ??
+        'Redirecting to {placeName}';
+    return template.replaceAll('{placeName}', placeName);
+  }
+
+  // Error and loading states
+  String get retry =>
+      _localizedValues[locale.languageCode]!['retry'] ?? 'Retry';
+  String get beFirstToReview =>
+      _localizedValues[locale.languageCode]!['beFirstToReview'] ??
+      'Be the first to write a review!';
+  String get unknownError =>
+      _localizedValues[locale.languageCode]!['unknownError'] ??
+      'Unknown error occurred';
+
+  String get ohSnap =>
+      _localizedValues[locale.languageCode]!['ohSnap'] ?? 'Oh Snap!';
+  String get somethingWentWrong =>
+      _localizedValues[locale.languageCode]!['somethingWentWrong'] ??
+      'Something went wrong. Please try again.';
+  String get error =>
+      _localizedValues[locale.languageCode]!['error'] ?? 'Error';
+  String get warning =>
+      _localizedValues[locale.languageCode]!['warning'] ?? 'Warning';
+   // Error and Loading States
+  String get errorLoading => _localizedValues[locale.languageCode]!['errorLoading'] ?? 'Error Loading';
+  String get categoryNotFound => _localizedValues[locale.languageCode]!['categoryNotFound'] ?? 'Category Not Found';
+    String get noDataFound => _localizedValues[locale.languageCode]!['noDataFound'] ?? 'No Data Found';
+  String get tapToRetry => _localizedValues[locale.languageCode]!['tapToRetry'] ?? 'Tap to retry';
+    // ReadMore Text variations
+  String get showMore => _localizedValues[locale.languageCode]!['showMore'] ?? 'Show more';
+  String get showLess => _localizedValues[locale.languageCode]!['showLess'] ?? 'Show less';
+  String get readMore => _localizedValues[locale.languageCode]!['readMore'] ?? 'Read more';
+  String get readLess => _localizedValues[locale.languageCode]!['readLess'] ?? 'Read less';
+  String get viewMore => _localizedValues[locale.languageCode]!['viewMore'] ?? 'View more';
+  String get viewLess => _localizedValues[locale.languageCode]!['viewLess'] ?? 'View less';
 }
 
 class _AppLocalizationsDelegate

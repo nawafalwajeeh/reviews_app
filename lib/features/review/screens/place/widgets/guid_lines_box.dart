@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:reviews_app/localization/app_localizations.dart';
 import 'package:reviews_app/utils/constants/colors.dart';
 
 import '../../../../../utils/constants/sizes.dart';
@@ -26,13 +27,15 @@ class CommunityGuidelinesBox extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Community Guidelines',
+                  // 'Community Guidelines',
+                  AppLocalizations.of(context).communityGuidelines,
                   style: Theme.of(context).textTheme.titleSmall?.copyWith(
                     color: AppColors.primaryColor,
                   ),
                 ),
                 Text(
-                  'Please ensure your place is appropriate and follows our community standards',
+                  // 'Please ensure your place is appropriate and follows our community standards',
+                  AppLocalizations.of(context).ensureAppropriate,
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
                     color: AppColors.primaryColor,
                     height: 1.4,

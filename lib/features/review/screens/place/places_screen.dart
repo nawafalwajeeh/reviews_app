@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:reviews_app/features/review/models/category_extension.dart';
 
 import '../../../../common/widgets/appbar/tabbar.dart';
 import '../../../../common/widgets/custom_shapes/containers/search_container.dart';
 import '../../../../common/widgets/headers/custom_header.dart';
+import '../../../../localization/app_localizations.dart';
 import '../../../../utils/constants/colors.dart';
 import '../../../../utils/constants/sizes.dart';
 import '../../controllers/category_controller.dart';
@@ -57,14 +59,16 @@ class AllPlacesScreen extends StatelessWidget {
                     children: [
                       // Header - Note: This needs to adjust for system status bar height
                       CustomHeader(
-                        title: 'Discover Places',
+                        // title: 'Discover Places',
+                        title: AppLocalizations.of(context).discoverPlaces,
                         icon: Iconsax.image,
                         onPressed: () => Get.to(() => ImageGalleryScreen()),
                       ),
 
                       // Search Container
                       AppSearchContainer(
-                        text: 'Search for place',
+                        // text: 'Search for place',
+                        text: AppLocalizations.of(context).searchPlaces,
                         onTap: () => Get.to(() => SearchScreen()),
                       ),
                       const SizedBox(height: AppSizes.spaceBtwItems / 2),
@@ -73,10 +77,15 @@ class AllPlacesScreen extends StatelessWidget {
                 ),
 
                 // 3. Pin the TabBar to the bottom of the SliverAppBar
+                // bottom: CustomTabBar(
+                //   tabs: controller.categoryNames
+                //       .map((name) => Tab(text: name))
+                //       .toList(),
+                // ),
                 bottom: CustomTabBar(
-                  tabs: controller.categoryNames
-                      .map((name) => Tab(text: name))
-                      .toList(),
+                  tabs: controller.categoryModels.map((category) {
+                    return Tab(text: category.getLocalizedName(context));
+                  }).toList(),
                 ),
               ),
             ];

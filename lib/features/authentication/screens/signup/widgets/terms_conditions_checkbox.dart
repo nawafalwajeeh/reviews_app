@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get_state_manager/get_state_manager.dart';
 import 'package:reviews_app/features/authentication/controllers/signup/signup_controller.dart';
+import 'package:reviews_app/localization/app_localizations.dart';
 import 'package:reviews_app/utils/constants/colors.dart';
 import 'package:reviews_app/utils/constants/sizes.dart';
 import 'package:reviews_app/utils/constants/text_strings.dart';
@@ -33,11 +34,13 @@ class TermsAndConditionsCheckbox extends StatelessWidget {
             TextSpan(
               children: [
                 TextSpan(
-                  text: '${AppTexts.iAgreeTo} ',
+                  // text: '${AppTexts.iAgreeTo} ',
+                  text: '${AppLocalizations.of(context).iAgreeTo} ',
                   style: Theme.of(context).textTheme.bodySmall,
                 ),
                 TextSpan(
-                  text: '${AppTexts.privacyPolicy} ',
+                  // text: '${AppTexts.privacyPolicy} ',
+                  text: '${AppLocalizations.of(context).privacyPolicy} ',
                   style: Theme.of(context).textTheme.bodyMedium!.apply(
                     color: dark ? AppColors.white : AppColors.primaryColor,
                     decoration: TextDecoration.underline,
@@ -47,7 +50,8 @@ class TermsAndConditionsCheckbox extends StatelessWidget {
                   ),
                 ),
                 TextSpan(
-                  text: '${AppTexts.and} ',
+                  // text: '${AppTexts.and} ',
+                  text: '${AppLocalizations.of(context).and} ',
                   style: Theme.of(context).textTheme.bodySmall,
                 ),
                 TextSpan(

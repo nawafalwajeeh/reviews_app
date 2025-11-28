@@ -4,8 +4,8 @@ import 'package:iconsax/iconsax.dart';
 import 'package:reviews_app/features/authentication/controllers/login/login_controller.dart';
 import 'package:reviews_app/features/authentication/screens/password_configuration/forget_password.dart';
 import 'package:reviews_app/features/authentication/screens/signup/signup_screen.dart';
+import 'package:reviews_app/localization/app_localizations.dart';
 import 'package:reviews_app/utils/constants/sizes.dart';
-import 'package:reviews_app/utils/constants/text_strings.dart';
 import 'package:reviews_app/utils/validators/validation.dart';
 
 class LoginForm extends StatelessWidget {
@@ -27,9 +27,10 @@ class LoginForm extends StatelessWidget {
             TextFormField(
               controller: controller.email,
               validator: (value) => AppValidator.validateEmail(value),
-              decoration: const InputDecoration(
+              decoration: InputDecoration(
                 prefixIcon: Icon(Iconsax.direct_right),
-                labelText: AppTexts.email,
+                // labelText: AppTexts.email,
+                labelText: AppLocalizations.of(context).email,
               ),
             ),
             const SizedBox(height: AppSizes.spaceBtwInputFields),
@@ -38,11 +39,14 @@ class LoginForm extends StatelessWidget {
             Obx(
               () => TextFormField(
                 controller: controller.password,
-                validator: (value) =>
-                    AppValidator.validateEmptyText(AppTexts.password, value),
+                validator: (value) => AppValidator.validateEmptyText(
+                  AppLocalizations.of(context).password,
+                  value,
+                ),
                 obscureText: controller.obscureText.value,
                 decoration: InputDecoration(
-                  labelText: AppTexts.password,
+                  // labelText: AppTexts.password,
+                  labelText: AppLocalizations.of(context).password,
                   prefixIcon: Icon(Iconsax.password_check),
                   suffixIcon: IconButton(
                     onPressed: () => controller.obscureText.value =
@@ -74,14 +78,16 @@ class LoginForm extends StatelessWidget {
                       ),
                     ),
 
-                    const Text(AppTexts.rememberMe),
+                    // const Text(AppTexts.rememberMe),
+                    Text(AppLocalizations.of(context).rememberMe),
                   ],
                 ),
 
                 /// Forget Password
                 TextButton(
                   onPressed: () => Get.to(() => const ForgetPasswordScreen()),
-                  child: const Text(AppTexts.forgetPassword),
+                  // child: const Text(AppTexts.forgetPassword),
+                  child: Text(AppLocalizations.of(context).forgetPassword),
                 ),
               ],
             ),
@@ -93,7 +99,8 @@ class LoginForm extends StatelessWidget {
               child: ElevatedButton(
                 // onPressed: () => Get.offAll(() => const NavigationMenu()),
                 onPressed: () => controller.emailAndPasswordSignIn(),
-                child: const Text(AppTexts.signIn),
+                // child: const Text(AppTexts.signIn),
+                child: Text(AppLocalizations.of(context).signIn),
               ),
             ),
             const SizedBox(height: AppSizes.spaceBtwItems),
@@ -103,7 +110,8 @@ class LoginForm extends StatelessWidget {
               width: double.infinity,
               child: OutlinedButton(
                 onPressed: () => Get.to(() => const SignupScreen()),
-                child: const Text(AppTexts.createAccount),
+                // child: const Text(AppTexts.createAccount),
+                child: Text(AppLocalizations.of(context).createAccount),
               ),
             ),
           ],

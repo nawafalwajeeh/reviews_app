@@ -3,8 +3,8 @@ import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:reviews_app/features/authentication/controllers/signup/signup_controller.dart';
 import 'package:reviews_app/features/authentication/screens/signup/widgets/terms_conditions_checkbox.dart';
+import 'package:reviews_app/localization/app_localizations.dart';
 import 'package:reviews_app/utils/constants/sizes.dart';
-import 'package:reviews_app/utils/constants/text_strings.dart';
 import 'package:reviews_app/utils/validators/validation.dart';
 
 class SignupForm extends StatelessWidget {
@@ -24,11 +24,14 @@ class SignupForm extends StatelessWidget {
               Expanded(
                 child: TextFormField(
                   controller: controller.firstName,
-                  validator: (value) =>
-                      AppValidator.validateEmptyText(AppTexts.firstName, value),
+                  validator: (value) => AppValidator.validateEmptyText(
+                    AppLocalizations.of(context).firstName,
+                    value,
+                  ),
                   expands: false,
-                  decoration: const InputDecoration(
-                    labelText: AppTexts.firstName,
+                  decoration: InputDecoration(
+                    // labelText: AppTexts.firstName,
+                    labelText: AppLocalizations.of(context).firstName,
                     prefixIcon: Icon(Iconsax.user),
                   ),
                 ),
@@ -37,11 +40,14 @@ class SignupForm extends StatelessWidget {
               Expanded(
                 child: TextFormField(
                   controller: controller.lastName,
-                  validator: (value) =>
-                      AppValidator.validateEmptyText(AppTexts.lastName, value),
+                  validator: (value) => AppValidator.validateEmptyText(
+                    AppLocalizations.of(context).lastName,
+                    value,
+                  ),
                   expands: false,
-                  decoration: const InputDecoration(
-                    labelText: AppTexts.lastName,
+                  decoration: InputDecoration(
+                    // labelText: AppTexts.lastName,
+                    labelText: AppLocalizations.of(context).lastName,
                     prefixIcon: Icon(Iconsax.user),
                   ),
                 ),
@@ -53,10 +59,13 @@ class SignupForm extends StatelessWidget {
           /// Username
           TextFormField(
             controller: controller.username,
-            validator: (value) =>
-                AppValidator.validateEmptyText(AppTexts.username, value),
-            decoration: const InputDecoration(
-              labelText: AppTexts.username,
+            validator: (value) => AppValidator.validateEmptyText(
+              AppLocalizations.of(context).username,
+              value,
+            ),
+            decoration: InputDecoration(
+              // labelText: AppTexts.username,
+              labelText: AppLocalizations.of(context).username,
               prefixIcon: Icon(Iconsax.user_edit),
             ),
           ),
@@ -66,8 +75,9 @@ class SignupForm extends StatelessWidget {
           TextFormField(
             controller: controller.email,
             validator: (value) => AppValidator.validateEmail(value),
-            decoration: const InputDecoration(
-              labelText: AppTexts.email,
+            decoration: InputDecoration(
+              // labelText: AppTexts.email,
+              labelText: AppLocalizations.of(context).email,
               prefixIcon: Icon(Iconsax.direct),
             ),
           ),
@@ -77,8 +87,9 @@ class SignupForm extends StatelessWidget {
           TextFormField(
             controller: controller.phoneNumber,
             validator: (value) => AppValidator.validatePhoneNumber(value),
-            decoration: const InputDecoration(
-              labelText: AppTexts.phoneNo,
+            decoration: InputDecoration(
+              // labelText: AppTexts.phoneNo,
+              labelText: AppLocalizations.of(context).phoneNumber,
               prefixIcon: Icon(Iconsax.call),
             ),
           ),
@@ -91,7 +102,8 @@ class SignupForm extends StatelessWidget {
               validator: (value) => AppValidator.validatePassword(value),
               obscureText: controller.obscureText.value,
               decoration: InputDecoration(
-                labelText: AppTexts.password,
+                // labelText: AppTexts.password,
+                labelText: AppLocalizations.of(context).password,
                 prefixIcon: Icon(Iconsax.password_check),
                 suffixIcon: IconButton(
                   onPressed: () => controller.obscureText.value =
@@ -117,7 +129,8 @@ class SignupForm extends StatelessWidget {
             child: ElevatedButton(
               // onPressed: () => Get.to(() => const VerifyEmailScreen()),
               onPressed: () => controller.signup(),
-              child: const Text(AppTexts.createAccount),
+              // child: const Text(AppTexts.createAccount),
+              child: Text(AppLocalizations.of(context).createAccount),
             ),
           ),
         ],

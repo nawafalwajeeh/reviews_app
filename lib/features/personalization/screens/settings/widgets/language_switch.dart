@@ -10,7 +10,7 @@ class LanguageSwitchWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final localizationService = Get.find<LocalizationService>();
+    final localizationService = LocalizationService.instance;
 
     return Obx(
       () => SettingsMenuTile(

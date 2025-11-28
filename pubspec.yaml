@@ -143,6 +143,18 @@ flutter:
         - asset: assets/fonts/Poppins-Bold.ttf
           weight: 800
 
+    # Arabic Font - Tajawal (OPTIMIZED - only these 4)
+    - family: Tajawal
+      fonts:
+        - asset: assets/fonts/Tajawal-Light.ttf
+          weight: 300
+        - asset: assets/fonts/Tajawal-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/Tajawal-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/Tajawal-Bold.ttf
+          weight: 700
+
 # OLD Launcher icon settings
 # flutter_launcher_icons:
 #   android: "launcher_icon"

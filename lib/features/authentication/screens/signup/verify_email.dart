@@ -5,8 +5,10 @@ import 'package:reviews_app/data/repositories/authentication/authentication_repo
 import 'package:reviews_app/features/authentication/controllers/signup/verify_email_controller.dart';
 import 'package:reviews_app/utils/constants/image_strings.dart';
 import 'package:reviews_app/utils/constants/sizes.dart';
-import 'package:reviews_app/utils/constants/text_strings.dart';
+// import 'package:reviews_app/utils/constants/text_strings.dart';
 import 'package:reviews_app/utils/helpers/helper_functions.dart';
+
+import '../../../../localization/app_localizations.dart';
 
 class VerifyEmailScreen extends StatelessWidget {
   const VerifyEmailScreen({super.key, this.email});
@@ -42,7 +44,8 @@ class VerifyEmailScreen extends StatelessWidget {
 
               /// Title & Subtitle
               Text(
-                AppTexts.confirmEmail,
+                // AppTexts.confirmEmail,
+                AppLocalizations.of(context).confirmEmail,
                 style: Theme.of(context).textTheme.headlineMedium,
                 textAlign: TextAlign.center,
               ),
@@ -54,7 +57,8 @@ class VerifyEmailScreen extends StatelessWidget {
               ),
               const SizedBox(height: AppSizes.spaceBtwItems),
               Text(
-                AppTexts.confirmEmailSubTitle,
+                // AppTexts.confirmEmailSubTitle,
+                AppLocalizations.of(context).confirmEmailSubTitle,
                 style: Theme.of(context).textTheme.labelMedium,
                 textAlign: TextAlign.center,
               ),
@@ -73,7 +77,8 @@ class VerifyEmailScreen extends StatelessWidget {
                   //   ),
                   // ),
                   onPressed: () => controller.checkEmailVerificationStatus(),
-                  child: const Text(AppTexts.tContinue),
+                  // child: const Text(AppTexts.tContinue),
+                  child: Text(AppLocalizations.of(context).continueText),
                 ),
               ),
               const SizedBox(height: AppSizes.spaceBtwItems),
@@ -81,7 +86,8 @@ class VerifyEmailScreen extends StatelessWidget {
                 width: double.infinity,
                 child: TextButton(
                   onPressed: () => controller.sendEmailVerification(),
-                  child: const Text(AppTexts.resendEmail),
+                  // child: const Text(AppTexts.resendEmail),
+                  child: Text(AppLocalizations.of(context).resendEmail),
                 ),
               ),
             ],

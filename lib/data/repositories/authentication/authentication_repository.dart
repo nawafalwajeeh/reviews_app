@@ -60,6 +60,13 @@ class AuthenticationRepository extends GetxController {
   void screenRedirect() async {
     final user = _firebaseUser.value;
 
+    // Check if navigation is ready
+    if (Get.key.currentContext == null) {
+      // If not ready, wait and try again
+      Future.delayed(const Duration(milliseconds: 100), screenRedirect);
+      return;
+    }
+
     if (user != null) {
       // check if user is not anonymose
       if (!user.isAnonymous) {

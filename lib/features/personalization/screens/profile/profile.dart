@@ -12,6 +12,7 @@ import 'package:reviews_app/features/personalization/screens/profile/widgets/cha
 import 'package:reviews_app/features/personalization/screens/profile/widgets/profile_menu.dart';
 import 'package:reviews_app/utils/constants/image_strings.dart';
 import 'package:reviews_app/utils/constants/sizes.dart';
+import '../../../../localization/app_localizations.dart' show AppLocalizations;
 import '../../../../utils/popups/loaders.dart';
 import '../../controllers/user_controller.dart';
 import 'widgets/change_name.dart';
@@ -28,7 +29,8 @@ class ProfileScreen extends StatelessWidget {
       appBar: CustomAppBar(
         showBackArrow: true,
         title: Text(
-          'Profile',
+          // 'Profile',
+          AppLocalizations.of(context).profile,
           style: Theme.of(context).textTheme.headlineMedium,
         ),
       ),
@@ -62,7 +64,10 @@ class ProfileScreen extends StatelessWidget {
                     }),
                     TextButton(
                       onPressed: () => controller.uploadUserProfilePicture(),
-                      child: Text('Change Profile Picture'),
+                      // child: Text('Change Profile Picture'),
+                      child: Text(
+                        AppLocalizations.of(context).changeProfilePicture,
+                      ),
                     ),
                   ],
                 ),
@@ -74,15 +79,17 @@ class ProfileScreen extends StatelessWidget {
               const SizedBox(height: AppSizes.spaceBtwItems),
 
               /// Heading Profile Info
-              const AppSectionHeading(
-                title: 'Profile Information',
+              AppSectionHeading(
+                // title: 'Profile Information',
+                title: AppLocalizations.of(context).profileInformation,
                 showActionButton: false,
               ),
               const SizedBox(height: AppSizes.spaceBtwItems),
 
               Obx(() {
                 return AppProfileMenu(
-                  title: 'Name',
+                  // title: 'Name',
+                  title: AppLocalizations.of(context).name,
                   // value: 'Alwajeeh',
                   value: controller.user.value.fullName,
                   onPressed: () => Get.to(() => const ChangeName()),
@@ -90,7 +97,8 @@ class ProfileScreen extends StatelessWidget {
               }),
               Obx(
                 () => AppProfileMenu(
-                  title: 'Username',
+                  // title: 'Username',
+                  title: AppLocalizations.of(context).username,
                   // value: 'Top_coder',
                   value: controller.user.value.userName,
                   onPressed: () => Get.to(() => const ChangeUsername()),
@@ -103,14 +111,16 @@ class ProfileScreen extends StatelessWidget {
               const SizedBox(height: AppSizes.spaceBtwItems),
 
               /// Heading Personal Info
-              const AppSectionHeading(
-                title: 'Personal Information',
+              AppSectionHeading(
+                // title: 'Personal Information',
+                title: AppLocalizations.of(context).personalInformation,
                 showActionButton: false,
               ),
               const SizedBox(height: AppSizes.spaceBtwItems),
 
               AppProfileMenu(
-                title: 'User ID',
+                // title: 'User ID',
+                title: AppLocalizations.of(context).userId,
                 // value: '12345',
                 value: controller.user.value.id ?? '',
                 onPressed: () {
@@ -118,21 +128,25 @@ class ProfileScreen extends StatelessWidget {
                     ClipboardData(text: controller.user.value.id ?? ''),
                   );
                   AppLoaders.successSnackBar(
-                    title: 'Copied',
-                    message: 'User ID copied to clipboard',
+                    // title: 'Copied',
+                    title: AppLocalizations.of(context).copied,
+                    // message: 'User ID copied to clipboard',
+                    message: AppLocalizations.of(context).userIdCopied,
                   );
                 },
                 icon: Iconsax.copy,
               ),
               AppProfileMenu(
-                title: 'E-mail',
+                // title: 'E-mail',
+                title: AppLocalizations.of(context).email,
                 // value: 'coder@gmail.com',
                 value: controller.user.value.email,
                 onPressed: () {},
               ),
               Obx(
                 () => AppProfileMenu(
-                  title: 'Phone Number',
+                  // title: 'Phone Number',
+                  title: AppLocalizations.of(context).phoneNumber,
                   // value: '+967-778-228445',
                   value: controller.user.value.phoneNumber,
                   onPressed: () => Get.to(() => const ChangePhone()),
@@ -140,17 +154,20 @@ class ProfileScreen extends StatelessWidget {
               ),
               Obx(
                 () => AppProfileMenu(
-                  title: 'Gender',
+                  // title: 'Gender',
+                  title: AppLocalizations.of(context).gender,
                   value: controller.user.value.gender.toString(),
                   onPressed: () => Get.to(() => const ChangeGender()),
                 ),
               ),
               Obx(
                 () => AppProfileMenu(
-                  title: 'Date of Birth',
+                  // title: 'Date of Birth',
+                  title: AppLocalizations.of(context).dateOfBirth,
                   value: controller.user.value.birthDate != null
                       ? '${controller.user.value.birthDate!.day}/${controller.user.value.birthDate!.month}/${controller.user.value.birthDate!.year}'
-                      : 'Not set',
+                      // : 'Not set',
+                      : AppLocalizations.of(context).notSet,
                   onPressed: () => Get.to(() => const ChangeBirthDate()),
                 ),
               ),
@@ -161,7 +178,8 @@ class ProfileScreen extends StatelessWidget {
                 child: TextButton(
                   onPressed: () => controller.deleteAccountWarningPopup(),
                   child: Text(
-                    'Close Account',
+                    // 'Close Account',
+                    AppLocalizations.of(context).closeAccount,
                     style: TextStyle(color: Colors.red),
                   ),
                 ),

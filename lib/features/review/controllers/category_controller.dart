@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:reviews_app/data/repositories/authentication/authentication_repository.dart';
 import 'package:reviews_app/data/repositories/place/place_repository.dart';
+import 'package:reviews_app/features/review/models/category_extension.dart';
 import 'package:reviews_app/features/review/models/category_mapper.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../../data/repositories/categories/category_repository.dart';
+import '../../../localization/app_localizations.dart';
 import '../../../utils/constants/image_strings.dart';
 import '../../../utils/popups/full_screen_loader.dart';
 import '../../../utils/popups/loaders.dart';
@@ -31,16 +33,43 @@ class CategoryController extends GetxController {
 
   final RxList<String> categories = allCategoryNames.obs;
 
-  // @override
-  // void onInit() {
-  //   fetchCategories();
-  //   super.onInit();
-  // }
+  // Cache for localized category names
+  final Map<String, String> _localizedCategoryCache = {};
+
+
 
   @override
   void onReady() {
     fetchCategories();
     super.onReady();
+  }
+
+
+   /// -- Get Cached Localized CategoryName
+  String getCachedLocalizedCategoryName(String categoryId, BuildContext context) {
+    final cacheKey = '${categoryId}_${Localizations.localeOf(context).languageCode}';
+    
+    if (_localizedCategoryCache.containsKey(cacheKey)) {
+      return _localizedCategoryCache[cacheKey]!;
+    }
+    
+    // If not cached, get it and cache it
+    final category = allCategories.firstWhere(
+      (cat) => cat.id == categoryId,
+      orElse: () => CategoryModel.empty(),
+    );
+    
+    final localizedName = category.id.isNotEmpty 
+        ? category.getLocalizedName(context)
+        : AppLocalizations.of(context).categoryNotFound;
+    
+    _localizedCategoryCache[cacheKey] = localizedName;
+    return localizedName;
+  }
+
+  /// Clear cache when language changes
+  void clearLocalizationCache() {
+    _localizedCategoryCache.clear();
   }
 
   final RxList<CategoryModel> mockCategories = allMockCategories.obs;
@@ -127,6 +156,33 @@ class CategoryController extends GetxController {
       AppLoaders.errorSnackBar(title: 'Oh Snap', message: e.toString());
       return '';
     }
+  }
+
+
+    /// Get localized category name by ID
+  Future<String> getLocalizedCategoryName(String categoryId, BuildContext context) async {
+    try {
+      final category = await _categoryRepository.getSelectedCategory(categoryId);
+      if (category.id.isNotEmpty) {
+        return category.getName(context); // Using the new helper method
+      } else {
+        return 'Unknown Category';
+      }
+    } catch (e) {
+      return 'Unknown Category';
+    }
+  }
+
+   /// Get list of localized category names
+  List<String> getLocalizedCategoryNames(BuildContext context) {
+    return allCategories.map((category) => category.getName(context)).toList();
+  }
+
+  /// Get featured categories with localized names
+  List<CategoryModel> getLocalizedFeaturedCategories(BuildContext context) {
+    return featuredCategories.map((category) => category.copyWith(
+      // This creates a copy with the localized name for display
+    )).toList();
   }
 
   /// -- Get Category Places.

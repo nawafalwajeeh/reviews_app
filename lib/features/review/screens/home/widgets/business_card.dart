@@ -4,6 +4,8 @@ import 'package:reviews_app/features/review/screens/place/add_new_place.dart';
 import 'package:reviews_app/utils/constants/colors.dart';
 import 'package:reviews_app/utils/constants/sizes.dart';
 
+import '../../../../../localization/app_localizations.dart';
+
 class BusinessCard extends StatelessWidget {
   const BusinessCard({super.key});
 
@@ -47,7 +49,8 @@ class BusinessCard extends StatelessWidget {
                   children: [
                     /// -- Title
                     Text(
-                      'List Your Business',
+                      // 'List Your Business',
+                      AppLocalizations.of(context).listYourBusiness,
                       style: Theme.of(context).textTheme.headlineSmall!
                           .copyWith(
                             color: Colors.white,
@@ -65,7 +68,8 @@ class BusinessCard extends StatelessWidget {
                             bottom: AppSizes.spaceBtwItems,
                           ),
                           child: Text(
-                            'Get discovered by millions of customers and grow your business',
+                            // 'Get discovered by millions of customers and grow your business',
+                            AppLocalizations.of(context).getDiscoveredByMillions,
                             style: Theme.of(context).textTheme.bodyMedium!
                                 .copyWith(
                                   color: AppColors.white.withValues(
@@ -95,7 +99,8 @@ class BusinessCard extends StatelessWidget {
                         ),
                       ),
                       child: Text(
-                        'Get Started',
+                        // 'Get Started',
+                        AppLocalizations.of(context).getStarted,
                         style: Theme.of(context).textTheme.titleMedium!
                             .copyWith(
                               fontWeight: FontWeight.w600,

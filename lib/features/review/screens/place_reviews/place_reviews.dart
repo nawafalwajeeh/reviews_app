@@ -5,6 +5,7 @@ import 'package:reviews_app/common/widgets/place/rating/rating_indicator.dart';
 import 'package:reviews_app/features/review/screens/place_reviews/widgets/user_review_card.dart';
 import 'package:reviews_app/utils/constants/sizes.dart';
 
+import '../../../../localization/app_localizations.dart';
 import '../../models/place_model.dart';
 import '../../models/review_model.dart';
 import '../../controllers/review_controller.dart'; // Import the controller
@@ -23,9 +24,13 @@ class PlaceReviewsScreen extends StatelessWidget {
 
     return Scaffold(
       resizeToAvoidBottomInset: true,
-      appBar: const CustomAppBar(
+      appBar: CustomAppBar(
         showBackArrow: true,
-        title: Text('Rating & Reviews'),
+        // title: Text('Rating & Reviews'),
+        // title: Text(AppLocalizations.of(context).ratingReviews),
+        title: Text(
+          '${AppLocalizations.of(context).ratingReviews} & ${AppLocalizations.of(context).reviews}',
+        ),
       ),
       body: Column(
         children: [
@@ -37,8 +42,9 @@ class PlaceReviewsScreen extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   /// Title
-                  const Text(
-                    'Ratings and reviews are verified and are from people who use the same type of device that you use.',
+                  Text(
+                    // 'Ratings and reviews are verified and are from people who use the same type of device that you use.',
+                    AppLocalizations.of(context).ratingsVerified,
                   ),
                   const SizedBox(height: AppSizes.spaceBtwItems),
 
@@ -73,7 +79,8 @@ class PlaceReviewsScreen extends StatelessWidget {
                           /// Rating Bar Indicator
                           AppRatingBarIndicator(rating: currentRating),
                           Text(
-                            '$currentReviewsCount reviews',
+                            // '$currentReviewsCount reviews',
+                            '$currentReviewsCount ${AppLocalizations.of(context).reviews}',
                             style: Theme.of(context).textTheme.bodySmall,
                           ),
                         ],
@@ -99,7 +106,8 @@ class PlaceReviewsScreen extends StatelessWidget {
                       if (snapshot.hasError) {
                         return Center(
                           child: Text(
-                            'Error loading reviews: ${snapshot.error}',
+                            // 'Error loading reviews: ${snapshot.error}',
+                            AppLocalizations.of(context).errorLoadingReviews,
                           ),
                         );
                       }
@@ -108,8 +116,11 @@ class PlaceReviewsScreen extends StatelessWidget {
 
                       // 3. No Data State
                       if (reviews == null || reviews.isEmpty) {
-                        return const Center(
-                          child: Text('No reviews found for this place.'),
+                        return Center(
+                          // child: Text('No reviews found for this place.'),
+                          child: Text(
+                            AppLocalizations.of(context).noReviewsFound,
+                          ),
                         );
                       }
 

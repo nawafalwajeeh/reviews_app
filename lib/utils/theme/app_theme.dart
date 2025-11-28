@@ -9,13 +9,16 @@ import 'package:reviews_app/utils/theme/widgets_themes/app_outlined_button_theme
 import 'package:reviews_app/utils/theme/widgets_themes/app_text_field_theme.dart';
 import 'package:reviews_app/utils/theme/widgets_themes/app_text_theme.dart';
 
+import '../helpers/font_helper.dart';
+
 class AppTheme {
   AppTheme._();
 
   ///-- Light Theme
   static ThemeData lightTheme = ThemeData(
     useMaterial3: true,
-    fontFamily: 'Poppins',
+    // fontFamily: 'Poppins',
+    fontFamily: FontHelper.appFontFamily,
     brightness: Brightness.light,
     primaryColor: AppColors.primaryColor,
     scaffoldBackgroundColor: AppColors.white,
@@ -32,7 +35,8 @@ class AppTheme {
   ///-- Dark Theme
   static ThemeData darkTheme = ThemeData(
     useMaterial3: true,
-    fontFamily: 'Poppins',
+    // fontFamily: 'Poppins',
+    fontFamily: FontHelper.appFontFamily,
     brightness: Brightness.dark,
     primaryColor: AppColors.primaryColor,
     scaffoldBackgroundColor: AppColors.black,

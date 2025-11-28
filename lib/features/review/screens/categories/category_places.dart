@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:reviews_app/common/widgets/appbar/appbar.dart';
 import 'package:reviews_app/common/widgets/place/horizontal_place_card.dart';
 import 'package:reviews_app/common/widgets/shimmers/horizontal_place_shimmer.dart';
+import 'package:reviews_app/features/review/models/category_extension.dart';
 import 'package:reviews_app/utils/constants/sizes.dart';
 import 'package:reviews_app/features/review/controllers/category_controller.dart';
 import 'package:reviews_app/features/review/models/category_model.dart';
@@ -29,7 +30,8 @@ class CategoryPlacesScreen extends StatelessWidget {
       appBar: CustomAppBar(
         showBackArrow: true,
         title: Text(
-          category.name,
+          // category.name,
+          category.getLocalizedName(context),
           style: Theme.of(context).textTheme.headlineSmall,
         ),
       ),
@@ -46,7 +48,8 @@ class CategoryPlacesScreen extends StatelessWidget {
                   height: 120,
                   width: 120,
                   titleSize: 100,
-                  title: category.name,
+                  // title: category.name,
+                  title: category.getLocalizedName(context),
                   icon: CategoryMapper.getIcon(category.iconKey),
                   gradientColors: CategoryMapper.getGradientColors(
                     category.gradientKey,

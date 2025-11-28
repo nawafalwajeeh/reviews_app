@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:reviews_app/features/authentication/controllers/forget_password/forget_password_controller.dart';
+import 'package:reviews_app/localization/app_localizations.dart';
 import 'package:reviews_app/utils/constants/sizes.dart';
-import 'package:reviews_app/utils/constants/text_strings.dart';
 import 'package:reviews_app/utils/validators/validation.dart';
 
 class ForgetPasswordScreen extends StatelessWidget {
@@ -23,12 +23,14 @@ class ForgetPasswordScreen extends StatelessWidget {
             children: [
               /// Heading
               Text(
-                AppTexts.forgetPasswordTitle,
+                // AppTexts.forgetPasswordTitle,
+                AppLocalizations.of(context).forgetPasswordTitle,
                 style: Theme.of(context).textTheme.headlineMedium,
               ),
               const SizedBox(height: AppSizes.spaceBtwItems),
               Text(
-                AppTexts.forgetPasswordSubTitle,
+                // AppTexts.forgetPasswordSubTitle,
+                AppLocalizations.of(context).forgetPasswordSubTitle,
                 style: Theme.of(context).textTheme.labelMedium,
               ),
               const SizedBox(height: AppSizes.spaceBtwSections * 2),
@@ -39,8 +41,9 @@ class ForgetPasswordScreen extends StatelessWidget {
                 child: TextFormField(
                   controller: controller.email,
                   validator: AppValidator.validateEmail,
-                  decoration: const InputDecoration(
-                    labelText: AppTexts.email,
+                  decoration: InputDecoration(
+                    // labelText: AppTexts.email,
+                    labelText: AppLocalizations.of(context).email,
                     prefixIcon: Icon(Iconsax.direct_right),
                   ),
                 ),
@@ -52,7 +55,8 @@ class ForgetPasswordScreen extends StatelessWidget {
                 width: double.infinity,
                 child: ElevatedButton(
                   onPressed: () => controller.sendPasswordResetEmail(),
-                  child: const Text(AppTexts.submit),
+                  // child: const Text(AppTexts.submit),
+                  child: Text(AppLocalizations.of(context).submit),
                 ),
               ),
             ],

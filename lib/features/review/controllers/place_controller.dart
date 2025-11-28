@@ -94,6 +94,86 @@ class PlaceController extends GetxController {
   final RxString editingPlaceId = ''.obs;
   final RxList<String> existingImageUrls = <String>[].obs;
 
+  final allTags = const [
+    // General
+    'Family Friendly',
+    'Pet Friendly',
+    'Budget Friendly',
+    'Luxury',
+    'Romantic',
+    'Business',
+    'Student Friendly',
+
+    // Location Types
+    'Outdoor',
+    'Indoor',
+    'Beachfront',
+    'Mountain View',
+    'City Center',
+    'Suburban',
+    'Rural',
+
+    // Amenities
+    'Free WiFi',
+    'Parking Available',
+    'Wheelchair Accessible',
+    'Air Conditioned',
+    'Heating',
+    'Swimming Pool',
+    'Gym',
+    'Spa',
+
+    // Activities
+    'Live Music',
+    'Sports Bar',
+    'Gaming',
+    'Karaoke',
+    'Dance Floor',
+    'Quiet Atmosphere',
+
+    // Food & Drink
+    'Vegetarian Options',
+    'Vegan Options',
+    'Gluten-Free Options',
+    'Halal',
+    'Alcohol Served',
+    'Coffee Shop',
+    'Fine Dining',
+    'Fast Food',
+    'Buffet',
+
+    // Accommodation
+    'Hotel',
+    'Hostel',
+    'Resort',
+    'Vacation Rental',
+    'Camping',
+
+    // Entertainment
+    'Cinema',
+    'Theater',
+    'Museum',
+    'Art Gallery',
+    'Shopping',
+    'Amusement Park',
+
+    // Services
+    '24/7',
+    'Delivery',
+    'Takeaway',
+    'Reservations',
+    'Catering',
+    'Event Space',
+
+    // Special Features
+    'Historic',
+    'Modern',
+    'Traditional',
+    'Eco-Friendly',
+    'LGBTQ+ Friendly',
+    'Kid Friendly',
+  ];
+
   @override
   void onInit() {
     super.onInit();

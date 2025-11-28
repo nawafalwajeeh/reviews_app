@@ -8,7 +8,7 @@ import 'package:reviews_app/features/review/screens/barcode/barcode_scanner.dart
 import 'package:reviews_app/features/review/screens/notifications/notifications.dart';
 import 'package:reviews_app/routes/app_routes.dart';
 import 'package:reviews_app/utils/constants/colors.dart';
-import 'package:reviews_app/utils/constants/text_strings.dart';
+import '../../../../../localization/app_localizations.dart';
 import '../../../../../utils/constants/sizes.dart';
 
 class HomeAppBar extends StatelessWidget {
@@ -23,7 +23,8 @@ class HomeAppBar extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            AppTexts.homeAppbarTitle,
+            // AppTexts.homeAppbarTitle,
+            AppLocalizations.of(context).homeAppbarTitle,
             style: Theme.of(
               context,
             ).textTheme.labelMedium?.apply(color: AppColors.grey),

@@ -8,6 +8,7 @@ import 'package:reviews_app/utils/constants/colors.dart';
 import 'package:reviews_app/utils/constants/sizes.dart';
 import 'package:reviews_app/utils/helpers/cloud_helper_functions.dart';
 
+import '../../../../localization/app_localizations.dart';
 import 'add_new_address.dart';
 
 class UserAddressScreen extends StatelessWidget {
@@ -26,7 +27,8 @@ class UserAddressScreen extends StatelessWidget {
       appBar: CustomAppBar(
         showBackArrow: true,
         title: Text(
-          'Addresses',
+          // 'Addresses',
+          AppLocalizations.of(context).myAddresses,
           style: Theme.of(context).textTheme.headlineSmall,
         ),
       ),

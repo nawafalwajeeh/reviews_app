@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:readmore/readmore.dart';
+import 'package:reviews_app/localization/app_localizations.dart';
 import '../../../../common/widgets/texts/section_heading.dart';
 import '../../../../data/repositories/authentication/authentication_repository.dart';
 import '../../../../utils/constants/colors.dart';
@@ -66,8 +67,9 @@ class PlaceDetailsScreen extends StatelessWidget {
                       const SizedBox(height: AppSizes.spaceBtwSections),
 
                       /// -- Overview & Description
-                      const AppSectionHeading(
-                        title: 'Description',
+                      AppSectionHeading(
+                        // title: 'Description',
+                        title: AppLocalizations.of(context).description,
                         showActionButton: false,
                       ),
 
@@ -77,8 +79,12 @@ class PlaceDetailsScreen extends StatelessWidget {
                         place.description,
                         trimLines: 2,
                         trimMode: TrimMode.Line,
-                        trimCollapsedText: ' Show more',
-                        trimExpandedText: ' Less',
+                        // trimCollapsedText: ' Show more',
+                        trimCollapsedText: AppLocalizations.of(
+                          context,
+                        ).showMore,
+                        // trimExpandedText: ' Less',
+                        trimExpandedText: AppLocalizations.of(context).showLess,
                         moreStyle: TextStyle(
                           color: AppColors.primaryColor,
                           fontSize: 14,
@@ -108,8 +114,9 @@ class PlaceDetailsScreen extends StatelessWidget {
                         ),
 
                       /// -- Tags Section
-                      const AppSectionHeading(
-                        title: 'Tags',
+                      AppSectionHeading(
+                        // title: 'Tags',
+                        title: AppLocalizations.of(context).tags,
                         showActionButton: false,
                       ),
 
@@ -146,7 +153,8 @@ class PlaceDetailsScreen extends StatelessWidget {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 AppSectionHeading(
-                                  title: 'Reviews',
+                                  // title: 'Reviews',
+                                  title: AppLocalizations.of(context).reviews,
                                   showActionButton: false,
                                 ),
                                 Icon(Iconsax.arrow_right_3, size: 18),
@@ -161,7 +169,8 @@ class PlaceDetailsScreen extends StatelessWidget {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 AppSectionHeading(
-                                  title: 'Comments',
+                                  // title: 'Comments',
+                                  title: AppLocalizations.of(context).comments,
                                   showActionButton: false,
                                 ),
                                 Icon(Iconsax.arrow_right_3, size: 18),

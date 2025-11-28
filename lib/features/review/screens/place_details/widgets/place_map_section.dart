@@ -5,6 +5,8 @@ import 'package:reviews_app/common/widgets/texts/section_heading.dart';
 import 'package:reviews_app/utils/constants/sizes.dart';
 import 'package:reviews_app/utils/constants/marker_icons.dart';
 
+import '../../../../../localization/app_localizations.dart';
+
 class PlaceMapSection extends StatefulWidget {
   final double latitude;
   final double longitude;
@@ -113,8 +115,9 @@ class _PlaceMapSectionState extends State<PlaceMapSection> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const AppSectionHeading(
-          title: 'Location on Map',
+         AppSectionHeading(
+          // title: 'Location on Map',
+          title: AppLocalizations.of(context).locationOnMap,
           showActionButton: false,
         ),
         const SizedBox(height: AppSizes.spaceBtwItems),
@@ -176,12 +179,13 @@ class _PlaceMapSectionState extends State<PlaceMapSection> {
                             ),
                           ],
                         ),
-                        child: const Column(
+                        child:  Column(
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             CircularProgressIndicator(),
                             SizedBox(height: AppSizes.sm),
-                            Text('Loading location...'),
+                            // Text('Loading location...'),
+                            Text(AppLocalizations.of(context).loading),
                           ],
                         ),
                       ),
@@ -213,7 +217,8 @@ class _PlaceMapSectionState extends State<PlaceMapSection> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Location Coordinates',
+                      // 'Location Coordinates',
+                      AppLocalizations.of(context).locationCoordinates,
                       style: Theme.of(context).textTheme.labelSmall?.copyWith(
                         color: Colors.grey.shade600,
                       ),

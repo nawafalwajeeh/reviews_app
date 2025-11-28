@@ -5,6 +5,7 @@ import 'package:reviews_app/common/widgets/texts/section_heading.dart';
 import 'package:reviews_app/features/review/controllers/notification_controller.dart';
 import '../../../../common/widgets/custom_shapes/containers/search_container.dart';
 import '../../../../common/widgets/shimmers/trending_list_shimmer.dart';
+import '../../../../localization/app_localizations.dart';
 import '../../../../utils/constants/sizes.dart';
 import '../../controllers/place_controller.dart';
 import '../search/search.dart';
@@ -36,7 +37,8 @@ class HomeScreen extends StatelessWidget {
 
                     /// -- SearchBar
                     AppSearchContainer(
-                      text: 'Search for Places',
+                      // text: 'Search for Places',
+                      text: AppLocalizations.of(context).searchPlaces,
                       onTap: () => Get.to(() => SearchScreen()),
                     ),
                     const SizedBox(height: AppSizes.spaceBtwSections),
@@ -45,14 +47,15 @@ class HomeScreen extends StatelessWidget {
               ),
 
               /// -- Categories
-              const Padding(
+              Padding(
                 padding: EdgeInsets.symmetric(
                   horizontal: AppSizes.defaultSpace,
                 ),
                 child: Column(
                   children: [
                     AppSectionHeading(
-                      title: 'Popular Categories',
+                      // title: 'Popular Categories',
+                      title: AppLocalizations.of(context).popularCategories,
                       showActionButton: false,
                     ),
                     SizedBox(height: AppSizes.spaceBtwItems),
@@ -76,7 +79,8 @@ class HomeScreen extends StatelessWidget {
                 child: Column(
                   children: [
                     AppSectionHeading(
-                      title: 'Trending',
+                      // title: 'Trending',
+                      title: AppLocalizations.of(context).trendingPlaces,
                       showActionButton: false,
                     ),
                     SizedBox(height: AppSizes.spaceBtwItems),
@@ -94,8 +98,9 @@ class HomeScreen extends StatelessWidget {
                       }
 
                       // Show nothing or an empty state if loaded but empty
-                      return const Center(
-                        child: Text('No trending places found.'),
+                      return Center(
+                        // child: Text('No trending places found.'),
+                        child: Text(AppLocalizations.of(context).noTrendingPlacesFound),
                       );
                     }),
 

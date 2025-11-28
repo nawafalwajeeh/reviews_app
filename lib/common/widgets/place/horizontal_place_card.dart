@@ -8,6 +8,7 @@ import 'package:reviews_app/features/review/screens/place_details/place_details.
 import 'package:reviews_app/utils/constants/colors.dart';
 import 'package:reviews_app/utils/constants/enums.dart';
 import 'package:reviews_app/utils/helpers/helper_functions.dart';
+import '../../../localization/app_localizations.dart';
 import '../../../utils/constants/sizes.dart';
 import '../../../features/review/models/place_model.dart';
 import 'rating/place_rating_badge.dart';
@@ -171,6 +172,7 @@ class PlaceCardHorizontal extends StatelessWidget {
                         //   overflow: TextOverflow.ellipsis,
                         // ),
                         CategoryNameText(categoryId: place.categoryId),
+                      
                         const SizedBox(height: AppSizes.xs),
                         Text(
                           place.description,
@@ -198,7 +200,8 @@ class PlaceCardHorizontal extends StatelessWidget {
                         ),
                         alignment: Alignment.center,
                         child: Text(
-                          'View Details',
+                          // 'View Details',
+                          AppLocalizations.of(context).viewDetails,
                           style: Theme.of(context).textTheme.labelLarge?.apply(
                             color: AppColors.white,
                             fontWeightDelta: 1,

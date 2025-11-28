@@ -10,7 +10,6 @@ import 'package:reviews_app/features/personalization/controllers/settings_contro
 import 'package:reviews_app/features/personalization/screens/profile/profile.dart';
 import 'package:reviews_app/utils/constants/colors.dart';
 import 'package:reviews_app/utils/constants/sizes.dart';
-import 'package:reviews_app/utils/constants/text_strings.dart';
 import '../../../../data/repositories/authentication/authentication_repository.dart';
 import '../../../../localization/app_localizations.dart';
 import 'widgets/language_switch.dart';
@@ -34,8 +33,8 @@ class SettingsScreen extends StatelessWidget {
                   /// AppBar
                   CustomAppBar(
                     title: Text(
-                      'Account',
-                      // AppLocalizations.of(context).account,
+                      // 'Account',
+                      AppLocalizations.of(context).account,
                       style: Theme.of(
                         context,
                       ).textTheme.headlineMedium?.apply(color: AppColors.white),
@@ -57,14 +56,15 @@ class SettingsScreen extends StatelessWidget {
               child: Column(
                 children: [
                   /// Account Settings
-                  const AppSectionHeading(
-                    title: 'Account Settings',
+                  AppSectionHeading(
+                    // title: 'Account Settings',
+                    title: AppLocalizations.of(context).accountSettings,
                     showActionButton: false,
                   ),
                   const SizedBox(height: AppSizes.spaceBtwItems),
 
                   /// Tiles from [accountSettings] list
-                  ...accountSettings.map(
+                  ...accountSettings(context).map(
                     (tile) => SettingsMenuTile(
                       icon: tile.icon,
                       title: tile.title,
@@ -76,13 +76,14 @@ class SettingsScreen extends StatelessWidget {
 
                   /// App Settings
                   const SizedBox(height: AppSizes.spaceBtwItems),
-                  const AppSectionHeading(
-                    title: 'App Settings',
+                  AppSectionHeading(
+                    // title: 'App Settings',
+                    title: AppLocalizations.of(context).appSettings,
                     showActionButton: false,
                   ),
 
                   /// Tiles from [appSettings] list
-                  ...appSettings.map(
+                  ...appSettings(context).map(
                     (tile) => SettingsMenuTile(
                       icon: tile.icon,
                       title: tile.title,
@@ -93,15 +94,33 @@ class SettingsScreen extends StatelessWidget {
                   ),
 
                   // Special case for Dark/Light mode switch
+                  // Obx(
+                  //   () => SettingsMenuTile(
+                  //     icon: controller.themeMode == ThemeMode.dark
+                  //         ? Iconsax.moon
+                  //         : Iconsax.sun,
+                  //     title: controller.themeMode == ThemeMode.dark
+                  //         ? 'Dark Mode'
+                  //         : 'Light Mode',
+                  //     subTitle: 'switch dark or light mode',
+                  //     trailing: Switch(
+                  //       value: controller.themeMode == ThemeMode.dark,
+                  //       onChanged: (value) => controller.toggleTheme(
+                  //         value ? ThemeMode.dark : ThemeMode.light,
+                  //       ),
+                  //     ),
+                  //   ),
+                  // ),
+                  // Special case for Dark/Light mode switch
                   Obx(
                     () => SettingsMenuTile(
                       icon: controller.themeMode == ThemeMode.dark
                           ? Iconsax.moon
                           : Iconsax.sun,
                       title: controller.themeMode == ThemeMode.dark
-                          ? 'Dark Mode'
-                          : 'Light Mode',
-                      subTitle: 'switch dark or light mode',
+                          ? AppLocalizations.of(context).darkMode
+                          : AppLocalizations.of(context).lightMode,
+                      subTitle: AppLocalizations.of(context).switchTheme,
                       trailing: Switch(
                         value: controller.themeMode == ThemeMode.dark,
                         onChanged: (value) => controller.toggleTheme(
@@ -120,7 +139,8 @@ class SettingsScreen extends StatelessWidget {
                       onPressed: () =>
                           AuthenticationRepository.instance.logout(),
                       // onPressed: () => Get.offAll(() => const LoginScreen()),
-                      child: const Text(AppTexts.logout),
+                      // child: const Text(AppTexts.logout),
+                      child: Text(AppLocalizations.of(context).logout),
                     ),
                   ),
                 ],

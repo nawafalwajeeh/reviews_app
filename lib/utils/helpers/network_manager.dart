@@ -4,6 +4,8 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/services.dart';
 import 'package:reviews_app/utils/popups/loaders.dart';
 
+import '../../localization/app_localizations.dart';
+
 /// Manages the network connectivity status and provides methods to check and handle connectivity changes.
 class AppNetworkManager extends GetxController {
   static AppNetworkManager get instance => Get.find();
@@ -31,7 +33,10 @@ class AppNetworkManager extends GetxController {
     if (hasConnected) {
       // Only show the success snackbar if the previous state was disconnected.
       if (_connectionStatus.value == ConnectivityResult.none) {
-        AppLoaders.successSnackBar(title: 'Internet is Connected');
+        // AppLoaders.successSnackBar(title: 'Internet is Connected');
+        AppLoaders.successSnackBar(
+          title: AppLocalizations.of(Get.context!).internetConnected,
+        );
       }
       _connectionStatus.value = result.firstWhere(
         (status) => status != ConnectivityResult.none,
@@ -40,7 +45,10 @@ class AppNetworkManager extends GetxController {
     } else {
       // Only show the warning snackbar if the previous state was connected.
       if (_connectionStatus.value != ConnectivityResult.none) {
-        AppLoaders.warningSnackBar(title: 'No Internet Connection');
+        // AppLoaders.warningSnackBar(title: 'No Internet Connection');
+        AppLoaders.warningSnackBar(
+          title: AppLocalizations.of(Get.context!).noInternetConnection,
+        );
       }
       _connectionStatus.value = ConnectivityResult.none;
     }
