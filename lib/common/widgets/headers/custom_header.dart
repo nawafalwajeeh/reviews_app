@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:reviews_app/utils/constants/sizes.dart';
 
+import '../../../localization/app_localizations.dart';
 import '../../../utils/constants/colors.dart';
 import '../../../utils/helpers/helper_functions.dart';
 import '../appbar/appbar.dart';
@@ -15,7 +16,7 @@ class CustomHeader extends StatelessWidget {
     this.isFavorite = false,
     this.onPressed,
     this.iconBackgroundColor,
-    this.favoriteCount
+    this.favoriteCount,
   });
 
   final String title;
@@ -41,7 +42,8 @@ class CustomHeader extends StatelessWidget {
           if (isFavorite) ...[
             const SizedBox(height: AppSizes.xs),
             Text(
-              '$favoriteCount places saved',
+              // '$favoriteCount places saved',
+              AppLocalizations.of(context).placesSaved(favoriteCount ?? 0),
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                 color: Theme.of(
                   context,

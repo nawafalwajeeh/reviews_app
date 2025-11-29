@@ -3,6 +3,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:reviews_app/features/review/controllers/place_controller.dart';
+import 'package:reviews_app/localization/app_localizations.dart';
 import 'package:reviews_app/utils/constants/colors.dart';
 import 'package:reviews_app/utils/helpers/helper_functions.dart';
 import '../../../../../utils/constants/sizes.dart';
@@ -21,7 +22,8 @@ class EditPhotoBox extends StatelessWidget {
     return Obx(() {
       final selectedImages = controller.selectedLocalImageFiles;
       final bool hasNewImages = selectedImages.isNotEmpty;
-      final bool hasExistingImages = place.images != null && place.images!.isNotEmpty;
+      final bool hasExistingImages =
+          place.images != null && place.images!.isNotEmpty;
 
       return GestureDetector(
         onTap: controller.pickAndHandleLocalImages,
@@ -62,14 +64,18 @@ class EditPhotoBox extends StatelessWidget {
             ),
             const SizedBox(height: AppSizes.sm),
             Text(
-              'Add Photos',
+              // 'Add Photos',
+              AppLocalizations.of(context).addPhotos,
               style: Theme.of(
                 context,
               ).textTheme.titleMedium?.copyWith(color: AppColors.primaryColor),
             ),
             const SizedBox(height: AppSizes.xs),
             Text(
-              'Upload up to ${PlaceController.instance.maxImages} photos of this place',
+              // 'Upload up to ${PlaceController.instance.maxImages} photos of this place',
+              AppLocalizations.of(
+                context,
+              ).uploadPhotos(PlaceController.instance.maxImages),
               style: Theme.of(context).textTheme.bodySmall?.copyWith(
                 color: AppHelperFunctions.isDarkMode(context)
                     ? AppColors.white
@@ -102,7 +108,8 @@ class EditPhotoBox extends StatelessWidget {
           children: [
             if (existingImages.isNotEmpty) ...[
               Text(
-                'Existing Photos',
+                // 'Existing Photos',
+                AppLocalizations.of(context).existingPhotos,
                 style: Theme.of(context).textTheme.titleSmall,
               ),
               const SizedBox(height: AppSizes.sm),
@@ -136,10 +143,11 @@ class EditPhotoBox extends StatelessWidget {
               ),
               const SizedBox(height: AppSizes.md),
             ],
-            
+
             if (newImages.isNotEmpty) ...[
               Text(
-                'New Photos',
+                // 'New Photos',
+                AppLocalizations.of(context).newPhotos,
                 style: Theme.of(context).textTheme.titleSmall,
               ),
               const SizedBox(height: AppSizes.sm),
@@ -186,8 +194,9 @@ class EditPhotoBox extends StatelessWidget {
                       ),
                     );
                   }),
-                  
-                  if (allImages.length + newImages.length < PlaceController.instance.maxImages)
+
+                  if (allImages.length + newImages.length <
+                      PlaceController.instance.maxImages)
                     SizedBox(
                       width: imageSize,
                       height: imageSize,

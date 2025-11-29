@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:reviews_app/features/review/screens/place_details/place_details.dart';
+import 'package:reviews_app/localization/app_localizations.dart';
 import 'package:reviews_app/utils/constants/colors.dart';
 import 'package:reviews_app/utils/constants/sizes.dart';
 import '../../../../utils/constants/enums.dart';
@@ -150,7 +151,8 @@ class PlacesMapScreen extends StatelessWidget {
             const CircularProgressIndicator(color: AppColors.primaryColor),
             const SizedBox(height: AppSizes.lg),
             Text(
-              'Loading your location...',
+              // 'Loading your location...',
+              AppLocalizations.of(Get.context!).loadingYourLocation,
               style: Theme.of(
                 Get.context!,
               ).textTheme.titleMedium?.copyWith(color: AppColors.darkGrey),
@@ -158,6 +160,7 @@ class PlacesMapScreen extends StatelessWidget {
             const SizedBox(height: AppSizes.sm),
             Text(
               'Please wait while we set up your map',
+              // AppLocalizations.of(Get.context!).pleaseWait,
               style: Theme.of(
                 Get.context!,
               ).textTheme.bodySmall?.copyWith(color: AppColors.darkGrey),

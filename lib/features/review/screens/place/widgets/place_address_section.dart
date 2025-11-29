@@ -25,6 +25,9 @@ class PlaceAddressSection extends StatelessWidget {
           AppSectionHeading(
             // title: 'Place Address',
             title: AppLocalizations.of(context).placeAddress,
+            titleStyle: Theme.of(
+              context,
+            ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w500),
             // buttonTitle: 'Change',
             buttonTitle: AppLocalizations.of(context).change,
             onPressed: () => controller.selectNewAddressPopup(context),

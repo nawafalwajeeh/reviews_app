@@ -6,6 +6,7 @@ import 'package:reviews_app/features/review/models/category_extension.dart';
 import 'package:reviews_app/features/review/models/tag_test_localization.dart';
 import 'package:reviews_app/utils/constants/colors.dart';
 import 'package:reviews_app/utils/constants/sizes.dart';
+import 'package:reviews_app/utils/helpers/font_helper.dart';
 import 'package:reviews_app/utils/helpers/helper_functions.dart';
 import '../../../../../common/widgets/custom_shapes/containers/rounded_container.dart';
 import '../../../../../data/services/tag/tag_translation_service.dart';
@@ -43,109 +44,7 @@ class PlaceForm extends StatelessWidget {
           ),
         ),
         const SizedBox(height: AppSizes.spaceBtwInputFields),
-
-        // Obx(() {
-        //   // 1. Get the current value from the controller.
-        //   // This value must be null or match an item in the list.
-        //   final String? currentDropdownValue =
-        //       controller.selectedCategoryName.value.isEmpty
-        //       ? null
-        //       : controller.selectedCategoryName.value;
-
-        //   return DropdownButtonFormField<String>(
-        //     // Use 'value' instead of 'initialValue'.
-        //     // This is necessary when the value changes based on the state.
-        //     initialValue: currentDropdownValue,
-
-        //     decoration: InputDecoration(
-        //       border: OutlineInputBorder(
-        //         borderSide: BorderSide(
-        //           width: 1,
-        //           color: AppHelperFunctions.isDarkMode(context)
-        //               ? AppColors.grey
-        //               : AppColors.darkGrey,
-        //         ),
-        //       ),
-        //     ),
-
-        //     // Ensure the onChanged logic updates the Name AND the ID.
-        //     onChanged: (String? selectedName) {
-        //       // Update the name variable
-        //       controller.selectedCategoryName.value = selectedName ?? '';
-
-        //       if (selectedName != null) {
-        //         final matchingCategory = categoryController.categoryModels
-        //             .firstWhereOrNull(
-        //               (category) => category.name == selectedName,
-        //             );
-
-        //         // Update the ID variable
-        //         controller.selectedCategoryId.value =
-        //             matchingCategory?.id ?? '';
-        //       } else {
-        //         controller.selectedCategoryId.value = '';
-        //       }
-        //     },
-
-        //     items: categoryController.categoryNames
-        //         .map(
-        //           (option) =>
-        //               DropdownMenuItem(value: option, child: Text(option)),
-        //         )
-        //         .toList(),
-        //   );
-        // }),
-        // Obx(() {
-        //   // Get the current localized category name
-        //   final String? currentDropdownValue =
-        //       controller.selectedCategoryName.value.isEmpty
-        //       ? null
-        //       : controller.selectedCategoryName.value;
-
-        //   return DropdownButtonFormField<String>(
-        //     initialValue: currentDropdownValue,
-        //     decoration: InputDecoration(
-        //       border: OutlineInputBorder(
-        //         borderSide: BorderSide(
-        //           width: 1,
-        //           color: AppHelperFunctions.isDarkMode(context)
-        //               ? AppColors.grey
-        //               : AppColors.darkGrey,
-        //         ),
-        //       ),
-        //       labelText: appLocalizations.selectCategory,
-        //     ),
-
-        //     onChanged: (String? selectedLocalizedName) {
-        //       if (selectedLocalizedName != null) {
-        //         // Find the category by localized name
-        //         final matchingCategory = categoryController.categoryModels
-        //             .firstWhereOrNull(
-        //               (category) =>
-        //                   category.getLocalizedName(context) ==
-        //                   selectedLocalizedName,
-        //             );
-
-        //         if (matchingCategory != null) {
-        //           // Update both name and ID
-        //           controller.selectedCategoryName.value = selectedLocalizedName;
-        //           controller.selectedCategoryId.value = matchingCategory.id;
-        //         }
-        //       } else {
-        //         controller.selectedCategoryName.value = '';
-        //         controller.selectedCategoryId.value = '';
-        //       }
-        //     },
-
-        //     items: categoryController.categoryModels.map((category) {
-        //       final localizedName = category.getLocalizedName(context);
-        //       return DropdownMenuItem(
-        //         value: localizedName,
-        //         child: Text(localizedName),
-        //       );
-        //     }).toList(),
-        //   );
-        // }),
+        
         Obx(() {
           // Get the current category ID
           final String? currentCategoryId =
@@ -262,21 +161,15 @@ class PlaceForm extends StatelessWidget {
             }
             return null; // Optional field
           },
+          style: TextStyle(fontFamily: FontHelper.appFontFamily),
           decoration: InputDecoration(
             // labelText: 'Website URL (Optional)',
             labelText: AppLocalizations.of(context).websiteUrlOptional,
-            hintText: 'https://example.com',
+            hintText: 'https://example.com', 
           ),
           keyboardType: TextInputType.url,
         ),
         const SizedBox(height: AppSizes.spaceBtwInputFields),
-        // LabeledChips(
-        //   // label: 'Tags',
-        //   label: AppLocalizations.of(context).tags,
-        //   tags: controller.allTags,
-        //   selectedTags: controller.selectedTags,
-        //   onSelected: controller.toggleTag,
-        // ),
         Obx(
           () => LabeledChips(
             label: appLocalizations.tags,

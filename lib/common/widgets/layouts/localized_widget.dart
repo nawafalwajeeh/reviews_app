@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../../localization/localization_service.dart';
+import '../../../data/services/localization/localization_service.dart';
 
 class LocalizedWidget extends StatelessWidget {
   final Widget child;

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:reviews_app/utils/constants/sizes.dart';
 
 import '../../constants/colors.dart';
+import '../../helpers/font_helper.dart';
 
 class AppElevatedButtonTheme {
   AppElevatedButtonTheme._();
@@ -16,11 +17,12 @@ class AppElevatedButtonTheme {
       disabledBackgroundColor: AppColors.buttonDisabled,
       side: const BorderSide(color: AppColors.primaryColor),
       padding: const EdgeInsets.symmetric(vertical: AppSizes.buttonHeight),
-      textStyle: const TextStyle(
+      textStyle: TextStyle(
         fontSize: 16,
         color: Colors.white,
         fontWeight: FontWeight.w600,
-        fontFamily: 'Poppins',
+        // fontFamily: 'Poppins',
+        fontFamily: FontHelper.appFontFamily,
       ),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(AppSizes.buttonRadius),
@@ -38,11 +40,12 @@ class AppElevatedButtonTheme {
       disabledBackgroundColor: AppColors.darkerGrey,
       side: const BorderSide(color: AppColors.primaryColor),
       padding: const EdgeInsets.symmetric(vertical: AppSizes.buttonHeight),
-      textStyle: const TextStyle(
+      textStyle: TextStyle(
         fontSize: 16,
         color: AppColors.textWhite,
         fontWeight: FontWeight.w600,
-        fontFamily: 'Poppins',
+        // fontFamily: 'Poppins',
+        fontFamily: FontHelper.appFontFamily,
       ),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(AppSizes.buttonRadius),

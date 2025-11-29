@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 
+import 'category_formatter.dart';
+
 class CategoryTranslationService {
   // Singleton instance
-  static final CategoryTranslationService _instance = CategoryTranslationService._internal();
+  static final CategoryTranslationService _instance =
+      CategoryTranslationService._internal();
   factory CategoryTranslationService() => _instance;
   CategoryTranslationService._internal();
 
@@ -99,4 +102,19 @@ class CategoryTranslationService {
 
   // Get all available Arabic category names
   List<String> get allArabicCategories => _englishToArabic.values.toList();
+
+  /// Get singular translated category name
+  String getTranslatedSingularName(String englishName, String languageCode) {
+    final singularEnglish = CategoryFormatter.getSingularForm(englishName);
+    return getTranslatedName(singularEnglish, languageCode);
+  }
+
+  /// Get singular translated name using BuildContext
+  String getTranslatedSingularNameInContext(
+    String englishName,
+    BuildContext context,
+  ) {
+    final singularEnglish = CategoryFormatter.getSingularForm(englishName);
+    return getTranslatedNameInContext(singularEnglish, context);
+  }
 }

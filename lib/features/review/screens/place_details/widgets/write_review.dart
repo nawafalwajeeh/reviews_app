@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:get/get.dart';
 import 'package:reviews_app/features/review/models/custom_questions_model.dart';
+import 'package:reviews_app/localization/app_localizations.dart';
 import '../../../../../utils/constants/enums.dart';
 import '../../../controllers/review_controller.dart';
 import '../../../models/place_model.dart';
@@ -48,11 +49,16 @@ class WriteReviewWithQuestionsSection extends StatelessWidget {
                             () => Text(
                               controller.existingReviewId.isNotEmpty &&
                                       !controller.isEditing.value
-                                  ? 'Your Review (Submitted)'
+                                  // ? 'Your Review (Submitted)'
+                                  ? AppLocalizations.of(
+                                      context,
+                                    ).yourReviewSubmitted
                                   : controller.existingReviewId.isNotEmpty &&
                                         controller.isEditing.value
-                                  ? 'Edit Your Review'
-                                  : 'Write a Review',
+                                  // ? 'Edit Your Review'
+                                  // : 'Write a Review',
+                                  ? AppLocalizations.of(context).editReview
+                                  : AppLocalizations.of(context).writeReview,
                               style: Theme.of(context).textTheme.titleLarge
                                   ?.copyWith(fontWeight: FontWeight.bold),
                             ),
@@ -62,7 +68,7 @@ class WriteReviewWithQuestionsSection extends StatelessWidget {
                             !controller.isEditing.value)
                           IconButton(
                             onPressed: () =>
-                                _showDeleteConfirmationDialog(controller),
+                                _showDeleteConfirmationDialog(controller, context),
                             icon: const Icon(
                               Icons.delete_outline,
                               color: Colors.red,
@@ -74,7 +80,8 @@ class WriteReviewWithQuestionsSection extends StatelessWidget {
 
                     // MANDATORY Rating Section
                     Text(
-                      'Rate your experience *',
+                      // 'Rate your experience *',
+                      AppLocalizations.of(context).rateExperience,
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                         color: Colors.grey[600],
                         fontWeight: FontWeight.bold,
@@ -107,7 +114,10 @@ class WriteReviewWithQuestionsSection extends StatelessWidget {
                         maxLines: 4,
                         enabled: controller.isTextFieldEnabled,
                         decoration: InputDecoration(
-                          hintText: 'Share your experience... *',
+                          // hintText: 'Share your experience... *',
+                          hintText: AppLocalizations.of(
+                            context,
+                          ).shareExperience,
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12),
                           ),
@@ -117,7 +127,8 @@ class WriteReviewWithQuestionsSection extends StatelessWidget {
                         validator: (value) {
                           if (controller.isTextFieldEnabled &&
                               (value == null || value.trim().isEmpty)) {
-                            return 'Review text is required.';
+                            // return 'Review text is required.';
+                            return AppLocalizations.of(context).validationReviewTextRequired;
                           }
                           return null;
                         },
@@ -135,7 +146,7 @@ class WriteReviewWithQuestionsSection extends StatelessWidget {
                       ),
 
                     // Action Buttons
-                    _buildActionButtons(controller),
+                    _buildActionButtons(controller, context),
                   ],
                 ),
               ),
@@ -156,7 +167,8 @@ class WriteReviewWithQuestionsSection extends StatelessWidget {
       children: [
         const SizedBox(height: 16),
         Text(
-          'Additional Questions',
+          // 'Additional Questions',
+          AppLocalizations.of(context).additionalQuestions,
           style: Theme.of(
             context,
           ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
@@ -186,7 +198,7 @@ class WriteReviewWithQuestionsSection extends StatelessWidget {
             ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w500),
           ),
           const SizedBox(height: 8),
-          _buildAnswerInput(controller, question),
+          _buildAnswerInput(controller, question, context),
         ],
       ),
     );
@@ -195,6 +207,7 @@ class WriteReviewWithQuestionsSection extends StatelessWidget {
   Widget _buildAnswerInput(
     ReviewController controller,
     CustomQuestion question,
+    BuildContext context,
   ) {
     switch (question.type) {
       case QuestionType.rating:
@@ -227,7 +240,8 @@ class WriteReviewWithQuestionsSection extends StatelessWidget {
           return Row(
             children: [
               ChoiceChip(
-                label: const Text('Yes'),
+                // label: const Text('Yes'),
+                label: Text(AppLocalizations.of(context).yes),
                 selected: currentAnswer == true,
                 onSelected: (selected) {
                   controller.setQuestionAnswer(
@@ -240,7 +254,8 @@ class WriteReviewWithQuestionsSection extends StatelessWidget {
               ),
               const SizedBox(width: 8),
               ChoiceChip(
-                label: const Text('No'),
+                // label: const Text('No'),
+                label: Text(AppLocalizations.of(context).no),
                 selected: currentAnswer == false,
                 onSelected: (selected) {
                   controller.setQuestionAnswer(
@@ -265,8 +280,9 @@ class WriteReviewWithQuestionsSection extends StatelessWidget {
               value,
             );
           },
-          decoration: const InputDecoration(
-            hintText: 'Type your answer...',
+          decoration:  InputDecoration(
+            // hintText: 'Type your answer...',
+            hintText: AppLocalizations.of(context).typeYourAnswer,
             border: OutlineInputBorder(),
           ),
         );
@@ -274,7 +290,7 @@ class WriteReviewWithQuestionsSection extends StatelessWidget {
   }
 
   // Keep the existing _buildActionButtons, _showDeleteConfirmationDialog methods
-  Widget _buildActionButtons(ReviewController controller) {
+  Widget _buildActionButtons(ReviewController controller, BuildContext context) {
     return Obx(() {
       final isEditing = controller.isEditing.value;
       final isLoading = controller.isLoading.value;
@@ -290,7 +306,7 @@ class WriteReviewWithQuestionsSection extends StatelessWidget {
                 child: OutlinedButton(
                   onPressed: isLoading
                       ? null
-                      : () => _showDeleteConfirmationDialog(controller),
+                      : () => _showDeleteConfirmationDialog(controller, context),
                   style: OutlinedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(vertical: 16),
                     shape: RoundedRectangleBorder(
@@ -304,8 +320,9 @@ class WriteReviewWithQuestionsSection extends StatelessWidget {
                           height: 20,
                           child: CircularProgressIndicator(strokeWidth: 2),
                         )
-                      : const Text(
-                          'Delete',
+                      :  Text(
+                          // 'Delete',
+                          AppLocalizations.of(context).deleteReview,
                           style: TextStyle(color: Colors.red),
                         ),
                 ),
@@ -332,7 +349,7 @@ class WriteReviewWithQuestionsSection extends StatelessWidget {
                           color: Colors.white,
                         ),
                       )
-                    : Text(_getPrimaryButtonText(controller)),
+                    : Text(_getPrimaryButtonText(controller, context)),
               ),
             ),
           ],
@@ -348,31 +365,43 @@ class WriteReviewWithQuestionsSection extends StatelessWidget {
         : controller.submitReviewWithQuestions;
   }
 
-  String _getPrimaryButtonText(ReviewController controller) {
+  String _getPrimaryButtonText(ReviewController controller, BuildContext context) {
     final hasExistingReview = controller.existingReviewId.isNotEmpty;
     final isEditing = controller.isEditing.value;
 
-    if (hasExistingReview && !isEditing) return 'Edit Review';
-    if (hasExistingReview && isEditing) return 'Update Review';
-    return 'Submit Review';
+    // if (hasExistingReview && !isEditing) return 'Edit Review';
+    // if (hasExistingReview && isEditing) return 'Update Review';
+    // return 'Submit Review';
+    
+    if (hasExistingReview && !isEditing) return AppLocalizations.of(context).editReview;
+    if (hasExistingReview && isEditing) return AppLocalizations.of(context).updateReview;
+    return AppLocalizations.of(context).submitReview;
+    
   }
 
-  void _showDeleteConfirmationDialog(ReviewController controller) {
+  void _showDeleteConfirmationDialog(ReviewController controller, BuildContext context) {
     Get.dialog(
       AlertDialog(
-        title: const Text('Delete Review'),
-        content: const Text(
-          'Are you sure you want to delete your review? This action cannot be undone.',
+        // title: const Text('Delete Review'),
+        title: Text(AppLocalizations.of(context).deleteReview),
+        // content: const Text(
+        //   'Are you sure you want to delete your review? This action cannot be undone.',
+        // ),
+        content:  Text(
+         AppLocalizations.of(context).deleteReviewConfirmation,
         ),
         actions: [
-          TextButton(onPressed: () => Get.back(), child: const Text('Cancel')),
+          // TextButton(onPressed: () => Get.back(), child: const Text('Cancel')),
+          TextButton(onPressed: () => Get.back(), child:  Text(AppLocalizations.of(context).cancel)),
           ElevatedButton(
             onPressed: () {
               Get.back();
               controller.deleteReview();
             },
             style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
-            child: const Text('Delete'),
+            // child: const Text('Delete'),
+            child:  Text(AppLocalizations.of(context).deleteReview),
+
           ),
         ],
       ),

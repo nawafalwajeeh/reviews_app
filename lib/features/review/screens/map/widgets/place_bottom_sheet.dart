@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:reviews_app/common/widgets/place/favourite_icon/favourite_icon.dart';
+import 'package:reviews_app/common/widgets/texts/category_name_text.dart';
 import 'package:reviews_app/common/widgets/texts/place_title_text.dart';
 import 'package:reviews_app/features/review/models/place_model.dart';
+import 'package:reviews_app/localization/app_localizations.dart';
 import 'package:reviews_app/utils/constants/colors.dart';
 import 'package:reviews_app/utils/constants/enums.dart';
 import 'package:reviews_app/utils/constants/sizes.dart';
@@ -68,7 +70,7 @@ class PlaceBottomSheet extends StatelessWidget {
                           title: place.title,
                           location: place.address.shortAddress,
                           isVerified: true,
-                          titleColor: AppColors.black, 
+                          titleColor: AppColors.black,
                           placeTitleSize: TextSizes.medium,
                         ),
                       ),
@@ -126,7 +128,9 @@ class PlaceBottomSheet extends StatelessWidget {
                                 ),
                                 const SizedBox(width: AppSizes.sm),
                                 Text(
-                                  '(${place.reviewsCount} reviews)',
+                                  // '(${place.reviewsCount} reviews)',
+                                  '(${place.reviewsCount} ${AppLocalizations.of(context).reviews})',
+
                                   style: Theme.of(context).textTheme.bodySmall
                                       ?.copyWith(color: AppColors.darkGrey),
                                 ),
@@ -135,23 +139,7 @@ class PlaceBottomSheet extends StatelessWidget {
 
                             const SizedBox(height: AppSizes.xs),
 
-                            // Category
-                            FutureBuilder(
-                              future: _getCategoryName(place.categoryId),
-                              builder: (context, snapshot) {
-                                if (snapshot.hasData) {
-                                  return Text(
-                                    snapshot.data!,
-                                    style: Theme.of(context).textTheme.bodySmall
-                                        ?.copyWith(
-                                          color: AppColors.primaryColor,
-                                          fontWeight: FontWeight.w500,
-                                        ),
-                                  );
-                                }
-                                return const SizedBox();
-                              },
-                            ),
+                            CategoryNameText(categoryId: place.categoryId),
 
                             const SizedBox(height: AppSizes.sm),
 
@@ -189,7 +177,8 @@ class PlaceBottomSheet extends StatelessWidget {
                                       ),
                                     ),
                                     child: Text(
-                                      'View Details',
+                                      // 'View Details',
+                                      AppLocalizations.of(context).viewDetails,
                                       style: Theme.of(context)
                                           .textTheme
                                           .bodyMedium

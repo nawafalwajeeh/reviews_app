@@ -1,4 +1,3 @@
-// features/review/screens/search/search_screen.dart
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
@@ -7,12 +6,17 @@ import 'package:reviews_app/common/widgets/place/place_card.dart';
 import 'package:reviews_app/common/widgets/shimmers/big_card_shimmer.dart';
 import 'package:reviews_app/common/widgets/texts/section_heading.dart';
 import 'package:reviews_app/features/review/controllers/search_controller.dart';
+import 'package:reviews_app/features/review/models/category_extension.dart';
 import 'package:reviews_app/features/review/models/place_model.dart';
 import 'package:reviews_app/features/review/screens/categories/all_categories.dart';
 import 'package:reviews_app/features/review/screens/place_details/place_details.dart';
+import 'package:reviews_app/localization/app_localizations.dart';
 import 'package:reviews_app/utils/constants/colors.dart';
 import 'package:reviews_app/utils/constants/sizes.dart';
 import 'package:reviews_app/utils/helpers/helper_functions.dart';
+
+import '../../controllers/category_controller.dart';
+import '../../models/category_model.dart';
 
 class SearchScreen extends StatelessWidget {
   SearchScreen({super.key});
@@ -28,7 +32,8 @@ class SearchScreen extends StatelessWidget {
     return Scaffold(
       appBar: CustomAppBar(
         title: Text(
-          'Search Places',
+          // 'Search Places',
+          AppLocalizations.of(context).searchPlaces,
           style: Theme.of(context).textTheme.headlineMedium,
         ),
         actions: [
@@ -37,7 +42,8 @@ class SearchScreen extends StatelessWidget {
               searchController.clearSearch();
               Get.back();
             },
-            child: const Text('Cancel'),
+            // child: const Text('Cancel'),
+            child: Text(AppLocalizations.of(context).cancel),
           ),
         ],
       ),
@@ -65,6 +71,7 @@ class SearchScreen extends StatelessWidget {
   }
 
   Widget _buildEnhancedSearchBar(BuildContext context) {
+    final locale = AppLocalizations.of(context);
     return Column(
       children: [
         /// Language Toggle Button
@@ -119,7 +126,8 @@ class SearchScreen extends StatelessWidget {
                   },
                   decoration: InputDecoration(
                     prefixIcon: const Icon(Iconsax.search_normal),
-                    hintText: 'Search places, categories...',
+                    // hintText: 'Search places, categories...',
+                    hintText: locale.searchPlacesCategories,
                     suffixIcon: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
@@ -136,7 +144,8 @@ class SearchScreen extends StatelessWidget {
                               _textEditingController.clear();
                               FocusScope.of(context).unfocus();
                             },
-                            tooltip: 'Clear search',
+                            // tooltip: 'Clear search',
+                            tooltip: locale.clearSearch,
                           ),
 
                         // Voice Search Button
@@ -168,8 +177,10 @@ class SearchScreen extends StatelessWidget {
                               _textEditingController.clear();
                               searchController.startListening();
                             },
+                            // tooltip:
+                            //     'Voice Search (${searchController.currentLanguageName})',
                             tooltip:
-                                'Voice Search (${searchController.currentLanguageName})',
+                                '${locale.voiceSearch} (${searchController.currentLanguageName})',
                           );
                         }),
                       ],
@@ -201,7 +212,8 @@ class SearchScreen extends StatelessWidget {
               child: Column(
                 children: [
                   Text(
-                    '🎤 Listening...',
+                    // '🎤 Listening...',
+                    locale.listening,
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
                       color: AppColors.primaryColor,
                       fontWeight: FontWeight.bold,
@@ -237,11 +249,11 @@ class SearchScreen extends StatelessWidget {
     }
 
     if (hasSearchQuery && !hasResults) {
-      return _buildNoResultsState();
+      return _buildNoResultsState(context);
     }
 
     if (hasSearchQuery && hasResults) {
-      return _buildSearchResults();
+      return _buildSearchResults(context);
     }
 
     return _buildInitialState(context);
@@ -265,7 +277,7 @@ class SearchScreen extends StatelessWidget {
             }
 
             if (snapshot.hasData && snapshot.data!.isNotEmpty) {
-              return _buildTrendingPlaces(snapshot.data!);
+              return _buildTrendingPlaces(snapshot.data!, context);
             }
 
             return const SizedBox();
@@ -275,20 +287,28 @@ class SearchScreen extends StatelessWidget {
         const SizedBox(height: AppSizes.spaceBtwSections),
 
         /// Browse Categories
-        _buildBrowseCategories(),
+        _buildBrowseCategories(context),
       ],
     );
   }
 
   Widget _buildSearchSuggestions(BuildContext context) {
+    final locale = AppLocalizations.of(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        AppSectionHeading(title: 'Browse Categories', showActionButton: false),
+        // AppSectionHeading(title: 'Browse Categories', showActionButton: false),
+        AppSectionHeading(
+          title: locale.browseCategories,
+          showActionButton: false,
+        ),
+
         const SizedBox(height: AppSizes.spaceBtwItems),
 
         Obx(() {
           final categories = searchController.getVisibleCategories();
+          // final originalCategories = searchController.getVisibleCategories();
+
           final hasMore = searchController.hasMoreCategories;
           final totalCategories = searchController
               .getSearchSuggestions()
@@ -297,7 +317,8 @@ class SearchScreen extends StatelessWidget {
               searchController.visibleCategoriesCount.value >= totalCategories;
 
           if (categories.isEmpty) {
-            return const Text('No categories available');
+            // return const Text('No categories available');
+            return Text(locale.noCategoriesAvailable);
           }
 
           return Column(
@@ -305,10 +326,25 @@ class SearchScreen extends StatelessWidget {
               Wrap(
                 spacing: AppSizes.sm,
                 runSpacing: AppSizes.sm,
-                children: categories.map((categoryName) {
+                children: categories.map((englishCategoryName) {
+                  // Get localized display name but keep English for search
+                  final category = CategoryController.instance.allCategories
+                      .firstWhere(
+                        (cat) => cat.name == englishCategoryName,
+                        orElse: () => CategoryModel.empty(),
+                      );
+
+                  final displayName = category.id.isNotEmpty
+                      ? category.getLocalizedName(context)
+                      : englishCategoryName;
+                  debugPrint('CategoryName: $displayName');
                   return GestureDetector(
                     onTap: () {
-                      searchController.searchByCategoryName(categoryName);
+                      searchController.searchByCategoryName(
+                        // englishCategoryName,
+                        displayName,
+                        context,
+                      );
                     },
                     child: Container(
                       padding: const EdgeInsets.symmetric(
@@ -334,7 +370,8 @@ class SearchScreen extends StatelessWidget {
                           ),
                           const SizedBox(width: AppSizes.xs),
                           Text(
-                            categoryName,
+                            // categoryName,
+                            displayName,
                             style: Theme.of(context).textTheme.labelMedium
                                 ?.copyWith(
                                   color: AppHelperFunctions.isDarkMode(context)
@@ -358,12 +395,15 @@ class SearchScreen extends StatelessWidget {
                       ElevatedButton.icon(
                         onPressed: searchController.loadMoreCategories,
                         icon: const Icon(Icons.expand_more, size: 16),
+                        // label: Text(
+                        //   'Show More (${totalCategories - categories.length} left)',
+                        // ),
                         label: Text(
-                          'Show More (${totalCategories - categories.length} left)',
+                          '${locale.showMore} (${totalCategories - categories.length} ${locale.left})',
                         ),
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: AppColors.primaryColor.withOpacity(
-                            0.1,
+                          backgroundColor: AppColors.primaryColor.withValues(
+                            alpha: 0.1,
                           ),
                           foregroundColor: AppColors.primaryColor,
                         ),
@@ -372,10 +412,11 @@ class SearchScreen extends StatelessWidget {
                       ElevatedButton.icon(
                         onPressed: searchController.resetCategories,
                         icon: const Icon(Icons.expand_less, size: 16),
-                        label: const Text('Show Less'),
+                        // label: const Text('Show Less'),
+                        label: Text(locale.viewLess),
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: AppColors.primaryColor.withOpacity(
-                            0.1,
+                          backgroundColor: AppColors.primaryColor.withValues(
+                            alpha: 0.1,
                           ),
                           foregroundColor: AppColors.primaryColor,
                         ),
@@ -390,17 +431,21 @@ class SearchScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildTrendingPlaces(List<PlaceModel> places) {
+  Widget _buildTrendingPlaces(List<PlaceModel> places, BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        AppSectionHeading(title: 'Trending Places', showActionButton: false),
+        // AppSectionHeading(title: 'Trending Places', showActionButton: false),
+        AppSectionHeading(
+          title: AppLocalizations.of(context).trendingPlaces,
+          showActionButton: false,
+        ),
         const SizedBox(height: AppSizes.spaceBtwItems),
         ListView.separated(
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
           itemCount: places.length,
-          separatorBuilder: (_, __) =>
+          separatorBuilder: (_, _) =>
               const SizedBox(height: AppSizes.spaceBtwItems),
           itemBuilder: (context, index) {
             final place = places[index];
@@ -412,7 +457,7 @@ class SearchScreen extends StatelessWidget {
                   width: 50,
                   height: 50,
                   fit: BoxFit.cover,
-                  errorBuilder: (_, __, ___) => Container(
+                  errorBuilder: (_, _, _) => Container(
                     width: 50,
                     height: 50,
                     color: AppColors.grey,
@@ -444,14 +489,16 @@ class SearchScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildBrowseCategories() {
+  Widget _buildBrowseCategories(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         AppSectionHeading(
-          title: 'All Categories',
+          // title: 'All Categories',
+          title: AppLocalizations.of(context).allCategories,
           showActionButton: true,
-          buttonTitle: 'View All',
+          // buttonTitle: 'View All',
+          buttonTitle: AppLocalizations.of(context).viewAll,
           onPressed: () => Get.to(() => AllCategoriesScreen()),
         ),
         const SizedBox(height: AppSizes.spaceBtwItems),
@@ -470,14 +517,20 @@ class SearchScreen extends StatelessWidget {
               Icon(Icons.explore, size: 40, color: AppColors.primaryColor),
               const SizedBox(height: AppSizes.sm),
               Text(
-                'Explore all categories',
-                style: Theme.of(Get.context!).textTheme.bodyMedium,
+                // 'Explore all categories',
+                AppLocalizations.of(context).exploreAllCategories,
+                style: Theme.of(context).textTheme.bodyMedium,
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: AppSizes.sm),
-              ElevatedButton(
-                onPressed: () => Get.to(() => AllCategoriesScreen()),
-                child: const Text('View All Categories'),
+              SizedBox(
+                // width: double.maxFinite,
+                width: 250,
+                child: ElevatedButton(
+                  onPressed: () => Get.to(() => AllCategoriesScreen()),
+                  // child: const Text('View All Categories'),
+                  child: Text(AppLocalizations.of(context).viewAllCategories),
+                ),
               ),
             ],
           ),
@@ -486,7 +539,8 @@ class SearchScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildSearchResults() {
+  Widget _buildSearchResults(BuildContext context) {
+    final locale = AppLocalizations.of(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -498,22 +552,38 @@ class SearchScreen extends StatelessWidget {
                   searchController.selectedCategoryId.value,
                 )
               : null;
-
+          final count = searchController.searchResults.length;
           return Padding(
             padding: const EdgeInsets.only(bottom: AppSizes.md),
+            // child: Text(
+            //   hasCategoryFilter && category != null
+            //       ? 'Found ${searchController.searchResults.length} places in "${category.name}"'
+            //       : 'Found ${searchController.searchResults.length} places for "${searchController.searchQuery.value}"',
+            //   style: Theme.of(
+            //     context!,
+            //   ).textTheme.bodyMedium?.copyWith(color: AppColors.darkerGrey),
+            // ),
+            /*
+            Text(
+                hasCategoryFilter && category != null
+                    ? '${locale.foundPlacesIn(count)} "${CategoryTranslationService().getTranslatedNameInContext(category.name, context)}"'
+                    : '${locale.foundPlacesFor(count)} "${searchController.searchQuery.value}"',
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: AppColors.darkerGrey),
+            ),
+            */
             child: Text(
               hasCategoryFilter && category != null
-                  ? 'Found ${searchController.searchResults.length} places in "${category.name}"'
-                  : 'Found ${searchController.searchResults.length} places for "${searchController.searchQuery.value}"',
+                  ? '${locale.foundPlacesIn.replaceFirst('{count}', count.toString())} "${category.getLocalizedName(context)}"'
+                  : '${locale.foundPlacesFor.replaceFirst('{count}', count.toString())} "${searchController.searchQuery.value}"',
               style: Theme.of(
-                Get.context!,
+                context,
               ).textTheme.bodyMedium?.copyWith(color: AppColors.darkerGrey),
             ),
           );
         }),
 
         if (searchController.categoryResults.isNotEmpty) ...[
-          _buildCategoryResults(),
+          _buildCategoryResults(context),
           const SizedBox(height: AppSizes.spaceBtwSections),
         ],
 
@@ -522,11 +592,15 @@ class SearchScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildCategoryResults() {
+  Widget _buildCategoryResults(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        AppSectionHeading(title: 'Categories', showActionButton: false),
+        // AppSectionHeading(title: 'Categories', showActionButton: false),
+        AppSectionHeading(
+          title: AppLocalizations.of(context).categories,
+          showActionButton: false,
+        ),
         const SizedBox(height: AppSizes.spaceBtwItems),
         ListView.builder(
           shrinkWrap: true,
@@ -544,7 +618,8 @@ class SearchScreen extends StatelessWidget {
                 ),
                 child: Icon(Icons.category, color: AppColors.primaryColor),
               ),
-              title: Text(category.name),
+              // title: Text(category.name),
+              title: Text(category.getLocalizedName(context)),
               trailing: const Icon(Iconsax.arrow_right_3, size: 16),
               onTap: () {
                 searchController.selectedCategoryId.value = category.id;
@@ -565,7 +640,7 @@ class SearchScreen extends StatelessWidget {
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
       itemCount: searchController.searchResults.length,
-      separatorBuilder: (_, __) =>
+      separatorBuilder: (_, _) =>
           const SizedBox(height: AppSizes.spaceBtwSections),
       itemBuilder: (context, index) {
         final place = searchController.searchResults[index];
@@ -574,7 +649,7 @@ class SearchScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildNoResultsState() {
+  Widget _buildNoResultsState(BuildContext context) {
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(AppSizes.spaceBtwSections),
@@ -584,19 +659,22 @@ class SearchScreen extends StatelessWidget {
             Icon(Icons.search_off, size: 64, color: AppColors.grey),
             const SizedBox(height: AppSizes.spaceBtwItems),
             Text(
-              'No places found',
-              style: Theme.of(Get.context!).textTheme.headlineSmall,
+              // 'No places found',
+              AppLocalizations.of(context).noPlacesFound,
+              style: Theme.of(context).textTheme.headlineSmall,
             ),
             const SizedBox(height: AppSizes.spaceBtwItems),
             Text(
-              'Try searching with different keywords or browse categories',
-              style: Theme.of(Get.context!).textTheme.bodyMedium,
+              // 'Try searching with different keywords or browse categories',
+              AppLocalizations.of(context).tryDifferentKeywords,
+              style: Theme.of(context).textTheme.bodyMedium,
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: AppSizes.spaceBtwSections),
             ElevatedButton(
               onPressed: () => searchController.clearSearch(),
-              child: const Text('Clear Search'),
+              // child: const Text('Clear Search'),
+              child: Text(AppLocalizations.of(context).clearSearch),
             ),
           ],
         ),
@@ -623,8 +701,9 @@ class SearchScreen extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const AppSectionHeading(
-                    title: 'Filter Places',
+                  AppSectionHeading(
+                    // title: 'Filter Places',
+                    title: AppLocalizations.of(context).filterPlaces,
                     showActionButton: false,
                   ),
                   IconButton(
@@ -635,13 +714,18 @@ class SearchScreen extends StatelessWidget {
               ),
               const SizedBox(height: AppSizes.spaceBtwSections),
 
-              Text('Sort by', style: Theme.of(context).textTheme.titleLarge),
+              // Text('Sort by', style: Theme.of(context).textTheme.titleLarge),
+              Text(
+                AppLocalizations.of(context).sortBy,
+                style: Theme.of(context).textTheme.titleLarge,
+              ),
               const SizedBox(height: AppSizes.spaceBtwItems / 2),
-              _buildSortingDropdown(),
+              _buildSortingDropdown(context),
               const SizedBox(height: AppSizes.spaceBtwSections),
 
               Text(
-                'Minimum Rating',
+                // 'Minimum Rating',
+                AppLocalizations.of(context).minimumRating,
                 style: Theme.of(context).textTheme.titleLarge,
               ),
               const SizedBox(height: AppSizes.spaceBtwItems),
@@ -661,7 +745,8 @@ class SearchScreen extends StatelessWidget {
                       },
                     ),
                     Text(
-                      '${searchController.minRating.value.toStringAsFixed(1)} stars and above',
+                      // '${searchController.minRating.value.toStringAsFixed(1)} stars and above',
+                      '${searchController.minRating.value.toStringAsFixed(1)} ${AppLocalizations.of(context).starsAndAbove}',
                     ),
                   ],
                 ),
@@ -670,7 +755,8 @@ class SearchScreen extends StatelessWidget {
 
               Obx(
                 () => CheckboxListTile(
-                  title: const Text('Featured Places Only'),
+                  // title: const Text('Featured Places Only'),
+                  title: Text(AppLocalizations.of(context).featuredPlacesOnly),
                   value: searchController.showFeaturedOnly.value,
                   onChanged: (value) {
                     searchController.showFeaturedOnly.value = value ?? false;
@@ -687,7 +773,8 @@ class SearchScreen extends StatelessWidget {
                     searchController.applyFiltersAndSearch();
                     Get.back();
                   },
-                  child: const Text('Apply Filters'),
+                  // child: const Text('Apply Filters'),
+                  child: Text(AppLocalizations.of(context).applyFilters),
                 ),
               ),
               const SizedBox(height: AppSizes.spaceBtwSections),
@@ -698,7 +785,28 @@ class SearchScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildSortingDropdown() {
+  // Widget _buildSortingDropdown() {
+  //   return Obx(
+  //     () => DropdownButtonFormField<String>(
+  //       initialValue: searchController.selectedSortingOption.value,
+  //       onChanged: (String? newValue) {
+  //         if (newValue != null) {
+  //           searchController.selectedSortingOption.value = newValue;
+  //         }
+  //       },
+  //       items: searchController.sortingOptions.map((String value) {
+  //         return DropdownMenuItem<String>(value: value, child: Text(value));
+  //       }).toList(),
+  //       decoration: const InputDecoration(
+  //         border: OutlineInputBorder(),
+  //         contentPadding: EdgeInsets.symmetric(horizontal: AppSizes.md),
+  //       ),
+  //     ),
+  //   );
+  // }
+  Widget _buildSortingDropdown(BuildContext context) {
+    final locale = AppLocalizations.of(context);
+
     return Obx(
       () => DropdownButtonFormField<String>(
         initialValue: searchController.selectedSortingOption.value,
@@ -708,7 +816,35 @@ class SearchScreen extends StatelessWidget {
           }
         },
         items: searchController.sortingOptions.map((String value) {
-          return DropdownMenuItem<String>(value: value, child: Text(value));
+          String displayText = value;
+          switch (value) {
+            case 'Relevance':
+              displayText = locale.relevance;
+              break;
+            case 'Highest Rated':
+              displayText = locale.highestRated;
+              break;
+            case 'Most Reviewed':
+              displayText = locale.mostReviewed;
+              break;
+            case 'Most Liked':
+              displayText = locale.mostLiked;
+              break;
+            case 'Newest':
+              displayText = locale.newest;
+              break;
+            case 'Name (A-Z)':
+              displayText = locale.nameAZ;
+              break;
+            case 'Name (Z-A)':
+              displayText = locale.nameZA;
+              break;
+          }
+
+          return DropdownMenuItem<String>(
+            value: value,
+            child: Text(displayText),
+          );
         }).toList(),
         decoration: const InputDecoration(
           border: OutlineInputBorder(),

@@ -11,6 +11,7 @@ class CategoryTagWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    debugPrint('Text: $text');
     return Container(
       padding: const EdgeInsets.symmetric(
         horizontal: AppSizes.sm,

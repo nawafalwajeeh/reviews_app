@@ -1,6 +1,6 @@
 // utils/helpers/font_helper.dart
 import 'package:flutter/material.dart';
-import '../../localization/localization_service.dart';
+import '../../data/services/localization/localization_service.dart';
 
 class FontHelper {
   static String get appFontFamily {

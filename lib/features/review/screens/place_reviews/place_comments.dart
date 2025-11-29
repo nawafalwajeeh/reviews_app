@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:reviews_app/common/widgets/appbar/appbar.dart';
 import 'package:reviews_app/common/widgets/place/rating/rating_indicator.dart';
+import 'package:reviews_app/localization/app_localizations.dart';
 import 'package:reviews_app/utils/constants/sizes.dart';
 import '../../controllers/comment_controller.dart';
 import '../../models/place_model.dart';
@@ -28,7 +29,11 @@ class PlaceCommentsScreen extends StatelessWidget {
 
     return Scaffold(
       resizeToAvoidBottomInset: true,
-      appBar: const CustomAppBar(showBackArrow: true, title: Text('Comments')),
+      // appBar: const CustomAppBar(showBackArrow: true, title: Text('Comments')),
+      appBar: CustomAppBar(
+        showBackArrow: true,
+        title: Text(AppLocalizations.of(context).comments),
+      ),
       body: Column(
         children: [
           /// -- Scrollable Content
@@ -39,9 +44,10 @@ class PlaceCommentsScreen extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   /// Title (EXACTLY like your reviews screen)
-                  const Text(
-                    'Ratings and reviews are verified and are from people who use the same type of device that you use.',
-                  ),
+                  // const Text(
+                  //   'Ratings and reviews are verified and are from people who use the same type of device that you use.',
+                  // ),
+                  Text(AppLocalizations.of(context).ratingsVerified),
                   const SizedBox(height: AppSizes.spaceBtwItems),
 
                   OverallPlaceRating(
@@ -54,14 +60,15 @@ class PlaceCommentsScreen extends StatelessWidget {
                   /// Rating Bar Indicator
                   AppRatingBarIndicator(rating: place.averageRating),
                   Text(
-                    '${place.reviewsCount} reviews',
+                    // '${place.reviewsCount} reviews',
+                    '${place.reviewsCount} ${AppLocalizations.of(context).reviews}',
                     style: Theme.of(context).textTheme.bodySmall,
                   ),
 
                   const SizedBox(height: AppSizes.spaceBtwSections),
 
                   /// Comments List
-                  _buildCommentsSection(commentController),
+                  _buildCommentsSection(commentController, context),
                 ],
               ),
             ),
@@ -86,25 +93,31 @@ class PlaceCommentsScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildCommentsSection(CommentController commentController) {
+  Widget _buildCommentsSection(
+    CommentController commentController,
+    BuildContext context,
+  ) {
+    final locale = AppLocalizations.of(context);
     return Obx(() {
       if (commentController.isLoading && commentController.comments.isEmpty) {
         return const Center(child: CircularProgressIndicator());
       }
 
       if (commentController.comments.isEmpty) {
-        return const Center(
+        return Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Icon(Icons.comment, size: 64, color: Colors.grey),
               SizedBox(height: 16),
               Text(
-                'No comments yet',
+                // 'No comments yet',
+                locale.noCommentsYet,
                 style: TextStyle(fontSize: 16, color: Colors.grey),
               ),
               Text(
-                'Be the first to comment!',
+                // 'Be the first to comment!',
+                locale.beFirstToComment,
                 style: TextStyle(color: Colors.grey),
               ),
             ],
@@ -116,7 +129,9 @@ class PlaceCommentsScreen extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Comments (${commentController.comments.length})',
+            // 'Comments (${commentController.comments.length})',
+            '${locale.comments} (${commentController.comments.length})',
+
             style: Theme.of(Get.context!).textTheme.headlineSmall,
           ),
           const SizedBox(height: AppSizes.spaceBtwItems),

@@ -2,6 +2,7 @@ import 'dart:io';
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:reviews_app/localization/app_localizations.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
@@ -30,8 +31,9 @@ class BarcodeSection extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const AppSectionHeading(
-            title: 'Place QR Code',
+           AppSectionHeading(
+            // title: 'Place QR Code',
+            title: AppLocalizations.of(context).placeQRCode,
             showActionButton: false,
           ),
           const SizedBox(height: AppSizes.spaceBtwItems),
@@ -74,7 +76,8 @@ class BarcodeSection extends StatelessWidget {
                         ),
                         const SizedBox(width: 6),
                         Text(
-                          'Scan to view this place',
+                          // 'Scan to view this place',
+                          AppLocalizations.of(context).scanToView,
                           style: Theme.of(context).textTheme.bodySmall
                               ?.copyWith(
                                 color: Colors.blue,
@@ -95,7 +98,9 @@ class BarcodeSection extends StatelessWidget {
                           onPressed: () =>
                               _shareBarcodeAsPdf(context, barcodeData),
                           icon: const Icon(Icons.share, size: 16),
-                          label: const Text('Share PDF'),
+                          // label: const Text('Share PDF'),
+                          label:  Text(AppLocalizations.of(context).sharePDF),
+
                           style: ElevatedButton.styleFrom(
                             padding: const EdgeInsets.symmetric(vertical: 10),
                           ),
@@ -107,7 +112,8 @@ class BarcodeSection extends StatelessWidget {
                           onPressed: () =>
                               _saveBarcodeAsPdf(context, barcodeData),
                           icon: const Icon(Icons.download, size: 16),
-                          label: const Text('Save PDF'),
+                          // label: const Text('Save PDF'),
+                          label:  Text(AppLocalizations.of(context).savePDF),
                           style: OutlinedButton.styleFrom(
                             padding: const EdgeInsets.symmetric(vertical: 10),
                           ),
@@ -152,6 +158,7 @@ class BarcodeSection extends StatelessWidget {
           files: [XFile(file.path)],
           text:
               'Check out ${place.title} QR Code!\n\nScan this QR code to view the place details in the Reviews App.',
+  
           subject: '${place.title} - QR Code',
         ),
       );

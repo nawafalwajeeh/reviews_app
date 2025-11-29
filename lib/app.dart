@@ -6,7 +6,7 @@ import 'package:reviews_app/routes/app_pages.dart';
 import 'package:reviews_app/utils/constants/colors.dart';
 import 'features/personalization/controllers/settings_controller.dart';
 import 'localization/app_localizations.dart';
-import 'localization/localization_service.dart';
+import 'data/services/localization/localization_service.dart';
 import 'utils/constants/text_strings.dart';
 import 'utils/theme/app_theme.dart';
 

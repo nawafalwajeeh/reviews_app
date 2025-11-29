@@ -7,6 +7,7 @@ import 'package:reviews_app/features/review/models/category_mapper.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../../data/repositories/categories/category_repository.dart';
+import '../../../data/services/category/category_formatter.dart';
 import '../../../localization/app_localizations.dart';
 import '../../../utils/constants/image_strings.dart';
 import '../../../utils/popups/full_screen_loader.dart';
@@ -35,8 +36,11 @@ class CategoryController extends GetxController {
 
   // Cache for localized category names
   final Map<String, String> _localizedCategoryCache = {};
-
-
+  final RxList<CategoryModel> mockCategories = allMockCategories.obs;
+  // Observable list to store the fetched category models
+  final RxList<CategoryModel> categoryModels = <CategoryModel>[].obs;
+  List<String> get categoryNames => categoryModels.map((m) => m.name).toList();
+  final RxString selectedCategoryName = ''.obs;
 
   @override
   void onReady() {
@@ -44,25 +48,28 @@ class CategoryController extends GetxController {
     super.onReady();
   }
 
+  /// -- Get Cached Localized CategoryName
+  String getCachedLocalizedCategoryName(
+    String categoryId,
+    BuildContext context,
+  ) {
+    final cacheKey =
+        '${categoryId}_${Localizations.localeOf(context).languageCode}';
 
-   /// -- Get Cached Localized CategoryName
-  String getCachedLocalizedCategoryName(String categoryId, BuildContext context) {
-    final cacheKey = '${categoryId}_${Localizations.localeOf(context).languageCode}';
-    
     if (_localizedCategoryCache.containsKey(cacheKey)) {
       return _localizedCategoryCache[cacheKey]!;
     }
-    
+
     // If not cached, get it and cache it
     final category = allCategories.firstWhere(
       (cat) => cat.id == categoryId,
       orElse: () => CategoryModel.empty(),
     );
-    
-    final localizedName = category.id.isNotEmpty 
+
+    final localizedName = category.id.isNotEmpty
         ? category.getLocalizedName(context)
         : AppLocalizations.of(context).categoryNotFound;
-    
+
     _localizedCategoryCache[cacheKey] = localizedName;
     return localizedName;
   }
@@ -72,11 +79,38 @@ class CategoryController extends GetxController {
     _localizedCategoryCache.clear();
   }
 
-  final RxList<CategoryModel> mockCategories = allMockCategories.obs;
-  // Observable list to store the fetched category models
-  final RxList<CategoryModel> categoryModels = <CategoryModel>[].obs;
-  List<String> get categoryNames => categoryModels.map((m) => m.name).toList();
-  final RxString selectedCategoryName = ''.obs;
+  // Add this method to your CategoryController
+  Future<String> getLocalizedSingularCategoryName(
+    String categoryId,
+    BuildContext context,
+  ) async {
+    try {
+      final category = await getSelectedCategory(categoryId: categoryId);
+      if (category.id.isNotEmpty) {
+        return CategoryFormatter.getLocalizedSingularNameInContext(
+          category.name,
+          context,
+        );
+      } else {
+        return 'Unknown Category';
+      }
+    } catch (e) {
+      return 'Unknown Category';
+    }
+  }
+
+  Future<String> getEnglishCategoryName(String categoryId) async {
+    try {
+      final category = await getSelectedCategory(categoryId: categoryId);
+      if (category.id.isNotEmpty) {
+        return category.name; // This should return the English name
+      } else {
+        return 'Other';
+      }
+    } catch (e) {
+      return 'Other';
+    }
+  }
 
   /// -- load Category data
   Future<void> fetchCategories() async {
@@ -144,6 +178,23 @@ class CategoryController extends GetxController {
   //   }
   // }
 
+  Future<CategoryModel> getCategoryById(String categoryId) async {
+    try {
+      return await getSelectedCategory(categoryId: categoryId);
+    } catch (e) {
+      // Return a default category on error
+      return CategoryModel(
+        id: '0',
+        name: 'Other',
+        image: '',
+        isFeatured: false,
+        iconKey: 'default_icon',
+        gradientKey: 'default_gradient',
+        iconColorValue: 0xFF2D3A64,
+      );
+    }
+  }
+
   /// -- Get CategoryName By Id
   Future<String> getCategoryName(String categoryId) async {
     try {
@@ -158,11 +209,15 @@ class CategoryController extends GetxController {
     }
   }
 
-
-    /// Get localized category name by ID
-  Future<String> getLocalizedCategoryName(String categoryId, BuildContext context) async {
+  /// Get localized category name by ID
+  Future<String> getLocalizedCategoryName(
+    String categoryId,
+    BuildContext context,
+  ) async {
     try {
-      final category = await _categoryRepository.getSelectedCategory(categoryId);
+      final category = await _categoryRepository.getSelectedCategory(
+        categoryId,
+      );
       if (category.id.isNotEmpty) {
         return category.getName(context); // Using the new helper method
       } else {
@@ -173,16 +228,20 @@ class CategoryController extends GetxController {
     }
   }
 
-   /// Get list of localized category names
+  /// Get list of localized category names
   List<String> getLocalizedCategoryNames(BuildContext context) {
     return allCategories.map((category) => category.getName(context)).toList();
   }
 
   /// Get featured categories with localized names
   List<CategoryModel> getLocalizedFeaturedCategories(BuildContext context) {
-    return featuredCategories.map((category) => category.copyWith(
-      // This creates a copy with the localized name for display
-    )).toList();
+    return featuredCategories
+        .map(
+          (category) => category.copyWith(
+            // This creates a copy with the localized name for display
+          ),
+        )
+        .toList();
   }
 
   /// -- Get Category Places.

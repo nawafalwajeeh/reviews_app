@@ -353,22 +353,6 @@ allMockCategories = allCategoryNames.sublist(1).asMap().entries.map((entry) {
 }).toList();
 
 /// -- Icon Mapping
-// Map<String, IconData> _iconMap = {
-//   'restaurant': Icons.restaurant_rounded,
-//   'hotel': Icons.hotel_rounded,
-//   'hospital': Icons.local_hospital_rounded,
-//   'grocery': Icons.local_grocery_store_rounded,
-//   'gas': Icons.local_gas_station_rounded,
-//   'gym': Icons.fitness_center_rounded,
-//   'school': Icons.school_rounded,
-//   'museum': Icons.museum_rounded,
-//   'park': Icons.park_rounded,
-//   'office': Icons.apartment_rounded,
-//   'theatre': Icons.theaters_rounded,
-//   'mall': Icons.shopping_bag_rounded,
-//   'default_icon': Icons.category,
-// };
-
 final Map<String, IconData> _iconMap = {
   // --- Food & Drink ---
   'dining_fork': Icons.restaurant_menu_rounded,

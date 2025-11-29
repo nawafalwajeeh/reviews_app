@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:readmore/readmore.dart';
 import 'package:reviews_app/common/widgets/place/rating/rating_indicator.dart';
+import 'package:reviews_app/localization/app_localizations.dart';
 import 'package:reviews_app/utils/constants/colors.dart';
 import 'package:reviews_app/utils/constants/sizes.dart';
 import '../../../controllers/comment_controller.dart';
@@ -83,8 +84,10 @@ class CommentCard extends StatelessWidget {
           ReadMoreText(
             comment.commentText,
             trimLines: 2,
-            trimExpandedText: ' show less',
-            trimCollapsedText: ' show more',
+            // trimExpandedText: ' show less',
+            trimExpandedText: AppLocalizations.of(context).showLess,
+            // trimCollapsedText: ' show more',
+            trimCollapsedText: AppLocalizations.of(context).showMore,
             trimMode: TrimMode.Line,
             moreStyle: const TextStyle(
               fontSize: 14,
@@ -212,6 +215,7 @@ class CommentCard extends StatelessWidget {
                                 .getTotalReplyCount(comment.id);
                             return Text(
                               '${showReplies ? 'Hide' : 'Show'} $totalReplies ${totalReplies == 1 ? 'reply' : 'replies'}',
+                              // '${showReplies ? '${AppLocalizations.of(context).hide}' :  '${AppLocalizations.of(context).show}'} $totalReplies ${totalReplies == 1 ? '${AppLocalizations.of(context).reply}' : '${AppLocalizations.of(context).replies}'}',
                               style: Theme.of(context).textTheme.bodyMedium!
                                   .copyWith(
                                     color: AppColors.darkGrey,
@@ -255,12 +259,110 @@ class CommentCard extends StatelessWidget {
     );
   }
 
-  // ... keep the existing dialog methods unchanged ...
+  // // ... keep the existing dialog methods unchanged ...
+  // Widget _buildOwnerMenu(
+  //   CommentController controller,
+  //   String commentId,
+  //   String currentText,
+  // ) {
+  //   return PopupMenuButton<String>(
+  //     onSelected: (value) {
+  //       switch (value) {
+  //         case 'edit':
+  //           _showEditDialog(controller, commentId, currentText);
+  //           break;
+  //         case 'delete':
+  //           _showDeleteDialog(controller, commentId);
+  //           break;
+  //       }
+  //     },
+  //     itemBuilder: (context) => [
+  //       const PopupMenuItem(value: 'edit', child: Text('Edit')),
+  //       const PopupMenuItem(value: 'delete', child: Text('Delete')),
+  //       //  PopupMenuItem(value: 'edit', child: Text(AppLocalizations.of(context).edit)),
+  //       //  PopupMenuItem(value: 'delete', child: Text(AppLocalizations.of(context).delete)),
+  //     ],
+  //   );
+  // }
+
+  // void _showEditDialog(
+  //   CommentController controller,
+  //   String commentId,
+  //   String currentText,
+  // ) {
+  //   final TextEditingController editController = TextEditingController();
+  //   editController.text = currentText;
+
+  //   showDialog(
+  //     context: Get.context!,
+  //     barrierDismissible: true,
+  //     builder: (BuildContext context) {
+  //       return AlertDialog(
+  //         title: const Text('Edit Comment'),
+  //         content: TextField(
+  //           controller: editController,
+  //           maxLines: 3,
+  //           decoration: const InputDecoration(
+  //             hintText: 'Edit your comment...',
+  //             border: OutlineInputBorder(),
+  //           ),
+  //           autofocus: true,
+  //         ),
+  //         actions: [
+  //           TextButton(
+  //             onPressed: () => Navigator.of(context).pop(),
+  //             child: const Text('Cancel'),
+  //           ),
+  //           ElevatedButton(
+  //             onPressed: () {
+  //               final newText = editController.text.trim();
+  //               if (newText.isNotEmpty) {
+  //                 Navigator.of(context).pop();
+  //                 controller.updateComment(commentId, newText);
+  //               }
+  //             },
+  //             child: const Text('Save'),
+  //           ),
+  //         ],
+  //       );
+  //     },
+  //   );
+  // }
+
+  // void _showDeleteDialog(CommentController controller, String commentId) {
+  //   showDialog(
+  //     context: Get.context!,
+  //     barrierDismissible: true,
+  //     builder: (BuildContext context) {
+  //       return AlertDialog(
+  //         title: const Text('Delete Comment'),
+  //         content: const Text('Are you sure you want to delete this comment?'),
+  //         actions: [
+  //           TextButton(
+  //             onPressed: () => Navigator.of(context).pop(),
+  //             child: const Text('Cancel'),
+  //           ),
+  //           ElevatedButton(
+  //             onPressed: () {
+  //               Navigator.of(context).pop();
+  //               controller.deleteComment(commentId);
+  //             },
+  //             style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+  //             child: const Text('Delete'),
+  //           ),
+  //         ],
+  //       );
+  //     },
+  //   );
+  // }
+
   Widget _buildOwnerMenu(
     CommentController controller,
     String commentId,
     String currentText,
   ) {
+    final appLocalizations = AppLocalizations.of(Get.context!);
+
     return PopupMenuButton<String>(
       onSelected: (value) {
         switch (value) {
@@ -273,17 +375,19 @@ class CommentCard extends StatelessWidget {
         }
       },
       itemBuilder: (context) => [
-        const PopupMenuItem(value: 'edit', child: Text('Edit')),
-        const PopupMenuItem(value: 'delete', child: Text('Delete')),
+        PopupMenuItem(value: 'edit', child: Text(appLocalizations.edit)),
+        PopupMenuItem(value: 'delete', child: Text(appLocalizations.delete)),
       ],
     );
   }
 
+  // In _showEditDialog method
   void _showEditDialog(
     CommentController controller,
     String commentId,
     String currentText,
   ) {
+    final appLocalizations = AppLocalizations.of(Get.context!);
     final TextEditingController editController = TextEditingController();
     editController.text = currentText;
 
@@ -292,20 +396,20 @@ class CommentCard extends StatelessWidget {
       barrierDismissible: true,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Edit Comment'),
+          title: Text(appLocalizations.editComment),
           content: TextField(
             controller: editController,
             maxLines: 3,
-            decoration: const InputDecoration(
-              hintText: 'Edit your comment...',
-              border: OutlineInputBorder(),
+            decoration: InputDecoration(
+              hintText: appLocalizations.editYourComment,
+              border: const OutlineInputBorder(),
             ),
             autofocus: true,
           ),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
-              child: const Text('Cancel'),
+              child: Text(appLocalizations.cancel),
             ),
             ElevatedButton(
               onPressed: () {
@@ -315,7 +419,7 @@ class CommentCard extends StatelessWidget {
                   controller.updateComment(commentId, newText);
                 }
               },
-              child: const Text('Save'),
+              child: Text(appLocalizations.save),
             ),
           ],
         );
@@ -323,18 +427,21 @@ class CommentCard extends StatelessWidget {
     );
   }
 
+  // In _showDeleteDialog method
   void _showDeleteDialog(CommentController controller, String commentId) {
+    final appLocalizations = AppLocalizations.of(Get.context!);
+
     showDialog(
       context: Get.context!,
       barrierDismissible: true,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Delete Comment'),
-          content: const Text('Are you sure you want to delete this comment?'),
+          title: Text(appLocalizations.deleteComment),
+          content: Text(appLocalizations.deleteCommentConfirmation),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
-              child: const Text('Cancel'),
+              child: Text(appLocalizations.cancel),
             ),
             ElevatedButton(
               onPressed: () {
@@ -342,7 +449,7 @@ class CommentCard extends StatelessWidget {
                 controller.deleteComment(commentId);
               },
               style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
-              child: const Text('Delete'),
+              child: Text(appLocalizations.delete),
             ),
           ],
         );
@@ -352,18 +459,21 @@ class CommentCard extends StatelessWidget {
 
   void _showReplyDialog(CommentController controller, CommentModel comment) {
     final TextEditingController replyController = TextEditingController();
+    final appLocalizations = AppLocalizations.of(Get.context!);
 
     showDialog(
       context: Get.context!,
       barrierDismissible: true,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Reply to comment'),
+          // title: const Text('Reply to comment'),
+          title: Text(appLocalizations.replyToComment),
           content: TextField(
             controller: replyController,
             maxLines: 3,
-            decoration: const InputDecoration(
-              hintText: 'Write your reply...',
+            decoration: InputDecoration(
+              // hintText: 'Write your reply...',
+              hintText: appLocalizations.writeYourReply,
               border: OutlineInputBorder(),
             ),
             autofocus: true,
@@ -371,7 +481,8 @@ class CommentCard extends StatelessWidget {
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
-              child: const Text('Cancel'),
+              // child: const Text('Cancel'),
+              child: Text(appLocalizations.cancel),
             ),
             ElevatedButton(
               onPressed: () {
@@ -381,7 +492,8 @@ class CommentCard extends StatelessWidget {
                   controller.addComment(replyText, parentCommentId: comment.id);
                 }
               },
-              child: const Text('Reply'),
+              // child: const Text('Reply'),
+              child: Text(appLocalizations.reply),
             ),
           ],
         );
@@ -389,15 +501,27 @@ class CommentCard extends StatelessWidget {
     );
   }
 
+  // String _formatTime(DateTime dateTime) {
+  //   final now = DateTime.now();
+  //   final difference = now.difference(dateTime);
+
+  //   if (difference.inMinutes < 1) return 'Just now';
+  //   if (difference.inHours < 1) return '${difference.inMinutes}m ago';
+  //   if (difference.inDays < 1) return '${difference.inHours}h ago';
+  //   if (difference.inDays < 30) return '${difference.inDays}d ago';
+
+  //   return '${difference.inDays ~/ 30}mo ago';
+  // }
   String _formatTime(DateTime dateTime) {
+    final appLocalizations = AppLocalizations.of(Get.context!);
     final now = DateTime.now();
     final difference = now.difference(dateTime);
 
-    if (difference.inMinutes < 1) return 'Just now';
-    if (difference.inHours < 1) return '${difference.inMinutes}m ago';
-    if (difference.inDays < 1) return '${difference.inHours}h ago';
-    if (difference.inDays < 30) return '${difference.inDays}d ago';
+    if (difference.inMinutes < 1) return appLocalizations.justNow;
+    if (difference.inHours < 1) return appLocalizations.minutesAgo;
+    if (difference.inDays < 1) return appLocalizations.hoursAgo;
+    if (difference.inDays < 30) return appLocalizations.daysAgo;
 
-    return '${difference.inDays ~/ 30}mo ago';
+    return appLocalizations.monthsAgo;
   }
 }

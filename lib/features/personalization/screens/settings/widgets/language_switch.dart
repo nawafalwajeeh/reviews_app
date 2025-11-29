@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 
 import '../../../../../common/widgets/list_tiles/settings_menu_tile.dart';
 import '../../../../../localization/app_localizations.dart';
-import '../../../../../localization/localization_service.dart';
+import '../../../../../data/services/localization/localization_service.dart';
 
 class LanguageSwitchWidget extends StatelessWidget {
   const LanguageSwitchWidget({super.key});

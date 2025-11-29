@@ -1,5 +1,6 @@
 // widgets/overall_place_rating.dart
 import 'package:flutter/material.dart';
+import 'package:reviews_app/localization/app_localizations.dart';
 import 'progress_indicator_and_rating.dart';
 
 class OverallPlaceRating extends StatelessWidget {
@@ -16,6 +17,7 @@ class OverallPlaceRating extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final appLocalizations =   AppLocalizations.of(context);
     return Row(
       children: [
         Expanded(
@@ -25,7 +27,8 @@ class OverallPlaceRating extends StatelessWidget {
             children: [
               Text(rating, style: Theme.of(context).textTheme.displayLarge),
               Text(
-                '$totalReviews ${totalReviews == 1 ? 'review' : 'reviews'}',
+                // '$totalReviews ${totalReviews == 1 ? 'review' : 'reviews'}',
+                '$totalReviews ${totalReviews == 1 ? appLocalizations.reviews : appLocalizations.reviews}',
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                   color: Colors.grey.shade600,
                 ),

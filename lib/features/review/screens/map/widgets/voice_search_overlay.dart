@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:reviews_app/localization/app_localizations.dart';
 import 'package:reviews_app/utils/constants/colors.dart';
 import 'package:reviews_app/utils/constants/sizes.dart';
 
@@ -35,7 +36,8 @@ class VoiceSearchOverlay extends StatelessWidget {
 
             /// Listening Text
             Text(
-              'Listening...',
+              // 'Listening...',
+              AppLocalizations.of(context).listening,
               style: Theme.of(
                 context,
               ).textTheme.headlineSmall?.copyWith(color: AppColors.white),
@@ -77,6 +79,7 @@ class VoiceSearchOverlay extends StatelessWidget {
                 ),
               ),
               child: const Text('Stop Listening'),
+              // child:  Text(AppLocalizations.of(context).stopListening),
             ),
           ],
         ),

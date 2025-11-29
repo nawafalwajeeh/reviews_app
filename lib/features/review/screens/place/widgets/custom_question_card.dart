@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:reviews_app/localization/app_localizations.dart';
 
 import '../../../../../utils/constants/enums.dart';
 import '../../../../../utils/constants/sizes.dart';
@@ -33,9 +34,11 @@ class CustomQuestionCard extends StatelessWidget {
                   Expanded(
                     child: TextFormField(
                       controller: controller.questionControllers[index],
-                      decoration: const InputDecoration(
-                        labelText: 'Question',
-                        hintText: 'Enter your question here...',
+                      decoration: InputDecoration(
+                        // labelText: 'Question',
+                        labelText: AppLocalizations.of(context).question,
+                        // hintText: 'Enter your question here...',
+                        hintText: AppLocalizations.of(context).enterQuestion,
                         border: OutlineInputBorder(),
                         contentPadding: EdgeInsets.symmetric(
                           horizontal: 12,
@@ -62,7 +65,8 @@ class CustomQuestionCard extends StatelessWidget {
                       }
                     },
                     icon: const Icon(Icons.delete, color: Colors.red),
-                    tooltip: 'Remove Question',
+                    // tooltip: 'Remove Question',
+                    tooltip: AppLocalizations.of(context).removeQuestion,
                   ),
                 ],
               ),
@@ -77,7 +81,7 @@ class CustomQuestionCard extends StatelessWidget {
                       items: QuestionType.values.map((type) {
                         return DropdownMenuItem(
                           value: type,
-                          child: Text(_getQuestionTypeText(type)),
+                          child: Text(_getQuestionTypeText(type, context)),
                         );
                       }).toList(),
                       onChanged: (value) {
@@ -92,8 +96,9 @@ class CustomQuestionCard extends StatelessWidget {
                           );
                         }
                       },
-                      decoration: const InputDecoration(
-                        labelText: 'Answer Type',
+                      decoration: InputDecoration(
+                        // labelText: 'Answer Type',
+                        labelText: AppLocalizations.of(context).answerType,
                         border: OutlineInputBorder(),
                         contentPadding: EdgeInsets.symmetric(
                           horizontal: 12,
@@ -107,7 +112,8 @@ class CustomQuestionCard extends StatelessWidget {
                     width: 120, // Fixed width for checkbox
                     child: Obx(
                       () => CheckboxListTile(
-                        title: const Text('Required'),
+                        // title: const Text('Required'),
+                        title: Text(AppLocalizations.of(context).required),
                         value: index < controller.questionRequired.length
                             ? controller.questionRequired[index].value
                             : false,
@@ -136,14 +142,17 @@ class CustomQuestionCard extends StatelessWidget {
     );
   }
 
-  String _getQuestionTypeText(QuestionType type) {
+  String _getQuestionTypeText(QuestionType type, BuildContext context) {
     switch (type) {
       case QuestionType.rating:
-        return 'Star Rating';
+        // return 'Star Rating';
+        return AppLocalizations.of(context).starRating;
       case QuestionType.yesOrNo:
-        return 'Yes/No';
+        // return 'Yes/No';
+        return AppLocalizations.of(context).yesNo;
       case QuestionType.text:
-        return 'Text Answer';
+        // return 'Text Answer';
+        return AppLocalizations.of(context).textAnswer;
     }
   }
 }

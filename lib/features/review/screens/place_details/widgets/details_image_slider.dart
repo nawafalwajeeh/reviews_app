@@ -6,6 +6,7 @@ import 'package:reviews_app/common/widgets/custom_shapes/curved_edges/curved_edg
 import 'package:reviews_app/common/widgets/images/rounded_image.dart';
 import 'package:reviews_app/common/widgets/place/favourite_icon/favourite_icon.dart';
 import 'package:reviews_app/common/widgets/texts/place_title_text.dart';
+import 'package:reviews_app/localization/app_localizations.dart';
 import 'package:reviews_app/utils/constants/enums.dart';
 import 'package:reviews_app/utils/constants/sizes.dart';
 
@@ -85,40 +86,6 @@ class PlaceImageSlider extends StatelessWidget {
                   actions: [AppFavouriteIcon(placeId: place.id)],
                 ),
 
-                /// Title and Rating
-                // Positioned(
-                //   left: AppSizes.defaultSpace,
-                //   bottom: AppSizes.defaultSpace,
-                //   right: AppSizes
-                //       .defaultSpace, // Added right constraint to allow text to wrap
-                //   child: Column(
-                //     crossAxisAlignment: CrossAxisAlignment.start,
-                //     children: [
-                //       PlaceTitleText(
-                //         title: place.title,
-                //         // location: place.location,
-                //         location: place.address.toString(),
-                //         isVerified: true,
-                //         isDarkBackground: true,
-                //         placeTitleSize: TextSizes.large,
-                //         maxLines: 2,
-                //       ),
-                //       const SizedBox(height: AppSizes.sm),
-                //       Row(
-                //         children: [
-                //           const Icon(Icons.star, color: Colors.amber, size: 20),
-                //           const SizedBox(width: AppSizes.xs),
-                //           Text(
-                //             '${place.averageRating.toStringAsFixed(1)} (${place.reviewsCount} reviews)',
-                //             // '${place.reviewsCount} reviews',
-                //             style: Theme.of(context).textTheme.bodyLarge!
-                //                 .copyWith(color: Colors.white),
-                //           ),
-                //         ],
-                //       ),
-                //     ],
-                //   ),
-                // ),
                 /// Title and Rating - Use Obx for reactive updates
                 Positioned(
                   left: AppSizes.defaultSpace,
@@ -157,7 +124,8 @@ class PlaceImageSlider extends StatelessWidget {
                             ),
                             const SizedBox(width: AppSizes.xs),
                             Text(
-                              '${currentRating.toStringAsFixed(1)} ($currentReviewsCount reviews)',
+                              // '${currentRating.toStringAsFixed(1)} ($currentReviewsCount reviews)',
+                              '${currentRating.toStringAsFixed(1)} ($currentReviewsCount ${AppLocalizations.of(context).reviews})',
                               style: Theme.of(context).textTheme.bodyLarge!
                                   .copyWith(color: Colors.white),
                             ),

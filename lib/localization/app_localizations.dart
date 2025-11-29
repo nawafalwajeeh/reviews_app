@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -21,8 +20,7 @@ class AppLocalizations {
   };
 
   Future<bool> load() async {
-    String lang = locale.languageCode;
-
+    // String lang = locale.languageCode;
     // Load English strings
     String enData = await rootBundle.loadString('assets/l10n/intl_en.arb');
     _localizedValues['en'] = _parseArbFile(enData);
@@ -809,18 +807,486 @@ class AppLocalizations {
       _localizedValues[locale.languageCode]!['error'] ?? 'Error';
   String get warning =>
       _localizedValues[locale.languageCode]!['warning'] ?? 'Warning';
-   // Error and Loading States
-  String get errorLoading => _localizedValues[locale.languageCode]!['errorLoading'] ?? 'Error Loading';
-  String get categoryNotFound => _localizedValues[locale.languageCode]!['categoryNotFound'] ?? 'Category Not Found';
-    String get noDataFound => _localizedValues[locale.languageCode]!['noDataFound'] ?? 'No Data Found';
-  String get tapToRetry => _localizedValues[locale.languageCode]!['tapToRetry'] ?? 'Tap to retry';
-    // ReadMore Text variations
-  String get showMore => _localizedValues[locale.languageCode]!['showMore'] ?? 'Show more';
-  String get showLess => _localizedValues[locale.languageCode]!['showLess'] ?? 'Show less';
-  String get readMore => _localizedValues[locale.languageCode]!['readMore'] ?? 'Read more';
-  String get readLess => _localizedValues[locale.languageCode]!['readLess'] ?? 'Read less';
-  String get viewMore => _localizedValues[locale.languageCode]!['viewMore'] ?? 'View more';
-  String get viewLess => _localizedValues[locale.languageCode]!['viewLess'] ?? 'View less';
+  // Error and Loading States
+  String get errorLoading =>
+      _localizedValues[locale.languageCode]!['errorLoading'] ?? 'Error Loading';
+  String get categoryNotFound =>
+      _localizedValues[locale.languageCode]!['categoryNotFound'] ??
+      'Category Not Found';
+  String get noDataFound =>
+      _localizedValues[locale.languageCode]!['noDataFound'] ?? 'No Data Found';
+  String get tapToRetry =>
+      _localizedValues[locale.languageCode]!['tapToRetry'] ?? 'Tap to retry';
+  // ReadMore Text variations
+  String get showMore =>
+      _localizedValues[locale.languageCode]!['showMore'] ?? 'Show more';
+  String get showLess =>
+      _localizedValues[locale.languageCode]!['showLess'] ?? 'Show less';
+  String get readMore =>
+      _localizedValues[locale.languageCode]!['readMore'] ?? 'Read more';
+  String get readLess =>
+      _localizedValues[locale.languageCode]!['readLess'] ?? 'Read less';
+  String get viewMore =>
+      _localizedValues[locale.languageCode]!['viewMore'] ?? 'View more';
+  String get viewLess =>
+      _localizedValues[locale.languageCode]!['viewLess'] ?? 'View less';
+
+  // Places saved with proper pluralization
+  String placesSaved(int count) {
+    if (locale.languageCode == 'ar') {
+      // Arabic pluralization
+      final key = count == 1 ? 'placeSaved' : 'placesSaved';
+      final template =
+          _localizedValues[locale.languageCode]![key] ??
+          (count == 1 ? 'تم حفظ {count} مكان' : 'تم حفظ {count} أماكن');
+      return template.replaceAll('{count}', count.toString());
+    } else {
+      // English pluralization
+      final key = count == 1 ? 'placeSaved' : 'placesSaved';
+      final template =
+          _localizedValues[locale.languageCode]![key] ??
+          (count == 1 ? '{count} place saved' : '{count} places saved');
+      return template.replaceAll('{count}', count.toString());
+    }
+  }
+
+  // Search Screen
+  String get voiceSearch =>
+      _localizedValues[locale.languageCode]!['voiceSearch'] ?? 'Voice Search';
+  String get listening =>
+      _localizedValues[locale.languageCode]!['listening'] ?? 'Listening...';
+  String get viewAllCategories =>
+      _localizedValues[locale.languageCode]!['viewAllCategories'] ??
+      'View All Categories';
+  String get categories =>
+      _localizedValues[locale.languageCode]!['categories'] ?? 'Categories';
+  String get filterPlaces =>
+      _localizedValues[locale.languageCode]!['filterPlaces'] ?? 'Filter Places';
+  String get sortBy =>
+      _localizedValues[locale.languageCode]!['sortBy'] ?? 'Sort by';
+  String get minimumRating =>
+      _localizedValues[locale.languageCode]!['minimumRating'] ??
+      'Minimum Rating';
+  String get starsAndAbove =>
+      _localizedValues[locale.languageCode]!['starsAndAbove'] ??
+      'stars and above';
+  String get featuredPlacesOnly =>
+      _localizedValues[locale.languageCode]!['featuredPlacesOnly'] ??
+      'Featured Places Only';
+  String get applyFilters =>
+      _localizedValues[locale.languageCode]!['applyFilters'] ?? 'Apply Filters';
+  String get left => _localizedValues[locale.languageCode]!['left'] ?? 'left';
+  String get noCategoriesAvailable =>
+      _localizedValues[locale.languageCode]!['noCategoriesAvailable'] ??
+      'No categories available';
+
+  // Sorting Options
+  String get relevance =>
+      _localizedValues[locale.languageCode]!['relevance'] ?? 'Relevance';
+  String get highestRated =>
+      _localizedValues[locale.languageCode]!['highestRated'] ?? 'Highest Rated';
+  String get mostReviewed =>
+      _localizedValues[locale.languageCode]!['mostReviewed'] ?? 'Most Reviewed';
+  String get mostLiked =>
+      _localizedValues[locale.languageCode]!['mostLiked'] ?? 'Most Liked';
+  String get newest =>
+      _localizedValues[locale.languageCode]!['newest'] ?? 'Newest';
+  String get nameAZ =>
+      _localizedValues[locale.languageCode]!['nameAZ'] ?? 'Name (A-Z)';
+  String get nameZA =>
+      _localizedValues[locale.languageCode]!['nameZA'] ?? 'Name (Z-A)';
+  String get foundPlacesIn =>
+      _localizedValues[locale.languageCode]!['foundPlacesIn'] ??
+      'Found {count} places in';
+  String get foundPlacesFor =>
+      _localizedValues[locale.languageCode]!['foundPlacesFor'] ??
+      'Found {count} places for';
+  // Add these to your existing AppLocalizations class
+
+  // Review Form Texts
+  String get yes => _localizedValues[locale.languageCode]!['yes'] ?? 'Yes';
+  String get no => _localizedValues[locale.languageCode]!['no'] ?? 'No';
+  String get typeYourAnswer =>
+      _localizedValues[locale.languageCode]!['typeYourAnswer'] ??
+      'Type your answer...';
+  // String get removeQuestion =>
+  //     _localizedValues[locale.languageCode]!['removeQuestion'] ??
+  //     'Remove Question';
+  // String get deleteReview =>
+  //     _localizedValues[locale.languageCode]!['deleteReview'] ?? 'Delete Review';
+  // String get deleteReviewConfirmation =>
+  //     _localizedValues[locale.languageCode]!['deleteReviewConfirmation'] ??
+  //     'Are you sure you want to delete your review? This action cannot be undone.';
+  // String get editReview =>
+  //     _localizedValues[locale.languageCode]!['editReview'] ?? 'Edit Review';
+  // String get updateReview =>
+  //     _localizedValues[locale.languageCode]!['updateReview'] ?? 'Update Review';
+  String get submitReview =>
+      _localizedValues[locale.languageCode]!['submitReview'] ?? 'Submit Review';
+  String get validationReviewTextRequired =>
+      _localizedValues[locale.languageCode]!['validationReviewTextRequired'] ??
+      'Review text is required.';
+
+  // Add to your existing AppLocalizations class
+
+  // Contact & Phone Options
+  String get contactOptions =>
+      _localizedValues[locale.languageCode]!['contactOptions'] ??
+      'Contact Options';
+  String get chooseHowToContact =>
+      _localizedValues[locale.languageCode]!['chooseHowToContact'] ??
+      'Choose how to contact';
+  String get call => _localizedValues[locale.languageCode]!['call'] ?? 'Call';
+  String get whatsApp =>
+      _localizedValues[locale.languageCode]!['whatsApp'] ?? 'WhatsApp';
+  String get message =>
+      _localizedValues[locale.languageCode]!['message'] ?? 'Message';
+  String get noMessagingApp =>
+      _localizedValues[locale.languageCode]!['noMessagingApp'] ??
+      'No Messaging App';
+  String get couldNotFindMessagingApp =>
+      _localizedValues[locale.languageCode]!['couldNotFindMessagingApp'] ??
+      'We couldn\'t find a messaging app on your device. Choose an option below:';
+  String get installMessagingApp =>
+      _localizedValues[locale.languageCode]!['installMessagingApp'] ??
+      'Install Messaging App';
+  String get getMessagingAppFromPlayStore =>
+      _localizedValues[locale.languageCode]!['getMessagingAppFromPlayStore'] ??
+      'Get a messaging app from Play Store';
+  String get useWhatsApp =>
+      _localizedValues[locale.languageCode]!['useWhatsApp'] ?? 'Use WhatsApp';
+  String get sendMessageViaWhatsApp =>
+      _localizedValues[locale.languageCode]!['sendMessageViaWhatsApp'] ??
+      'Send message via WhatsApp';
+  String get copyNumber =>
+      _localizedValues[locale.languageCode]!['copyNumber'] ?? 'Copy Number';
+  String get copyPhoneNumberToClipboard =>
+      _localizedValues[locale.languageCode]!['copyPhoneNumberToClipboard'] ??
+      'Copy phone number to clipboard';
+  String get cannotOpenStore =>
+      _localizedValues[locale.languageCode]!['cannotOpenStore'] ??
+      'Cannot Open Store';
+  String get installMessagingAppManually =>
+      _localizedValues[locale.languageCode]!['installMessagingAppManually'] ??
+      'Please install a messaging app manually from Play Store';
+  String get storeError =>
+      _localizedValues[locale.languageCode]!['storeError'] ?? 'Store Error';
+  String get failedToOpenAppStore =>
+      _localizedValues[locale.languageCode]!['failedToOpenAppStore'] ??
+      'Failed to open app store';
+  String get copyFailed =>
+      _localizedValues[locale.languageCode]!['copyFailed'] ?? 'Copy Failed';
+  String get couldNotCopyPhoneNumber =>
+      _localizedValues[locale.languageCode]!['couldNotCopyPhoneNumber'] ??
+      'Could not copy phone number';
+  String get whatsAppNotInstalled =>
+      _localizedValues[locale.languageCode]!['whatsAppNotInstalled'] ??
+      'WhatsApp is not installed';
+  String get failedToOpenWhatsApp =>
+      _localizedValues[locale.languageCode]!['failedToOpenWhatsApp'] ??
+      'Failed to open WhatsApp';
+  String get failedToMakeCall =>
+      _localizedValues[locale.languageCode]!['failedToMakeCall'] ??
+      'Failed to make call';
+  String get failedToLaunchPhoneOptions =>
+      _localizedValues[locale.languageCode]!['failedToLaunchPhoneOptions'] ??
+      'Failed to launch phone options';
+  String get couldNotMakeCall =>
+      _localizedValues[locale.languageCode]!['couldNotMakeCall'] ??
+      'Could not make call to';
+  String get messageFailed =>
+      _localizedValues[locale.languageCode]!['messageFailed'] ??
+      'Message Failed';
+  String get couldNotOpenMessagingApp =>
+      _localizedValues[locale.languageCode]!['couldNotOpenMessagingApp'] ??
+      'Could not open messaging app';
+  String get cannotOpenLink =>
+      _localizedValues[locale.languageCode]!['cannotOpenLink'] ??
+      'Cannot Open Link';
+  String get couldNotLaunchWebsite =>
+      _localizedValues[locale.languageCode]!['couldNotLaunchWebsite'] ??
+      'Could not launch the website';
+
+  // Date Formatting
+  String get today =>
+      _localizedValues[locale.languageCode]!['today'] ?? 'Today';
+  String get yesterday =>
+      _localizedValues[locale.languageCode]!['yesterday'] ?? 'Yesterday';
+  String get daysAgo =>
+      _localizedValues[locale.languageCode]!['daysAgo'] ?? 'days ago';
+  String get weeksAgo =>
+      _localizedValues[locale.languageCode]!['weeksAgo'] ?? 'weeks ago';
+  String get weekAgo =>
+      _localizedValues[locale.languageCode]!['weekAgo'] ?? 'week ago';
+  String get unknownDate =>
+      _localizedValues[locale.languageCode]!['unknownDate'] ?? 'Unknown date';
+
+  // Plural-aware date formatting method
+  String formatRelativeDate(DateTime? date) {
+    if (date == null) return unknownDate;
+
+    final now = DateTime.now();
+    final difference = now.difference(date);
+
+    if (difference.inDays == 0) {
+      return today;
+    } else if (difference.inDays == 1) {
+      return yesterday;
+    } else if (difference.inDays < 7) {
+      return '${difference.inDays} $daysAgo';
+    } else if (difference.inDays < 30) {
+      final weeks = (difference.inDays / 7).floor();
+      final weekText = weeks == 1 ? weekAgo : weeksAgo;
+      return '$weeks $weekText';
+    } else {
+      final day = date.day.toString().padLeft(2, '0');
+      final month = date.month.toString().padLeft(2, '0');
+      final year = date.year.toString();
+      return '$day/$month/$year';
+    }
+  }
+
+  // Add to your existing AppLocalizations class
+
+  // Subscription Screen Texts
+  String get placesReviewsPremium =>
+      _localizedValues[locale.languageCode]!['placesReviewsPremium'] ??
+      'Places Reviews Premium';
+  String get unlimitedPlaceReviews =>
+      _localizedValues[locale.languageCode]!['unlimitedPlaceReviews'] ??
+      'Unlimited place reviews & ratings';
+  String get advancedSearchFiltering =>
+      _localizedValues[locale.languageCode]!['advancedSearchFiltering'] ??
+      'Advanced search & filtering';
+  String get priorityCustomerSupport =>
+      _localizedValues[locale.languageCode]!['priorityCustomerSupport'] ??
+      'Priority customer support';
+  String get exclusiveInsiderRecommendations =>
+      _localizedValues[locale
+          .languageCode]!['exclusiveInsiderRecommendations'] ??
+      'Exclusive insider recommendations';
+  String get adFreeExperience =>
+      _localizedValues[locale.languageCode]!['adFreeExperience'] ??
+      'Ad-free experience';
+  String get earlyAccessNewFeatures =>
+      _localizedValues[locale.languageCode]!['earlyAccessNewFeatures'] ??
+      'Early access to new features';
+  String get choose =>
+      _localizedValues[locale.languageCode]!['choose'] ?? 'Choose';
+  String get freeTrialFooter =>
+      _localizedValues[locale.languageCode]!['freeTrialFooter'] ??
+      '✨ 7-day free trial • Cancel anytime • No hidden fees';
+  String get bySubscribingAgree =>
+      _localizedValues[locale.languageCode]!['bySubscribingAgree'] ??
+      'By subscribing, you agree to our';
+  String get termsOfService =>
+      _localizedValues[locale.languageCode]!['termsOfService'] ??
+      'Terms of Service';
+  String get needHelp =>
+      _localizedValues[locale.languageCode]!['needHelp'] ?? 'Need Help?';
+  String get premiumSubscriptionHelp =>
+      _localizedValues[locale.languageCode]!['premiumSubscriptionHelp'] ??
+      'Our premium subscription gives you unlimited access to all features. You can cancel anytime during your free trial without being charged.';
+  String get gotIt =>
+      _localizedValues[locale.languageCode]!['gotIt'] ?? 'Got it';
+
+  String get subscriptionDetails =>
+      _localizedValues[locale.languageCode]!['subscriptionDetails'] ??
+      'Subscription Details';
+  String get youHaveActivePremium =>
+      _localizedValues[locale.languageCode]!['youHaveActivePremium'] ??
+      'You have an active Premium subscription.';
+  String get withPremiumYouCan =>
+      _localizedValues[locale.languageCode]!['withPremiumYouCan'] ??
+      'With Premium you can:';
+  String get createUnlimitedPlaces =>
+      _localizedValues[locale.languageCode]!['createUnlimitedPlaces'] ??
+      'Create unlimited places';
+  String get accessAdvancedFeatures =>
+      _localizedValues[locale.languageCode]!['accessAdvancedFeatures'] ??
+      'Access advanced features';
+  String get getPrioritySupport =>
+      _localizedValues[locale.languageCode]!['getPrioritySupport'] ??
+      'Get priority support';
+  String get close =>
+      _localizedValues[locale.languageCode]!['close'] ?? 'Close';
+
+  // Comments & Reviews
+  String get hide => _localizedValues[locale.languageCode]!['hide'] ?? 'Hide';
+  String get show => _localizedValues[locale.languageCode]!['show'] ?? 'Show';
+  String get reply =>
+      _localizedValues[locale.languageCode]!['reply'] ?? 'reply';
+  String get replies =>
+      _localizedValues[locale.languageCode]!['replies'] ?? 'replies';
+  String get edit => _localizedValues[locale.languageCode]!['edit'] ?? 'Edit';
+  String get delete =>
+      _localizedValues[locale.languageCode]!['delete'] ?? 'Delete';
+  String get editComment =>
+      _localizedValues[locale.languageCode]!['editComment'] ?? 'Edit Comment';
+  String get editYourComment =>
+      _localizedValues[locale.languageCode]!['editYourComment'] ??
+      'Edit your comment...';
+  String get deleteComment =>
+      _localizedValues[locale.languageCode]!['deleteComment'] ??
+      'Delete Comment';
+  String get deleteCommentConfirmation =>
+      _localizedValues[locale.languageCode]!['deleteCommentConfirmation'] ??
+      'Are you sure you want to delete this comment?';
+  String get replyToComment =>
+      _localizedValues[locale.languageCode]!['replyToComment'] ??
+      'Reply to comment';
+  String get writeYourReply =>
+      _localizedValues[locale.languageCode]!['writeYourReply'] ??
+      'Write your reply...';
+  String get typeYourReply =>
+      _localizedValues[locale.languageCode]!['typeYourReply'] ??
+      'Type your reply...';
+  String get addNewComment =>
+      _localizedValues[locale.languageCode]!['addNewComment'] ??
+      'Add a new comment...';
+  String get replyingTo =>
+      _localizedValues[locale.languageCode]!['replyingTo'] ?? 'Replying to';
+  String get justNow =>
+      _localizedValues[locale.languageCode]!['justNow'] ?? 'Just now';
+  String get minutesAgo =>
+      _localizedValues[locale.languageCode]!['minutesAgo'] ?? 'm ago';
+  String get hoursAgo =>
+      _localizedValues[locale.languageCode]!['hoursAgo'] ?? 'h ago';
+  String get monthsAgo =>
+      _localizedValues[locale.languageCode]!['monthsAgo'] ?? 'mo ago';
+
+  String get shareFailed =>
+      _localizedValues[locale.languageCode]!['shareFailed'] ?? 'Share Failed';
+  String get saveFailed =>
+      _localizedValues[locale.languageCode]!['saveFailed'] ?? 'Save Failed';
+  String get permissionRequired =>
+      _localizedValues[locale.languageCode]!['permissionRequired'] ??
+      'Permission Required';
+  String get storagePermissionRequired =>
+      _localizedValues[locale.languageCode]!['storagePermissionRequired'] ??
+      'Storage permission is required to save PDF files. Please enable it in app settings.';
+  String get openSettings =>
+      _localizedValues[locale.languageCode]!['openSettings'] ?? 'Open Settings';
+  String get fileExists =>
+      _localizedValues[locale.languageCode]!['fileExists'] ?? 'File Exists';
+  String get fileExistsMessage =>
+      _localizedValues[locale.languageCode]!['fileExistsMessage'] ??
+      'A PDF with this name already exists. Would you like to overwrite it?';
+  String get overwrite =>
+      _localizedValues[locale.languageCode]!['overwrite'] ?? 'Overwrite';
+  String get fileOverwritten =>
+      _localizedValues[locale.languageCode]!['fileOverwritten'] ??
+      'File overwritten successfully';
+
+  // Gallery
+  String get gallery =>
+      _localizedValues[locale.languageCode]!['gallery'] ?? 'Gallery';
+  String get searchPhotos =>
+      _localizedValues[locale.languageCode]!['searchPhotos'] ?? 'Search photos';
+  String get recentPlaces =>
+      _localizedValues[locale.languageCode]!['recentPlaces'] ?? 'Recent Places';
+  String get collections =>
+      _localizedValues[locale.languageCode]!['collections'] ?? 'Collections';
+  String get allPlacePhotos =>
+      _localizedValues[locale.languageCode]!['allPlacePhotos'] ??
+      'All Place Photos';
+  String get photos =>
+      _localizedValues[locale.languageCode]!['photos'] ?? 'photos';
+  String get collectionPhotos =>
+      _localizedValues[locale.languageCode]!['collectionPhotos'] ??
+      'Collection Photos';
+  String get noPhotosFound =>
+      _localizedValues[locale.languageCode]!['noPhotosFound'] ??
+      'No photos found in this collection.';
+  String get uncategorized =>
+      _localizedValues[locale.languageCode]!['uncategorized'] ??
+      'Uncategorized';
+
+  // Reviews & Questions
+  String get additionalAnswers =>
+      _localizedValues[locale.languageCode]!['additionalAnswers'] ??
+      'Additional Answers:';
+  String get notAnswered =>
+      _localizedValues[locale.languageCode]!['notAnswered'] ?? 'Not answered';
+  String get stars =>
+      _localizedValues[locale.languageCode]!['stars'] ?? 'stars';
+  String get star => _localizedValues[locale.languageCode]!['star'] ?? 'star';
+
+  // Map & Location
+  String get chooseLocation =>
+      _localizedValues[locale.languageCode]!['chooseLocation'] ??
+      'Choose Location';
+  String get searchForAddress =>
+      _localizedValues[locale.languageCode]!['searchForAddress'] ??
+      'Search for an address...';
+  String get searchForPlaces =>
+      _localizedValues[locale.languageCode]!['searchForPlaces'] ??
+      'Search for places, addresses...';
+  String get currentLocation =>
+      _localizedValues[locale.languageCode]!['currentLocation'] ??
+      'Current Location';
+  String get nearbyPlaces =>
+      _localizedValues[locale.languageCode]!['nearbyPlaces'] ?? 'Nearby Places';
+  String get searchResultsFor =>
+      _localizedValues[locale.languageCode]!['searchResultsFor'] ??
+      'Search results for';
+  String get loadingPlaces =>
+      _localizedValues[locale.languageCode]!['loadingPlaces'] ??
+      'Loading Places...';
+  String get findingBestPlaces =>
+      _localizedValues[locale.languageCode]!['findingBestPlaces'] ??
+      'Finding the best places around you';
+  String get filterByCategory =>
+      _localizedValues[locale.languageCode]!['filterByCategory'] ??
+      'Filter by Category';
+  String get clear =>
+      _localizedValues[locale.languageCode]!['clear'] ?? 'Clear';
+  String get placesDisplayed =>
+      _localizedValues[locale.languageCode]!['placesDisplayed'] ??
+      'places displayed';
+  String get noPlaces =>
+      _localizedValues[locale.languageCode]!['noPlaces'] ?? 'No Places';
+  String noPlacesFoundInCategory(String categoryName) {
+    final template =
+        _localizedValues[locale.languageCode]!['noPlacesFoundInCategory'] ??
+        'No places found in {categoryName} category';
+    return template.replaceAll('{categoryName}', categoryName);
+  }
+
+  String get selectedLocation =>
+      _localizedValues[locale.languageCode]!['selectedLocation'] ??
+      'Selected Location';
+  String get tapToSelectLocation =>
+      _localizedValues[locale.languageCode]!['tapToSelectLocation'] ??
+      'Tap on the map to select a location';
+  String get locationAddress =>
+      _localizedValues[locale.languageCode]!['locationAddress'] ??
+      'Location Address';
+  String get confirmLocation =>
+      _localizedValues[locale.languageCode]!['confirmLocation'] ??
+      'Confirm Location';
+  String get mapType =>
+      _localizedValues[locale.languageCode]!['mapType'] ?? 'Map Type';
+  String get defaultMap =>
+      _localizedValues[locale.languageCode]!['default'] ?? 'Default';
+  String get satellite =>
+      _localizedValues[locale.languageCode]!['satellite'] ?? 'Satellite';
+  String get terrain =>
+      _localizedValues[locale.languageCode]!['terrain'] ?? 'Terrain';
+  String get hybrid =>
+      _localizedValues[locale.languageCode]!['hybrid'] ?? 'Hybrid';
+  String get loadingMap =>
+      _localizedValues[locale.languageCode]!['loadingMap'] ?? 'Loading Map...';
+  String get loadingYourLocation =>
+      _localizedValues[locale.languageCode]!['loadingYourLocation'] ??
+      'Loading your location...';
+  String get settingUpYourMap =>
+      _localizedValues[locale.languageCode]!['settingUpYourMap'] ??
+      'Please wait while we set up your map';
+
+  String get stopListening =>
+      _localizedValues[locale.languageCode]!['stopListening'] ??
+      'Stop Listening';
 }
 
 class _AppLocalizationsDelegate

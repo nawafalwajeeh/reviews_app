@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:reviews_app/utils/constants/sizes.dart';
 
 import '../../constants/colors.dart';
+import '../../helpers/font_helper.dart';
 
 class AppTextFieldTheme {
   AppTextFieldTheme._();
@@ -12,23 +13,27 @@ class AppTextFieldTheme {
     prefixIconColor: AppColors.grey,
     suffixIconColor: AppColors.grey,
 
-    labelStyle: const TextStyle().copyWith(
+    labelStyle: TextStyle().copyWith(
       fontSize: AppSizes.fontSizeMd,
       color: AppColors.black,
-      fontFamily: 'Poppins',
+      // fontFamily: 'Poppins',
+      fontFamily: FontHelper.appFontFamily,
     ),
     hintStyle: const TextStyle().copyWith(
       fontSize: AppSizes.fontSizeSm,
       color: AppColors.black,
-      fontFamily: 'Poppins',
+      // fontFamily: 'Poppins',
+      fontFamily: FontHelper.appFontFamily,
     ),
     errorStyle: const TextStyle().copyWith(
       fontStyle: FontStyle.normal,
-      fontFamily: 'Poppins',
+      // fontFamily: 'Poppins',
+      fontFamily: FontHelper.appFontFamily,
     ),
     floatingLabelStyle: const TextStyle().copyWith(
       color: AppColors.black.withValues(alpha: 0.8),
-      fontFamily: 'Poppins',
+      // fontFamily: 'Poppins',
+      fontFamily: FontHelper.appFontFamily,
     ),
     border: const OutlineInputBorder().copyWith(
       borderRadius: BorderRadius.circular(AppSizes.inputFieldRadius),
@@ -66,17 +71,20 @@ class AppTextFieldTheme {
     labelStyle: const TextStyle().copyWith(
       fontSize: AppSizes.fontSizeMd,
       color: AppColors.white,
-      fontFamily: 'Poppins',
+      // fontFamily: 'Poppins',
+      fontFamily: FontHelper.appFontFamily,
     ),
     hintStyle: const TextStyle().copyWith(
       fontSize: AppSizes.fontSizeSm,
       color: AppColors.white,
-      fontFamily: 'Poppins',
+      // fontFamily: 'Poppins',
+      fontFamily: FontHelper.appFontFamily,
     ),
     errorStyle: const TextStyle().copyWith(fontStyle: FontStyle.normal),
     floatingLabelStyle: const TextStyle().copyWith(
       color: AppColors.white.withValues(alpha: 0.8),
-      fontFamily: 'Poppins',
+      // fontFamily: 'Poppins',
+      fontFamily: FontHelper.appFontFamily,
     ),
     border: const OutlineInputBorder().copyWith(
       borderRadius: BorderRadius.circular(AppSizes.inputFieldRadius),

@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:reviews_app/common/widgets/place/favourite_icon/favourite_icon.dart';
 import 'package:reviews_app/common/widgets/texts/category_name_text.dart';
 import 'package:reviews_app/common/widgets/texts/place_title_text.dart';
+import 'package:reviews_app/data/services/localization/localization_service.dart';
 import 'package:reviews_app/features/review/screens/place_details/place_details.dart';
 import 'package:reviews_app/utils/constants/colors.dart';
 import 'package:reviews_app/utils/constants/enums.dart';
@@ -65,10 +66,15 @@ class PlaceCardHorizontal extends StatelessWidget {
                 children: [
                   /// -- Main Image
                   ClipRRect(
-                    borderRadius: const BorderRadius.only(
-                      topLeft: Radius.circular(AppSizes.cardRadiusLg),
-                      bottomLeft: Radius.circular(AppSizes.cardRadiusLg),
-                    ),
+                    borderRadius: !LocalizationService.instance.isRTL()
+                        ? const BorderRadius.only(
+                            topLeft: Radius.circular(AppSizes.cardRadiusLg),
+                            bottomLeft: Radius.circular(AppSizes.cardRadiusLg),
+                          )
+                        : const BorderRadius.only(
+                            topRight: Radius.circular(AppSizes.cardRadiusLg),
+                            bottomRight: Radius.circular(AppSizes.cardRadiusLg),
+                          ),
                     child: CachedNetworkImage(
                       imageUrl: place.thumbnail,
                       height: double.infinity, // Fill available height
@@ -161,18 +167,8 @@ class PlaceCardHorizontal extends StatelessWidget {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        // Text(
-                        //   place.categoryId,
-                        //   style: Theme.of(context).textTheme.labelMedium
-                        //       ?.copyWith(
-                        //         color: AppColors.primaryColor,
-                        //         fontWeight: FontWeight.w600,
-                        //       ),
-                        //   maxLines: 1,
-                        //   overflow: TextOverflow.ellipsis,
-                        // ),
                         CategoryNameText(categoryId: place.categoryId),
-                      
+
                         const SizedBox(height: AppSizes.xs),
                         Text(
                           place.description,

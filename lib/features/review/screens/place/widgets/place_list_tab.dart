@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:reviews_app/localization/app_localizations.dart';
 import 'package:reviews_app/utils/constants/sizes.dart' show AppSizes;
 
 import '../../../../../common/widgets/place/place_card.dart';
@@ -68,11 +69,12 @@ class PlaceListTab extends StatelessWidget {
 
         // 2. HANDLE NO DATA FOUND STATE
         if (categoryPlaces.isEmpty) {
-          return const Center(
+          return Center(
             child: Padding(
               padding: EdgeInsets.all(AppSizes.defaultSpace),
               child: Text(
-                'No places found in this category.',
+                // 'No places found in this category.',
+                AppLocalizations.of(context).noPlacesFound,
                 textAlign: TextAlign.center,
               ),
             ),

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:reviews_app/common/widgets/icons/circular_icon.dart';
-import 'package:reviews_app/common/widgets/layouts/icons/rtl_icons.dart';
 import 'package:reviews_app/utils/constants/colors.dart';
 import 'package:reviews_app/utils/constants/sizes.dart';
 import 'package:reviews_app/utils/device/device_utility.dart';

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:reviews_app/localization/app_localizations.dart';
 import 'package:reviews_app/utils/constants/sizes.dart';
 
 import '../../../../../common/widgets/icons/circular_icon.dart';
@@ -27,7 +28,8 @@ class RatingAndShareWidget extends StatelessWidget {
             const SizedBox(width: AppSizes.sm),
             Text(
               // '(${(place.rating * 10).toInt().abs() + 10} Reviews)',
-              '(${place.reviewsCount} reviews)',
+              // '(${place.reviewsCount} reviews)',
+              '(${place.reviewsCount} ${AppLocalizations.of(context).reviews})',
               style: Theme.of(context).textTheme.bodySmall,
             ),
           ],

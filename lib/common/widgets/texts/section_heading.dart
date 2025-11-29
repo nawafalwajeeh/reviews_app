@@ -9,12 +9,14 @@ class AppSectionHeading extends StatelessWidget {
     this.buttonTitle = 'View All',
     this.textColor,
     this.onPressed,
+    this.titleStyle,
   });
 
   final String title, buttonTitle;
   final bool showActionButton;
   final Color? textColor;
   final void Function()? onPressed;
+  final TextStyle? titleStyle;
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +27,7 @@ class AppSectionHeading extends StatelessWidget {
           title,
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
-          style: Theme.of(
+          style: titleStyle ?? Theme.of(
             context,
           ).textTheme.headlineSmall?.apply(color: textColor),
         ),

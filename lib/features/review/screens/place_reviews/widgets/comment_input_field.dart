@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:reviews_app/localization/app_localizations.dart';
 import 'package:reviews_app/utils/constants/colors.dart';
 import 'package:reviews_app/utils/constants/image_strings.dart';
 import 'package:reviews_app/utils/constants/sizes.dart';
@@ -7,7 +8,8 @@ import 'package:reviews_app/utils/helpers/helper_functions.dart';
 class BottomCommentInputField extends StatelessWidget {
   final String currentUserAvatar = AppImages.user;
   final VoidCallback onCancelReply;
-  final Function(String) onSend; // Changed from VoidCallback to Function(String)
+  final Function(String)
+  onSend; // Changed from VoidCallback to Function(String)
   final bool isReplying;
   final String? replyTarget;
   final bool isLoading; // Added isLoading parameter
@@ -25,13 +27,16 @@ class BottomCommentInputField extends StatelessWidget {
   Widget build(BuildContext context) {
     final dark = AppHelperFunctions.isDarkMode(context);
     final TextEditingController controller = TextEditingController();
+    final appLocalizations = AppLocalizations.of(context);
 
     return Container(
       decoration: BoxDecoration(
         color: dark ? AppColors.dark : AppColors.white,
         border: Border(
           top: BorderSide(
-            color: AppColors.grey.withValues(alpha:0.5), // Fixed: changed withValues to withOpacity
+            color: AppColors.grey.withValues(
+              alpha: 0.5,
+            ), // Fixed: changed withValues to withOpacity
             width: 0.5,
           ),
         ),
@@ -86,8 +91,10 @@ class BottomCommentInputField extends StatelessWidget {
                     controller: controller,
                     decoration: InputDecoration(
                       hintText: isReplying
-                          ? 'Type your reply...'
-                          : 'Add a new comment...',
+                          // ? 'Type your reply...'
+                          // : 'Add a new comment...',
+                          ? appLocalizations.typeYourReply
+                          : appLocalizations.addNewComment,
                       suffixIcon: isLoading
                           ? const SizedBox(
                               width: 20,
@@ -102,7 +109,9 @@ class BottomCommentInputField extends StatelessWidget {
                               ),
                               onPressed: () {
                                 if (controller.text.isNotEmpty && !isLoading) {
-                                  onSend(controller.text.trim()); // Pass the text
+                                  onSend(
+                                    controller.text.trim(),
+                                  ); // Pass the text
                                   controller.clear();
                                 }
                               },
