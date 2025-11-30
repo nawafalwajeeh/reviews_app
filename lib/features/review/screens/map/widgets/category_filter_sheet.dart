@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:reviews_app/localization/app_localizations.dart';
 
 import '../../../../../utils/constants/colors.dart';
 import '../../../../../utils/constants/sizes.dart';
@@ -22,6 +23,7 @@ class CategoryFilterSheet extends StatelessWidget {
   Widget build(BuildContext context) {
     final categoryController = CategoryController.instance;
     final mapController = PlacesMapController.instance;
+    final locale = AppLocalizations.of(context);
 
     return Container(
       height: MediaQuery.of(context).size.height * 0.7,
@@ -45,7 +47,8 @@ class CategoryFilterSheet extends StatelessWidget {
                     Icon(Iconsax.filter, color: AppColors.primaryColor),
                     const SizedBox(width: AppSizes.sm),
                     Text(
-                      'Filter by Category',
+                      // 'Filter by Category',
+                      locale.filterByCategory,
                       style: Theme.of(context).textTheme.headlineSmall
                           ?.copyWith(fontWeight: FontWeight.bold),
                     ),
@@ -54,7 +57,8 @@ class CategoryFilterSheet extends StatelessWidget {
                       TextButton(
                         onPressed: () => onCategorySelected(''),
                         child: Text(
-                          'Clear',
+                          // 'Clear',
+                          locale.clear,
                           style: Theme.of(context).textTheme.bodyMedium
                               ?.copyWith(color: AppColors.primaryColor),
                         ),
@@ -64,7 +68,8 @@ class CategoryFilterSheet extends StatelessWidget {
                 // Debug info
                 Obx(
                   () => Text(
-                    '${mapController.displayedPlaces.length} places displayed',
+                    // '${mapController.displayedPlaces.length} places displayed',
+                    '${mapController.displayedPlaces.length} ${locale.placesDisplayed}',
                     style: Theme.of(
                       context,
                     ).textTheme.bodySmall?.copyWith(color: AppColors.darkGrey),
@@ -99,7 +104,8 @@ class CategoryFilterSheet extends StatelessWidget {
                   _buildCategoryItem(
                     context,
                     id: '',
-                    name: 'All Categories',
+                    // name: 'All Categories',
+                    name: locale.allCategories,
                     icon: Iconsax.category,
                     isSelected: selectedCategoryId.isEmpty,
                     count: mapController.placeController.places.length,
@@ -125,8 +131,10 @@ class CategoryFilterSheet extends StatelessWidget {
                           onCategorySelected(category.id);
                         } else {
                           Get.snackbar(
-                            'No Places',
-                            'No places found in ${category.name} category',
+                            // 'No Places',
+                            // 'No places found in ${category.name} category',
+                            locale.noPlaces,
+                            locale.noPlacesFoundInCategory(category.name),
                             backgroundColor: AppColors.warning,
                           );
                         }

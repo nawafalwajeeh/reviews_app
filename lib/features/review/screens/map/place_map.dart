@@ -38,7 +38,7 @@ class PlacesMapScreen extends StatelessWidget {
       body: Stack(
         children: [
           /// Google Map
-          _buildMap(controller),
+          _buildMap(controller, context),
 
           /// Top Search & Controls
           _buildTopControls(context, controller),
@@ -59,7 +59,7 @@ class PlacesMapScreen extends StatelessWidget {
           if (isPickerMode) _buildPickerBottomSheet(context, controller),
 
           /// Loading Overlay
-          _buildLoadingOverlay(controller),
+          _buildLoadingOverlay(controller, context),
 
           /// Picker Mode Back Button
           if (isPickerMode) _buildPickerAppBar(),
@@ -68,16 +68,16 @@ class PlacesMapScreen extends StatelessWidget {
           if (!isPickerMode) _buildCategoryFilterButton(context, controller),
         ],
       ),
-      floatingActionButton: _buildFloatingActionButtons(controller),
+      floatingActionButton: _buildFloatingActionButtons(controller, context),
     );
   }
 
-  Widget _buildMap(PlacesMapController controller) {
+  Widget _buildMap(PlacesMapController controller, BuildContext context) {
     return Obx(() {
       // Show loading until we have current location
       if (controller.isLoading.value &&
           controller.currentLocation.value == null) {
-        return _buildLoadingState();
+        return _buildLoadingState(context);
       }
 
       final initialLocation = controller.currentLocation.value;
@@ -135,13 +135,13 @@ class PlacesMapScreen extends StatelessWidget {
           // Loading overlay for initial load
           if (controller.isLoading.value &&
               controller.currentLocation.value == null)
-            _buildLoadingState(),
+            _buildLoadingState(context),
         ],
       );
     });
   }
 
-  Widget _buildLoadingState() {
+  Widget _buildLoadingState(BuildContext context) {
     return Container(
       color: AppColors.white,
       child: Center(
@@ -160,6 +160,7 @@ class PlacesMapScreen extends StatelessWidget {
             const SizedBox(height: AppSizes.sm),
             Text(
               'Please wait while we set up your map',
+              // AppLocalizations.of(context).while
               // AppLocalizations.of(Get.context!).pleaseWait,
               style: Theme.of(
                 Get.context!,
@@ -175,6 +176,7 @@ class PlacesMapScreen extends StatelessWidget {
     BuildContext context,
     PlacesMapController controller,
   ) {
+    final locale = AppLocalizations.of(context);
     return Positioned(
       top:
           MediaQuery.of(context).padding.top +
@@ -189,8 +191,10 @@ class PlacesMapScreen extends StatelessWidget {
               Expanded(
                 child: MapSearchContainer(
                   text: isPickerMode
-                      ? 'Search for an address...'
-                      : 'Search for places, addresses...',
+                      // ? 'Search for an address...'
+                      // : 'Search for places, addresses...',
+                      ? locale.searchForAddress
+                      : locale.searchForPlaces,
                   onChanged: controller.onSearchQueryChanged,
                   onVoiceSearch: () => controller.startListening(),
                   isListening: controller.isListening.value,
@@ -212,6 +216,7 @@ class PlacesMapScreen extends StatelessWidget {
     BuildContext context,
     PlacesMapController controller,
   ) {
+    final locale = AppLocalizations.of(context);
     if (controller.searchQuery.value.isNotEmpty) return const SizedBox();
 
     return Container(
@@ -223,7 +228,8 @@ class PlacesMapScreen extends StatelessWidget {
             /// Current Location Chip
             _buildChip(
               context,
-              'Current Location',
+              // 'Current Location',
+              locale.currentLocation,
               Iconsax.location,
               () => controller.moveToCurrentLocation(),
             ),
@@ -231,7 +237,8 @@ class PlacesMapScreen extends StatelessWidget {
             /// Nearby Places Chip
             _buildChip(
               context,
-              'Nearby Places',
+              // 'Nearby Places',
+              locale.nearbyPlaces,
               Iconsax.note,
               () => controller.loadNearbyPlaces(),
             ),
@@ -368,10 +375,16 @@ class PlacesMapScreen extends StatelessWidget {
     });
   }
 
-  Widget _buildFloatingActionButtons(PlacesMapController controller) {
+  Widget _buildFloatingActionButtons(
+    PlacesMapController controller,
+    BuildContext context,
+  ) {
+    final locale = AppLocalizations.of(context);
+
     if (isPickerMode) {
       return FloatingActionButton(
         heroTag: 'location_fab_picker',
+        // heroTag: locale.pickLocationFromMap,
         onPressed: () => controller.moveToCurrentLocation(),
         backgroundColor: AppColors.white,
         foregroundColor: AppColors.primaryColor,
@@ -386,6 +399,7 @@ class PlacesMapScreen extends StatelessWidget {
         // Current Location FAB
         FloatingActionButton(
           heroTag: 'location_fab_explore',
+          // heroTag: locale.location,
           onPressed: () => controller.moveToCurrentLocation(),
           backgroundColor: AppColors.white,
           foregroundColor: AppColors.primaryColor,
@@ -397,6 +411,7 @@ class PlacesMapScreen extends StatelessWidget {
         // Nearby Places FAB
         FloatingActionButton(
           heroTag: 'nearby_fab',
+          // heroTag: locale,
           onPressed: () => controller.loadNearbyPlaces(),
           backgroundColor: AppColors.primaryColor,
           foregroundColor: AppColors.white,
@@ -479,7 +494,8 @@ class PlacesMapScreen extends StatelessWidget {
                       const SizedBox(width: AppSizes.sm),
                       Expanded(
                         child: Text(
-                          'Search results for "${controller.searchQuery.value}"',
+                          // 'Search results for "${controller.searchQuery.value}"',
+                          '${AppLocalizations.of(context).searchResultsFor} ${controller.searchQuery.value}',
                           style: Theme.of(context).textTheme.bodyMedium
                               ?.copyWith(color: AppColors.darkGrey),
                         ),
@@ -656,7 +672,8 @@ class PlacesMapScreen extends StatelessWidget {
             const SizedBox(width: AppSizes.sm),
             Expanded(
               child: Text(
-                'Choose Location',
+                // 'Choose Location',
+                AppLocalizations.of(Get.context!).chooseLocation,
                 style: Theme.of(Get.context!).textTheme.titleLarge?.copyWith(
                   color: AppColors.white,
                   fontWeight: FontWeight.w600,
@@ -738,7 +755,8 @@ class PlacesMapScreen extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                'Selected Location',
+                                // 'Selected Location',
+                                AppLocalizations.of(context).selectedLocation,
                                 style: Theme.of(context).textTheme.titleMedium
                                     ?.copyWith(
                                       fontWeight: FontWeight.w600,
@@ -746,7 +764,10 @@ class PlacesMapScreen extends StatelessWidget {
                                     ),
                               ),
                               Text(
-                                'Tap on the map to select a location',
+                                // 'Tap on the map to select a location',
+                                AppLocalizations.of(
+                                  context,
+                                ).tapToSelectLocation,
                                 style: Theme.of(context).textTheme.bodySmall
                                     ?.copyWith(
                                       color: AppColors.darkGrey.withValues(
@@ -787,7 +808,8 @@ class PlacesMapScreen extends StatelessWidget {
                               ),
                               const SizedBox(width: AppSizes.xs),
                               Text(
-                                'Location Address',
+                                // 'Location Address',
+                                AppLocalizations.of(context).locationAddress,
                                 style: Theme.of(context).textTheme.bodySmall
                                     ?.copyWith(
                                       fontWeight: FontWeight.w600,
@@ -886,7 +908,8 @@ class PlacesMapScreen extends StatelessWidget {
                                 ),
                                 const SizedBox(width: AppSizes.xs),
                                 Text(
-                                  'Current Location',
+                                  // 'Current Location',
+                                  AppLocalizations.of(context).currentLocation,
                                   style: Theme.of(context).textTheme.bodyMedium
                                       ?.copyWith(
                                         color: AppColors.primaryColor,
@@ -937,7 +960,10 @@ class PlacesMapScreen extends StatelessWidget {
                                       ),
                                       const SizedBox(width: AppSizes.xs),
                                       Text(
-                                        'Confirm Location',
+                                        // 'Confirm Location',
+                                        AppLocalizations.of(
+                                          context,
+                                        ).confirmLocation,
                                         style: Theme.of(context)
                                             .textTheme
                                             .bodyMedium
@@ -975,7 +1001,8 @@ class PlacesMapScreen extends StatelessWidget {
         children: [
           _buildMapControlButton(
             Iconsax.layer,
-            'Map Type',
+            // 'Map Type',
+            AppLocalizations.of(context).mapType,
             () => _showMapTypeDialog(context, controller),
           ),
           // const SizedBox(height: AppSizes.sm),
@@ -1017,6 +1044,7 @@ class PlacesMapScreen extends StatelessWidget {
     BuildContext context,
     PlacesMapController controller,
   ) {
+    final locale = AppLocalizations.of(context);
     showModalBottomSheet(
       context: context,
       backgroundColor: Colors.transparent,
@@ -1034,7 +1062,8 @@ class PlacesMapScreen extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.all(AppSizes.defaultSpace),
               child: Text(
-                'Map Type',
+                // 'Map Type',
+                locale.mapType,
                 style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                   fontWeight: FontWeight.bold,
                 ),
@@ -1044,28 +1073,32 @@ class PlacesMapScreen extends StatelessWidget {
               context,
               controller,
               MapType.normal,
-              'Default',
+              // 'Default',
+              locale.defaultMap,
               Icons.map,
             ),
             _buildMapTypeOption(
               context,
               controller,
               MapType.satellite,
-              'Satellite',
+              // 'Satellite',
+              locale.satellite,
               Icons.satellite,
             ),
             _buildMapTypeOption(
               context,
               controller,
               MapType.terrain,
-              'Terrain',
+              // 'Terrain',
+              locale.terrain,
               Icons.terrain,
             ),
             _buildMapTypeOption(
               context,
               controller,
               MapType.hybrid,
-              'Hybrid',
+              // 'Hybrid',
+              locale.hybrid,
               Icons.layers,
             ),
             const SizedBox(height: AppSizes.defaultSpace),
@@ -1103,7 +1136,11 @@ class PlacesMapScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildLoadingOverlay(PlacesMapController controller) {
+  Widget _buildLoadingOverlay(
+    PlacesMapController controller,
+    BuildContext context,
+  ) {
+    final locale = AppLocalizations.of(context);
     return Obx(() {
       if (!controller.isLoading.value) return const SizedBox();
 
@@ -1132,17 +1169,19 @@ class PlacesMapScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: AppSizes.lg),
                 Text(
-                  'Loading Places...',
-                  style: Theme.of(Get.context!).textTheme.titleMedium?.copyWith(
+                  // 'Loading Places...',
+                  locale.loadingPlaces,
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
                     color: AppColors.darkGrey,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
                 const SizedBox(height: AppSizes.sm),
                 Text(
-                  'Finding the best places around you',
+                  // 'Finding the best places around you',
+                  locale.findingBestPlaces,
                   style: Theme.of(
-                    Get.context!,
+                    context,
                   ).textTheme.bodySmall?.copyWith(color: AppColors.darkGrey),
                 ),
               ],

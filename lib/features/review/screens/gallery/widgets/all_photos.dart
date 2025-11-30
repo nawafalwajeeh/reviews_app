@@ -5,6 +5,7 @@ import 'package:reviews_app/features/review/models/gallery_image_model.dart';
 import 'package:reviews_app/utils/constants/sizes.dart';
 import 'package:reviews_app/utils/helpers/cloud_helper_functions.dart';
 
+import '../../../../../localization/app_localizations.dart';
 import 'gallery_widgets.dart';
 
 class AllPhotosSection extends StatelessWidget {
@@ -12,13 +13,14 @@ class AllPhotosSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Padding(
+    return Padding(
       padding: EdgeInsets.symmetric(horizontal: AppSizes.defaultSpace),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // This top-level header is now more descriptive
-          SectionHeader(title: 'All Place Photos'),
+          // SectionHeader(title: 'All Place Photos'),
+          SectionHeader(title: AppLocalizations.of(context).allPlacePhotos),
           SizedBox(height: AppSizes.spaceBtwItems),
           // The new widget to handle fetching and grouping
           GroupedPhotoList(),

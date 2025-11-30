@@ -5,6 +5,7 @@ import 'package:reviews_app/features/review/models/collection_item.dart';
 import 'package:reviews_app/utils/helpers/cloud_helper_functions.dart';
 import 'package:reviews_app/common/widgets/shimmers/gallery_shimmer.dart';
 
+import '../../../../../localization/app_localizations.dart';
 import 'collection_card.dart';
 
 class CollectionsSection extends StatelessWidget {
@@ -17,7 +18,8 @@ class CollectionsSection extends StatelessWidget {
       child: Column(
         children: [
           AppSectionHeading(
-            title: 'Collections',
+            // title: 'Collections',
+          title:  AppLocalizations.of(context).collections,
             showActionButton: false,
             onPressed: () {},
           ),

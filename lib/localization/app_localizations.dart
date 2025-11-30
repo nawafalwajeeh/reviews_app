@@ -1,6 +1,20 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:get/get.dart';
+
+class GlobalLocaleHelper {
+  static AppLocalizations get _loc {
+    final context = Get.key.currentContext;
+    if (context != null) {
+      return AppLocalizations.of(context);
+    }
+    throw FlutterError('GlobalLocaleHelper accessed without valid context');
+  }
+}
+
+// Create a short alias for even quicker access
+AppLocalizations get txt => GlobalLocaleHelper._loc;
 
 class AppLocalizations {
   final Locale locale;
@@ -1287,6 +1301,188 @@ class AppLocalizations {
   String get stopListening =>
       _localizedValues[locale.languageCode]!['stopListening'] ??
       'Stop Listening';
+
+  //---------new-------
+  String get chooseLanguage =>
+      _localizedValues[locale.languageCode]!['chooseLanguage']!;
+  String get selectPreferredLanguage =>
+      _localizedValues[locale.languageCode]!['selectPreferredLanguage']!;
+  String get english => _localizedValues[locale.languageCode]!['english']!;
+  String get arabic => _localizedValues[locale.languageCode]!['arabic']!;
+  String get authenticationRequired =>
+      _localizedValues[locale.languageCode]!['authenticationRequired']!;
+  String get pleaseSignIn =>
+      _localizedValues[locale.languageCode]!['pleaseSignIn']!;
+  String get updateSuccess =>
+      _localizedValues[locale.languageCode]!['updateSuccess']!;
+  String get updateFailed =>
+      _localizedValues[locale.languageCode]!['updateFailed']!;
+  String get nameUpdated =>
+      _localizedValues[locale.languageCode]!['nameUpdated']!;
+  String get phoneUpdated =>
+      _localizedValues[locale.languageCode]!['phoneUpdated']!;
+  String get usernameUpdated =>
+      _localizedValues[locale.languageCode]!['usernameUpdated']!;
+  String get genderUpdated =>
+      _localizedValues[locale.languageCode]!['genderUpdated']!;
+  String get birthDateUpdated =>
+      _localizedValues[locale.languageCode]!['birthDateUpdated']!;
+  String get addressSelected =>
+      _localizedValues[locale.languageCode]!['addressSelected']!;
+  String get addressSaved =>
+      _localizedValues[locale.languageCode]!['addressSaved']!;
+  String get locationSelected =>
+      _localizedValues[locale.languageCode]!['locationSelected']!;
+  String get placeCreated =>
+      _localizedValues[locale.languageCode]!['placeCreated']!;
+  String get placeUpdated =>
+      _localizedValues[locale.languageCode]!['placeUpdated']!;
+  String get placeDeleted =>
+      _localizedValues[locale.languageCode]!['placeDeleted']!;
+  String get reviewSubmitted =>
+      _localizedValues[locale.languageCode]!['reviewSubmitted']!;
+  String get reviewUpdated =>
+      _localizedValues[locale.languageCode]!['reviewUpdated']!;
+  String get reviewDeleted =>
+      _localizedValues[locale.languageCode]!['reviewDeleted']!;
+  String get favoriteAdded =>
+      _localizedValues[locale.languageCode]!['favoriteAdded']!;
+  String get favoriteRemoved =>
+      _localizedValues[locale.languageCode]!['favoriteRemoved']!;
+  String get noInternet =>
+      _localizedValues[locale.languageCode]!['noInternet']!;
+  String get weAreUpdatingYourInformation =>
+      _localizedValues[locale.languageCode]!['weAreUpdatingYourInformation']!;
+  String get yourNameHasBeenUpdated =>
+      _localizedValues[locale.languageCode]!['yourNameHasBeenUpdated']!;
+  String get weAreUpdatingYourPhoneNumber =>
+      _localizedValues[locale.languageCode]!['weAreUpdatingYourPhoneNumber']!;
+  String get yourPhoneNumberHasBeenUpdated =>
+      _localizedValues[locale.languageCode]!['yourPhoneNumberHasBeenUpdated']!;
+  String get weAreUpdatingYourUsername =>
+      _localizedValues[locale.languageCode]!['weAreUpdatingYourUsername']!;
+  String get yourUsernameHasBeenUpdated =>
+      _localizedValues[locale.languageCode]!['yourUsernameHasBeenUpdated']!;
+  String get weAreUpdatingYourGender =>
+      _localizedValues[locale.languageCode]!['weAreUpdatingYourGender']!;
+  String get yourGenderHasBeenUpdated =>
+      _localizedValues[locale.languageCode]!['yourGenderHasBeenUpdated']!;
+  String get weAreUpdatingYourBirthDate =>
+      _localizedValues[locale.languageCode]!['weAreUpdatingYourBirthDate']!;
+  String get yourBirthDateHasBeenUpdated =>
+      _localizedValues[locale.languageCode]!['yourBirthDateHasBeenUpdated']!;
+  String get pleaseSelectYourBirthDate =>
+      _localizedValues[locale.languageCode]!['pleaseSelectYourBirthDate']!;
+  String get addressNotFound =>
+      _localizedValues[locale.languageCode]!['addressNotFound']!;
+  String get storingAddress =>
+      _localizedValues[locale.languageCode]!['storingAddress']!;
+  String get yourAddressHasBeenSaved =>
+      _localizedValues[locale.languageCode]!['yourAddressHasBeenSaved']!;
+  String get mapLocationSelected =>
+      _localizedValues[locale.languageCode]!['mapLocationSelected']!;
+  String get failedToLoadFavorites =>
+      _localizedValues[locale.languageCode]!['failedToLoadFavorites']!;
+  String get placeHasBeenAddedToWishlist =>
+      _localizedValues[locale.languageCode]!['placeHasBeenAddedToWishlist']!;
+  String get placeHasBeenRemovedFromWishlist =>
+      _localizedValues[locale
+          .languageCode]!['placeHasBeenRemovedFromWishlist']!;
+  String get creatingNewPlace =>
+      _localizedValues[locale.languageCode]!['creatingNewPlace']!;
+  String get uploadingPhotos =>
+      _localizedValues[locale.languageCode]!['uploadingPhotos']!;
+  String get yourNewPlaceHasBeenCreated =>
+      _localizedValues[locale.languageCode]!['yourNewPlaceHasBeenCreated']!;
+  String get updatingPlace =>
+      _localizedValues[locale.languageCode]!['updatingPlace']!;
+  String get placeHasBeenUpdated =>
+      _localizedValues[locale.languageCode]!['placeHasBeenUpdated']!;
+  String get deletingPlace =>
+      _localizedValues[locale.languageCode]!['deletingPlace']!;
+  String get placeHasBeenDeleted =>
+      _localizedValues[locale.languageCode]!['placeHasBeenDeleted']!;
+  String get locationMissing =>
+      _localizedValues[locale.languageCode]!['locationMissing']!;
+  String get pleaseUseMapPicker =>
+      _localizedValues[locale.languageCode]!['pleaseUseMapPicker']!;
+  String get noImages => _localizedValues[locale.languageCode]!['noImages']!;
+  String get pleaseSelectAtLeastOneImage =>
+      _localizedValues[locale.languageCode]!['pleaseSelectAtLeastOneImage']!;
+  String get categoryMissing =>
+      _localizedValues[locale.languageCode]!['categoryMissing']!;
+  String get pleaseSelectValidCategory =>
+      _localizedValues[locale.languageCode]!['pleaseSelectValidCategory']!;
+  String get limitReached =>
+      _localizedValues[locale.languageCode]!['limitReached']!;
+  String get youCanOnlyAddUpTo4Questions =>
+      _localizedValues[locale.languageCode]!['youCanOnlyAddUpTo4Questions']!;
+  String get creatingNewCategory =>
+      _localizedValues[locale.languageCode]!['creatingNewCategory']!;
+  String get categoryNameRequired =>
+      _localizedValues[locale.languageCode]!['categoryNameRequired']!;
+  String get pleaseEnterCategoryName =>
+      _localizedValues[locale.languageCode]!['pleaseEnterCategoryName']!;
+  String get duplicateCategory =>
+      _localizedValues[locale.languageCode]!['duplicateCategory']!;
+  String get categoryAlreadyExists =>
+      _localizedValues[locale.languageCode]!['categoryAlreadyExists']!;
+  String get categoryCreated =>
+      _localizedValues[locale.languageCode]!['categoryCreated']!;
+  String get dataNotSaved =>
+      _localizedValues[locale.languageCode]!['dataNotSaved']!;
+  String get couldNotSaveInformation =>
+      _localizedValues[locale.languageCode]!['couldNotSaveInformation']!;
+  String get deleteAccount =>
+      _localizedValues[locale.languageCode]!['deleteAccount']!;
+  String get deleteAccountConfirmation =>
+      _localizedValues[locale.languageCode]!['deleteAccountConfirmation']!;
+  String get processing =>
+      _localizedValues[locale.languageCode]!['processing']!;
+  String get accountDeleted =>
+      _localizedValues[locale.languageCode]!['accountDeleted']!;
+  String get permissionDenied =>
+      _localizedValues[locale.languageCode]!['permissionDenied']!;
+  String get pleaseAllowAccessToPhotos =>
+      _localizedValues[locale.languageCode]!['pleaseAllowAccessToPhotos']!;
+  String get profileImageUpdated =>
+      _localizedValues[locale.languageCode]!['profileImageUpdated']!;
+  String get requiresLogin =>
+      _localizedValues[locale.languageCode]!['requiresLogin']!;
+  String get pleaseLogInToUseFeature =>
+      _localizedValues[locale.languageCode]!['pleaseLogInToUseFeature']!;
+
+  // Method for parameterized strings
+  String failedToLoadFavoritesWithError(String error) {
+    return _localizedValues[locale.languageCode]!['failedToLoadFavorites']!
+        .replaceAll('{error}', error);
+  }
+
+  String uploadingPhotosWithParams(int count, String placeId) {
+    return _localizedValues[locale.languageCode]!['uploadingPhotos']!
+        .replaceAll('{count}', count.toString())
+        .replaceAll('{placeId}', placeId);
+  }
+
+  String yourNewPlaceHasBeenCreatedWithTitle(String title) {
+    return _localizedValues[locale.languageCode]!['yourNewPlaceHasBeenCreated']!
+        .replaceAll('{title}', title);
+  }
+
+  String placeHasBeenUpdatedWithTitle(String title) {
+    return _localizedValues[locale.languageCode]!['placeHasBeenUpdated']!
+        .replaceAll('{title}', title);
+  }
+
+  String placeHasBeenDeletedWithTitle(String title) {
+    return _localizedValues[locale.languageCode]!['placeHasBeenDeleted']!
+        .replaceAll('{title}', title);
+  }
+
+  String categoryCreatedWithName(String name) {
+    return _localizedValues[locale.languageCode]!['categoryCreated']!
+        .replaceAll('{name}', name);
+  }
 }
 
 class _AppLocalizationsDelegate

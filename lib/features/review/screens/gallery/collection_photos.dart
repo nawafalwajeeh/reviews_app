@@ -6,6 +6,7 @@ import 'package:reviews_app/utils/constants/sizes.dart';
 import 'package:reviews_app/utils/helpers/cloud_helper_functions.dart';
 
 import '../../../../common/widgets/appbar/appbar.dart';
+import '../../../../localization/app_localizations.dart';
 import 'widgets/collection_photo_item.dart';
 
 class CollectionPhotosScreen extends StatelessWidget {
@@ -16,6 +17,7 @@ class CollectionPhotosScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = GalleryController.instance;
+    final locale = AppLocalizations.of(context);
 
     return Scaffold(
       appBar: CustomAppBar(
@@ -23,7 +25,8 @@ class CollectionPhotosScreen extends StatelessWidget {
         title: Obx(
           () => Text(
             controller.newCollectionTitle.value.isEmpty
-                ? 'Collection Photos'
+                // ? 'Collection Photos'
+                ? locale.collectionPhotos
                 : controller.newCollectionTitle.value,
           ),
         ),
@@ -45,10 +48,11 @@ class CollectionPhotosScreen extends StatelessWidget {
             final photos = snapshot.data!;
 
             if (photos.isEmpty) {
-              return const Center(
+              return Center(
                 child: Padding(
                   padding: EdgeInsets.only(top: AppSizes.spaceBtwSections),
-                  child: Text('No photos found in this collection.'),
+                  // child: Text('No photos found in this collection.'),
+                  child: Text(locale.noPhotosFound),
                 ),
               );
             }
@@ -59,7 +63,8 @@ class CollectionPhotosScreen extends StatelessWidget {
               // Use PlaceName for grouping, defaulting to 'Uncategorized' if empty
               final name = photo.placeName.isNotEmpty
                   ? photo.placeName
-                  : 'Uncategorized';
+                  // : 'Uncategorized';
+                  : locale.uncategorized;
               if (!groupedPhotos.containsKey(name)) {
                 groupedPhotos[name] = [];
               }

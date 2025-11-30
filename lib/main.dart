@@ -7,6 +7,7 @@ import 'package:get/get.dart';
 import 'package:reviews_app/data/repositories/authentication/authentication_repository.dart';
 import 'package:reviews_app/utils/constants/api_constants.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'data/services/localization/localization_service.dart';
 import 'firebase_options.dart';
 import 'app.dart';
 
@@ -18,6 +19,9 @@ Future<void> main() async {
 
   /// -- Getx Local Storage
   await GetStorage.init();
+
+  /// -- Initialize localization service
+  Get.put(LocalizationService());
 
   /// -- Overcome from transparent spaces at the bottom in iOS full Mode
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: []);

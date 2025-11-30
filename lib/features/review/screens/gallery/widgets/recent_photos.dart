@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:reviews_app/localization/app_localizations.dart';
 
 import '../../../../../common/widgets/shimmers/gallery_shimmer.dart';
 import '../../../../../common/widgets/texts/section_heading.dart';
@@ -14,16 +15,17 @@ class RecentPhotosSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = GalleryController.instance;
+    final locale = AppLocalizations.of(context);
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: AppSizes.defaultSpace),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const AppSectionHeading(
+          AppSectionHeading(
             title:
-                'Recent Places', // Updated title to reflect the content source
-
+                // 'Recent Places', // Updated title to reflect the content source
+                locale.recentPlaces,
             showActionButton: false,
             onPressed: null,
           ),

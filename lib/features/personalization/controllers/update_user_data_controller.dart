@@ -8,6 +8,8 @@ import 'package:reviews_app/utils/helpers/network_manager.dart';
 import 'package:reviews_app/utils/popups/full_screen_loader.dart';
 import 'package:reviews_app/utils/popups/loaders.dart';
 
+import '../../../localization/app_localizations.dart';
+
 class UpdateUserDataController extends GetxController {
   static UpdateUserDataController get instance => Get.find();
 
@@ -54,7 +56,8 @@ class UpdateUserDataController extends GetxController {
     try {
       // Start loading
       AppFullScreenLoader.openLoadingDialog(
-        'We are updating your information...',
+        // 'We are updating your information...',
+        txt.weAreUpdatingYourInformation,
         AppImages.docerAnimation,
       );
 
@@ -87,8 +90,10 @@ class UpdateUserDataController extends GetxController {
 
       // Show Success Message
       AppLoaders.successSnackBar(
-        title: 'Congratulations',
-        message: 'Your Name has been updated.',
+        // title: 'Congratulations',
+        title: txt.success,
+        // message: 'Your Name has been updated.',
+        message: txt.yourNameHasBeenUpdated,
       );
 
       // Move to previous Screen
@@ -96,7 +101,8 @@ class UpdateUserDataController extends GetxController {
     } catch (e) {
       // Remove Loader
       AppFullScreenLoader.stopLoading();
-      AppLoaders.errorSnackBar(title: 'Oh Snap!', message: e.toString());
+      // AppLoaders.errorSnackBar(title: 'Oh Snap!', message: e.toString());
+      AppLoaders.errorSnackBar(title: txt.ohSnap, message: e.toString());
     }
   }
 
@@ -105,7 +111,8 @@ class UpdateUserDataController extends GetxController {
     try {
       // Start loading
       AppFullScreenLoader.openLoadingDialog(
-        'We are updating your phone number...',
+        // 'We are updating your phone number...',
+        txt.weAreUpdatingYourPhoneNumber,
         AppImages.docerAnimation,
       );
 
@@ -134,8 +141,10 @@ class UpdateUserDataController extends GetxController {
 
       // Show Success Message
       AppLoaders.successSnackBar(
-        title: 'Success',
-        message: 'Your phone number has been updated.',
+        // title: 'Success',
+        title: txt.success,
+        // message: 'Your phone number has been updated.',
+        message: txt.yourPhoneNumberHasBeenUpdated,
       );
 
       // Move to previous Screen
@@ -143,7 +152,8 @@ class UpdateUserDataController extends GetxController {
     } catch (e) {
       // Remove Loader
       AppFullScreenLoader.stopLoading();
-      AppLoaders.errorSnackBar(title: 'Oh Snap!', message: e.toString());
+      // AppLoaders.errorSnackBar(title: 'Oh Snap!', message: e.toString());
+      AppLoaders.errorSnackBar(title: txt.ohSnap, message: e.toString());
     }
   }
 
@@ -152,7 +162,8 @@ class UpdateUserDataController extends GetxController {
     try {
       // Start loading
       AppFullScreenLoader.openLoadingDialog(
-        'We are updating your username...',
+        // 'We are updating your username...',
+        txt.weAreUpdatingYourUsername,
         AppImages.docerAnimation,
       );
 
@@ -169,9 +180,6 @@ class UpdateUserDataController extends GetxController {
         return;
       }
 
-      // Check if username already exists (you might want to add this validation)
-      // await _checkUsernameAvailability(username.text.trim());
-
       // Update username in Firebase Firestore
       Map<String, dynamic> usernameData = {'Username': username.text.trim()};
       await userRepository.updateSingleField(usernameData);
@@ -184,8 +192,10 @@ class UpdateUserDataController extends GetxController {
 
       // Show Success Message
       AppLoaders.successSnackBar(
-        title: 'Success',
-        message: 'Your username has been updated.',
+        // title: 'Success',
+        title: txt.success,
+        // message: 'Your username has been updated.',
+        message: txt.yourUsernameHasBeenUpdated,
       );
 
       // Move to previous Screen
@@ -193,7 +203,8 @@ class UpdateUserDataController extends GetxController {
     } catch (e) {
       // Remove Loader
       AppFullScreenLoader.stopLoading();
-      AppLoaders.errorSnackBar(title: 'Oh Snap!', message: e.toString());
+      // AppLoaders.errorSnackBar(title: 'Oh Snap!', message: e.toString());
+      AppLoaders.errorSnackBar(title: txt.ohSnap, message: e.toString());
     }
   }
 
@@ -202,7 +213,9 @@ class UpdateUserDataController extends GetxController {
     try {
       // Start loading
       AppFullScreenLoader.openLoadingDialog(
-        'We are updating your gender...',
+        // 'We are updating your gender...',
+        txt.weAreUpdatingYourGender,
+
         AppImages.docerAnimation,
       );
 
@@ -230,9 +243,13 @@ class UpdateUserDataController extends GetxController {
       AppFullScreenLoader.stopLoading();
 
       // Show Success Message
+      // AppLoaders.successSnackBar(
+      //   title: 'Success',
+      //   message: 'Your gender has been updated.',
+      // );
       AppLoaders.successSnackBar(
-        title: 'Success',
-        message: 'Your gender has been updated.',
+        title: txt.success,
+        message: txt.yourGenderHasBeenUpdated,
       );
 
       // Move to previous Screen
@@ -240,7 +257,8 @@ class UpdateUserDataController extends GetxController {
     } catch (e) {
       // Remove Loader
       AppFullScreenLoader.stopLoading();
-      AppLoaders.errorSnackBar(title: 'Oh Snap!', message: e.toString());
+      // AppLoaders.errorSnackBar(title: 'Oh Snap!', message: e.toString());
+      AppLoaders.errorSnackBar(title: txt.ohSnap, message: e.toString());
     }
   }
 
@@ -249,7 +267,9 @@ class UpdateUserDataController extends GetxController {
     try {
       // Start loading
       AppFullScreenLoader.openLoadingDialog(
-        'We are updating your birth date...',
+        // 'We are updating your birth date...',
+        txt.weAreUpdatingYourBirthDate,
+
         AppImages.docerAnimation,
       );
 
@@ -264,8 +284,10 @@ class UpdateUserDataController extends GetxController {
       if (selectedBirthDate.value == null) {
         AppFullScreenLoader.stopLoading();
         AppLoaders.errorSnackBar(
-          title: 'Error',
-          message: 'Please select your birth date.',
+          // title: 'Error',
+          title: txt.error,
+          // message: 'Please select your birth date.',
+          message: txt.pleaseSelectYourBirthDate,
         );
         return;
       }
@@ -284,8 +306,10 @@ class UpdateUserDataController extends GetxController {
 
       // Show Success Message
       AppLoaders.successSnackBar(
-        title: 'Success',
-        message: 'Your birth date has been updated.',
+        // title: 'Success',
+        title: txt.success,
+        // message: 'Your birth date has been updated.',
+        message: txt.yourBirthDateHasBeenUpdated,
       );
 
       // Move to previous Screen
@@ -293,7 +317,8 @@ class UpdateUserDataController extends GetxController {
     } catch (e) {
       // Remove Loader
       AppFullScreenLoader.stopLoading();
-      AppLoaders.errorSnackBar(title: 'Oh Snap!', message: e.toString());
+      // AppLoaders.errorSnackBar(title: 'Oh Snap!', message: e.toString());
+      AppLoaders.errorSnackBar(title: txt.ohSnap, message: e.toString());
     }
   }
 
@@ -312,92 +337,3 @@ class UpdateUserDataController extends GetxController {
     selectedBirthDate.value = null;
   }
 }
-
-//-------------------------------------
-// import 'package:flutter/widgets.dart';
-// import 'package:get/get.dart';
-// import 'package:reviews_app/data/repositories/user/user_repository.dart';
-// import 'package:reviews_app/features/personalization/controllers/user_controller.dart';
-// import 'package:reviews_app/features/personalization/screens/profile/profile.dart';
-// import 'package:reviews_app/utils/constants/image_strings.dart';
-// import 'package:reviews_app/utils/helpers/network_manager.dart';
-// import 'package:reviews_app/utils/popups/full_screen_loader.dart';
-// import 'package:reviews_app/utils/popups/loaders.dart';
-
-// class UpdateUserDataController extends GetxController {
-//   static UpdateUserDataController get instance => Get.find();
-
-//   final firstName = TextEditingController();
-//   final lastName = TextEditingController();
-//   final phoneNumber = TextEditingController();
-//   final username = TextEditingController();
-//   final userController = UserController.instance;
-//   final userRepository = Get.put(UserRepository());
-//   GlobalKey<FormState> updateUserNameFormKey = GlobalKey<FormState>();
-//   GlobalKey<FormState> updateUserGenderFormKey = GlobalKey<FormState>();
-//   GlobalKey<FormState> updateUserusernameFormKey = GlobalKey<FormState>();
-//   GlobalKey<FormState> updateUserBirthDateFormKey = GlobalKey<FormState>();
-
-//   /// init user data when Home screen Appears
-//   @override
-//   void onInit() {
-//     initializeNames();
-//     super.onInit();
-//   }
-
-//   /// Fetch user record
-//   Future<void> initializeNames() async {
-//     firstName.text = userController.user.value.firstName;
-//     lastName.text = userController.user.value.lastName;
-//   }
-
-//   Future<void> updateUserName() async {
-//     try {
-//       // Start loading
-//       AppFullScreenLoader.openLoadingDialog(
-//         'We are updating your information...',
-//         AppImages.docerAnimation,
-//       );
-
-//       // Check Internet Connectivity
-//       final isConnected = await AppNetworkManager.instance.isConnected();
-//       if (!isConnected) {
-//         AppFullScreenLoader.stopLoading();
-//         return;
-//       }
-
-//       // Form Validation
-//       if (!updateUserNameFormKey.currentState!.validate()) {
-//         AppFullScreenLoader.stopLoading();
-//         return;
-//       }
-
-//       // Update user's first & last names in the Firebase Firestore
-//       Map<String, dynamic> name = {
-//         'FirstName': firstName.text.trim(),
-//         'LastName': lastName.text.trim(),
-//       };
-//       await userRepository.updateSingleField(name);
-
-//       // Update the Rx values
-//       userController.user.value.firstName = firstName.text.trim();
-//       userController.user.value.lastName = lastName.text.trim();
-
-//       // Remove Loader
-//       AppFullScreenLoader.stopLoading();
-
-//       // Show Success Message
-//       AppLoaders.successSnackBar(
-//         title: 'Congratulations',
-//         message: 'Your Name has been updated.',
-//       );
-
-//       // Move to previous Screen
-//       Get.off(() => ProfileScreen());
-//     } catch (e) {
-//       // Remove Loader
-//       AppFullScreenLoader.stopLoading();
-//       AppLoaders.errorSnackBar(title: 'Oh Snap!', message: e.toString());
-//     }
-//   }
-// }

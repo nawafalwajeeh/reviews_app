@@ -7,7 +7,7 @@ class LocalizationService extends GetxService {
 
   /// Variables
   final GetStorage _storage = GetStorage();
-  final RxString _currentLang = 'en'.obs;
+  final RxString _currentLang = 'ar'.obs;
 
   // Properly typed with Locale objects
   static final Map<String, Locale> _supportedLocales = {
@@ -46,7 +46,7 @@ class LocalizationService extends GetxService {
           _supportedLocales.containsKey(deviceLocale.languageCode)) {
         _currentLang.value = deviceLocale.languageCode;
       } else {
-        _currentLang.value = 'en';
+        _currentLang.value = 'ar';
       }
     }
 
@@ -79,10 +79,34 @@ class LocalizationService extends GetxService {
   }
 
   String getCurrentLanguageName() {
-    return _languageNames[_currentLang.value] ?? 'English';
+    return _languageNames[_currentLang.value] ?? 'العربية';
   }
 
   static bool isLanguageRTL(String languageCode) {
     return languageCode == 'ar';
+  }
+
+  /// Check if user has selected a language
+  bool get hasSelectedLanguage {
+    return _storage.read('hasSelectedLanguage') == true;
+  }
+
+  /// Reset language selection (show language screen again)
+  void resetLanguageSelection() {
+    _storage.remove('hasSelectedLanguage');
+  }
+
+  /// Force show language screen (for testing)
+  void forceShowLanguageScreen() {
+    _storage.write('hasSelectedLanguage', false);
+  }
+
+  void changeLanguageWithUpdate(String languageCode) async {
+    if (_supportedLocales.containsKey(languageCode)) {
+      _currentLang.value = languageCode;
+      await _storage.write('language', languageCode);
+      Get.updateLocale(_supportedLocales[languageCode]!);
+      // update(); // Notify GetBuilder listeners
+    }
   }
 }

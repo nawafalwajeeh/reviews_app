@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:reviews_app/features/review/controllers/category_controller.dart';
 import 'package:reviews_app/features/review/models/collection_item.dart';
 import 'package:reviews_app/features/review/models/gallery_image_model.dart';
 import 'package:reviews_app/features/review/models/featured_images_model.dart'; // NEW
@@ -106,10 +107,14 @@ class GalleryController extends GetxController {
             ? place.imageUrl
             : 'https://placehold.co/500x300/CCCCCC/000000?text=No+Image';
 
+        final localizedCategoryName = CategoryController.instance
+            .getCachedLocalizedCategoryName(place.collectionId, Get.context!);
+
         return FeaturedImagesModel(
           id: place.id,
           title: place.placeName, // Place Name for Title
-          subtitle: categoryName, // Category Name for Subtitle
+          // subtitle: categoryName,
+          subtitle: localizedCategoryName, // Category Name for Subtitle
           imageUrl: imageUrl.toString(),
         );
       }).toList();

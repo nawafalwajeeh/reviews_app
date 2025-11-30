@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:reviews_app/common/widgets/appbar/appbar.dart';
 import 'package:reviews_app/common/widgets/custom_shapes/containers/search_container.dart';
+import 'package:reviews_app/features/review/controllers/gallery_controller.dart';
 import 'package:reviews_app/features/review/screens/gallery/widgets/collection_section.dart';
+import 'package:reviews_app/localization/app_localizations.dart';
 import '../../../../utils/constants/sizes.dart';
 import 'widgets/all_photos.dart';
 import 'widgets/recent_photos.dart';
@@ -11,20 +14,25 @@ class ImageGalleryScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final locale = AppLocalizations.of(context);
+    final _ = Get.put(GalleryController());
+
     return GestureDetector(
       child: Scaffold(
         appBar: CustomAppBar(
           showBackArrow: true,
           centerTitle: true,
           title: Text(
-            'Gallery',
+            // 'Gallery',
+            locale.gallery,
             style: Theme.of(context).textTheme.headlineMedium,
           ),
         ),
 
         body: Column(
           children: [
-            AppSearchContainer(text: 'Search photos'),
+            // AppSearchContainer(text: 'Search photos'),
+            AppSearchContainer(text: locale.searchPhotos),
             const SizedBox(height: AppSizes.spaceBtwSections),
 
             Expanded(child: GalleryContent()),

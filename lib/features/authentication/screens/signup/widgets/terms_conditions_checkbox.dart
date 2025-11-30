@@ -4,7 +4,6 @@ import 'package:reviews_app/features/authentication/controllers/signup/signup_co
 import 'package:reviews_app/localization/app_localizations.dart';
 import 'package:reviews_app/utils/constants/colors.dart';
 import 'package:reviews_app/utils/constants/sizes.dart';
-import 'package:reviews_app/utils/constants/text_strings.dart';
 import 'package:reviews_app/utils/helpers/helper_functions.dart';
 
 class TermsAndConditionsCheckbox extends StatelessWidget {
@@ -55,7 +54,8 @@ class TermsAndConditionsCheckbox extends StatelessWidget {
                   style: Theme.of(context).textTheme.bodySmall,
                 ),
                 TextSpan(
-                  text: AppTexts.termsOfUse,
+                  // text: AppTexts.termsOfUse,
+                  text: AppLocalizations.of(context).termsOfUse,
                   style: Theme.of(context).textTheme.bodyMedium!.apply(
                     color: dark ? AppColors.white : AppColors.primaryColor,
                     decoration: TextDecoration.underline,

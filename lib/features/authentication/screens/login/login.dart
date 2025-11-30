@@ -6,7 +6,7 @@ import 'package:reviews_app/common/widgets/login_signup/form_divider.dart';
 import 'package:reviews_app/common/widgets/login_signup/social_button.dart';
 import 'package:reviews_app/features/authentication/screens/login/widgets/login_skip.dart';
 import 'package:reviews_app/utils/constants/sizes.dart';
-import 'package:reviews_app/utils/constants/text_strings.dart';
+import '../../../../localization/app_localizations.dart';
 import 'widgets/login_form.dart';
 import 'widgets/login_header.dart';
 
@@ -31,7 +31,12 @@ class LoginScreen extends StatelessWidget {
                   const LoginForm(),
 
                   /// Divider
-                  FormDivider(dividerText: AppTexts.orSignInWith.capitalize!),
+                  // FormDivider(dividerText: AppTexts.orSignInWith.capitalize!),
+                  FormDivider(
+                    dividerText: AppLocalizations.of(
+                      context,
+                    ).orSignInWith.capitalize!,
+                  ),
                   const SizedBox(height: AppSizes.spaceBtwSections),
 
                   /// Footer

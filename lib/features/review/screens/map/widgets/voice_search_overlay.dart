@@ -15,6 +15,7 @@ class VoiceSearchOverlay extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final locale = AppLocalizations.of(context);
     return Positioned.fill(
       child: Container(
         color: AppColors.black.withValues(alpha: 0.7),
@@ -37,7 +38,7 @@ class VoiceSearchOverlay extends StatelessWidget {
             /// Listening Text
             Text(
               // 'Listening...',
-              AppLocalizations.of(context).listening,
+              locale.listening,
               style: Theme.of(
                 context,
               ).textTheme.headlineSmall?.copyWith(color: AppColors.white),
@@ -78,8 +79,8 @@ class VoiceSearchOverlay extends StatelessWidget {
                   borderRadius: BorderRadius.circular(AppSizes.cardRadiusLg),
                 ),
               ),
-              child: const Text('Stop Listening'),
-              // child:  Text(AppLocalizations.of(context).stopListening),
+              // child: const Text('Stop Listening'),
+              child: Text(locale.stopListening),
             ),
           ],
         ),

@@ -8,6 +8,7 @@ import 'package:reviews_app/utils/constants/image_strings.dart';
 import 'package:reviews_app/utils/constants/text_strings.dart';
 import 'package:reviews_app/utils/popups/loaders.dart';
 
+
 class VerifyEmailController extends GetxController {
   static VerifyEmailController get instance => Get.find();
 
@@ -27,7 +28,9 @@ class VerifyEmailController extends GetxController {
       await AuthenticationRepository.instance.sendEmailVerification();
       AppLoaders.successSnackBar(
         title: 'Email Sent',
+        // title: txt.emailSent,
         message: 'Please Check your inbox and verify your email.',
+        // message: txt.pleaseCheckYourInbox,
       );
     } catch (e) {
       AppLoaders.errorSnackBar(title: 'Oh Snap!', message: e.toString());

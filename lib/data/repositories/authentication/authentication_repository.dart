@@ -14,6 +14,7 @@ import 'package:reviews_app/utils/exceptions/format_exceptions.dart';
 import 'package:reviews_app/utils/exceptions/platform_exceptions.dart';
 import 'package:reviews_app/utils/logging/logger.dart';
 import '../../../features/authentication/screens/signup/verify_email.dart';
+import '../../../features/personalization/screens/locale/select_language.dart';
 import '../../../utils/local_storage/storage_utility.dart';
 
 class AuthenticationRepository extends GetxController {
@@ -57,6 +58,46 @@ class AuthenticationRepository extends GetxController {
   }
 
   /// Function to show Relevant screen
+  // void screenRedirect() async {
+  //   final user = _firebaseUser.value;
+
+  //   // Check if navigation is ready
+  //   if (Get.key.currentContext == null) {
+  //     // If not ready, wait and try again
+  //     Future.delayed(const Duration(milliseconds: 100), screenRedirect);
+  //     return;
+  //   }
+
+  //   if (user != null) {
+  //     // check if user is not anonymose
+  //     if (!user.isAnonymous) {
+  //       // User Logged-In: If email verified let the user go to Home Screen else to the Email Verification Screen
+  //       if (user.emailVerified) {
+  //         // Initialize user specific storage
+  //         await AppLocalStorage.init(user.uid);
+
+  //         // If the user's email is verified, navigate to the main NavigationMenu
+  //         Get.offAll(() => const NavigationMenu());
+  //       } else {
+  //         // If the user's email is not verified, navigate to VerifyEmailScreen(email)
+  //         Get.offAll(() => VerifyEmailScreen(email: getUserEmail));
+  //       }
+  //     } else {
+  //       // User is ANONYMOUS (Guest), Navigate directly to the NavigationMenu
+  //       // Anonymous users are automatically considered "ready" to browse.
+  //       Get.offAll(() => const NavigationMenu());
+  //     }
+  //   } else {
+  //     // show [OnBoardingScreen] to the user the firstTime only
+  //     // Local Storage: User is new or Logged out! If new then write IsFirstTime Local storage variable = true.
+  //     deviceStorage.writeIfNull('IsFirstTime', true);
+  //     deviceStorage.read('IsFirstTime') != true
+  //         ? Get.offAll(() => const LoginScreen())
+  //         : Get.offAll(() => const OnBoardingScreen());
+  //   }
+  // }
+
+  /// Function to show Relevant screen
   void screenRedirect() async {
     final user = _firebaseUser.value;
 
@@ -68,31 +109,38 @@ class AuthenticationRepository extends GetxController {
     }
 
     if (user != null) {
-      // check if user is not anonymose
+      // User is logged in
       if (!user.isAnonymous) {
-        // User Logged-In: If email verified let the user go to Home Screen else to the Email Verification Screen
+        // Authenticated user
         if (user.emailVerified) {
           // Initialize user specific storage
           await AppLocalStorage.init(user.uid);
-
-          // If the user's email is verified, navigate to the main NavigationMenu
           Get.offAll(() => const NavigationMenu());
         } else {
-          // If the user's email is not verified, navigate to VerifyEmailScreen(email)
           Get.offAll(() => VerifyEmailScreen(email: getUserEmail));
         }
       } else {
-        // User is ANONYMOUS (Guest), Navigate directly to the NavigationMenu
-        // Anonymous users are automatically considered "ready" to browse.
+        // Anonymous user
         Get.offAll(() => const NavigationMenu());
       }
     } else {
-      // show [OnBoardingScreen] to the user the firstTime only
-      // Local Storage: User is new or Logged out! If new then write IsFirstTime Local storage variable = true.
+      // User is not logged in - Check app flow
       deviceStorage.writeIfNull('IsFirstTime', true);
-      deviceStorage.read('IsFirstTime') != true
-          ? Get.offAll(() => const LoginScreen())
-          : Get.offAll(() => const OnBoardingScreen());
+
+      final bool isFirstTime = deviceStorage.read('IsFirstTime') == true;
+      final bool hasSelectedLanguage =
+          deviceStorage.read('hasSelectedLanguage') == true;
+
+      if (!hasSelectedLanguage) {
+        // Show Language Selection Screen first
+        Get.offAll(() => const SelectLanguageScreen());
+      } else if (isFirstTime) {
+        // Show OnBoarding after language selection
+        Get.offAll(() => const OnBoardingScreen());
+      } else {
+        // Go directly to Login
+        Get.offAll(() => const LoginScreen());
+      }
     }
   }
 

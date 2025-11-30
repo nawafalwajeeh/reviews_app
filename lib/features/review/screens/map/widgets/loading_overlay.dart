@@ -1,5 +1,6 @@
 // widgets/loading_overlay.dart
 import 'package:flutter/material.dart';
+import 'package:reviews_app/localization/app_localizations.dart';
 import 'package:reviews_app/utils/constants/colors.dart';
 import 'package:reviews_app/utils/constants/sizes.dart';
 
@@ -24,7 +25,8 @@ class LoadingOverlay extends StatelessWidget {
             ),
             const SizedBox(height: AppSizes.lg),
             Text(
-              'Loading Map...',
+              // 'Loading Map...',
+              AppLocalizations.of(context).loadingMap,
               style: Theme.of(context).textTheme.titleMedium?.copyWith(
                 color: AppColors.darkGrey,
                 fontWeight: FontWeight.w600,

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-
+import 'package:reviews_app/common/widgets/texts/category_name_text.dart';
+import '../../../../../localization/app_localizations.dart';
 import '../../../controllers/gallery_controller.dart';
 import '../../../models/collection_item.dart';
 
@@ -10,6 +11,7 @@ class CollectionCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    debugPrint('CollectionID: ${collection.id}');
     return GestureDetector(
       onTap: () => GalleryController.instance.navigateToPhotos(collection.id),
       child: Container(
@@ -51,18 +53,23 @@ class CollectionCard extends StatelessWidget {
               crossAxisAlignment:
                   CrossAxisAlignment.start, // Align text to the left
               children: [
-                Text(
-                  collection.title,
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: Colors.white,
-                    fontWeight: FontWeight.w600,
-                    fontSize: 14,
-                  ),
-                  overflow: TextOverflow.ellipsis,
-                  maxLines: 1,
+                // Text(
+                //   collection.title,
+                //   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                //     color: Colors.white,
+                //     fontWeight: FontWeight.w600,
+                //     fontSize: 14,
+                //   ),
+                //   overflow: TextOverflow.ellipsis,
+                //   maxLines: 1,
+                // ),
+                CategoryNameText(
+                  categoryId: collection.collectionId,
+                  isSingular: false,
                 ),
                 Text(
-                  '${collection.photoCount} photos',
+                  // '${collection.photoCount} photos',
+                  '${collection.photoCount} ${AppLocalizations.of(context).photos}',
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
                     color: Colors.white.withValues(
                       alpha: 0.8,

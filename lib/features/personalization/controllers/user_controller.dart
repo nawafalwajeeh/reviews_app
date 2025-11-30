@@ -16,6 +16,7 @@ import 'package:reviews_app/utils/popups/full_screen_loader.dart';
 import 'package:reviews_app/utils/popups/loaders.dart';
 // import 'package:permission_handler/permission_handler.dart';
 
+import '../../../localization/app_localizations.dart';
 import '../../authentication/screens/login/login.dart';
 
 class UserController extends GetxController {
@@ -93,9 +94,11 @@ class UserController extends GetxController {
       }
     } catch (e) {
       AppLoaders.warningSnackBar(
-        title: 'Date not saved',
-        message:
-            'Something went wrong while saving your information. You can re-save your data in your profile.',
+        // title: 'Data not saved',
+        title: txt.dataNotSaved,
+        // message:
+        //     'Something went wrong while saving your information. You can re-save your data in your profile.',
+        message: txt.somethingWentWrong,
       );
     }
   }
@@ -114,23 +117,27 @@ class UserController extends GetxController {
   void deleteAccountWarningPopup() {
     Get.defaultDialog(
       contentPadding: const EdgeInsets.all(AppSizes.md),
-      title: 'Delete Account',
-      middleText:
-          'Are you sure you want to delete your account permanently? This action is not reversible and all of your data will be removed permanently.',
+      // title: 'Delete Account',
+      title: txt.deleteAccount,
+      // middleText:
+      //     'Are you sure you want to delete your account permanently? This action is not reversible and all of your data will be removed permanently.',
+      middleText: txt.deleteAccountConfirmation,
       confirm: ElevatedButton(
         onPressed: () async => await deleteUserAccount(),
         style: ElevatedButton.styleFrom(
           backgroundColor: Colors.red,
           side: const BorderSide(color: Colors.red),
         ),
-        child: const Padding(
+        child: Padding(
           padding: EdgeInsets.symmetric(horizontal: AppSizes.lg),
-          child: Text('Delete'),
+          // child: Text('Delete'),
+          child: Text(txt.delete),
         ),
       ),
       cancel: OutlinedButton(
         onPressed: () => Navigator.of(Get.overlayContext!).pop(),
-        child: Text('Cancel'),
+        // child: Text('Cancel'),
+        child: Text(txt.cancel),
       ),
     );
   }
@@ -140,7 +147,8 @@ class UserController extends GetxController {
     try {
       // Start Loading
       AppFullScreenLoader.openLoadingDialog(
-        'Processing',
+        // 'Processing',
+        txt.processing,
         AppImages.docerAnimation,
       );
 
@@ -165,8 +173,10 @@ class UserController extends GetxController {
           localStorage.write('REMEMBER_ME_EMAIL', '');
           localStorage.write('REMEMBER_ME_PASSWORD', '');
           AppLoaders.successSnackBar(
-            title: 'Account Deleted',
-            message: 'Your account has been deleted successfully.',
+            // title: 'Account Deleted',
+            title: txt.accountDeleted,
+            // message: 'Your account has been deleted successfully.',
+            message: txt.accountDeleted,
           );
           Get.off(() => const LoginScreen());
         } else if (provider == 'password') {
@@ -174,15 +184,18 @@ class UserController extends GetxController {
           localStorage.write('REMEMBER_ME_EMAIL', '');
           localStorage.write('REMEMBER_ME_PASSWORD', '');
           AppLoaders.successSnackBar(
-            title: 'Account Deleted',
-            message: 'Your account has been deleted successfully.',
+            // title: 'Account Deleted',
+            title: txt.accountDeleted,
+            // message: 'Your account has been deleted successfully.',
+            message: txt.accountDeleted,
           );
           Get.to(() => const ReAuthLoginForm());
         }
       }
     } catch (e) {
       AppFullScreenLoader.stopLoading();
-      AppLoaders.errorSnackBar(title: 'Oh Snap!', message: e.toString());
+      // AppLoaders.errorSnackBar(title: 'Oh Snap!', message: e.toString());
+      AppLoaders.errorSnackBar(title: txt.ohSnap, message: e.toString());
     }
   }
 
@@ -191,7 +204,8 @@ class UserController extends GetxController {
     try {
       // Start Loading
       AppFullScreenLoader.openLoadingDialog(
-        'Processing',
+        // 'Processing',
+        txt.processing,
         AppImages.docerAnimation,
       );
 
@@ -219,7 +233,8 @@ class UserController extends GetxController {
       Get.offAll(() => const LoginScreen());
     } catch (e) {
       AppFullScreenLoader.stopLoading();
-      AppLoaders.errorSnackBar(title: 'Oh Snap!', message: e.toString());
+      // AppLoaders.errorSnackBar(title: 'Oh Snap!', message: e.toString());
+      AppLoaders.errorSnackBar(title: txt.ohSnap, message: e.toString());
     }
   }
 
@@ -280,13 +295,16 @@ class UserController extends GetxController {
         user.refresh();
 
         AppLoaders.successSnackBar(
-          title: 'Congratulations',
-          message: 'Your Profile Image has been updated!',
+          // title: 'Congratulations',
+          title: txt.success,
+          // message: 'Your Profile Image has been updated!',
+          message: txt.profileImageUpdated,
         );
       }
     } catch (e) {
       AppLoggerHelper.error('Error uploading image: $e');
-      AppLoaders.errorSnackBar(title: 'Oh Snap!', message: e.toString());
+      // AppLoaders.errorSnackBar(title: 'Oh Snap!', message: e.toString());
+      AppLoaders.errorSnackBar(title: txt.ohSnap, message: e.toString());
     } finally {
       imageUploading.value = false;
     }
@@ -297,8 +315,10 @@ class UserController extends GetxController {
         AuthenticationRepository.instance.authUser!.isAnonymous) {
       // Show a friendly message
       AppLoaders.warningSnackBar(
-        title: 'Requires Login',
-        message: 'Please log in or create an account to use this feature.',
+        // title: 'Requires Login',
+        title: txt.requiresLogin,
+        // message: 'Please log in or create an account to use this feature.',
+        message: txt.pleaseLogInToUseFeature,
       );
 
       // Redirect to the Signup Screen
