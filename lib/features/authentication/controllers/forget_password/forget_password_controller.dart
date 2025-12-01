@@ -2,6 +2,7 @@ import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:reviews_app/data/repositories/authentication/authentication_repository.dart';
 import 'package:reviews_app/features/authentication/screens/password_configuration/reset_password.dart';
+import 'package:reviews_app/localization/app_localizations.dart';
 import 'package:reviews_app/utils/constants/image_strings.dart';
 import 'package:reviews_app/utils/helpers/network_manager.dart';
 import 'package:reviews_app/utils/popups/full_screen_loader.dart';
@@ -19,7 +20,8 @@ class ForgetPasswordController extends GetxController {
     try {
       // Start Loader
       AppFullScreenLoader.openLoadingDialog(
-        'Processing your request...',
+        // 'Processing your request...',
+        txt.processingYourRequest,
         AppImages.docerAnimation,
       );
 
@@ -48,8 +50,10 @@ class ForgetPasswordController extends GetxController {
 
       // Show Success Message
       AppLoaders.successSnackBar(
-        title: 'Email Sent',
-        message: 'Email Link Sent to Reset your Password'.tr,
+        // title: 'Email Sent',
+        title: txt.emailSent,
+        // message: 'Email Link Sent to Reset your Password'.tr,
+        message: txt.emailLinkSentResetPassword,
       );
 
       // Redirect
@@ -57,7 +61,8 @@ class ForgetPasswordController extends GetxController {
     } catch (e) {
       // Remove Loader
       AppFullScreenLoader.stopLoading();
-      AppLoaders.errorSnackBar(title: 'Oh Snap!', message: e.toString());
+      // AppLoaders.errorSnackBar(title: 'Oh Snap!', message: e.toString());
+      AppLoaders.errorSnackBar(title: txt.ohSnap, message: e.toString());
     }
   }
 
@@ -66,7 +71,8 @@ class ForgetPasswordController extends GetxController {
     try {
       // Start Loader
       AppFullScreenLoader.openLoadingDialog(
-        'Processing your request...',
+        // 'Processing your request...',
+        txt.processingYourRequest,
         AppImages.docerAnimation,
       );
 
@@ -86,13 +92,16 @@ class ForgetPasswordController extends GetxController {
 
       // Show Success Message
       AppLoaders.successSnackBar(
-        title: 'Email Sent',
-        message: 'Email Link Sent to Reset your Password'.tr,
+        // title: 'Email Sent',
+        title: txt.emailSent,
+        // message: 'Email Link Sent to Reset your Password'.tr,
+        message: txt.emailLinkSentResetPassword,
       );
     } catch (e) {
       // Remove Loader
       AppFullScreenLoader.stopLoading();
-      AppLoaders.errorSnackBar(title: 'Oh Snap!', message: e.toString());
+      // AppLoaders.errorSnackBar(title: 'Oh Snap!', message: e.toString());
+      AppLoaders.errorSnackBar(title: txt.ohSnap, message: e.toString());
     }
   }
 }

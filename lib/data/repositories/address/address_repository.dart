@@ -8,6 +8,8 @@ import 'package:reviews_app/utils/exceptions/format_exceptions.dart'
     show AppFormatException;
 import 'package:reviews_app/utils/exceptions/platform_exceptions.dart';
 
+import '../../../localization/app_localizations.dart';
+
 class AddressRepository extends GetxController {
   static AddressRepository get instance => Get.find();
 
@@ -18,7 +20,8 @@ class AddressRepository extends GetxController {
     try {
       final userId = AuthenticationRepository.instance.authUser!.uid;
       if (userId.isEmpty) {
-        throw 'Unable to find user information. Try again in few minutes';
+        // throw 'Unable to find user information. Try again in few minutes';
+        throw txt.somethingWentWrong;
       }
 
       final result = await _db
@@ -39,7 +42,8 @@ class AddressRepository extends GetxController {
     } on PlatformException catch (e) {
       throw AppPlatformException(e.code).message;
     } catch (e) {
-      throw 'Something went wrong when fetching address information. Please try again later.';
+      // throw 'Something went wrong when fetching address information. Please try again later.';
+      throw txt.somethingWentWrong;
     }
   }
 
@@ -60,7 +64,8 @@ class AddressRepository extends GetxController {
     } on PlatformException catch (e) {
       throw AppPlatformException(e.code).message;
     } catch (e) {
-      throw 'Unable to update your address selection. Try again later';
+      // throw 'Unable to update your address selection. Try again later';
+      throw txt.somethingWentWrong;
     }
   }
 
@@ -82,7 +87,8 @@ class AddressRepository extends GetxController {
     } on PlatformException catch (e) {
       throw AppPlatformException(e.code).message;
     } catch (e) {
-      throw 'Something went wrong while saving address information. Please try again later.';
+      // throw 'Something went wrong while saving address information. Please try again later.';
+      throw txt.somethingWentWrong;
     }
   }
 }

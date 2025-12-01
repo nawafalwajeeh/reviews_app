@@ -103,6 +103,12 @@ class AppLocalizations {
       _localizedValues[locale.languageCode]!['onBoardingTitle3'] ??
       'Build a Trusted Community';
 
+  String get yourLocation =>
+      _localizedValues[locale.languageCode]!['yourLocation'] ?? 'Your Location';
+  String get couldNotLoadPlaces =>
+      _localizedValues[locale.languageCode]!['couldNotLoadPlaces'] ??
+      'Could not load places';
+
   String get onBoardingSubTitle1 =>
       _localizedValues[locale.languageCode]!['onBoardingSubTitle1'] ??
       'Explore a world of unique places...';
@@ -114,7 +120,7 @@ class AppLocalizations {
       'Join fellow explorers...';
 
   // Authentication Forms
-  String get name => _localizedValues[locale.languageCode]!['Name'] ?? 'Name';
+  String get name => _localizedValues[locale.languageCode]!['name'] ?? 'Name';
   String get firstName =>
       _localizedValues[locale.languageCode]!['firstName'] ?? 'First Name';
   String get lastName =>
@@ -1482,6 +1488,355 @@ class AppLocalizations {
   String categoryCreatedWithName(String name) {
     return _localizedValues[locale.languageCode]!['categoryCreated']!
         .replaceAll('{name}', name);
+  }
+
+  String get imageDeleted =>
+      _localizedValues[locale.languageCode]!['imageDeleted']!;
+
+  String get imageDeletedFromStorage =>
+      _localizedValues[locale.languageCode]!['imageDeletedFromStorage'] ??
+      'Image successfully deleted from your cloud storage';
+
+  String get deletePlace =>
+      _localizedValues[locale.languageCode]!['deletePlace'] ?? 'Delete Place?';
+
+  String deletePlaceMessage(String placeTitle) {
+    final template =
+        _localizedValues[locale.languageCode]!['deletePlaceMessage'] ??
+        'Are you sure you want to delete "{placeTitle}"? This action cannot be undone.';
+    return template.replaceAll('{placeTitle}', placeTitle);
+  }
+
+  // Add these to AppLocalizations class
+  String get imageDeletedMessage =>
+      _localizedValues[locale.languageCode]!['imageDeletedMessage'] ??
+      'Image URL removed from list.';
+  String get signInRequired =>
+      _localizedValues[locale.languageCode]!['signInRequired'] ??
+      'Sign In Required';
+  String get signInRequiredMessage =>
+      _localizedValues[locale.languageCode]!['signInRequiredMessage'] ??
+      'Please sign in to like this place.';
+  String get failedToToggleLike =>
+      _localizedValues[locale.languageCode]!['failedToToggleLike'] ??
+      'Failed to Toggle Like';
+
+  String get streamError =>
+      _localizedValues[locale.languageCode]!['streamError'] ?? 'Stream Error';
+  String get uploadFailed =>
+      _localizedValues[locale.languageCode]!['uploadFailed'] ??
+      'Upload Failed!';
+
+  String couldNotUploadPlaceImages(String error) {
+    final template =
+        _localizedValues[locale.languageCode]!['couldNotUploadPlaceImages'] ??
+        'Could not upload place images: {error}';
+    return template.replaceAll('{error}', error);
+  }
+
+  String get imageLimitReached =>
+      _localizedValues[locale.languageCode]!['imageLimitReached'] ??
+      'Image Limit Reached';
+
+  String imageLimitMessage(int maxImages) {
+    final template =
+        _localizedValues[locale.languageCode]!['imageLimitMessage'] ??
+        'You can only upload a maximum of {maxImages} images.';
+    return template.replaceAll('{maxImages}', maxImages.toString());
+  }
+
+  String get imageSelectionFailed =>
+      _localizedValues[locale.languageCode]!['imageSelectionFailed'] ??
+      'Image Selection Failed';
+
+  String couldNotSelectImages(String error) {
+    final template =
+        _localizedValues[locale.languageCode]!['couldNotSelectImages'] ??
+        'Could not select images: {error}';
+    return template.replaceAll('{error}', error);
+  }
+
+  String uploadingPhotosWithCount(int count, String placeId) {
+    final template =
+        _localizedValues[locale.languageCode]!['uploadingPhotos'] ??
+        'Uploading {count} photos for Place ID: {placeId}...';
+    return template
+        .replaceAll('{count}', count.toString())
+        .replaceAll('{placeId}', placeId);
+  }
+
+  String get pleaseSelectLocation =>
+      _localizedValues[locale.languageCode]!['pleaseSelectLocation'] ??
+      'Please select a location for the place.';
+
+  String get deleteFailed =>
+      _localizedValues[locale.languageCode]!['deleteFailed'] ?? 'Delete Failed';
+
+  String get formValidationFailed =>
+      _localizedValues[locale.languageCode]!['formValidationFailed'] ??
+      'Form validation failed';
+
+  String get noImagesSelected =>
+      _localizedValues[locale.languageCode]!['noImagesSelected'] ?? 'No Images';
+
+  String get pleaseSignInToSavePlaces =>
+      _localizedValues[locale.languageCode]!['pleaseSignInToSavePlaces'] ??
+      'Please sign in or create an account to save your favorite places.';
+
+  // LoginController strings
+  String get loggingYouIn =>
+      _localizedValues[locale.languageCode]!['loggingYouIn'] ??
+      'Logging you in...';
+
+  String get enteringAsGuest =>
+      _localizedValues[locale.languageCode]!['enteringAsGuest'] ??
+      'Entering as guest...';
+
+  String couldNotSkipLogin(String error) {
+    final template =
+        _localizedValues[locale.languageCode]!['couldNotSkipLogin'] ??
+        'Could not skip login. Please check your connection or try again: {error}';
+    return template.replaceAll('{error}', error);
+  }
+
+  // ForgetPasswordController strings
+  String get processingYourRequest =>
+      _localizedValues[locale.languageCode]!['processingYourRequest'] ??
+      'Processing your request...';
+
+  String get emailSent =>
+      _localizedValues[locale.languageCode]!['emailSent'] ?? 'Email Sent';
+
+  String get emailLinkSentResetPassword =>
+      _localizedValues[locale.languageCode]!['emailLinkSentResetPassword'] ??
+      'Email Link Sent to Reset your Password';
+
+  // SignupController strings
+  String get weAreProcessingYourInformation =>
+      _localizedValues[locale
+          .languageCode]!['weAreProcessingYourInformation'] ??
+      'We are processing your information...';
+
+  String get acceptPrivacyPolicy =>
+      _localizedValues[locale.languageCode]!['acceptPrivacyPolicy'] ??
+      'Accept Privacy Policy';
+
+  String get privacyPolicyMessage =>
+      _localizedValues[locale.languageCode]!['privacyPolicyMessage'] ??
+      'In order to create account, you must have to read and accept the Privacy Policy & Terms of Use.';
+
+  String get congratulations =>
+      _localizedValues[locale.languageCode]!['congratulations'] ??
+      'Congratulations';
+
+  String get accountCreatedVerifyEmail =>
+      _localizedValues[locale.languageCode]!['accountCreatedVerifyEmail'] ??
+      'Your account has been created! Verify email to continue.';
+
+  // VerifyEmailController strings
+  String get pleaseCheckInboxVerifyEmail =>
+      _localizedValues[locale.languageCode]!['pleaseCheckInboxVerifyEmail'] ??
+      'Please Check your inbox and verify your email.';
+
+  String get yourAccountCreated =>
+      _localizedValues[locale.languageCode]!['yourAccountCreated'] ??
+      'Your account has been created';
+
+  // ReviewController strings
+  String get submittingReview =>
+      _localizedValues[locale.languageCode]!['submittingReview'] ??
+      'Submitting Review...';
+
+  String get pleaseSignInToAddReview =>
+      _localizedValues[locale.languageCode]!['pleaseSignInToAddReview'] ??
+      'Please sign in or create an account to add your review.';
+
+  String get ratingRequired =>
+      _localizedValues[locale.languageCode]!['ratingRequired'] ??
+      'Rating Required';
+
+  String get pleaseSelectStarRating =>
+      _localizedValues[locale.languageCode]!['pleaseSelectStarRating'] ??
+      'Please select a star rating for your experience.';
+
+  String get submissionSuccess =>
+      _localizedValues[locale.languageCode]!['submissionSuccess'] ??
+      'Submission Success!';
+
+  String get reviewUpdatedSuccess =>
+      _localizedValues[locale.languageCode]!['reviewUpdatedSuccess'] ??
+      'Your review has been successfully updated.';
+
+  String get reviewSubmittedSuccess =>
+      _localizedValues[locale.languageCode]!['reviewSubmittedSuccess'] ??
+      'Your review has been submitted.';
+
+  String get submissionFailed =>
+      _localizedValues[locale.languageCode]!['submissionFailed'] ??
+      'Submission Failed';
+
+  String get reviewRequired =>
+      _localizedValues[locale.languageCode]!['reviewRequired'] ??
+      'Review Required';
+
+  String get pleaseWriteReviewText =>
+      _localizedValues[locale.languageCode]!['pleaseWriteReviewText'] ??
+      'Please write your review text.';
+
+  String get answerRequired =>
+      _localizedValues[locale.languageCode]!['answerRequired'] ??
+      'Answer Required';
+
+  String pleaseAnswerRequiredQuestion(String question) {
+    final template =
+        _localizedValues[locale
+            .languageCode]!['pleaseAnswerRequiredQuestion'] ??
+        'Please answer the required question: {question}';
+    return template.replaceAll('{question}', question);
+  }
+
+  String get deletingReview =>
+      _localizedValues[locale.languageCode]!['deletingReview'] ??
+      'Deleting Review...';
+
+  String get reviewDeletedSuccess =>
+      _localizedValues[locale.languageCode]!['reviewDeletedSuccess'] ??
+      'Review deleted successfully.';
+
+  // SearchController strings
+  String get microphonePermissionRequired =>
+      _localizedValues[locale.languageCode]!['microphonePermissionRequired'] ??
+      'Microphone Permission Required';
+
+  String get pleaseEnableMicrophone =>
+      _localizedValues[locale.languageCode]!['pleaseEnableMicrophone'] ??
+      'Please enable microphone permission to use voice search.';
+
+  String get voiceSearchUnavailable =>
+      _localizedValues[locale.languageCode]!['voiceSearchUnavailable'] ??
+      'Voice Search Unavailable';
+
+  String get speechRecognitionNotAvailable =>
+      _localizedValues[locale.languageCode]!['speechRecognitionNotAvailable'] ??
+      'Speech recognition is not available on this device.';
+
+  String get speechError =>
+      _localizedValues[locale.languageCode]!['speechError'] ?? 'Speech Error';
+
+  String get couldNotStartVoiceRecognition =>
+      _localizedValues[locale.languageCode]!['couldNotStartVoiceRecognition'] ??
+      'Could not start voice recognition. Please try again.';
+
+  String get searchError =>
+      _localizedValues[locale.languageCode]!['searchError'] ?? 'Search Error';
+
+  String get creatingNewPlacesPremium =>
+      _localizedValues[locale.languageCode]!['creatingNewPlacesPremium'] ??
+      'Creating new places is a premium feature.';
+
+  String get upgradeToPremiumToUnlock =>
+      _localizedValues[locale.languageCode]!['upgradeToPremiumToUnlock'] ??
+      'Upgrade to Premium to unlock:';
+
+  String get unlimitedPlaceCreation =>
+      _localizedValues[locale.languageCode]!['unlimitedPlaceCreation'] ??
+      'Unlimited place creation';
+
+  String get advancedReviewFeatures =>
+      _localizedValues[locale.languageCode]!['advancedReviewFeatures'] ??
+      'Advanced review features';
+
+  String get prioritySupport =>
+      _localizedValues[locale.languageCode]!['prioritySupport'] ??
+      'Priority support';
+
+  String get maybeLater =>
+      _localizedValues[locale.languageCode]!['maybeLater'] ?? 'Maybe Later';
+
+  String get upgradeNow =>
+      _localizedValues[locale.languageCode]!['upgradeNow'] ?? 'Upgrade Now';
+  String get placeNotFound =>
+      _localizedValues[locale.languageCode]!['placeNotFound'] ??
+      'Place Not Found';
+
+  // General strings
+  String failedToLoadRecentFeaturedImages(String error) {
+    final template =
+        _localizedValues[locale
+            .languageCode]!['failedToLoadRecentFeaturedImages'] ??
+        'Failed to load recent featured images: {error}';
+    return template.replaceAll('{error}', error);
+  }
+
+  String get featuredPlaces =>
+      _localizedValues[locale.languageCode]!['featuredPlaces'] ??
+      'Featured Places';
+
+  String get unknownCategory =>
+      _localizedValues[locale.languageCode]!['unknownCategory'] ??
+      'Unknown Category';
+  String get commentAddedSuccessfully =>
+      _localizedValues[locale.languageCode]!['commentAddedSuccessfully'] ??
+      'Comment added successfully';
+  String get failedToAddComment =>
+      _localizedValues[locale.languageCode]!['failedToAddComment'] ??
+      'Failed To Add Comment';
+  // Add these getters to AppLocalizations class:
+
+  // Comment update success
+  String get commentUpdatedSuccess =>
+      _localizedValues[locale.languageCode]!['commentUpdatedSuccess'] ??
+      'Comment updated successfully';
+
+  // Comment delete success
+  String get commentDeletedSuccess =>
+      _localizedValues[locale.languageCode]!['commentDeletedSuccess'] ??
+      'Comment deleted successfully';
+
+  // Comment update error
+  String get commentUpdateError =>
+      _localizedValues[locale.languageCode]!['commentUpdateError'] ??
+      'Oh Snap!';
+
+  String failedToUpdateComment(String error) {
+    final template =
+        _localizedValues[locale.languageCode]!['failedToUpdateComment'] ??
+        'Failed to update comment: {error}';
+    return template.replaceAll('{error}', error);
+  }
+
+  // Comment delete error
+  String get commentDeleteError =>
+      _localizedValues[locale.languageCode]!['commentDeleteError'] ??
+      'Oh Snap!';
+
+  String failedToDeleteComment(String error) {
+    final template =
+        _localizedValues[locale.languageCode]!['failedToDeleteComment'] ??
+        'Failed to delete comment: {error}';
+    return template.replaceAll('{error}', error);
+  }
+
+  // Comment react error
+  String get commentReactError =>
+      _localizedValues[locale.languageCode]!['commentReactError'] ?? 'Oh Snap!';
+
+  String failedToReact(String error) {
+    final template =
+        _localizedValues[locale.languageCode]!['failedToReact'] ??
+        'Failed to react to comment: {error}';
+    return template.replaceAll('{error}', error);
+  }
+
+  String get youMustBeLoggedIn =>
+      _localizedValues[locale.languageCode]!['youMustBeLoggedIn'] ??
+      'You must be logged in to react';
+
+  String failedToReactToReply(String error) {
+    final template =
+        _localizedValues[locale.languageCode]!['failedToReactToReply'] ??
+        'Failed to react to reply: {error}';
+    return template.replaceAll('{error}', error);
   }
 }
 

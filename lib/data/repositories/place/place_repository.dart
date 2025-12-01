@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:reviews_app/data/repositories/authentication/authentication_repository.dart';
 import 'package:reviews_app/features/review/models/place_category_model.dart';
 import 'package:reviews_app/features/review/models/place_model.dart';
+import 'package:reviews_app/localization/app_localizations.dart';
 import 'package:reviews_app/utils/exceptions/format_exceptions.dart';
 import 'package:reviews_app/utils/exceptions/platform_exceptions.dart';
 
@@ -56,7 +57,8 @@ class PlaceRepository extends GetxController {
       // but here we wrap it for consistency if needed downstream.
       throw AppFirebaseException(e.code).message;
     } catch (e) {
-      throw 'Something went wrong while streaming featured places.';
+      // throw 'Something went wrong while streaming featured places.';
+      throw txt.somethingWentWrong;
     }
   }
 
@@ -104,7 +106,8 @@ class PlaceRepository extends GetxController {
     } on PlatformException catch (e) {
       throw AppPlatformException(e.code).message;
     } catch (e) {
-      throw 'Something went wrong while streaming places by category.';
+      // throw 'Something went wrong while streaming places by category.';
+      throw txt.somethingWentWrong;
     }
   }
 
@@ -123,7 +126,8 @@ class PlaceRepository extends GetxController {
     } on PlatformException catch (e) {
       throw AppPlatformException(e.code).message;
     } catch (e) {
-      throw 'Something went wrong. Please try again.';
+      // throw 'Something went wrong. Please try again.';
+      throw txt.somethingWentWrong;
     }
   }
 
@@ -142,7 +146,8 @@ class PlaceRepository extends GetxController {
     } on PlatformException catch (e) {
       throw AppPlatformException(e.code).message;
     } catch (e) {
-      throw 'Something went wrong. Please try again.';
+      // throw 'Something went wrong. Please try again.';
+      throw txt.somethingWentWrong;
     }
   }
 
@@ -159,7 +164,8 @@ class PlaceRepository extends GetxController {
     } on PlatformException catch (e) {
       throw AppPlatformException(e.code).message;
     } catch (e) {
-      throw 'Something went wrong. Please try again';
+      // throw 'Something went wrong. Please try again';
+      throw txt.somethingWentWrong;
     }
   }
 
@@ -179,7 +185,8 @@ class PlaceRepository extends GetxController {
     } on PlatformException catch (e) {
       throw AppPlatformException(e.code).message;
     } catch (e) {
-      throw 'Something went wrong. Please try again.';
+      // throw 'Something went wrong. Please try again.';
+      throw txt.somethingWentWrong;
     }
   }
 
@@ -289,7 +296,8 @@ class PlaceRepository extends GetxController {
     } on PlatformException catch (e) {
       throw AppPlatformException(e.code).message;
     } catch (e) {
-      throw 'Something went wrong. Please try again.';
+      // throw 'Something went wrong. Please try again.';
+      throw txt.somethingWentWrong;
     }
   }
 
@@ -320,7 +328,8 @@ class PlaceRepository extends GetxController {
           } else if (error is PlatformException) {
             throw AppPlatformException(error.code).message;
           }
-          throw 'Something went wrong streaming category places: $error';
+          // throw 'Something went wrong streaming category places: $error';
+          throw txt.somethingWentWrong;
         });
   }
 
@@ -363,7 +372,8 @@ class PlaceRepository extends GetxController {
           if (e is FirebaseException) {
             throw AppFirebaseException(e.code).message;
           }
-          throw 'Error streaming single place: $e';
+          // throw 'Error streaming single place: $e';
+          throw txt.somethingWentWrong;
         });
   }
 
@@ -401,7 +411,8 @@ class PlaceRepository extends GetxController {
     } on PlatformException catch (e) {
       throw AppPlatformException(e.code).message;
     } catch (e) {
-      throw 'Something went wrong. Please try again.';
+      // throw 'Something went wrong. Please try again.';
+      throw txt.somethingWentWrong;
     } finally {}
   }
 
@@ -419,7 +430,8 @@ class PlaceRepository extends GetxController {
     } on PlatformException catch (e) {
       throw AppPlatformException(e.code).message;
     } catch (e) {
-      throw 'Something went wrong. Please try again.';
+      // throw 'Something went wrong. Please try again.';
+      throw txt.somethingWentWrong;
     }
   }
 
@@ -434,7 +446,8 @@ class PlaceRepository extends GetxController {
     } on PlatformException catch (e) {
       throw AppPlatformException(e.code).message;
     } catch (e) {
-      throw 'Something went wrong. Please try again.';
+      // throw 'Something went wrong. Please try again.';
+      throw txt.somethingWentWrong;
     }
   }
 
@@ -452,7 +465,8 @@ class PlaceRepository extends GetxController {
     } on PlatformException catch (e) {
       throw AppPlatformException(e.code).message;
     } catch (e) {
-      throw 'Something went wrong. Please try again.';
+      // throw 'Something went wrong. Please try again.';
+      throw txt.somethingWentWrong;
     }
   }
 
@@ -475,7 +489,8 @@ class PlaceRepository extends GetxController {
     } on PlatformException catch (e) {
       throw AppPlatformException(e.code).message;
     } catch (e) {
-      throw 'Something went wrong. Please try again.';
+      // throw 'Something went wrong. Please try again.';
+      throw txt.somethingWentWrong;
     }
   }
 
@@ -496,51 +511,111 @@ class PlaceRepository extends GetxController {
     } on PlatformException catch (e) {
       throw AppPlatformException(e.code).message;
     } catch (e) {
-      throw 'Something went wrong. Please try again.';
+      // throw 'Something went wrong. Please try again.';
+      throw txt.somethingWentWrong;
     }
   }
 
   /// -- Delete Place
-  Future<void> deletePlace(PlaceModel place) async {
-    try {
-      // delete all data at once from Firebase firestore
-      await _db.runTransaction((transaction) async {
-        final placeRef = _db.collection('Places').doc(place.id);
-        final placeSnap = await transaction.get(placeRef);
+  // Future<void> deletePlace(PlaceModel place) async {
+  //   try {
+  //     // delete all data at once from Firebase firestore
+  //     await _db.runTransaction((transaction) async {
+  //       final placeRef = _db.collection('Places').doc(place.id);
+  //       final placeSnap = await transaction.get(placeRef);
 
-        if (!placeSnap.exists) {
-          throw Exception('Place not found');
-        }
+  //       if (!placeSnap.exists) {
+  //         throw Exception('Place not found');
+  //       }
 
-        // Fetch PlaceCategories
-        final placeCategoriesSnapshot = await _db
-            .collection('PlaceCategory')
-            .where('placeId', isEqualTo: place.id)
-            .get();
-        final placeCategories = placeCategoriesSnapshot.docs
-            .map((e) => PlaceCategoryModel.fromSnapshot(e))
-            .toList();
+  //       // Fetch PlaceCategories
+  //       final placeCategoriesSnapshot = await _db
+  //           .collection('PlaceCategory')
+  //           .where('placeId', isEqualTo: place.id)
+  //           .get();
+  //       final placeCategories = placeCategoriesSnapshot.docs
+  //           .map((e) => PlaceCategoryModel.fromSnapshot(e))
+  //           .toList();
 
-        if (placeCategories.isNotEmpty) {
-          for (var placeCategory in placeCategories) {
-            transaction.delete(
-              _db.collection('PlaceCategory').doc(placeCategory.id),
-            );
-          }
-        }
+  //       if (placeCategories.isNotEmpty) {
+  //         for (var placeCategory in placeCategories) {
+  //           transaction.delete(
+  //             _db.collection('PlaceCategory').doc(placeCategory.id),
+  //           );
+  //         }
+  //       }
 
-        transaction.delete(placeRef);
-      });
-    } on FirebaseException catch (e) {
+  //       transaction.delete(placeRef);
+  //     });
+  //   } on FirebaseException catch (e) {
+  //     throw AppFirebaseException(e.code).message;
+  //   } on FormatException catch (_) {
+  //     throw const AppFormatException();
+  //   } on PlatformException catch (e) {
+  //     throw AppPlatformException(e.code).message;
+  //   } catch (e) {
+  //     // throw 'Something went wrong. Please try again.';
+  //     throw txt.somethingWentWrong;
+  //   }
+  // }
+
+  /// -- Ultra Simple: Delete place and all related data
+Future<void> deletePlace(PlaceModel place) async {
+  try {
+    debugPrint('🗑️  Deleting place: ${place.title}');
+    
+    final placeId = place.id;
+    final categoryId = place.categoryId;
+    
+    // Create batch for atomic deletion
+    final batch = _db.batch();
+    final placeRef = _db.collection('Places').doc(placeId);
+    
+    // 1. Delete main place
+    batch.delete(placeRef);
+    
+    // 2. Delete GalleryImages
+    final galleryImages = await _db
+        .collection('GalleryImages')
+        .where('placeId', isEqualTo: placeId)
+        .get();
+    
+    for (var doc in galleryImages.docs) {
+      batch.delete(doc.reference);
+    }
+    
+    // 3. Delete PlaceCategory links
+    final placeCategories = await _db
+        .collection('PlaceCategory')
+        .where('placeId', isEqualTo: placeId)
+        .get();
+    
+    for (var doc in placeCategories.docs) {
+      batch.delete(doc.reference);
+    }
+    
+    // 4. Delete Collections document
+    if (categoryId.isNotEmpty) {
+      final collectionRef = _db.collection('Collections').doc(categoryId);
+      batch.delete(collectionRef);
+    }
+    
+    // Execute all at once
+    await batch.commit();
+    
+    debugPrint('✅ Deleted place ${place.title} from all collections');
+    
+      } on FirebaseException catch (e) {
       throw AppFirebaseException(e.code).message;
     } on FormatException catch (_) {
       throw const AppFormatException();
     } on PlatformException catch (e) {
       throw AppPlatformException(e.code).message;
     } catch (e) {
-      throw 'Something went wrong. Please try again.';
+      // throw 'Something went wrong. Please try again.';
+      throw txt.somethingWentWrong;
     }
-  }
+}
 
   /// Decrements the total review count and the count for the specific rating
   /// within the RatingDistribution map when a review is **deleted**.
@@ -565,7 +640,8 @@ class PlaceRepository extends GetxController {
     } on PlatformException catch (e) {
       throw AppPlatformException(e.code).message;
     } catch (e) {
-      throw 'Something went wrong while removing review rating. Please try again.';
+      // throw 'Something went wrong while removing review rating. Please try again.';
+      throw txt.somethingWentWrong;
     }
   }
 
@@ -604,7 +680,8 @@ class PlaceRepository extends GetxController {
     } on PlatformException catch (e) {
       throw AppPlatformException(e.code).message;
     } catch (e) {
-      throw 'Something went wrong while updating review rating change. Please try again.';
+      // throw 'Something went wrong while updating review rating change. Please try again.';
+      throw txt.somethingWentWrong;
     }
   }
 
@@ -642,7 +719,8 @@ class PlaceRepository extends GetxController {
     } on FirebaseException catch (e) {
       throw AppFirebaseException(e.code).message;
     } catch (e) {
-      throw 'Something went wrong while updating place rating. Please try again.';
+      // throw 'Something went wrong while updating place rating. Please try again.';
+      throw txt.somethingWentWrong;
     }
   }
 
@@ -665,7 +743,8 @@ class PlaceRepository extends GetxController {
     } on PlatformException catch (e) {
       throw AppPlatformException(e.code).message;
     } catch (e) {
-      throw 'Something went wrong. Failed to fetch place: $e';
+      // throw 'Something went wrong. Failed to fetch place: $e';
+      throw txt.somethingWentWrong;
     }
   }
 
@@ -725,7 +804,8 @@ class PlaceRepository extends GetxController {
     } on PlatformException catch (e) {
       throw AppPlatformException(e.code).message;
     } catch (e) {
-      throw 'Something went wrong while updating like status. Please try again.';
+      // throw 'Something went wrong while updating like status. Please try again.';
+      throw txt.somethingWentWrong;
     }
   }
 
@@ -784,7 +864,8 @@ class PlaceRepository extends GetxController {
     } on PlatformException catch (e) {
       throw AppPlatformException(e.code).message;
     } catch (e) {
-      throw 'Something went wrong while updating like status. Please try again.';
+      // throw 'Something went wrong while updating like status. Please try again.';
+      throw txt.somethingWentWrong;
     }
   }
 
@@ -810,7 +891,8 @@ class PlaceRepository extends GetxController {
           );
         }
       }
-      throw Exception('Place not found');
+      // throw Exception('Place not found');
+      throw Exception(txt.noPlacesFound);
     } catch (e) {
       debugPrint('💥 Direct approach error: $e');
       rethrow;

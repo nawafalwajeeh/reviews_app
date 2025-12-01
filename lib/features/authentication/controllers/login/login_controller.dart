@@ -8,6 +8,7 @@ import 'package:reviews_app/utils/helpers/network_manager.dart';
 import 'package:reviews_app/utils/popups/full_screen_loader.dart';
 import 'package:reviews_app/utils/popups/loaders.dart';
 
+import '../../../../localization/app_localizations.dart';
 import '../../../personalization/controllers/user_controller.dart';
 
 class LoginController extends GetxController {
@@ -38,7 +39,8 @@ class LoginController extends GetxController {
     try {
       // Start Loading
       AppFullScreenLoader.openLoadingDialog(
-        'Logging you in...',
+        // 'Logging you in...',
+        txt.loggingYouIn,
         AppImages.docerAnimation,
       );
 
@@ -75,7 +77,8 @@ class LoginController extends GetxController {
       AppFullScreenLoader.stopLoading();
 
       // Show some Geneic Error to the user
-      AppLoaders.errorSnackBar(title: 'Oh Snap!', message: e.toString());
+      // AppLoaders.errorSnackBar(title: 'Oh Snap!', message: e.toString());
+      AppLoaders.errorSnackBar(title: txt.ohSnap, message: e.toString());
     }
   }
 
@@ -84,7 +87,8 @@ class LoginController extends GetxController {
     try {
       // Start Loading
       AppFullScreenLoader.openLoadingDialog(
-        'Entering as guest...',
+        // 'Entering as guest...',
+        txt.enteringAsGuest,
         AppImages.docerAnimation,
       );
 
@@ -113,9 +117,11 @@ class LoginController extends GetxController {
 
       // Show Geneic Error to the user
       AppLoaders.errorSnackBar(
-        title: 'Oh Snap!',
-        message:
-            'Could not skip login. Please check your connection or try again: ${e.toString()}',
+        // title: 'Oh Snap!',
+        title: txt.ohSnap,
+        // message:
+        //     'Could not skip login. Please check your connection or try again: ${e.toString()}',
+        message: txt.couldNotSkipLogin(e.toString()),
       );
     }
   }
@@ -125,7 +131,8 @@ class LoginController extends GetxController {
     try {
       // Start Loading
       AppFullScreenLoader.openLoadingDialog(
-        'Logging you in...',
+        // 'Logging you in...',
+        txt.loggingYouIn,
         AppImages.docerAnimation,
       );
 
@@ -151,7 +158,8 @@ class LoginController extends GetxController {
     } catch (e) {
       // Remove Loader
       AppFullScreenLoader.stopLoading();
-      AppLoaders.errorSnackBar(title: 'Oh Snap!', message: e.toString());
+      // AppLoaders.errorSnackBar(title: 'Oh Snap!', message: e.toString());
+      AppLoaders.errorSnackBar(title: txt.ohSnap, message: e.toString());
     }
   }
 }

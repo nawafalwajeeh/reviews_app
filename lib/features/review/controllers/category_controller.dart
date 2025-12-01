@@ -92,10 +92,12 @@ class CategoryController extends GetxController {
           context,
         );
       } else {
-        return 'Unknown Category';
+        // return 'Unknown Category';
+        return txt.unknownCategory;
       }
     } catch (e) {
-      return 'Unknown Category';
+      // return 'Unknown Category';
+      return txt.unknownCategory;
     }
   }
 
@@ -137,7 +139,8 @@ class CategoryController extends GetxController {
       categoryModels.assignAll(categories);
       update();
     } catch (e) {
-      AppLoaders.errorSnackBar(title: 'Oh Snap!', message: e.toString());
+      // AppLoaders.errorSnackBar(title: 'Oh Snap!', message: e.toString());
+      AppLoaders.errorSnackBar(title: txt.ohSnap, message: e.toString());
     } finally {
       // Remove Loader
       isLoading.value = false;
@@ -157,7 +160,8 @@ class CategoryController extends GetxController {
 
       return category;
     } catch (e) {
-      AppLoaders.errorSnackBar(title: 'Oh Snap!', message: e.toString());
+      // AppLoaders.errorSnackBar(title: 'Oh Snap!', message: e.toString());
+      AppLoaders.errorSnackBar(title: txt.ohSnap, message: e.toString());
       return CategoryModel.empty();
     }
   }
@@ -204,7 +208,8 @@ class CategoryController extends GetxController {
       selectedCategoryName.value = categoryName;
       return categoryName;
     } catch (e) {
-      AppLoaders.errorSnackBar(title: 'Oh Snap', message: e.toString());
+      // AppLoaders.errorSnackBar(title: 'Oh Snap', message: e.toString());
+      AppLoaders.errorSnackBar(title: txt.ohSnap, message: e.toString());
       return '';
     }
   }
@@ -221,10 +226,12 @@ class CategoryController extends GetxController {
       if (category.id.isNotEmpty) {
         return category.getName(context); // Using the new helper method
       } else {
-        return 'Unknown Category';
+        // return 'Unknown Category';
+        return txt.unknownCategory;
       }
     } catch (e) {
-      return 'Unknown Category';
+      // return 'Unknown Category';
+      return txt.unknownCategory;
     }
   }
 
@@ -256,7 +263,8 @@ class CategoryController extends GetxController {
       );
       return places;
     } catch (e) {
-      AppLoaders.errorSnackBar(title: 'Oh Snap!', message: e.toString());
+      // AppLoaders.errorSnackBar(title: 'Oh Snap!', message: e.toString());
+      AppLoaders.errorSnackBar(title: txt.ohSnap, message: e.toString());
       debugPrint(e.toString());
       return [];
     }

@@ -8,6 +8,7 @@ import 'package:reviews_app/utils/popups/loaders.dart';
 import '../../../data/repositories/categories/category_repository.dart';
 import '../../../data/repositories/gallery/gallery_repository.dart';
 import '../../../data/repositories/place/place_repository.dart';
+import '../../../localization/app_localizations.dart';
 import '../screens/gallery/collection_photos.dart';
 
 class GalleryController extends GetxController {
@@ -39,7 +40,8 @@ class GalleryController extends GetxController {
       final collections = await galleryRepository.getAllCollections();
       return collections;
     } catch (e) {
-      AppLoaders.errorSnackBar(title: 'Oh Snap!', message: e.toString());
+      // AppLoaders.errorSnackBar(title: 'Oh Snap!', message: e.toString());
+      AppLoaders.errorSnackBar(title: txt.ohSnap, message: e.toString());
       return [];
     }
   }
@@ -50,7 +52,8 @@ class GalleryController extends GetxController {
       final images = await galleryRepository.getAllGalleryImages();
       return images;
     } catch (e) {
-      AppLoaders.errorSnackBar(title: 'Oh Snap!', message: e.toString());
+      // AppLoaders.errorSnackBar(title: 'Oh Snap!', message: e.toString());
+      AppLoaders.errorSnackBar(title: txt.ohSnap, message: e.toString());
       return [];
     }
   }
@@ -64,7 +67,8 @@ class GalleryController extends GetxController {
       );
       return photos;
     } catch (e) {
-      AppLoaders.errorSnackBar(title: 'Oh Snap!', message: e.toString());
+      // AppLoaders.errorSnackBar(title: 'Oh Snap!', message: e.toString());
+      AppLoaders.errorSnackBar(title: txt.ohSnap, message: e.toString());
       return [];
     }
   }
@@ -75,7 +79,8 @@ class GalleryController extends GetxController {
           .getCategoryNameById(collectionId);
       newCollectionTitle.value = collectionName;
     } catch (e) {
-      AppLoaders.errorSnackBar(title: 'Oh Snap!', message: e.toString());
+      // AppLoaders.errorSnackBar(title: 'Oh Snap!', message: e.toString());
+      AppLoaders.errorSnackBar(title: txt.ohSnap, message: e.toString());
     }
   }
 
@@ -102,13 +107,13 @@ class GalleryController extends GetxController {
       final featuredImages = recentPlaces.map((place) {
         // Assume PlaceModel has a single main 'imageUrl' or you take the first from an image list
         final categoryName =
-            categoryMap[place.collectionId] ?? 'Unknown Category';
+            categoryMap[place.collectionId] ?? txt.unknownCategory;
         final imageUrl = place.imageUrl.isNotEmpty
             ? place.imageUrl
             : 'https://placehold.co/500x300/CCCCCC/000000?text=No+Image';
 
         final localizedCategoryName = CategoryController.instance
-            .getCachedLocalizedCategoryName(place.collectionId, Get.context!);
+            .getCachedLocalizedCategoryName(place.collectionId, Get.context!);    
 
         return FeaturedImagesModel(
           id: place.id,
@@ -122,8 +127,10 @@ class GalleryController extends GetxController {
       return featuredImages;
     } catch (e) {
       AppLoaders.errorSnackBar(
-        title: 'Oh Snap!',
-        message: 'Failed to load recent featured images: ${e.toString()}',
+        // title: 'Oh Snap!',
+        title: txt.ohSnap,
+        // message: 'Failed to load recent featured images: ${e.toString()}',
+        message: txt.failedToLoadRecentFeaturedImages(e.toString())
       );
       return [];
     }

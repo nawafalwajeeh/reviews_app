@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dropzone/flutter_dropzone.dart';
 import 'package:get/get.dart';
 import 'package:reviews_app/common/widgets/loaders/circular_loader.dart';
+import 'package:reviews_app/localization/app_localizations.dart';
 import 'package:reviews_app/utils/constants/enums.dart';
 import 'package:reviews_app/utils/constants/image_strings.dart';
 import 'package:reviews_app/utils/constants/sizes.dart';
@@ -324,12 +325,15 @@ class MediaController extends GetxController {
       AppFullScreenLoader.stopLoading();
 
       AppLoaders.successSnackBar(
-        title: 'Image Deleted',
-        message: 'Image successfully deleted from your cloud storage',
+        // title: 'Image Deleted',
+        title: txt.imageDeleted,
+        // message: 'Image successfully deleted from your cloud storage',
+        message: txt.imageDeletedFromStorage,
       );
     } catch (e) {
       AppFullScreenLoader.stopLoading();
-      AppLoaders.errorSnackBar(title: 'Oh Snap', message: e.toString());
+      // AppLoaders.errorSnackBar(title: 'Oh Snap', message: e.toString());
+      AppLoaders.errorSnackBar(title: txt.ohSnap, message: e.toString());
     }
   }
 

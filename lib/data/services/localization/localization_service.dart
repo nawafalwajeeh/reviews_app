@@ -11,19 +11,26 @@ class LocalizationService extends GetxService {
 
   // Properly typed with Locale objects
   static final Map<String, Locale> _supportedLocales = {
-    'en': const Locale('en', 'US'),
     'ar': const Locale('ar', 'SA'),
+    'en': const Locale('en', 'US'),
   };
 
   static final Map<String, String> _languageNames = {
-    'en': 'English',
     'ar': 'العربية',
+    'en': 'English',
   };
+
+  final appFontFamily = 'Tajawal'.obs;
+
+  void _loadFontFamily() {
+    _currentLang.value == 'ar' ? appFontFamily.value = 'Tajawal' : 'Poppins';
+  }
 
   @override
   void onInit() {
     super.onInit();
     _loadSavedLanguage();
+    _loadFontFamily();
   }
 
   String get currentLanguage => _currentLang.value;
@@ -106,7 +113,6 @@ class LocalizationService extends GetxService {
       _currentLang.value = languageCode;
       await _storage.write('language', languageCode);
       Get.updateLocale(_supportedLocales[languageCode]!);
-      // update(); // Notify GetBuilder listeners
     }
   }
 }

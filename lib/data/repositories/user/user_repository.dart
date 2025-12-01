@@ -11,6 +11,8 @@ import 'package:reviews_app/utils/exceptions/format_exceptions.dart';
 import 'package:reviews_app/utils/exceptions/platform_exceptions.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+import '../../../localization/app_localizations.dart';
+
 /// Repository class for user-related operations.
 class UserRepository extends GetxController {
   static UserRepository get instance => Get.find();
@@ -30,7 +32,8 @@ class UserRepository extends GetxController {
     } on PlatformException catch (e) {
       throw AppPlatformException(e.code).message;
     } catch (e) {
-      throw 'Something went wrong. Please try again.';
+      // throw 'Something went wrong. Please try again.';
+      throw txt.somethingWentWrong;
     }
   }
 
@@ -59,7 +62,8 @@ class UserRepository extends GetxController {
     } on PlatformException catch (e) {
       throw AppPlatformException(e.code).message;
     } catch (e) {
-      throw 'Something went wrong. Please try again.';
+      // throw 'Something went wrong. Please try again.';
+      throw txt.somethingWentWrong;
     }
   }
 
@@ -79,7 +83,8 @@ class UserRepository extends GetxController {
     } on PlatformException catch (e) {
       throw AppPlatformException(e.code).message;
     } catch (e) {
-      throw 'Something went wrong. Please try again.';
+      // throw 'Something went wrong. Please try again.';
+      throw txt.somethingWentWrong;
     }
   }
 
@@ -99,7 +104,8 @@ class UserRepository extends GetxController {
     } on PlatformException catch (e) {
       throw AppPlatformException(e.code).message;
     } catch (e) {
-      throw 'Something went wrong. Please try again.';
+      // throw 'Something went wrong. Please try again.';
+      throw txt.somethingWentWrong;
     }
   }
 
@@ -116,7 +122,8 @@ class UserRepository extends GetxController {
     } on PlatformException catch (e) {
       throw AppPlatformException(e.code).message;
     } catch (e) {
-      throw 'Something went wrong. Please try again.';
+      // throw 'Something went wrong. Please try again.';
+      throw txt.somethingWentWrong;
     }
   }
 
@@ -139,7 +146,8 @@ class UserRepository extends GetxController {
     } on PlatformException catch (e) {
       throw AppPlatformException(e.code).message;
     } catch (e) {
-      throw 'Something went wrong. Please try again.';
+      // throw 'Something went wrong. Please try again.';
+      throw txt.somethingWentWrong;
     }
   }
 
@@ -189,7 +197,8 @@ class UserRepository extends GetxController {
     } on PlatformException catch (e) {
       throw AppPlatformException(e.code).message;
     } catch (e) {
-      throw 'Something went wrong. Please try again.';
+      // throw 'Something went wrong. Please try again.';
+      throw txt.somethingWentWrong;
     }
   }
 }

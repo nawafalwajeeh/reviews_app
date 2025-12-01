@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:reviews_app/features/review/models/category_extension.dart';
 import 'package:reviews_app/localization/app_localizations.dart';
 
 import '../../../../../utils/constants/colors.dart';
@@ -119,10 +120,13 @@ class CategoryFilterSheet extends StatelessWidget {
                   // Categories list with counts
                   ...categoryController.allCategories.map((category) {
                     final count = categoryCounts[category.id] ?? 0;
+                    final localizedName = category.getLocalizedName(context);
+
                     return _buildCategoryItem(
                       context,
                       id: category.id,
-                      name: category.name,
+                      // name: category.name,
+                      name: localizedName,
                       icon: CategoryMapper.getIcon(category.iconKey),
                       isSelected: selectedCategoryId == category.id,
                       count: count,

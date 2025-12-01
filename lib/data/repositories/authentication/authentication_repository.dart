@@ -15,6 +15,7 @@ import 'package:reviews_app/utils/exceptions/platform_exceptions.dart';
 import 'package:reviews_app/utils/logging/logger.dart';
 import '../../../features/authentication/screens/signup/verify_email.dart';
 import '../../../features/personalization/screens/locale/select_language.dart';
+import '../../../localization/app_localizations.dart';
 import '../../../utils/local_storage/storage_utility.dart';
 
 class AuthenticationRepository extends GetxController {
@@ -158,7 +159,8 @@ class AuthenticationRepository extends GetxController {
     } on PlatformException catch (e) {
       throw AppPlatformException(e.code).message;
     } catch (e) {
-      throw 'Something went wrong. Please try again.';
+      // throw 'Something went wrong. Please try again.';
+      throw txt.somethingWentWrong;
     }
   }
 
@@ -181,7 +183,8 @@ class AuthenticationRepository extends GetxController {
     } on PlatformException catch (e) {
       throw AppPlatformException(e.code).message;
     } catch (e) {
-      throw 'Something went wrong. Please try again.';
+      // throw 'Something went wrong. Please try again.';
+      throw txt.somethingWentWrong;
     }
   }
 
@@ -204,7 +207,8 @@ class AuthenticationRepository extends GetxController {
     } on PlatformException catch (e) {
       throw AppPlatformException(e.code).message;
     } catch (e) {
-      throw 'Something went wrong. Please try again.';
+      // throw 'Something went wrong. Please try again.';
+      throw txt.somethingWentWrong;
     }
   }
 
@@ -265,7 +269,8 @@ class AuthenticationRepository extends GetxController {
     } on PlatformException catch (e) {
       throw AppPlatformException(e.code).message;
     } catch (e) {
-      throw 'Something went wrong. Please try again.';
+      // throw 'Something went wrong. Please try again.';
+      throw txt.somethingWentWrong;
     }
   }
 
@@ -284,7 +289,8 @@ class AuthenticationRepository extends GetxController {
     } on PlatformException catch (e) {
       throw AppPlatformException(e.code).message;
     } catch (e) {
-      throw 'Something went wrong. Please try again.';
+      // throw 'Something went wrong. Please try again.';
+      throw txt.somethingWentWrong;
     }
   }
 
@@ -301,7 +307,8 @@ class AuthenticationRepository extends GetxController {
     } on PlatformException catch (e) {
       throw AppPlatformException(e.code).message;
     } catch (e) {
-      throw 'Something went wrong. Please try again.';
+      // throw 'Something went wrong. Please try again.';
+      throw txt.somethingWentWrong;
     }
   }
 
@@ -318,7 +325,8 @@ class AuthenticationRepository extends GetxController {
     } on PlatformException catch (e) {
       throw AppPlatformException(e.code).message;
     } catch (e) {
-      throw 'Something went wrong. Please try again.';
+      // throw 'Something went wrong. Please try again.';
+      throw txt.somethingWentWrong;
     }
   }
 
@@ -337,7 +345,8 @@ class AuthenticationRepository extends GetxController {
     } on PlatformException catch (e) {
       throw AppPlatformException(e.code).message;
     } catch (e) {
-      throw 'Something went wrong. Please try again.';
+      // throw 'Something went wrong. Please try again.';
+      throw txt.somethingWentWrong;
     }
   }
 }

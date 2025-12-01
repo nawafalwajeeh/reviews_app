@@ -3,7 +3,9 @@ import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:reviews_app/localization/app_localizations.dart';
 import 'package:reviews_app/utils/constants/sizes.dart';
+import '../../../utils/constants/colors.dart';
 import '../../../utils/popups/loaders.dart';
 import '../models/image_model.dart';
 import '../models/place_model.dart';
@@ -32,8 +34,10 @@ class ImagesController extends GetxController {
   Future<void> removeImage(int index) async {
     additionalPlaceImagesUrls.removeAt(index);
     AppLoaders.successSnackBar(
-      title: 'Image Removed',
-      message: 'Image URL removed from list.',
+      // title: 'Image Removed',
+      title: txt.imageDeleted,
+      // message: 'Image URL removed from list.',
+      message: txt.imageDeletedMessage,
     );
   }
 
@@ -73,13 +77,21 @@ class ImagesController extends GetxController {
                   horizontal: AppSizes.defaultSpace,
                 ),
 
-                child: isNetworkImage
-                    ? CachedNetworkImage(
-                        imageUrl: image,
-                        errorWidget: (context, url, error) =>
-                            const Icon(Icons.error),
-                      )
-                    : Image.asset(image),
+                child:
+                    // isNetworkImage
+                    //     ?
+                    CachedNetworkImage(
+                      imageUrl: image,
+                      fit: BoxFit.cover,
+                      errorWidget: (context, url, error) =>
+                          const Icon(Icons.error, size: 60),
+                      progressIndicatorBuilder: (_, _, progress) =>
+                          CircularProgressIndicator(
+                            value: progress.progress,
+                            color: AppColors.primaryColor,
+                          ),
+                    ),
+                // : Image.asset(image),
               ),
               SizedBox(height: AppSizes.spaceBtwSections),
               Align(
@@ -88,7 +100,8 @@ class ImagesController extends GetxController {
                   width: 150,
                   child: OutlinedButton(
                     onPressed: () => Get.back(),
-                    child: const Text('Close'),
+                    // child: const Text('Close'),
+                    child: Text(txt.close),
                   ),
                 ),
               ),

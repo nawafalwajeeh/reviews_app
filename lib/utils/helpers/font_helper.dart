@@ -5,9 +5,10 @@ import '../../data/services/localization/localization_service.dart';
 class FontHelper {
   static String get appFontFamily {
     final localizationService = LocalizationService.instance;
-    return localizationService.currentLanguage == 'ar'
-        ? 'Tajawal' // Arabic font
-        : 'Poppins'; // English font (your existing font)
+    // return localizationService.currentLanguage == 'ar'
+    //     ? 'Tajawal' // Arabic font
+    //     : 'Poppins'; // English font (your existing font)
+    return localizationService.appFontFamily.value;
   }
 
   static bool get isArabic =>

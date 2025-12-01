@@ -4,6 +4,7 @@ import 'package:reviews_app/data/repositories/authentication/authentication_repo
 import 'package:reviews_app/data/repositories/place/place_repository.dart';
 import 'package:reviews_app/features/authentication/screens/signup/signup_screen.dart';
 import 'package:reviews_app/features/personalization/controllers/user_controller.dart';
+import '../../../localization/app_localizations.dart';
 import '../../../utils/local_storage/storage_utility.dart';
 import '../../../utils/popups/loaders.dart';
 import '../models/place_model.dart';
@@ -39,8 +40,10 @@ class FavouritesController extends GetxController {
     } catch (e) {
       // favorites.assignAll({});
       AppLoaders.errorSnackBar(
-        title: 'Error',
-        message: 'Failed to load favorites: $e',
+        // title: 'Error',
+        title: txt.error,
+        // message: 'Failed to load favorites: $e',
+        message: '${txt.failedToLoadFavorites}: $e',
       );
     }
   }
@@ -53,9 +56,11 @@ class FavouritesController extends GetxController {
     if (AuthenticationRepository.instance.getUserID.isEmpty ||
         AuthenticationRepository.instance.isGuestUser) {
       AppLoaders.warningSnackBar(
-        title: 'Authentication Required',
-        message:
-            'Please sign in or create an account to create your own places.',
+        // title: 'Authentication Required',
+        title: txt.authenticationRequired,
+        // message:
+        // 'Please sign in or create an account to create your own places.',
+        message: txt.pleaseSignIn,
       );
 
       Get.to(() => const SignupScreen());
@@ -66,13 +71,15 @@ class FavouritesController extends GetxController {
     if (!favorites.containsKey(placeId)) {
       favorites[placeId] = true;
       saveFavoritesToStorage();
-      AppLoaders.customToast(message: 'Place has been added to Wishlist');
+      // AppLoaders.customToast(message: 'Place has been added to Wishlist');
+      AppLoaders.customToast(message: txt.placeHasBeenAddedToWishlist);
     } else {
       AppLocalStorage.instance().removeData(placeId);
       favorites.remove(placeId);
       saveFavoritesToStorage();
       favorites.refresh();
-      AppLoaders.customToast(message: 'Place has been removed from Wishlist');
+      // AppLoaders.customToast(message: 'Place has been removed from Wishlist');
+      AppLoaders.customToast(message: txt.placeHasBeenRemovedFromWishlist);
     }
   }
 

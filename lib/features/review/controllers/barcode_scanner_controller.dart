@@ -1,6 +1,7 @@
 // controllers/barcode_scanner_controller.dart
 import 'package:get/get.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import '../../../localization/app_localizations.dart';
 import '../models/place_model.dart';
 
 class BarcodeScannerController extends GetxController {
@@ -32,10 +33,7 @@ class BarcodeScannerController extends GetxController {
       if (uniqueBarcodeQuery.docs.isNotEmpty) {
         return PlaceModel.fromSnapshot(uniqueBarcodeQuery.docs.first);
       }
-
-      // ... rest of your universal fetch logic
-
-      throw Exception('Place not found');
+      throw Exception(txt.placeNotFound);
     } catch (e) {
       errorMessage.value = e.toString();
       rethrow;

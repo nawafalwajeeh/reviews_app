@@ -6,6 +6,7 @@ import 'package:reviews_app/utils/exceptions/firebase_exceptions.dart';
 import 'package:reviews_app/utils/exceptions/platform_exceptions.dart';
 
 import '../../../features/review/models/gallery_image_model.dart';
+import '../../../localization/app_localizations.dart';
 
 class GalleryRepository extends GetxController {
   static GalleryRepository get instance => Get.find();
@@ -26,7 +27,8 @@ class GalleryRepository extends GetxController {
     } on PlatformException catch (e) {
       throw AppPlatformException(e.code).message;
     } catch (e) {
-      throw 'Something went wrong while creating Collection. Please try again.';
+      // throw 'Something went wrong while creating Collection. Please try again.';
+        throw txt.somethingWentWrong;
     }
   }
 
@@ -43,7 +45,8 @@ class GalleryRepository extends GetxController {
     } on PlatformException catch (e) {
       throw AppPlatformException(e.code).message;
     } catch (e) {
-      throw 'Something went wrong while fetching Collections. Please try again.';
+      // throw 'Something went wrong while fetching Collections. Please try again.';
+        throw txt.somethingWentWrong;
     }
   }
 
@@ -65,7 +68,8 @@ class GalleryRepository extends GetxController {
     } on PlatformException catch (e) {
       throw AppPlatformException(e.code).message;
     } catch (e) {
-      throw 'Something went wrong while fetching all Gallery Photos. Please try again.';
+      // throw 'Something went wrong while fetching all Gallery Photos. Please try again.';
+        throw txt.somethingWentWrong;
     }
   }
 
@@ -90,7 +94,8 @@ class GalleryRepository extends GetxController {
     } on PlatformException catch (e) {
       throw AppPlatformException(e.code).message;
     } catch (e) {
-      throw 'Something went wrong while fetching Photos by Collection. Please try again.';
+      // throw 'Something went wrong while fetching Photos by Collection. Please try again.';
+        throw txt.somethingWentWrong;
     }
   }
 
@@ -114,7 +119,8 @@ class GalleryRepository extends GetxController {
     } on PlatformException catch (e) {
       throw AppPlatformException(e.code).message;
     } catch (e) {
-      throw 'Something went wrong while fetching Recent Photos. Please try again.';
+      // throw 'Something went wrong while fetching Recent Photos. Please try again.';
+        throw txt.somethingWentWrong;
     }
   }
 }

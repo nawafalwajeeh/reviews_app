@@ -11,6 +11,7 @@ import 'package:reviews_app/features/review/models/place_model.dart';
 import 'package:reviews_app/features/review/models/category_model.dart';
 import 'package:reviews_app/utils/popups/loaders.dart';
 
+
 class AppSearchController extends GetxController {
   static AppSearchController get instance => Get.find();
 

@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 import 'package:reviews_app/features/review/models/search_suggestion.dart';
+import 'package:reviews_app/localization/app_localizations.dart';
 import 'package:uuid/uuid.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
 import 'package:reviews_app/features/review/models/place_model.dart';
@@ -126,8 +127,11 @@ class PlacesMapController extends GetxController {
     } catch (e) {
       AppLoggerHelper.error('Error loading places: $e');
       Get.snackbar(
-        'Loading Error',
-        'Could not load places',
+        // 'Loading Error',
+        txt.errorLoading,
+        // 'Could not load places',
+        txt.couldNotLoadPlaces,
+        // txt.could
         backgroundColor: AppColors.error,
       );
     }
@@ -210,7 +214,8 @@ class PlacesMapController extends GetxController {
           currentLocation.value!.longitude!,
         ),
         icon: await CustomMarkerGenerator.getCurrentLocationMarker(),
-        infoWindow: const InfoWindow(title: 'Your Location'),
+        // infoWindow: const InfoWindow(title: 'Your Location'),
+        infoWindow:  InfoWindow(title: txt.yourLocation),
         zIndexInt: 1000,
         anchor: const Offset(0.5, 0.5),
       );

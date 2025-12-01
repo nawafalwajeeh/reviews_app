@@ -13,6 +13,7 @@ import 'package:reviews_app/features/personalization/models/address_model.dart';
 import 'package:reviews_app/features/review/controllers/category_controller.dart';
 import 'package:reviews_app/features/review/controllers/notification_controller.dart';
 import 'package:reviews_app/features/review/models/place_category_model.dart';
+import 'package:reviews_app/localization/app_localizations.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../../data/repositories/place/place_repository.dart';
@@ -227,7 +228,8 @@ class PlaceController extends GetxController {
           },
           onError: (e) {
             AppLoaders.errorSnackBar(
-              title: 'Stream Error',
+              // title: 'Stream Error',
+              title: txt.streamError,
               message: e.toString(),
             );
             AppLoggerHelper.error(
@@ -260,7 +262,8 @@ class PlaceController extends GetxController {
           },
           onError: (e) {
             AppLoaders.errorSnackBar(
-              title: 'Stream Error',
+              // title: 'Stream Error',
+              title: txt.streamError,
               message: e.toString(),
             );
             AppLoggerHelper.error(
@@ -271,26 +274,20 @@ class PlaceController extends GetxController {
         );
   }
 
-  // --- OLD FUTURE METHODS (Kept as is, but primary updates use streams) ---
-
-  // Renamed old fetchFeaturedPlaces to streamFeaturedPlaces()
-  // Old fetchFeaturedPlaces implementation is removed as streaming is preferred for real-time lists.
-
   Future<List<PlaceModel>> fetchAllFeaturedPlaces() async {
-    // ... existing implementation ...
     try {
       final places = await placeRepository.getAllFeaturedPlaces();
       featuredPlaces.assignAll(places);
       return places;
     } catch (e) {
-      AppLoaders.errorSnackBar(title: 'Oh Snap!', message: e.toString());
+      // AppLoaders.errorSnackBar(title: 'Oh Snap!', message: e.toString());
+      AppLoaders.errorSnackBar(title: txt.ohSnap, message: e.toString());
       return [];
     }
   }
 
   /// Fetch Places By Query
   Future<List<PlaceModel>> fetchPlacesByQuery(Query? query) async {
-    // ... existing implementation ...
     try {
       if (query == null) return [];
 
@@ -298,7 +295,8 @@ class PlaceController extends GetxController {
       featuredPlaces.assignAll(places);
       return places;
     } catch (e) {
-      AppLoaders.errorSnackBar(title: 'Oh Snap!', message: e.toString());
+      // AppLoaders.errorSnackBar(title: 'Oh Snap!', message: e.toString());
+      AppLoaders.errorSnackBar(title: txt.ohSnap, message: e.toString());
       return [];
     }
   }
@@ -326,18 +324,28 @@ class PlaceController extends GetxController {
           if (selectedLocalImageFiles.length < maxImages) {
             selectedLocalImageFiles.add(File(xFile.path));
           } else {
+            // AppLoaders.warningSnackBar(
+            //   title: 'Image Limit Reached',
+            //   message: 'You can only upload a maximum of $maxImages images.',
+            // );
+
             AppLoaders.warningSnackBar(
-              title: 'Image Limit Reached',
-              message: 'You can only upload a maximum of $maxImages images.',
+              title: txt.imageLimitReached,
+              message: txt.imageLimitMessage(maxImages),
             );
+
             break;
           }
         }
       }
     } catch (e) {
+      // AppLoaders.errorSnackBar(
+      //   title: 'Image Selection Failed',
+      //   message: 'Could not select images: $e',
+      // );
       AppLoaders.errorSnackBar(
-        title: 'Image Selection Failed',
-        message: 'Could not select images: $e',
+        title: txt.imageSelectionFailed,
+        message: txt.couldNotSelectImages(e.toString()),
       );
     }
   }
@@ -351,7 +359,8 @@ class PlaceController extends GetxController {
       if (selectedLocalImageFiles.isEmpty) return [];
 
       AppFullScreenLoader.openLoadingDialog(
-        'Uploading ${selectedLocalImageFiles.length} photos for Place ID: $placeId...',
+        // 'Uploading ${selectedLocalImageFiles.length} photos for Place ID: $placeId...',
+        txt.uploadingPhotosWithParams(selectedLocalImageFiles.length, placeId),
         AppImages.docerAnimation,
       );
 
@@ -377,8 +386,10 @@ class PlaceController extends GetxController {
     } catch (e) {
       AppFullScreenLoader.stopLoading();
       AppLoaders.errorSnackBar(
-        title: 'Upload Failed!',
-        message: 'Could not upload place images: ${e.toString()}',
+        // title: 'Upload Failed!',
+        title: txt.uploadFailed,
+        // message: 'Could not upload place images: ${e.toString()}',
+        message: txt.couldNotUploadPlaceImages(e.toString()),
       );
       rethrow;
     }
@@ -388,8 +399,10 @@ class PlaceController extends GetxController {
     // Limit to 4 questions
     if (customQuestions.length >= 4) {
       AppLoaders.warningSnackBar(
-        title: 'Limit Reached',
-        message: 'You can only add up to 4 custom questions.',
+        // title: 'Limit Reached',
+        title: txt.limitReached,
+        // message: 'You can only add up to 4 custom questions.',
+        message: txt.youCanOnlyAddUpTo4Questions,
       );
       return;
     }
@@ -451,9 +464,11 @@ class PlaceController extends GetxController {
 
       if (AuthenticationRepository.instance.isGuestUser) {
         AppLoaders.warningSnackBar(
-          title: 'Authentication Required',
-          message:
-              'Please sign in or create an account to save your favorite places.',
+          // title: 'Authentication Required',
+          title: txt.authenticationRequired,
+          // message:
+          //     'Please sign in or create an account to save your favorite places.',
+          message: txt.pleaseSignInToSavePlaces,
         );
         Get.to(() => const SignupScreen());
         return;
@@ -461,7 +476,8 @@ class PlaceController extends GetxController {
 
       // Start Loading & Form Validation
       AppFullScreenLoader.openLoadingDialog(
-        'Creating new place...',
+        // 'Creating new place...',
+        txt.creatingNewPlace,
         AppImages.docerAnimation,
       );
 
@@ -483,9 +499,11 @@ class PlaceController extends GetxController {
           selectedAddress.value.longitude == 0.0) {
         AppFullScreenLoader.stopLoading();
         AppLoaders.warningSnackBar(
-          title: 'Location Missing',
-          message:
-              'Please use the map picker to select a valid location with coordinates.',
+          // title: 'Location Missing',
+          title: txt.locationMissing,
+          // message:
+          //     'Please use the map picker to select a valid location with coordinates.',
+          message: txt.pleaseUseMapPicker,
         );
         return;
       }
@@ -494,8 +512,10 @@ class PlaceController extends GetxController {
       if (selectedLocalImageFiles.isEmpty) {
         AppFullScreenLoader.stopLoading();
         AppLoaders.warningSnackBar(
-          title: 'No Images',
-          message: 'Please select at least one image.',
+          // title: 'No Images',
+          title: txt.noImages,
+          // message: 'Please select at least one image.',
+          message: txt.pleaseSelectAtLeastOneImage,
         );
         return;
       }
@@ -503,8 +523,10 @@ class PlaceController extends GetxController {
       if (selectedCategoryId.isEmpty) {
         AppFullScreenLoader.stopLoading();
         AppLoaders.warningSnackBar(
-          title: 'Category Missing',
-          message: 'Please select a valid category.',
+          // title: 'Category Missing',
+          title: txt.categoryMissing,
+          // message: 'Please select a valid category.',
+          message: txt.pleaseSelectValidCategory,
         );
         return;
       }
@@ -575,8 +597,10 @@ class PlaceController extends GetxController {
 
       AppFullScreenLoader.stopLoading();
       AppLoaders.successSnackBar(
-        title: 'Success!',
-        message: 'Your new place "${newPlace.title}" has been created!',
+        // title: 'Success!',
+        title: txt.success,
+        // message: 'Your new place "${newPlace.title}" has been created!',
+        message: txt.yourNewPlaceHasBeenCreatedWithTitle(newPlace.title),
       );
 
       final allUserIds = await UserRepository.instance.getAllUserIds();
@@ -608,7 +632,8 @@ class PlaceController extends GetxController {
       Get.back();
     } catch (e) {
       AppFullScreenLoader.stopLoading();
-      AppLoaders.errorSnackBar(title: 'Oh Snap!', message: e.toString());
+      // AppLoaders.errorSnackBar(title: 'Oh Snap!', message: e.toString());
+      AppLoaders.errorSnackBar(title: txt.ohSnap, message: e.toString());
     }
   }
 
@@ -704,7 +729,8 @@ class PlaceController extends GetxController {
     try {
       // Start Loading & Form Validation
       AppFullScreenLoader.openLoadingDialog(
-        'Updating place...',
+        // 'Updating place...',
+        txt.updatingPlace,
         AppImages.docerAnimation,
       );
 
@@ -725,8 +751,10 @@ class PlaceController extends GetxController {
       if (selectedAddress.value == AddressModel.empty()) {
         AppFullScreenLoader.stopLoading();
         AppLoaders.warningSnackBar(
-          title: 'Location Missing',
-          message: 'Please select a location for the place.',
+          // title: 'Location Missing',
+          title: txt.locationMissing,
+          // message: 'Please select a location for the place.',
+          message: txt.pleaseSelectLocation, // Use the new getter
         );
         return;
       }
@@ -788,15 +816,19 @@ class PlaceController extends GetxController {
       await placeRepository.updatePlace(updatedPlace);
 
       AppLoaders.successSnackBar(
-        title: 'Success!',
-        message: 'Place "${updatedPlace.title}" has been updated!',
+        // title: 'Success!',
+        title: txt.success,
+        // message: 'Place "${updatedPlace.title}" has been updated!',
+        message: txt.placeHasBeenUpdated,
+        // message: txt.uploadingPhotosWithCount(place.images.length, placeId)
       );
 
       clearEditForm();
       update();
       Get.back();
     } catch (e) {
-      AppLoaders.errorSnackBar(title: 'Update Failed', message: e.toString());
+      // AppLoaders.errorSnackBar(title: 'Update Failed', message: e.toString());
+      AppLoaders.errorSnackBar(title: txt.updateFailed, message: e.toString());
     } finally {
       AppFullScreenLoader.stopLoading();
     }
@@ -806,11 +838,19 @@ class PlaceController extends GetxController {
   Future<void> deletePlaceWithConfirmation(PlaceModel place) async {
     // ... existing implementation ...
     Get.defaultDialog(
-      title: 'Delete Place?',
-      middleText:
-          'Are you sure you want to delete "${place.title}"? This action cannot be undone.',
-      textConfirm: 'Delete',
-      textCancel: 'Cancel',
+      // title: 'Delete Place?',
+      title: txt.deletePlace, // Use localized title
+      middleText: txt.deletePlaceMessage(
+        place.title,
+      ), // Use localized message with parameter
+      // middleText:
+      //     'Are you sure you want to delete "${place.title}"? This action cannot be undone.',
+      // middleText:
+      //     'Are you sure you want to delete "${place.title}"? This action cannot be undone.',
+      // textConfirm: 'Delete',
+      textConfirm: txt.delete,
+      // textCancel: 'Cancel',
+      textCancel: txt.cancel,
       confirmTextColor: AppColors.white,
       onConfirm: () async {
         Navigator.of(Get.context!).pop();
@@ -825,7 +865,8 @@ class PlaceController extends GetxController {
     // ... existing implementation ...
     try {
       AppFullScreenLoader.openLoadingDialog(
-        'Deleting place...',
+        // 'Deleting place...',
+        txt.deletingPlace,
         AppImages.docerAnimation,
       );
 
@@ -840,12 +881,15 @@ class PlaceController extends GetxController {
       ); // NEW: Remove from category list
 
       AppLoaders.successSnackBar(
-        title: 'Success!',
-        message: 'Place "${place.title}" has been deleted',
+        // title: 'Success!',
+        title: txt.success,
+        // message: 'Place "${place.title}" has been deleted',
+        message: txt.placeHasBeenDeleted,
       );
       update();
     } catch (e) {
-      AppLoaders.errorSnackBar(title: 'Delete Failed', message: e.toString());
+      // AppLoaders.errorSnackBar(title: 'Delete Failed', message: e.toString());
+      AppLoaders.errorSnackBar(title: txt.deleteFailed, message: e.toString());
     } finally {
       AppFullScreenLoader.stopLoading();
     }

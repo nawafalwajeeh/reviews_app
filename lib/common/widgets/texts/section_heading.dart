@@ -27,9 +27,11 @@ class AppSectionHeading extends StatelessWidget {
           title,
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
-          style: titleStyle ?? Theme.of(
-            context,
-          ).textTheme.headlineSmall?.apply(color: textColor),
+          style:
+              titleStyle ??
+              Theme.of(
+                context,
+              ).textTheme.headlineSmall?.apply(color: textColor),
         ),
         ?showActionButton
             ? TextButton(onPressed: onPressed, child: Text(buttonTitle))

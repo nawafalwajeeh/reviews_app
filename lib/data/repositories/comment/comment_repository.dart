@@ -1,6 +1,7 @@
 // repositories/comment_repository.dart
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
+import 'package:reviews_app/localization/app_localizations.dart';
 import '../../../features/review/models/comment_model.dart';
 
 class CommentRepository extends GetxService {
@@ -80,7 +81,8 @@ class CommentRepository extends GetxService {
 
       await _firestore.runTransaction((transaction) async {
         final doc = await transaction.get(docRef);
-        if (!doc.exists) throw Exception('Comment not found');
+        // if (!doc.exists) throw Exception('Comment not found');
+        if (!doc.exists) throw Exception(txt.noDataFound);
 
         final comment = CommentModel.fromSnapshot(doc);
         final likedBy = List<String>.from(comment.likes);
@@ -111,7 +113,8 @@ class CommentRepository extends GetxService {
         transaction.update(docRef, updatedComment.toJson());
       });
     } catch (e) {
-      throw Exception('Failed to like/dislike comment: $e');
+      // throw Exception('Failed to like/dislike comment: $e');
+      throw txt.somethingWentWrong;
     }
   }
 
@@ -133,7 +136,8 @@ class CommentRepository extends GetxService {
         'disliked': comment.dislikes.contains(userId),
       };
     } catch (e) {
-      throw Exception('Failed to get user reaction: $e');
+      // throw Exception('Failed to get user reaction: $e');
+      throw txt.somethingWentWrong;
     }
   }
 
@@ -155,7 +159,8 @@ class CommentRepository extends GetxService {
         }
       });
     } catch (e) {
-      print('Error updating reply count: $e');
+      // print('Error updating reply count: $e');
+      throw txt.somethingWentWrong;
     }
   }
 

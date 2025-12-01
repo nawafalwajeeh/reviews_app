@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:reviews_app/features/review/models/category_model.dart';
 import '../../../features/review/models/place_category_model.dart';
+import '../../../localization/app_localizations.dart';
 import '../../../utils/exceptions/firebase_exceptions.dart';
 import '../../../utils/exceptions/format_exceptions.dart';
 import '../../../utils/exceptions/platform_exceptions.dart';
@@ -29,7 +30,8 @@ class CategoryRepository extends GetxController {
     } on PlatformException catch (e) {
       throw AppPlatformException(e.code).message;
     } catch (e) {
-      throw 'Something went wrong. Please try again';
+      // throw 'Something went wrong. Please try again';
+        throw txt.somethingWentWrong;
     }
   }
 
@@ -42,14 +44,16 @@ class CategoryRepository extends GetxController {
         final category = CategoryModel.fromSnapshot(doc);
         return category.name;
       } else {
-        throw 'Category not found';
+        // throw 'Category not found';
+        throw txt.categoryNotFound;
       }
     } on FirebaseException catch (e) {
       throw AppFirebaseException(e.code).message;
     } on PlatformException catch (e) {
       throw AppPlatformException(e.code).message;
     } catch (e) {
-      throw 'Something went wrong. Please try again';
+      // throw 'Something went wrong. Please try again';
+        throw txt.somethingWentWrong;
     }
   }
 
@@ -67,7 +71,8 @@ class CategoryRepository extends GetxController {
     } on PlatformException catch (e) {
       throw AppPlatformException(e.code).message;
     } catch (e) {
-      throw 'Something went wrong. Please try again';
+      // throw 'Something went wrong. Please try again';
+        throw txt.somethingWentWrong;
     }
   }
 
@@ -91,7 +96,8 @@ class CategoryRepository extends GetxController {
     } on PlatformException catch (e) {
       throw AppPlatformException(e.code).message;
     } catch (e) {
-      throw 'Something went wrong. Please try again';
+      // throw 'Something went wrong. Please try again';
+        throw txt.somethingWentWrong;
     }
   }
 
@@ -107,7 +113,8 @@ class CategoryRepository extends GetxController {
     } on PlatformException catch (e) {
       throw AppPlatformException(e.code).message;
     } catch (e) {
-      throw 'Something went wrong. Please try again';
+      // throw 'Something went wrong. Please try again';
+        throw txt.somethingWentWrong;
     }
   }
 
@@ -125,7 +132,8 @@ class CategoryRepository extends GetxController {
     } on PlatformException catch (e) {
       throw AppPlatformException(e.code).message;
     } catch (e) {
-      throw 'Something went wrong. Please try again';
+      // throw 'Something went wrong. Please try again';
+        throw txt.somethingWentWrong;
     }
   }
 
@@ -140,7 +148,8 @@ class CategoryRepository extends GetxController {
     } on PlatformException catch (e) {
       throw AppPlatformException(e.code).message;
     } catch (e) {
-      throw 'Something went wrong. Please try again';
+      // throw 'Something went wrong. Please try again';
+  throw txt.somethingWentWrong;
     }
   }
 
@@ -165,7 +174,8 @@ class CategoryRepository extends GetxController {
     } on PlatformException catch (e) {
       throw AppPlatformException(e.code).message;
     } catch (e) {
-      throw 'Something went wrong. Please try again.';
+      // throw 'Something went wrong. Please try again.';
+        throw txt.somethingWentWrong;
     }
   }
 
@@ -190,7 +200,8 @@ class CategoryRepository extends GetxController {
     } on PlatformException catch (e) {
       throw AppPlatformException(e.code).message;
     } catch (e) {
-      throw 'Something went wrong. Please try again';
+      // throw 'Something went wrong. Please try again';
+        throw txt.somethingWentWrong;
     }
   }
 }

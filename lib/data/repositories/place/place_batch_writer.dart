@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:reviews_app/features/review/models/place_model.dart';
 
 import '../../../features/review/models/gallery_image_model.dart';
+import '../../../localization/app_localizations.dart';
 import '../categories/category_repository.dart';
 
 class PlaceBatchWriter {
@@ -22,7 +23,8 @@ class PlaceBatchWriter {
       final categoryTitle = await repository.getCategoryNameById(categoryId);
       return categoryTitle;
     } catch (e) {
-      throw 'Failed to fetch category name: ${e.toString()}';
+      // throw 'Failed to fetch category name: ${e.toString()}';
+        throw txt.somethingWentWrong;
     }
   }
 

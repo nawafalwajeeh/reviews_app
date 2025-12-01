@@ -8,6 +8,7 @@ import 'package:reviews_app/utils/helpers/network_manager.dart';
 import 'package:reviews_app/utils/popups/full_screen_loader.dart';
 import 'package:reviews_app/utils/popups/loaders.dart';
 
+import '../../../../localization/app_localizations.dart';
 import '../../../personalization/models/user_model.dart';
 
 class SignupController extends GetxController {
@@ -29,7 +30,8 @@ class SignupController extends GetxController {
     try {
       // Start Loading
       AppFullScreenLoader.openLoadingDialog(
-        'We are processing your information...',
+        // 'We are processing your information...',
+        txt.weAreProcessingYourInformation,
         AppImages.docerAnimation,
       );
 
@@ -51,10 +53,12 @@ class SignupController extends GetxController {
       // Privacy Policy Check
       if (!privacyPolicy.value) {
         AppLoaders.warningSnackBar(
-          title: 'Accept Privacy Policy',
-          message:
-              'In order to create account,'
-              'you must have to read and accept the Privacy Policy & Terms of Use.',
+          // title: 'Accept Privacy Policy',
+          title: txt.acceptPrivacyPolicy,
+          // message:
+              // 'In order to create account,'
+              // 'you must have to read and accept the Privacy Policy & Terms of Use.',
+              message: txt.privacyPolicyMessage
         );
         return;
       }
@@ -85,8 +89,10 @@ class SignupController extends GetxController {
 
       // Show Success Message
       AppLoaders.successSnackBar(
-        title: 'Congratulations',
-        message: 'Your account has been created! Verify email to continue.',
+        // title: 'Congratulations',
+        title: txt.congratulations,
+        // message: 'Your account has been created! Verify email to continue.',
+        message: txt.accountCreatedVerifyEmail
       );
       // Move to Verify Email Screen
       Get.to(() => VerifyEmailScreen(email: email.text.trim()));
@@ -95,7 +101,8 @@ class SignupController extends GetxController {
       AppFullScreenLoader.stopLoading();
 
       // Show some Generic Error to the user
-      AppLoaders.errorSnackBar(title: 'Oh Snap!', message: e.toString());
+      // AppLoaders.errorSnackBar(title: 'Oh Snap!', message: e.toString());
+      AppLoaders.errorSnackBar(title: txt.ohSnap, message: e.toString());
     }
   }
 }

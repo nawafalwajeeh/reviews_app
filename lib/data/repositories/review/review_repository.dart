@@ -4,6 +4,8 @@ import 'package:reviews_app/features/review/models/review_model.dart';
 import 'package:reviews_app/utils/exceptions/firebase_exceptions.dart';
 import 'package:reviews_app/utils/exceptions/format_exceptions.dart';
 
+import '../../../localization/app_localizations.dart';
+
 /// Repository for managing all review-related data operations.
 class ReviewRepository extends GetxController {
   static ReviewRepository get instance => Get.find();
@@ -23,7 +25,8 @@ class ReviewRepository extends GetxController {
     } on FormatException catch (_) {
       throw const AppFormatException();
     } catch (e) {
-      throw 'Something went wrong. Please try again.';
+      // throw 'Something went wrong. Please try again.';
+        throw txt.somethingWentWrong;
     }
   }
 
@@ -58,7 +61,8 @@ class ReviewRepository extends GetxController {
     } on FormatException catch (_) {
       throw const AppFormatException();
     } catch (e) {
-      throw 'Something went wrong while updating. Please try again.';
+      // throw 'Something went wrong while updating. Please try again.';
+        throw txt.somethingWentWrong;
     }
   }
 
@@ -88,7 +92,8 @@ class ReviewRepository extends GetxController {
     } on FormatException catch (_) {
       throw const AppFormatException();
     } catch (e) {
-      throw 'Failed to delete review: $e';
+      // throw 'Failed to delete review: $e';
+        throw txt.somethingWentWrong;
     }
   }
 
@@ -111,7 +116,8 @@ class ReviewRepository extends GetxController {
       throw const AppFormatException();
     } catch (e) {
       print('Error streaming reviews: $e');
-      throw 'Could not stream reviews. Check your network connection.';
+      // throw 'Could not stream reviews. Check your network connection.';
+        throw txt.somethingWentWrong;
     }
   }
 
@@ -143,7 +149,8 @@ class ReviewRepository extends GetxController {
     } on FirebaseException catch (e) {
       throw AppFirebaseException(e.code).message;
     } catch (e) {
-      throw 'Failed to update rating distribution: $e';
+      // throw 'Failed to update rating distribution: $e';
+        throw txt.somethingWentWrong;
     }
   }
 
@@ -178,7 +185,8 @@ class ReviewRepository extends GetxController {
     } on FirebaseException catch (e) {
       throw AppFirebaseException(e.code).message;
     } catch (e) {
-      throw 'Failed to remove from rating distribution: $e';
+      // throw 'Failed to remove from rating distribution: $e';
+        throw txt.somethingWentWrong;
     }
   }
 
