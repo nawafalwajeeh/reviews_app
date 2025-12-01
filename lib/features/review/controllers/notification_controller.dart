@@ -88,10 +88,8 @@ class NotificationController extends GetxController {
 
     // Get FCM token
     String? fcmToken = await _firebaseMessaging.getToken();
-    if (fcmToken != null) {
-      debugPrint('Fcm Token: $fcmToken');
-      await _registerFcmToken(fcmToken);
-    }
+    debugPrint('Fcm Token: $fcmToken');
+    await _registerFcmToken(fcmToken!);
 
     // Foreground messages
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {

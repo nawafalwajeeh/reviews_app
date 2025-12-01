@@ -121,7 +121,7 @@ class ImagesController extends GetxController {
     );
 
     // Handle the selected images
-    if (selectedImages != null && selectedImages.isNotEmpty) {
+    if (selectedImages!.isNotEmpty) {
       additionalPlaceImagesUrls.assignAll(selectedImages.map((e) => e.url));
     }
   }

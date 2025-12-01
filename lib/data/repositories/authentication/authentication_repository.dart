@@ -133,9 +133,11 @@ class AuthenticationRepository extends GetxController {
           deviceStorage.read('hasSelectedLanguage') == true;
 
       if (!hasSelectedLanguage) {
+        // if (hasSelectedLanguage) {
         // Show Language Selection Screen first
         Get.offAll(() => const SelectLanguageScreen());
       } else if (isFirstTime) {
+        // } else if (!isFirstTime) {
         // Show OnBoarding after language selection
         Get.offAll(() => const OnBoardingScreen());
       } else {

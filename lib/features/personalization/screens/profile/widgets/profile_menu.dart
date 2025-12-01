@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:reviews_app/data/services/localization/localization_service.dart';
 import 'package:reviews_app/utils/constants/sizes.dart';
 
 class AppProfileMenu extends StatelessWidget {
@@ -9,14 +10,23 @@ class AppProfileMenu extends StatelessWidget {
     this.onPressed,
     required this.title,
     required this.value,
+    this.isArrowIcon = true,
   });
 
   final IconData icon;
   final VoidCallback? onPressed;
   final String title, value;
+  final bool isArrowIcon;
 
   @override
   Widget build(BuildContext context) {
+    final localizationService = LocalizationService.instance;
+    final actualIcon = isArrowIcon
+        ? localizationService.isRTL()
+              ? Icons.arrow_forward_ios
+              : icon
+        : icon;
+
     return GestureDetector(
       onTap: onPressed,
       child: Padding(
@@ -41,7 +51,8 @@ class AppProfileMenu extends StatelessWidget {
                 overflow: TextOverflow.ellipsis,
               ),
             ),
-            Expanded(child: Icon(icon, size: AppSizes.iconSm)),
+            // Expanded(child: Icon(icon, size: AppSizes.iconSm)),
+            Expanded(child: Icon(actualIcon, size: AppSizes.iconSm)),
           ],
         ),
       ),

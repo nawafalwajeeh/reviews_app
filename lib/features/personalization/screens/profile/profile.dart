@@ -123,6 +123,7 @@ class ProfileScreen extends StatelessWidget {
                 title: AppLocalizations.of(context).userId,
                 // value: '12345',
                 value: controller.user.value.id ?? '',
+                isArrowIcon: false,
                 onPressed: () {
                   Clipboard.setData(
                     ClipboardData(text: controller.user.value.id ?? ''),

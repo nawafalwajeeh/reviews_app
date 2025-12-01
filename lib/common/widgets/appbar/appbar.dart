@@ -6,6 +6,8 @@ import 'package:reviews_app/utils/constants/sizes.dart';
 import 'package:reviews_app/utils/device/device_utility.dart';
 import 'package:reviews_app/utils/helpers/helper_functions.dart';
 
+import '../../../data/services/localization/localization_service.dart';
+
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   const CustomAppBar({
     super.key,
@@ -26,6 +28,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
+    final localizationService = LocalizationService.instance;
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: AppSizes.md),
       child: AppBar(
@@ -41,17 +44,13 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                   // }
                 },
                 icon: AppCircularIcon(
-                  icon: Iconsax.arrow_left,
+                  icon: localizationService.isRTL()
+                      ? Iconsax.arrow_right
+                      : Iconsax.arrow_left,
                   color: AppHelperFunctions.isDarkMode(context)
                       ? AppColors.white
                       : AppColors.dark,
                 ),
-                // icon: RTLIcon(
-                //   icon: Iconsax.arrow_left,
-                //   color: AppHelperFunctions.isDarkMode(context)
-                //       ? AppColors.white
-                //       : AppColors.dark,
-                // ),
               )
             : leadingIcon != null
             ? IconButton(
@@ -62,12 +61,6 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                       ? AppColors.white
                       : AppColors.dark,
                 ),
-                // icon: RTLIcon(
-                //   icon: leadingIcon!,
-                //   color: AppHelperFunctions.isDarkMode(context)
-                //       ? AppColors.white
-                //       : AppColors.dark,
-                // ),
               )
             : null,
         actions: actions,

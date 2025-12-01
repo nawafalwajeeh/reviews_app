@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:reviews_app/localization/app_localizations.dart';
+import '../../../../data/services/localization/localization_service.dart';
 import '../../controllers/on_boarding/onboarding_controller.dart';
 import 'widgets/onboarding_next_button.dart';
 import '../../../../utils/constants/image_strings.dart';
@@ -14,6 +15,10 @@ class OnBoardingScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = Get.put(OnBoardingController());
+    final localizationService = LocalizationService.instance;
+
+    debugPrint(localizationService.textDirection.toString());
+    debugPrint('current Locale: ${localizationService.currentLanguage}');
 
     return Scaffold(
       body: Stack(
@@ -22,7 +27,8 @@ class OnBoardingScreen extends StatelessWidget {
           PageView(
             controller: controller.pageController,
             onPageChanged: controller.updatePageIndicator,
-            children:  [
+
+            children: [
               OnBoardingPage(
                 image: AppImages.onBoardingImage1,
                 // title: AppTexts.onBoardingTitle1,

@@ -44,8 +44,8 @@ class LocalizationService extends GetxService {
 
   Future<void> _loadSavedLanguage() async {
     String? savedLang = _storage.read('language');
-    if (savedLang != null && _supportedLocales.containsKey(savedLang)) {
-      _currentLang.value = savedLang;
+    if (_supportedLocales.containsKey(savedLang)) {
+      _currentLang.value = savedLang ?? 'ar';
     } else {
       // Default to device locale or English
       final deviceLocale = Get.deviceLocale;
