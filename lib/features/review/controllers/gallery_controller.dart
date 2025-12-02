@@ -113,7 +113,7 @@ class GalleryController extends GetxController {
             : 'https://placehold.co/500x300/CCCCCC/000000?text=No+Image';
 
         final localizedCategoryName = CategoryController.instance
-            .getCachedLocalizedCategoryName(place.collectionId, Get.context!);    
+            .getCachedLocalizedCategoryName(place.collectionId, Get.context!);
 
         return FeaturedImagesModel(
           id: place.id,
@@ -130,7 +130,7 @@ class GalleryController extends GetxController {
         // title: 'Oh Snap!',
         title: txt.ohSnap,
         // message: 'Failed to load recent featured images: ${e.toString()}',
-        message: txt.failedToLoadRecentFeaturedImages(e.toString())
+        message: txt.failedToLoadRecentFeaturedImages(e.toString()),
       );
       return [];
     }

@@ -6,10 +6,7 @@ class SettingsController extends GetxController {
   static SettingsController get instance => Get.find();
 
   /// Variables
-  // final Rx<ThemeMode> _themeMode = ThemeMode.system.obs;
-  final Rx<ThemeMode> _themeMode = ThemeMode.system == ThemeMode.light
-      ? ThemeMode.system.obs
-      : ThemeMode.light.obs;
+  final Rx<ThemeMode> _themeMode = ThemeMode.system.obs;
   final _storage = GetStorage();
 
   /// get themeMode value

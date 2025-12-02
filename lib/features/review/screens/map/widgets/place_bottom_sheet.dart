@@ -10,8 +10,6 @@ import 'package:reviews_app/utils/constants/enums.dart';
 import 'package:reviews_app/utils/constants/sizes.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
-import '../../../controllers/category_controller.dart';
-
 class PlaceBottomSheet extends StatelessWidget {
   final PlaceModel place;
   final VoidCallback onTap;
@@ -215,14 +213,5 @@ class PlaceBottomSheet extends StatelessWidget {
         ),
       ),
     );
-  }
-
-  Future<String> _getCategoryName(String categoryId) async {
-    final categoryController = CategoryController.instance;
-    try {
-      return await categoryController.getCategoryName(categoryId);
-    } catch (e) {
-      return 'Place';
-    }
   }
 }

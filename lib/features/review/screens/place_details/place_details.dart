@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:iconsax/iconsax.dart';
 import 'package:readmore/readmore.dart';
 import 'package:reviews_app/localization/app_localizations.dart';
 import '../../../../common/widgets/texts/section_heading.dart';
@@ -152,12 +151,12 @@ class PlaceDetailsScreen extends StatelessWidget {
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
+                                Icon(Icons.arrow_back_ios, size: 18),
                                 AppSectionHeading(
                                   // title: 'Reviews',
                                   title: AppLocalizations.of(context).reviews,
                                   showActionButton: false,
                                 ),
-                                Icon(Iconsax.arrow_right_3, size: 18),
                               ],
                             ),
                           ),
@@ -173,7 +172,7 @@ class PlaceDetailsScreen extends StatelessWidget {
                                   title: AppLocalizations.of(context).comments,
                                   showActionButton: false,
                                 ),
-                                Icon(Iconsax.arrow_right_3, size: 18),
+                                Icon(Icons.arrow_forward_ios, size: 18),
                               ],
                             ),
                           ),

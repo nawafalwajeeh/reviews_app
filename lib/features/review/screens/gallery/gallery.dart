@@ -6,6 +6,7 @@ import 'package:reviews_app/features/review/controllers/gallery_controller.dart'
 import 'package:reviews_app/features/review/screens/gallery/widgets/collection_section.dart';
 import 'package:reviews_app/localization/app_localizations.dart';
 import '../../../../utils/constants/sizes.dart';
+import '../search/search.dart';
 import 'widgets/all_photos.dart';
 import 'widgets/recent_photos.dart';
 
@@ -32,7 +33,12 @@ class ImageGalleryScreen extends StatelessWidget {
         body: Column(
           children: [
             // AppSearchContainer(text: 'Search photos'),
-            AppSearchContainer(text: locale.searchPhotos),
+            // AppSearchContainer(text: locale.searchForPlaces),
+            AppSearchContainer(
+              // text: 'Search for Places',
+              text: AppLocalizations.of(context).searchPlaces,
+              onTap: () => Get.to(() => SearchScreen()),
+            ),
             const SizedBox(height: AppSizes.spaceBtwSections),
 
             Expanded(child: GalleryContent()),

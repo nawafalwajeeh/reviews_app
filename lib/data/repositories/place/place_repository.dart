@@ -560,52 +560,80 @@ class PlaceRepository extends GetxController {
   // }
 
   /// -- Ultra Simple: Delete place and all related data
-Future<void> deletePlace(PlaceModel place) async {
-  try {
-    debugPrint('🗑️  Deleting place: ${place.title}');
-    
-    final placeId = place.id;
-    final categoryId = place.categoryId;
-    
-    // Create batch for atomic deletion
-    final batch = _db.batch();
-    final placeRef = _db.collection('Places').doc(placeId);
-    
-    // 1. Delete main place
-    batch.delete(placeRef);
-    
-    // 2. Delete GalleryImages
-    final galleryImages = await _db
-        .collection('GalleryImages')
-        .where('placeId', isEqualTo: placeId)
-        .get();
-    
-    for (var doc in galleryImages.docs) {
-      batch.delete(doc.reference);
-    }
-    
-    // 3. Delete PlaceCategory links
-    final placeCategories = await _db
-        .collection('PlaceCategory')
-        .where('placeId', isEqualTo: placeId)
-        .get();
-    
-    for (var doc in placeCategories.docs) {
-      batch.delete(doc.reference);
-    }
-    
-    // 4. Delete Collections document
-    if (categoryId.isNotEmpty) {
-      final collectionRef = _db.collection('Collections').doc(categoryId);
-      batch.delete(collectionRef);
-    }
-    
-    // Execute all at once
-    await batch.commit();
-    
-    debugPrint('✅ Deleted place ${place.title} from all collections');
-    
-      } on FirebaseException catch (e) {
+  /// -- Ultra Simple: Delete place and all related data
+  Future<void> deletePlace(PlaceModel place) async {
+    try {
+      debugPrint('🗑️  Deleting place: ${place.title}');
+
+      final placeId = place.id;
+      final categoryId = place.categoryId;
+
+      // Create batch for atomic deletion
+      final batch = _db.batch();
+      final placeRef = _db.collection('Places').doc(placeId);
+
+      // 1. Delete main place
+      batch.delete(placeRef);
+
+      // 2. Delete GalleryImages
+      final galleryImages = await _db
+          .collection('GalleryImages')
+          .where('PlaceId', isEqualTo: placeId)
+          .get();
+
+      for (var doc in galleryImages.docs) {
+        batch.delete(doc.reference);
+      }
+
+      // 3. Delete PlaceCategory links
+      final placeCategories = await _db
+          .collection('PlaceCategory')
+          .where('placeId', isEqualTo: placeId)
+          .get();
+
+      for (var doc in placeCategories.docs) {
+        batch.delete(doc.reference);
+      }
+
+      // 4. Delete Collections document
+      if (categoryId.isNotEmpty) {
+        final collectionRef = _db.collection('Collections').doc(categoryId);
+        batch.delete(collectionRef);
+      }
+
+      // 5. Delete Reviews
+      final reviews = await _db
+          .collection('Reviews')
+          .where('placeId', isEqualTo: placeId)
+          .get();
+      for (var doc in reviews.docs) {
+        batch.delete(doc.reference);
+      }
+
+      // 6. Delete Comments
+      final comments = await _db
+          .collection('Comments')
+          .where('placeId', isEqualTo: placeId)
+          .get();
+      for (var doc in comments.docs) {
+        batch.delete(doc.reference);
+      }
+
+      // 7. Delete Likes Subcollection
+      final likes = await _db
+          .collection('Places')
+          .doc(placeId)
+          .collection('Likes')
+          .get();
+      for (var doc in likes.docs) {
+        batch.delete(doc.reference);
+      }
+
+      // Execute all at once
+      await batch.commit();
+
+      debugPrint('✅ Deleted place ${place.title} from all collections');
+    } on FirebaseException catch (e) {
       throw AppFirebaseException(e.code).message;
     } on FormatException catch (_) {
       throw const AppFormatException();
@@ -615,7 +643,7 @@ Future<void> deletePlace(PlaceModel place) async {
       // throw 'Something went wrong. Please try again.';
       throw txt.somethingWentWrong;
     }
-}
+  }
 
   /// Decrements the total review count and the count for the specific rating
   /// within the RatingDistribution map when a review is **deleted**.

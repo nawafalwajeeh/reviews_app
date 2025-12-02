@@ -94,35 +94,23 @@ class SettingsScreen extends StatelessWidget {
                   ),
 
                   // Special case for Dark/Light mode switch
-                  // Obx(
-                  //   () => SettingsMenuTile(
-                  //     icon: controller.themeMode == ThemeMode.dark
-                  //         ? Iconsax.moon
-                  //         : Iconsax.sun,
-                  //     title: controller.themeMode == ThemeMode.dark
-                  //         ? 'Dark Mode'
-                  //         : 'Light Mode',
-                  //     subTitle: 'switch dark or light mode',
-                  //     trailing: Switch(
-                  //       value: controller.themeMode == ThemeMode.dark,
-                  //       onChanged: (value) => controller.toggleTheme(
-                  //         value ? ThemeMode.dark : ThemeMode.light,
-                  //       ),
-                  //     ),
-                  //   ),
-                  // ),
-                  // Special case for Dark/Light mode switch
                   Obx(
                     () => SettingsMenuTile(
                       icon: controller.themeMode == ThemeMode.dark
                           ? Iconsax.moon
                           : Iconsax.sun,
+                      //     title: controller.themeMode == ThemeMode.dark
+                      //         ? 'Dark Mode'
+                      //         : 'Light Mode',
                       title: controller.themeMode == ThemeMode.dark
                           ? AppLocalizations.of(context).darkMode
                           : AppLocalizations.of(context).lightMode,
+                      // subTitle: 'switch dark or light mode',
                       subTitle: AppLocalizations.of(context).switchTheme,
                       trailing: Switch(
-                        value: controller.themeMode == ThemeMode.dark,
+                        value: ThemeMode.system == ThemeMode.dark
+                            ? true
+                            : controller.themeMode == ThemeMode.dark,
                         onChanged: (value) => controller.toggleTheme(
                           value ? ThemeMode.dark : ThemeMode.light,
                         ),
@@ -130,8 +118,10 @@ class SettingsScreen extends StatelessWidget {
                     ),
                   ),
 
+                  /// Change Language Dropdown
                   LanguageSwitchWidget(),
 
+                  /// Logout button
                   const SizedBox(height: AppSizes.spaceBtwSections),
                   SizedBox(
                     width: double.infinity,

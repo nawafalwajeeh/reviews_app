@@ -2,8 +2,10 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:reviews_app/common/widgets/texts/section_heading.dart';
+import 'package:reviews_app/utils/constants/colors.dart';
 import 'package:reviews_app/utils/constants/sizes.dart';
 import 'package:reviews_app/utils/constants/marker_icons.dart';
+import 'package:reviews_app/utils/helpers/helper_functions.dart';
 
 import '../../../../../localization/app_localizations.dart';
 
@@ -115,7 +117,7 @@ class _PlaceMapSectionState extends State<PlaceMapSection> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-         AppSectionHeading(
+        AppSectionHeading(
           // title: 'Location on Map',
           title: AppLocalizations.of(context).locationOnMap,
           showActionButton: false,
@@ -149,9 +151,9 @@ class _PlaceMapSectionState extends State<PlaceMapSection> {
                   ),
                   markers: _markers,
                   myLocationEnabled: false,
-                  zoomControlsEnabled: true,
+                  zoomControlsEnabled: false,
                   scrollGesturesEnabled: true, // Allow exploring around
-                  zoomGesturesEnabled: true, // Allow zooming
+                  zoomGesturesEnabled: false, // Allow zooming
                   rotateGesturesEnabled: false,
                   tiltGesturesEnabled: false,
                   mapType: MapType.normal,
@@ -179,7 +181,7 @@ class _PlaceMapSectionState extends State<PlaceMapSection> {
                             ),
                           ],
                         ),
-                        child:  Column(
+                        child: Column(
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             CircularProgressIndicator(),
@@ -220,7 +222,7 @@ class _PlaceMapSectionState extends State<PlaceMapSection> {
                       // 'Location Coordinates',
                       AppLocalizations.of(context).locationCoordinates,
                       style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                        color: Colors.grey.shade600,
+                        color: AppColors.darkerGrey,
                       ),
                     ),
                     const SizedBox(height: 2),
@@ -229,6 +231,9 @@ class _PlaceMapSectionState extends State<PlaceMapSection> {
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
                         fontFamily: 'monospace',
                         fontWeight: FontWeight.w500,
+                        color: AppHelperFunctions.isDarkMode(context)
+                            ? AppColors.dark
+                            : AppColors.darkerGrey,
                       ),
                     ),
                     Text(
@@ -236,6 +241,9 @@ class _PlaceMapSectionState extends State<PlaceMapSection> {
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
                         fontFamily: 'monospace',
                         fontWeight: FontWeight.w500,
+                        color: AppHelperFunctions.isDarkMode(context)
+                            ? AppColors.dark
+                            : AppColors.darkerGrey,
                       ),
                     ),
                   ],
@@ -254,68 +262,3 @@ class _PlaceMapSectionState extends State<PlaceMapSection> {
     super.dispose();
   }
 }
-
-
-
-//------------------------------------
-// // Create a new file: widgets/place_map_section.dart
-// import 'package:flutter/material.dart';
-// import 'package:google_maps_flutter/google_maps_flutter.dart';
-// import 'package:reviews_app/common/widgets/texts/section_heading.dart';
-// import 'package:reviews_app/utils/constants/sizes.dart';
-
-// class PlaceMapSection extends StatelessWidget {
-//   final double latitude;
-//   final double longitude;
-//   final String placeName;
-
-//   const PlaceMapSection({
-//     super.key,
-//     required this.latitude,
-//     required this.longitude,
-//     required this.placeName,
-//   });
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Column(
-//       crossAxisAlignment: CrossAxisAlignment.start,
-//       children: [
-//         const AppSectionHeading(
-//           title: 'Location on Map',
-//           showActionButton: false,
-//         ),
-//         const SizedBox(height: AppSizes.spaceBtwItems),
-//         Container(
-//           height: 200,
-//           decoration: BoxDecoration(
-//             borderRadius: BorderRadius.circular(AppSizes.cardRadiusMd),
-//             border: Border.all(color: Colors.grey.shade300),
-//           ),
-//           child: ClipRRect(
-//             borderRadius: BorderRadius.circular(AppSizes.cardRadiusMd),
-//             child: GoogleMap(
-//               initialCameraPosition: CameraPosition(
-//                 target: LatLng(latitude, longitude),
-//                 zoom: 15,
-//               ),
-//               markers: {
-//                 Marker(
-//                   markerId: MarkerId(placeName),
-//                   position: LatLng(latitude, longitude),
-//                   infoWindow: InfoWindow(title: placeName),
-//                 ),
-//               },
-//               myLocationEnabled: false,
-//               zoomControlsEnabled: false,
-//               scrollGesturesEnabled: false,
-//               zoomGesturesEnabled: false,
-//               rotateGesturesEnabled: false,
-//               tiltGesturesEnabled: false,
-//             ),
-//           ),
-//         ),
-//       ],
-//     );
-//   }
-// }

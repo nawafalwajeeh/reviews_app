@@ -15,6 +15,7 @@ import '../../../../../utils/helpers/helper_functions.dart';
 import '../../../controllers/images_controller.dart';
 import '../../../controllers/review_controller.dart';
 import '../../../models/place_model.dart';
+import '../image_viewer_screen.dart';
 // import '../../../controllers/images_controller.dart';
 
 class PlaceImageSlider extends StatelessWidget {
@@ -45,7 +46,7 @@ class PlaceImageSlider extends StatelessWidget {
                 Positioned.fill(
                   child: Obx(() {
                     final image = controller.selectedPlaceImage.value;
-                    return GestureDetector(
+                    return InkWell(
                       onTap: () => controller.showEnlargedImage(image),
                       child: CachedNetworkImage(
                         imageUrl: image,
@@ -135,6 +136,23 @@ class PlaceImageSlider extends StatelessWidget {
                     );
                   }),
                 ),
+
+                /// Add this at the end (so it's on top):
+                Positioned(
+                  // left: AppSizes.defaultSpace,
+                  left: 10,
+                  bottom: AppSizes.defaultSpace,
+                  child: Obx(() {
+                    final image = controller.selectedPlaceImage.value;
+                    return FloatingActionButton.small(
+                      heroTag: 'enlarge-image-fab',
+                      backgroundColor: Colors.transparent,
+                      // onPressed: () => controller.showEnlargedImage(image),
+                      onPressed: () => _showEnlargedImage(context, image),
+                      child: const Icon(Icons.fullscreen, color: Colors.white),
+                    );
+                  }),
+                ),
               ],
             ),
           ),
@@ -187,4 +205,34 @@ class PlaceImageSlider extends StatelessWidget {
       ],
     );
   }
+
+  // // From your PlaceImageSlider
+  // void _showEnlargedImage(BuildContext context, String imageUrl) {
+  //   Get.to(
+  //     () => ImageViewerScreen(
+  //       imageUrl: imageUrl,
+  //       title: place.title,
+  //       subtitle: place.address.toString(),
+  //       rating: place.averageRating,
+  //     ),
+  //   );
+  // }
+
+  // In your PlaceImageSlider class, update the _showEnlargedImage method:
+
+void _showEnlargedImage(BuildContext context, String imageUrl) {
+  final controller = ImagesController.instance;
+  final images = controller.getAllPlaceImages(place);
+  final currentIndex = images.indexOf(imageUrl);
+
+  Get.to(
+    () => ImageViewerScreen(
+      imageUrls: images,
+      initialIndex: currentIndex,
+      title: place.title,
+      subtitle: place.address.toString(),
+      rating: place.averageRating,
+    ),
+  );
+}
 }

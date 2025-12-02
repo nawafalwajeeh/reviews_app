@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:reviews_app/common/widgets/texts/category_name_text.dart';
 import '../../../../../localization/app_localizations.dart';
+import '../../../../../utils/constants/colors.dart';
 import '../../../controllers/gallery_controller.dart';
 import '../../../models/collection_item.dart';
 
@@ -53,19 +54,10 @@ class CollectionCard extends StatelessWidget {
               crossAxisAlignment:
                   CrossAxisAlignment.start, // Align text to the left
               children: [
-                // Text(
-                //   collection.title,
-                //   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                //     color: Colors.white,
-                //     fontWeight: FontWeight.w600,
-                //     fontSize: 14,
-                //   ),
-                //   overflow: TextOverflow.ellipsis,
-                //   maxLines: 1,
-                // ),
                 CategoryNameText(
                   categoryId: collection.collectionId,
                   isSingular: false,
+                  textColor: AppColors.white,
                 ),
                 Text(
                   // '${collection.photoCount} photos',

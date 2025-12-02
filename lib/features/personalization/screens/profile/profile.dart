@@ -142,7 +142,6 @@ class ProfileScreen extends StatelessWidget {
                 title: AppLocalizations.of(context).email,
                 // value: 'coder@gmail.com',
                 value: controller.user.value.email,
-                onPressed: () {},
               ),
               Obx(
                 () => AppProfileMenu(

@@ -1839,117 +1839,153 @@ class AppLocalizations {
     return template.replaceAll('{error}', error);
   }
 
-
-    // Map Controller Texts
+  // Map Controller Texts
   String get loadingError =>
       _localizedValues[locale.languageCode]!['loadingError'] ?? 'Loading Error';
 
-  
   String get filterError =>
       _localizedValues[locale.languageCode]!['filterError'] ?? 'Filter Error';
-  
+
   String get couldNotFilterPlaces =>
       _localizedValues[locale.languageCode]!['couldNotFilterPlaces'] ??
       'Could not filter places by category';
-  
+
   String get noPlacesFoundForCategory =>
       _localizedValues[locale.languageCode]!['noPlacesFoundForCategory'] ??
       'No places found for the selected category';
-  
+
   String get locationRequired =>
       _localizedValues[locale.languageCode]!['locationRequired'] ??
       'Location Required';
-  
+
   String get pleaseWaitForLocation =>
       _localizedValues[locale.languageCode]!['pleaseWaitForLocation'] ??
       'Please wait for your location to load';
-  
+
   String get errorLoadingNearbyPlaces =>
       _localizedValues[locale.languageCode]!['errorLoadingNearbyPlaces'] ??
       'Could not load nearby places';
- 
+
   String foundPlacesNearby(int count) {
     final template =
         _localizedValues[locale.languageCode]!['foundPlacesNearby'] ??
         'Found {count} places nearby';
     return template.replaceAll('{count}', count.toString());
   }
-  
+
   String noPlacesFoundWithinDistance(double distance) {
     final template =
         _localizedValues[locale.languageCode]!['noPlacesFoundWithinDistance'] ??
         'No places found within {distance}km';
     return template.replaceAll('{distance}', distance.toStringAsFixed(1));
   }
-  
+
   String get errorLoadingLocationDetails =>
       _localizedValues[locale.languageCode]!['errorLoadingLocationDetails'] ??
       'Could not load location details';
-  
+
   String get gettingLocation =>
       _localizedValues[locale.languageCode]!['gettingLocation'] ??
       'Getting location...';
-  
+
   String get locationNameNotFound =>
       _localizedValues[locale.languageCode]!['locationNameNotFound'] ??
       'Location name not found';
-  
+
   String get unknownLocation =>
       _localizedValues[locale.languageCode]!['unknownLocation'] ??
       'Unknown Location';
-  
+
   String get searchResult =>
       _localizedValues[locale.languageCode]!['searchResult'] ?? 'Search Result';
-  
+
   String get locationFromSearch =>
       _localizedValues[locale.languageCode]!['locationFromSearch'] ??
       'Location from search';
-  
+
   String get googlePlacesLocation =>
       _localizedValues[locale.languageCode]!['googlePlacesLocation'] ??
       'Google Places location';
-  
+
   String get googlePlaces =>
       _localizedValues[locale.languageCode]!['googlePlaces'] ?? 'Google Places';
-  
+
   String get searchSystem =>
       _localizedValues[locale.languageCode]!['searchSystem'] ?? 'Search System';
-  
+
   String get appInitializationError =>
       _localizedValues[locale.languageCode]!['appInitializationError'] ??
       'App initialization error';
-  
+
   String get speechInitializationError =>
       _localizedValues[locale.languageCode]!['speechInitializationError'] ??
       'Speech initialization error';
-  
+
   String get enhancedSearchError =>
       _localizedValues[locale.languageCode]!['enhancedSearchError'] ??
       'Enhanced search error';
-  
+
   String get suggestionSelectionError =>
       _localizedValues[locale.languageCode]!['suggestionSelectionError'] ??
       'Suggestion selection error';
-  
+
   String get initialLocationFetchError =>
       _localizedValues[locale.languageCode]!['initialLocationFetchError'] ??
       'Initial Location Fetch Error';
-  
+
   String get liveLocationStreamError =>
       _localizedValues[locale.languageCode]!['liveLocationStreamError'] ??
       'Live Location Stream Error';
-  
+
   String get reverseGeocodingError =>
       _localizedValues[locale.languageCode]!['reverseGeocodingError'] ??
       'Reverse Geocoding Error';
-  
+
   String get googlePlacesSearchError =>
       _localizedValues[locale.languageCode]!['googlePlacesSearchError'] ??
       'Google Places search error';
-  
+
   String get nearbyPlacesError =>
       _localizedValues[locale.languageCode]!['nearbyPlacesError'] ??
       'Error loading nearby places';
+
+  // Image Viewer Texts
+  String get imageViewer =>
+      _localizedValues[locale.languageCode]!['imageViewer'] ?? 'Image Viewer';
+  String get downloadImage =>
+      _localizedValues[locale.languageCode]!['downloadImage'] ??
+      'Download Image';
+  String get imageDownloaded =>
+      _localizedValues[locale.languageCode]!['imageDownloaded'] ??
+      'Image downloaded successfully';
+  String get failedToDownload =>
+      _localizedValues[locale.languageCode]!['failedToDownload'] ??
+      'Failed to download image';
+  String get shareImage =>
+      _localizedValues[locale.languageCode]!['shareImage'] ?? 'Share Image';
+  String get saveToGallery =>
+      _localizedValues[locale.languageCode]!['saveToGallery'] ??
+      'Save to Gallery';
+  String get zoomed =>
+      _localizedValues[locale.languageCode]!['zoomed'] ?? 'Zoomed';
+  String get imageShared =>
+      _localizedValues[locale.languageCode]!['imageShared'] ??
+      'Image shared successfully';
+  String get failedToShare =>
+      _localizedValues[locale.languageCode]!['failedToShare'] ??
+      'Failed to share image';
+  String get allowPermission =>
+      _localizedValues[locale.languageCode]!['allowPermission'] ??
+      'Allow Permission';
+  String get doubleTapToZoom =>
+      _localizedValues[locale.languageCode]!['doubleTapToZoom'] ??
+      'Double tap to zoom';
+  String get pinchToZoom =>
+      _localizedValues[locale.languageCode]!['pinchToZoom'] ?? 'Pinch to zoom';
+  String get tapToClose =>
+      _localizedValues[locale.languageCode]!['tapToClose'] ?? 'Tap to close';
+  String get viewOriginal =>
+      _localizedValues[locale.languageCode]!['viewOriginal'] ?? 'View Original';
 }
 
 class _AppLocalizationsDelegate

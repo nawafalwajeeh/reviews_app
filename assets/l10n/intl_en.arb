@@ -690,5 +690,25 @@
   "liveLocationStreamError": "Live Location Stream Error",
   "reverseGeocodingError": "Reverse Geocoding Error",
   "googlePlacesSearchError": "Google Places search error",
-  "nearbyPlacesError": "Error loading nearby places"
+  "nearbyPlacesError": "Error loading nearby places",
+
+  "imageViewer": "Image Viewer",
+  "downloadImage": "Download Image",
+  "imageDownloaded": "Image downloaded successfully",
+  "failedToDownload": "Failed to download image",
+  "shareImage": "Share Image",
+  "saveToGallery": "Save to Gallery",
+  "zoomed": "Zoomed",
+  "imageShared": "Image shared successfully",
+  "failedToShare": "Failed to share image",
+  "saveFailed": "Failed to save image",
+  "permissionRequired": "Permission Required",
+  "storagePermissionRequired": "Storage permission is required to save images",
+  "allowPermission": "Allow Permission",
+  "doubleTapToZoom": "Double tap to zoom",
+  "pinchToZoom": "Pinch to zoom",
+  "tapToClose": "Tap to close",
+  "viewOriginal": "View Original",
+  "share": "Share",
+  "download": "Download"
 }

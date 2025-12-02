@@ -13,6 +13,7 @@ class CategoryNameText extends StatelessWidget {
   final double iconSize;
   final double spacing;
   final bool isSingular;
+  final Color? textColor;
 
   const CategoryNameText({
     super.key,
@@ -20,7 +21,8 @@ class CategoryNameText extends StatelessWidget {
     this.showIcon = true,
     this.iconSize = 16.0,
     this.spacing = 6.0,
-    this.isSingular = true
+    this.isSingular = true,
+    this.textColor = AppColors.primaryColor,
   });
 
   @override
@@ -72,9 +74,10 @@ class CategoryNameText extends StatelessWidget {
               SizedBox(width: spacing),
               Expanded(
                 child: Text(
-                isSingular ?  singularCategoryName : pluralCategoryName,
+                  isSingular ? singularCategoryName : pluralCategoryName,
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: AppColors.primaryColor,
+                    // color:  AppColors.primaryColor,
+                    color: textColor,
                   ),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
