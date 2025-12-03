@@ -710,5 +710,7 @@
   "tapToClose": "Tap to close",
   "viewOriginal": "View Original",
   "share": "Share",
-  "download": "Download"
+  "download": "Download",
+  "failedToLoadImage": "Failed to load image",
+  "swipeLeftOrRightToViewImages": "Swipe left or right to view other images"
 }

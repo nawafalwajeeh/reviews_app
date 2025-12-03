@@ -1986,6 +1986,14 @@ class AppLocalizations {
       _localizedValues[locale.languageCode]!['tapToClose'] ?? 'Tap to close';
   String get viewOriginal =>
       _localizedValues[locale.languageCode]!['viewOriginal'] ?? 'View Original';
+
+  String get failedToLoadImage =>
+      _localizedValues[locale.languageCode]!['failedToLoadImage'] ??
+      'Failed to load image';
+
+String get swipeLeftOrRightToViewImages =>
+      _localizedValues[locale.languageCode]!['swipeLeftOrRightToViewImages'] 
+        ?? 'Swipe left or right to view other images';   
 }
 
 class _AppLocalizationsDelegate

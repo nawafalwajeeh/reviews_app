@@ -1,502 +1,7 @@
-// import 'dart:async';
-// import 'dart:math';
-// import 'package:flutter/foundation.dart';
-// import 'package:flutter/services.dart';
-// import 'package:get/get.dart';
-// import 'package:google_maps_flutter/google_maps_flutter.dart';
-// import 'package:location/location.dart';
-// import 'package:reviews_app/features/review/models/search_suggestion.dart';
-// import 'package:reviews_app/localization/app_localizations.dart';
-// import 'package:reviews_app/utils/popups/loaders.dart';
-// import 'package:uuid/uuid.dart';
-// import 'package:speech_to_text/speech_to_text.dart' as stt;
-// import 'package:reviews_app/features/review/models/place_model.dart';
-// import 'package:reviews_app/features/review/controllers/place_controller.dart';
-// import 'package:reviews_app/features/review/controllers/category_controller.dart';
-// import '../../../data/services/map_service/map_service.dart';
-// import '../../../utils/constants/colors.dart';
-// import '../../../utils/constants/enums.dart';
-// import '../../../utils/constants/marker_icons.dart';
-// import '../../../utils/logging/logger.dart';
-// import '../../personalization/models/address_model.dart';
-// import '../models/category_model.dart';
-// import '../models/google_search_suggestions.dart';
-// import '../models/recent_search.dart';
-
-// class PlacesMapController extends GetxController {
-//   static PlacesMapController get instance => Get.find();
-
-//   // --- CORE MAP VARIABLES ---
-//   final currentLocation = Rx<LocationData?>(null);
-//   final pickedLocation = Rx<LatLng?>(null);
-//   final locationName = 'Getting location...'.obs;
-//   final markers = <Marker>{}.obs;
-//   final polylines = <Polyline>{}.obs;
-//   final isLoading = false.obs;
-//   final isLocationLoading = false.obs;
-//   final hasLocationPermission = false.obs;
-
-//   // --- PLACES INTEGRATION ---
-//   final RxList<PlaceModel> displayedPlaces = <PlaceModel>[].obs;
-//   final Rx<PlaceModel?> selectedPlace = Rx<PlaceModel?>(null);
-//   final RxString selectedCategoryId = ''.obs;
-//   final RxList<PlaceModel> nearbyPlaces = <PlaceModel>[].obs;
-//   final RxDouble searchRadius = 5000.0.obs; // 5km default
-
-//   // --- ENHANCED SEARCH & UI ---
-//   final searchQuery = ''.obs;
-//   final searchSuggestions = <SearchSuggestion>[].obs;
-//   final recentSearches = <RecentSearch>[].obs;
-//   final isSearching = false.obs;
-//   final showLocationDetails = false.obs;
-//   final showBottomSheet = false.obs;
-
-//   // --- MAP STYLING & TYPE ---
-//   final currentMapType = MapType.normal.obs;
-//   final enabledMapDetails = <MapDetail>[].obs;
-
-//   // --- VOICE SEARCH ---
-//   final stt.SpeechToText speech = stt.SpeechToText();
-//   final isListening = false.obs;
-//   final speechText = ''.obs;
-
-//   // --- TECHNICAL ---
-//   late final Location _location; // Make it final and initialize in onInit
-//   StreamSubscription<LocationData>? _locationSubscription;
-//   final mapControllerCompleter = Completer<GoogleMapController>();
-//   GoogleMapController? googleMapController;
-//   Timer? _searchDebounceTimer;
-//   bool _isInitialMapSetupComplete = false;
-
-//   // --- GETX CONTROLLERS ---
-//   final PlaceController placeController = Get.find();
-//   final CategoryController categoryController = Get.find();
-
-//   @override
-//   void onInit() {
-//     super.onInit();
-//     // Initialize Location service once
-//     _location = Location();
-//     // Start initialization
-//     _initializeApp();
-//   }
-
-//   Future<void> _initializeApp() async {
-//     isLoading.value = true;
-
-//     try {
-//       // Load places first (this is usually fast)
-//       _loadPlaces();
-
-//       // Initialize speech in background
-//       _initializeSpeech();
-
-//       // Load recent searches
-//       _loadRecentSearches();
-
-//       // Try to get location - but don't wait for it
-//       // Start location process but don't block
-//       _getLocationWithTimeout();
-
-//     } catch (e) {
-//       AppLoggerHelper.error('App initialization error: $e');
-//     } finally {
-//       // Don't set isLoading to false here - let location loading control it
-//       // Instead, set a timeout for initial loading
-//       Future.delayed(const Duration(seconds: 2), () {
-//         if (isLoading.value && !isLocationLoading.value) {
-//           isLoading.value = false;
-//         }
-//       });
-//     }
-//   }
-
-//   void _getLocationWithTimeout() {
-//     // Start location loading
-//     isLocationLoading.value = true;
-
-//     // Try to get location with timeout
-//     getCurrentLocation().timeout(
-//       const Duration(seconds: 10),
-//       onTimeout: () {
-//         AppLoggerHelper.warning('Location fetch timed out');
-//         isLocationLoading.value = false;
-//         isLoading.value = false;
-
-//         // Try cached location if available
-//         _tryCachedLocation();
-
-//         return Future.value();
-//       },
-//     );
-//   }
-
-//   void _loadRecentSearches() {
-//     // Load from storage or use defaults
-//     recentSearches.addAll([
-//       RecentSearch(
-//         id: '1',
-//         query: 'Restaurants',
-//         type: 'search',
-//         timestamp: DateTime.now().subtract(const Duration(hours: 1)),
-//       ),
-//     ]);
-//   }
-
-//   void _tryCachedLocation() {
-//     // Check if we have any location cached from previous sessions
-//     // You can implement this using GetStorage or SharedPreferences
-//     AppLoggerHelper.info('Trying cached location...');
-//     // For now, just show a message
-//     Get.snackbar(
-//       'Location Service',
-//       'Using approximate location. Please check your location settings.',
-//       backgroundColor: AppColors.warning,
-//     );
-//   }
-
-//   Future<void> _initializeSpeech() async {
-//     try {
-//       await speech.initialize();
-//     } catch (e) {
-//       AppLoggerHelper.error('Speech initialization error: $e');
-//     }
-//   }
-
-//   // --- OPTIMIZED LOCATION METHOD ---
-//   Future<void> getCurrentLocation() async {
-//     try {
-//       // Check if location service is enabled
-//       bool serviceEnabled = await _location.serviceEnabled();
-
-//       if (!serviceEnabled) {
-//         serviceEnabled = await _location.requestService();
-//         if (!serviceEnabled) {
-//           AppLoggerHelper.error('Location services are disabled');
-//           isLocationLoading.value = false;
-//           isLoading.value = false;
-//           Get.snackbar(
-//             'Location Service',
-//             'Please enable location services in your device settings.',
-//             backgroundColor: AppColors.error,
-//           );
-//           return;
-//         }
-//       }
-
-//       // Check for permission
-//       PermissionStatus permissionStatus = await _location.hasPermission();
-
-//       if (permissionStatus == PermissionStatus.denied ||
-//           permissionStatus == PermissionStatus.deniedForever) {
-//         permissionStatus = await _location.requestPermission();
-
-//         if (permissionStatus != PermissionStatus.granted) {
-//           AppLoggerHelper.error('Location permission denied: $permissionStatus');
-//           isLocationLoading.value = false;
-//           isLoading.value = false;
-//           hasLocationPermission.value = false;
-//           Get.snackbar(
-//             'Location Permission',
-//             'Please grant location permission to use map features.',
-//             backgroundColor: AppColors.warning,
-//           );
-//           return;
-//         }
-//       }
-
-//       hasLocationPermission.value = true;
-
-//       // Get location with improved settings
-//       final LocationData locationData = await _location.getLocation().timeout(
-//         const Duration(seconds: 8),
-//         onTimeout: () {
-//           throw TimeoutException('Location fetch timed out');
-//         },
-//       );
-
-//       // Update location
-//       currentLocation.value = locationData;
-//       pickedLocation.value = LatLng(
-//         locationData.latitude!,
-//         locationData.longitude!,
-//       );
-
-//       AppLoggerHelper.info(
-//         'Location acquired: ${locationData.latitude}, ${locationData.longitude}',
-//       );
-
-//       // Update map if ready
-//       if (!_isInitialMapSetupComplete) {
-//         _performInitialMapSetup();
-//       }
-
-//       // Get location name
-//       if (locationData.latitude != null && locationData.longitude != null) {
-//         _getLocationName(
-//           locationData.latitude!,
-//           locationData.longitude!,
-//         );
-//       }
-
-//       // Set up location listener for continuous updates (optional)
-//       _setupLocationListener();
-
-//       // Create markers with current location
-//       _createPlaceMarkers();
-
-//     } on TimeoutException catch (e) {
-//       AppLoggerHelper.error('Location fetch timeout: $e');
-//       Get.snackbar(
-//         'Location Timeout',
-//         'Taking longer than expected to get your location.',
-//         backgroundColor: AppColors.warning,
-//       );
-//     } on PlatformException catch (e) {
-//       AppLoggerHelper.error('Location PlatformException: ${e.message}');
-//       Get.snackbar(
-//         'Location Error',
-//         'Could not access location services: ${e.message}',
-//         backgroundColor: AppColors.error,
-//       );
-//     } catch (e) {
-//       AppLoggerHelper.error('Location error: $e');
-//       Get.snackbar(
-//         'Location Error',
-//         'Failed to get your current location.',
-//         backgroundColor: AppColors.error,
-//       );
-//     } finally {
-//       isLocationLoading.value = false;
-//       isLoading.value = false;
-//     }
-//   }
-
-//    Future<void> _getLocationName(double latitude, double longitude) async {
-//     try {
-//       final address = await GooglePlacesService.getAddressFromLatLng(
-//         LatLng(latitude, longitude),
-//       );
-//       locationName.value = address ?? txt.unknownLocation;
-//     } catch (e) {
-//       AppLoggerHelper.error('Reverse Geocoding Error: $e');
-//       // locationName.value = 'Location name not found';
-//       locationName.value = txt.locationNameNotFound;
-//     }
-//   }
-
-//   void _setupLocationListener() {
-//     // Only set up listener if we don't have one already
-//     if (_locationSubscription != null) {
-//       return;
-//     }
-
-//     _locationSubscription = _location.onLocationChanged.listen(
-//       (LocationData newLocation) {
-//         // Only update if location changed significantly
-//         if (currentLocation.value?.latitude != newLocation.latitude ||
-//             currentLocation.value?.longitude != newLocation.longitude) {
-//           currentLocation.value = newLocation;
-
-//           // Update location name periodically (every 30 seconds max)
-//           if (googleMapController != null && _isInitialMapSetupComplete) {
-//             _getLocationName(newLocation.latitude!, newLocation.longitude!);
-//           }
-//         }
-//       },
-//       onError: (error) {
-//         AppLoggerHelper.error('Location stream error: $error');
-//         // Don't show error to user for stream errors
-//       },
-//       cancelOnError: true,
-//     );
-//   }
-
-//   // --- OTHER METHODS (keep as is, but optimized) ---
-//     void onSearchQueryChanged(String query) {
-//     searchQuery.value = query;
-//     _searchDebounceTimer?.cancel();
-
-//     if (query.isEmpty) {
-//       searchSuggestions.clear();
-//       isSearching.value = false;
-//       _filterPlacesBySearch('');
-//       return;
-//     }
-
-//     isSearching.value = true;
-//     _searchDebounceTimer = Timer(const Duration(milliseconds: 300), () {
-//       _performEnhancedSearch(query);
-//     });
-//   }
-
-//   void _loadPlaces() {
-//     try {
-//       AppLoggerHelper.info('Loading places from PlaceController...');
-//       final availablePlaces = placeController.places;
-
-//       // Only log in debug mode
-//       if (kDebugMode) {
-//         for (final place in availablePlaces.take(3)) {
-//           AppLoggerHelper.info(
-//             'Place: ${place.title} - Lat: ${place.latitude} - Lng: ${place.longitude}',
-//           );
-//         }
-//       }
-
-//       displayedPlaces.assignAll(availablePlaces);
-
-//       // Only create markers if we have location or after a delay
-//       if (currentLocation.value != null) {
-//         _createPlaceMarkers();
-//       } else {
-//         // Wait a bit for location, then create markers
-//         Future.delayed(const Duration(seconds: 3), () {
-//           _createPlaceMarkers();
-//         });
-//       }
-
-//     } catch (e) {
-//       AppLoggerHelper.error('Error loading places: $e');
-//       Get.snackbar(
-//         txt.errorLoading,
-//         txt.couldNotLoadPlaces,
-//         backgroundColor: AppColors.error,
-//       );
-//     }
-//   }
-
-//   Future<void> _createPlaceMarkers() async {
-//     try {
-//       markers.clear();
-
-//       // Add current location marker if available
-//       if (currentLocation.value?.latitude != null) {
-//         final currentLocationMarker = Marker(
-//           markerId: const MarkerId('current_location'),
-//           position: LatLng(
-//             currentLocation.value!.latitude!,
-//             currentLocation.value!.longitude!,
-//           ),
-//           icon: await CustomMarkerGenerator.getCurrentLocationMarker(),
-//           infoWindow: InfoWindow(title: txt.yourLocation),
-//           zIndexInt: 1000,
-//           anchor: const Offset(0.5, 0.5),
-//         );
-//         markers.add(currentLocationMarker);
-//       }
-
-//       // Create place markers in batches to avoid UI freeze
-//       final List<Marker> placeMarkers = [];
-//       final placesToShow = displayedPlaces.take(50).toList(); // Limit to 50 markers initially
-
-//       for (final place in placesToShow) {
-//         if (place.latitude == 0.0 || place.longitude == 0.0) continue;
-
-//         final isSelected = selectedPlace.value?.id == place.id;
-//         final marker = Marker(
-//           markerId: MarkerId('place_${place.id}'),
-//           position: LatLng(place.latitude, place.longitude),
-//           infoWindow: InfoWindow(
-//             title: place.title,
-//             snippet: '${place.averageRating} ⭐ • ${place.address.shortAddress}',
-//             onTap: () => _onPlaceMarkerTapped(place),
-//           ),
-//           icon: await CustomMarkerGenerator.generatePlaceMarker(
-//             place,
-//             isSelected: isSelected,
-//           ),
-//           onTap: () => _onPlaceMarkerTapped(place),
-//           zIndexInt: isSelected ? 1000 : 1,
-//           anchor: const Offset(0.5, 1.0),
-//         );
-
-//         placeMarkers.add(marker);
-//       }
-
-//       markers.addAll(placeMarkers);
-//       markers.refresh();
-
-//     } catch (e) {
-//       AppLoggerHelper.error('Error creating markers: $e');
-//     }
-//   }
-
-//   void _performInitialMapSetup() {
-//     if (_isInitialMapSetupComplete) return;
-
-//     final targetLocation = currentLocation.value;
-//     if (targetLocation?.latitude != null) {
-//       final target = LatLng(
-//         targetLocation!.latitude!,
-//         targetLocation.longitude!,
-//       );
-//       moveCameraToLatLng(target);
-//     }
-
-//     _isInitialMapSetupComplete = true;
-//   }
-
-//   // Add a method to manually trigger location refresh
-//   Future<void> refreshLocation() async {
-//     isLocationLoading.value = true;
-//     await getCurrentLocation();
-//   }
-
-//   // Add a method to check location status
-//   Future<bool> checkLocationStatus() async {
-//     bool serviceEnabled = await _location.serviceEnabled();
-//     if (!serviceEnabled) return false;
-
-//     PermissionStatus permission = await _location.hasPermission();
-//     return permission == PermissionStatus.granted;
-//   }
-
-//     void _onPlaceMarkerTapped(PlaceModel place) {
-//     selectedPlace.value = place;
-//     showBottomSheet.value = true;
-//     showLocationDetails.value = true;
-
-//     // Move camera to place with nice animation
-//     moveCameraToLatLng(LatLng(place.latitude, place.longitude), zoom: 16.0);
-
-//     // Update markers to show selection
-//     _createPlaceMarkers();
-
-//     // Log for debugging
-//     AppLoggerHelper.info('Marker tapped: ${place.title}');
-//   }
-
-//   // Updated moveCameraToLatLng with optional zoom
-//   void moveCameraToLatLng(LatLng target, {double? zoom}) {
-//     googleMapController?.animateCamera(
-//       CameraUpdate.newCameraPosition(
-//         CameraPosition(
-//           target: target,
-//           zoom: zoom ?? 15.0,
-//           bearing: 0,
-//           // tilt: isPickerMode ? 0 : 45, // Slight tilt for better view
-//           tilt: 45,
-//         ),
-//       ),
-//     );
-//   }
-
-//   @override
-//   void onClose() {
-//     _locationSubscription?.cancel();
-//     _searchDebounceTimer?.cancel();
-//     speech.stop();
-//     if (googleMapController != null) {
-//       googleMapController!.dispose();
-//     }
-//     super.onClose();
-//   }
-// }
-
 import 'dart:async';
 import 'dart:math';
 import 'package:flutter/services.dart';
+import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
@@ -537,6 +42,7 @@ class PlacesMapController extends GetxController {
   final RxDouble searchRadius = 5000.0.obs; // 5km default
 
   // --- ENHANCED SEARCH & UI ---
+  final TextEditingController searchController = TextEditingController();
   final searchQuery = ''.obs;
   final searchSuggestions = <SearchSuggestion>[].obs;
   final recentSearches = <RecentSearch>[].obs;
@@ -1022,15 +528,8 @@ class PlacesMapController extends GetxController {
       } else {
         // Filter by category
         final filteredPlaces = placeController.places.where((place) {
-          final matches = place.categoryId == categoryId;
-          if (matches) {
-            AppLoggerHelper.info(
-              'Place matches category: ${place.title} - Category: ${place.categoryId}',
-            );
-          }
-          return matches;
+          return place.categoryId == categoryId;
         }).toList();
-
         displayedPlaces.assignAll(filteredPlaces);
         AppLoggerHelper.info(
           'Filtered places count: ${displayedPlaces.length}',
@@ -1039,10 +538,13 @@ class PlacesMapController extends GetxController {
 
       _createPlaceMarkers();
 
-      // Move camera to show filtered places
+      // Zoom to fit places
       if (displayedPlaces.isNotEmpty) {
-        final firstPlace = displayedPlaces.first;
-        moveCameraToLatLng(LatLng(firstPlace.latitude, firstPlace.longitude));
+        // Small delay to ensure markers are created
+        Future.delayed(const Duration(milliseconds: 100), () {
+          final bounds = _createBoundsForPlaces(displayedPlaces);
+          _zoomToBounds(bounds);
+        });
       } else {
         AppLoggerHelper.warning('No places found for category: $categoryId');
         AppLoaders.warningSnackBar(
@@ -1062,40 +564,6 @@ class PlacesMapController extends GetxController {
       );
     }
   }
-
-  // --- NEARBY PLACES ---
-  // Future<void> loadNearbyPlaces() async {
-  //   if (currentLocation.value == null) return;
-
-  //   try {
-  //     isLoading.value = true;
-  //     final currentLatLng = LatLng(
-  //       currentLocation.value!.latitude!,
-  //       currentLocation.value!.longitude!,
-  //     );
-
-  //     // Filter places within radius
-  //     nearbyPlaces.assignAll(
-  //       displayedPlaces.where((place) {
-  //         final distance = _calculateDistance(
-  //           currentLatLng.latitude,
-  //           currentLatLng.longitude,
-  //           place.latitude,
-  //           place.longitude,
-  //         );
-  //         return distance <= searchRadius.value;
-  //       }).toList(),
-  //     );
-
-  //     AppLoggerHelper.info(
-  //       'Found ${nearbyPlaces.length} nearby places within ${searchRadius.value}m',
-  //     );
-  //   } catch (e) {
-  //     AppLoggerHelper.error('Error loading nearby places: $e');
-  //   } finally {
-  //     isLoading.value = false;
-  //   }
-  // }
 
   double _calculateDistance(
     double lat1,
@@ -1254,6 +722,7 @@ class PlacesMapController extends GetxController {
   // --- SUGGESTION SELECTION HANDLING ---
   Future<void> onSuggestionSelected(SearchSuggestion suggestion) async {
     searchQuery.value = suggestion.title;
+    searchController.text = suggestion.title;
     searchSuggestions.clear();
     isSearching.value = false;
 
@@ -1435,6 +904,7 @@ class PlacesMapController extends GetxController {
         onResult: (result) {
           speechText.value = result.recognizedWords;
           if (result.finalResult) {
+            searchController.text = result.recognizedWords;
             onSearchQueryChanged(result.recognizedWords);
             isListening.value = false;
           }
@@ -1673,6 +1143,7 @@ class PlacesMapController extends GetxController {
   }
 
   void clearSearch() {
+    searchController.clear();
     searchQuery.value = '';
     searchSuggestions.clear();
     isSearching.value = false;
@@ -1771,6 +1242,7 @@ class PlacesMapController extends GetxController {
   // --- CLEANUP ---
   @override
   void onClose() {
+    searchController.dispose();
     _locationSubscription?.cancel();
     _searchDebounceTimer?.cancel();
     speech.stop();

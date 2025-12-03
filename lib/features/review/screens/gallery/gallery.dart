@@ -32,15 +32,12 @@ class ImageGalleryScreen extends StatelessWidget {
 
         body: Column(
           children: [
-            // AppSearchContainer(text: 'Search photos'),
-            // AppSearchContainer(text: locale.searchForPlaces),
             AppSearchContainer(
               // text: 'Search for Places',
               text: AppLocalizations.of(context).searchPlaces,
               onTap: () => Get.to(() => SearchScreen()),
             ),
             const SizedBox(height: AppSizes.spaceBtwSections),
-
             Expanded(child: GalleryContent()),
           ],
         ),

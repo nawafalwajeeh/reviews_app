@@ -35,23 +35,36 @@ class MapSearchContainer extends StatelessWidget {
           ),
         ],
       ),
-      child: TextField(
+      child: TextFormField(
         controller: controller,
         onChanged: onChanged,
+        style: Theme.of(
+          context,
+        ).textTheme.bodyMedium?.copyWith(color: AppColors.black),
         decoration: InputDecoration(
           hintText: text,
           hintStyle: Theme.of(
             context,
-          ).textTheme.bodyMedium?.copyWith(color: AppColors.darkGrey),
+          ).textTheme.bodyMedium?.copyWith(color: AppColors.black),
+          labelText: text,
+          labelStyle: Theme.of(
+            context,
+          ).textTheme.bodyMedium?.copyWith(color: AppColors.black),
           border: InputBorder.none,
-          prefixIcon: Icon(Iconsax.search_normal, color: AppColors.darkGrey),
+          prefixIcon: Icon(Iconsax.search_normal, color: AppColors.darkerGrey),
           suffixIcon: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              if (controller?.text.isNotEmpty == true)
-                IconButton(
-                  icon: Icon(Iconsax.close_circle, color: AppColors.darkGrey),
-                  onPressed: onClear,
+              if (controller != null)
+                ValueListenableBuilder<TextEditingValue>(
+                  valueListenable: controller!,
+                  builder: (context, value, child) {
+                    if (value.text.isEmpty) return const SizedBox.shrink();
+                    return IconButton(
+                      icon: Icon(Iconsax.close_circle, color: AppColors.dark),
+                      onPressed: onClear,
+                    );
+                  },
                 ),
               IconButton(
                 icon: Icon(

@@ -595,12 +595,6 @@ class PlaceRepository extends GetxController {
         batch.delete(doc.reference);
       }
 
-      // 4. Delete Collections document
-      if (categoryId.isNotEmpty) {
-        final collectionRef = _db.collection('Collections').doc(categoryId);
-        batch.delete(collectionRef);
-      }
-
       // 5. Delete Reviews
       final reviews = await _db
           .collection('Reviews')

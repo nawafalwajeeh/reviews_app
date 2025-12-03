@@ -400,7 +400,7 @@
   "fileExistsMessage": "يوجد ملف PDF بنفس هذا الاسم بالفعل. هل تريد استبداله؟",
   "overwrite": "استبدال",
   "fileOverwritten": "تم استبدال الملف بنجاح",
-  "gallery": "المعرض",
+  "gallery": "معرض الصور",
   "searchPhotos": "البحث في الصور",
   "recentPlaces": "الأماكن الحديثة",
   "collections": "المجموعات",
@@ -713,5 +713,7 @@
   "tapToClose": "انقر للإغلاق",
   "viewOriginal": "عرض الأصل",
   "share": "مشاركة",
-  "download": "تحميل"
+  "download": "تحميل",
+  "failedToLoadImage": "فشل في تحميل الصوره",
+  "swipeLeftOrRightToViewImages": "مرر لليمين او الشمال لعرض الصور الاخرى"
 }

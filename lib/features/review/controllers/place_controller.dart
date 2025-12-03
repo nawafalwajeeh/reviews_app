@@ -558,7 +558,8 @@ class PlaceController extends GetxController {
 
         // Image URLs
         thumbnail: imageUrls.first,
-        images: imageUrls.length > 1 ? imageUrls.sublist(1) : null,
+        // images: imageUrls.length > 1 ? imageUrls.sublist(1) : null,
+        images: imageUrls,
 
         // Selected IDs and Lists
         categoryId: selectedCategoryId.value,
@@ -610,26 +611,26 @@ class PlaceController extends GetxController {
       // ); // Simplified sender name
       final placeTitle = newPlace.title;
 
-      for (final userId in allUserIds) {
-        if (userId != newPlace.userId) {
-          // Don't notify the sender (creator)
-          await notificationController.sendNotification(
-            toUserId: userId,
-            type: 'new_place',
-            title: 'Exciting New Place Added!',
-            body: 'A new location, "$placeTitle", has just been added.',
-            senderName: 'System Broadcast',
-            senderAvatar: newPlace.thumbnail,
-            targetId: newPlace.id,
-            targetType: 'place',
-            extraData: {'categoryId': newPlace.categoryId},
-          );
-        }
-      }
-
       _resetForm();
       update();
       Get.back();
+
+      for (final userId in allUserIds) {
+        // if (userId != newPlace.userId) {
+        // Don't notify the sender (creator)
+        await notificationController.sendNotification(
+          toUserId: userId,
+          type: 'new_place',
+          title: 'Exciting New Place Added!',
+          body: 'A new location, "$placeTitle", has just been added.',
+          senderName: 'System Broadcast',
+          senderAvatar: newPlace.thumbnail,
+          targetId: newPlace.id,
+          targetType: 'place',
+          extraData: {'categoryId': newPlace.categoryId},
+        );
+        // }
+      }
     } catch (e) {
       AppFullScreenLoader.stopLoading();
       // AppLoaders.errorSnackBar(title: 'Oh Snap!', message: e.toString());
@@ -643,6 +644,9 @@ class PlaceController extends GetxController {
     descriptionController.clear();
     locationController.clear();
     phoneController.clear();
+    selectedAddress.value = AddressModel.empty();
+    selectedLocalImageFiles.clear();
+    existingImageUrls.clear();
     websiteUrlController.clear();
     selectedCategoryId.value = '';
     selectedTags.clear();
@@ -862,7 +866,6 @@ class PlaceController extends GetxController {
 
   /// Actual delete implementation
   Future<void> _deletePlace(PlaceModel place) async {
-    // ... existing implementation ...
     try {
       AppFullScreenLoader.openLoadingDialog(
         // 'Deleting place...',

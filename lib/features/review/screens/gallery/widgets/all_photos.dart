@@ -6,6 +6,7 @@ import 'package:reviews_app/utils/constants/sizes.dart';
 import 'package:reviews_app/utils/helpers/cloud_helper_functions.dart';
 
 import '../../../../../localization/app_localizations.dart';
+import 'gallery_image_viewer_helper.dart';
 import 'gallery_widgets.dart';
 
 class AllPhotosSection extends StatelessWidget {
@@ -92,17 +93,39 @@ class GroupedPhotoList extends StatelessWidget {
                 const SizedBox(height: AppSizes.spaceBtwItems),
 
                 // Display the images for this place in a flowing grid layout (Wrap)
+                // Wrap(
+                //   spacing: AppSizes.sm, // Horizontal spacing
+                //   runSpacing: AppSizes.sm, // Vertical spacing
+                //   children: images.map((imageModel) {
+                //     // Calculate a reasonable size for the images within the flow layout
+                //     const imageSize = 100.0;
+                //     return PhotoGridItem(
+                //       imageUrl: imageModel.imageUrl,
+                //       size: imageSize,
+                //     );
+                //   }).toList(),
+                // ),
+
+                // In GroupedPhotoList class, update the PhotoGridItem usage:
                 Wrap(
-                  spacing: AppSizes.sm, // Horizontal spacing
-                  runSpacing: AppSizes.sm, // Vertical spacing
-                  children: images.map((imageModel) {
-                    // Calculate a reasonable size for the images within the flow layout
-                    const imageSize = 100.0;
+                  spacing: AppSizes.sm,
+                  runSpacing: AppSizes.sm,
+                  children: List.generate(images.length, (imageIndex) {
+                    final imageModel = images[imageIndex];
+                    // Calculate the overall index in the grouped list
+                    int overallIndex = 0;
+                    for (int i = 0; i < index; i++) {
+                      overallIndex += groupedPhotos[placeNames[i]]!.length;
+                    }
+                    overallIndex += imageIndex;
+
                     return PhotoGridItem(
                       imageUrl: imageModel.imageUrl,
-                      size: imageSize,
+                      galleryImages: photos, // Pass all photos
+                      index: overallIndex, // Pass the overall index
+                      size: 100.0,
                     );
-                  }).toList(),
+                  }),
                 ),
               ],
             );
@@ -114,34 +137,82 @@ class GroupedPhotoList extends StatelessWidget {
 }
 
 /// Separate component for a single image tile (was previously in the GridView itemBuilder)
+// class PhotoGridItem extends StatelessWidget {
+//   const PhotoGridItem({super.key, required this.imageUrl, this.size = 100.0});
+
+//   final String imageUrl;
+//   final double size;
+
+//   @override
+//   Widget build(BuildContext context) {
+//     // We use ClipRRect and a Container to maintain the current visual style
+//     return ClipRRect(
+//       borderRadius: BorderRadius.circular(AppSizes.cardRadiusLg),
+//       child: Container(
+//         width: size,
+//         height:
+//             size * 0.7, // Using the 0.7 aspect ratio from your previous code
+//         decoration: BoxDecoration(
+//           color: Colors.grey[200], // Placeholder color while loading
+//           image: DecorationImage(
+//             fit: BoxFit.cover,
+//             image: NetworkImage(imageUrl), // Guaranteed clean URL
+//           ),
+//           boxShadow: [
+//             BoxShadow(
+//               blurRadius: 8,
+//               color: Colors.black.withValues(alpha: 0.1),
+//               offset: const Offset(0, 2),
+//             ),
+//           ],
+//         ),
+//       ),
+//     );
+//   }
+// }
+// In PhotoGridItem class
 class PhotoGridItem extends StatelessWidget {
-  const PhotoGridItem({super.key, required this.imageUrl, this.size = 100.0});
+  const PhotoGridItem({
+    super.key,
+    required this.imageUrl,
+    required this.galleryImages, // Pass the list of gallery images
+    required this.index, // Index of this image in the list
+    this.size = 100.0,
+  });
 
   final String imageUrl;
+  final List<GalleryImageModel> galleryImages;
+  final int index;
   final double size;
 
   @override
   Widget build(BuildContext context) {
-    // We use ClipRRect and a Container to maintain the current visual style
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(AppSizes.cardRadiusLg),
-      child: Container(
-        width: size,
-        height:
-            size * 0.7, // Using the 0.7 aspect ratio from your previous code
-        decoration: BoxDecoration(
-          color: Colors.grey[200], // Placeholder color while loading
-          image: DecorationImage(
-            fit: BoxFit.cover,
-            image: NetworkImage(imageUrl), // Guaranteed clean URL
-          ),
-          boxShadow: [
-            BoxShadow(
-              blurRadius: 8,
-              color: Colors.black.withValues(alpha: 0.1),
-              offset: const Offset(0, 2),
+    return GestureDetector(
+      onTap: () {
+        GalleryImageViewerHelper.openGalleryImageViewer(
+          galleryImages: galleryImages,
+          initialIndex: index,
+        );
+      },
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(AppSizes.cardRadiusLg),
+        child: Container(
+          width: size,
+          height: size * 0.7,
+          decoration: BoxDecoration(
+            color: Colors.grey[200],
+            image: DecorationImage(
+              fit: BoxFit.cover,
+              image: NetworkImage(imageUrl),
             ),
-          ],
+            boxShadow: [
+              BoxShadow(
+                blurRadius: 8,
+                color: Colors.black.withOpacity(0.1),
+                offset: const Offset(0, 2),
+              ),
+            ],
+          ),
         ),
       ),
     );

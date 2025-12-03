@@ -197,7 +197,7 @@ class PlaceBottomSheet extends StatelessWidget {
                                       AppSizes.cardRadiusMd,
                                     ),
                                   ),
-                                  child: AppFavouriteIcon(),
+                                  child: AppFavouriteIcon(placeId: place.id),
                                 ),
                               ],
                             ),

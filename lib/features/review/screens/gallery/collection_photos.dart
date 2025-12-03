@@ -97,14 +97,35 @@ class CollectionPhotosScreen extends StatelessWidget {
                     const SizedBox(height: AppSizes.spaceBtwItems),
 
                     // Display the images for this place in a flowing grid layout (Wrap)
+                    // Wrap(
+                    //   spacing: AppSizes.sm, // Horizontal spacing
+                    //   runSpacing: AppSizes.sm, // Vertical spacing
+                    //   children: images.map((imageModel) {
+                    //     return CollectionPhotoItem(
+                    //       imageUrl: imageModel.imageUrl,
+                    //     );
+                    //   }).toList(),
+                    // ),
+
+                    // In CollectionPhotosScreen, update the CollectionPhotoItem usage:
                     Wrap(
-                      spacing: AppSizes.sm, // Horizontal spacing
-                      runSpacing: AppSizes.sm, // Vertical spacing
-                      children: images.map((imageModel) {
+                      spacing: AppSizes.sm,
+                      runSpacing: AppSizes.sm,
+                      children: List.generate(images.length, (imageIndex) {
+                        final imageModel = images[imageIndex];
+                        // Calculate the overall index
+                        int overallIndex = 0;
+                        for (int i = 0; i < index; i++) {
+                          overallIndex += groupedPhotos[placeNames[i]]!.length;
+                        }
+                        overallIndex += imageIndex;
+
                         return CollectionPhotoItem(
                           imageUrl: imageModel.imageUrl,
+                          galleryImages: photos, // Pass all photos
+                          index: overallIndex, // Pass the overall index
                         );
-                      }).toList(),
+                      }),
                     ),
                   ],
                 );

@@ -5,6 +5,7 @@ import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:reviews_app/localization/app_localizations.dart'
     show AppLocalizations;
 
+import '../../../../common/widgets/appbar/appbar.dart';
 import '../../../../data/services/barcode/barcode_service.dart';
 import '../../../../utils/popups/loaders.dart';
 import '../../controllers/barcode_scanner_controller.dart';
@@ -43,11 +44,12 @@ class _BarcodeScannerScreenState extends State<BarcodeScannerScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
+      appBar: CustomAppBar(
         // title: const Text('Scan QR Code'),
         title: Text(AppLocalizations.of(context).scanQRCode),
-        backgroundColor: Colors.black.withValues(alpha: 0.5),
-        elevation: 0,
+        // backgroundColor: Colors.black.withValues(alpha: 0.5),
+        // elevation: 0,
+        showBackArrow: true,
         actions: [
           IconButton(
             icon: Icon(

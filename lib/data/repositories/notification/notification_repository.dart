@@ -9,7 +9,7 @@ class NotificationRepository extends GetxController {
   static NotificationRepository get instance => Get.find();
   final FirebaseFirestore _db = FirebaseFirestore.instance;
   // NOTE: Ensure this URL points to your running Node.js server instance
-  final String _serverUrl = 'https://place-api.vercel.app/';
+  final String _serverUrl = 'https://place-api.vercel.app/send-notification';
 
   // Get user notifications stream
   Stream<List<NotificationModel>> getUserNotifications(String userId) {
@@ -27,7 +27,7 @@ class NotificationRepository extends GetxController {
   }
 
   // --- Register FCM token via server endpoint ---
- /// Registers the FCM token by updating the user's document in Firestore.
+  /// Registers the FCM token by updating the user's document in Firestore.
   Future<void> registerFcmToken(String userId, String token) async {
     try {
       // Encapsulate the direct Firestore call here

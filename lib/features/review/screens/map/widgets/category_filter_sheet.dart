@@ -43,33 +43,35 @@ class CategoryFilterSheet extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Row(
-                  children: [
-                    Icon(Iconsax.filter, color: AppColors.primaryColor),
-                    const SizedBox(width: AppSizes.sm),
-                    Text(
-                      // 'Filter by Category',
-                      locale.filterByCategory,
-                      style: Theme.of(context).textTheme.headlineSmall
-                          ?.copyWith(fontWeight: FontWeight.bold),
-                    ),
-                    const Spacer(),
-                    if (selectedCategoryId.isNotEmpty)
-                      TextButton(
-                        onPressed: () => onCategorySelected(''),
-                        child: Text(
-                          // 'Clear',
-                          locale.clear,
-                          style: Theme.of(context).textTheme.bodyMedium
-                              ?.copyWith(color: AppColors.primaryColor),
-                        ),
+                Obx(
+                  () => Row(
+                    children: [
+                      Icon(Iconsax.filter, color: AppColors.primaryColor),
+                      const SizedBox(width: AppSizes.sm),
+                      Text(
+                        locale.filterByCategory,
+                        style: Theme.of(context).textTheme.headlineSmall
+                            ?.copyWith(fontWeight: FontWeight.bold),
                       ),
-                  ],
+                      const Spacer(),
+                      if (mapController.selectedCategoryId.value.isNotEmpty)
+                        TextButton(
+                          onPressed: () {
+                            onCategorySelected('');
+                            Get.back();
+                          },
+                          child: Text(
+                            locale.clear,
+                            style: Theme.of(context).textTheme.bodyMedium
+                                ?.copyWith(color: AppColors.primaryColor),
+                          ),
+                        ),
+                    ],
+                  ),
                 ),
                 // Debug info
                 Obx(
                   () => Text(
-                    // '${mapController.displayedPlaces.length} places displayed',
                     '${mapController.displayedPlaces.length} ${locale.placesDisplayed}',
                     style: Theme.of(
                       context,
@@ -105,12 +107,14 @@ class CategoryFilterSheet extends StatelessWidget {
                   _buildCategoryItem(
                     context,
                     id: '',
-                    // name: 'All Categories',
                     name: locale.allCategories,
                     icon: Iconsax.category,
-                    isSelected: selectedCategoryId.isEmpty,
+                    isSelected: mapController.selectedCategoryId.value.isEmpty,
                     count: mapController.placeController.places.length,
-                    onTap: () => onCategorySelected(''),
+                    onTap: () {
+                      onCategorySelected('');
+                      Get.back();
+                    },
                   ),
 
                   const SizedBox(height: AppSizes.sm),
@@ -125,18 +129,17 @@ class CategoryFilterSheet extends StatelessWidget {
                     return _buildCategoryItem(
                       context,
                       id: category.id,
-                      // name: category.name,
                       name: localizedName,
                       icon: CategoryMapper.getIcon(category.iconKey),
-                      isSelected: selectedCategoryId == category.id,
+                      isSelected:
+                          mapController.selectedCategoryId.value == category.id,
                       count: count,
                       onTap: () {
                         if (count > 0) {
                           onCategorySelected(category.id);
+                          Get.back();
                         } else {
                           Get.snackbar(
-                            // 'No Places',
-                            // 'No places found in ${category.name} category',
                             locale.noPlaces,
                             locale.noPlacesFoundInCategory(category.name),
                             backgroundColor: AppColors.warning,

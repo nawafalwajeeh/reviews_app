@@ -21,7 +21,7 @@ import '../../models/category_model.dart';
 class SearchScreen extends StatelessWidget {
   SearchScreen({super.key});
 
-  final searchController = AppSearchController.instance;
+  final searchController = Get.put(AppSearchController());
   final TextEditingController _textEditingController = TextEditingController();
 
   @override
