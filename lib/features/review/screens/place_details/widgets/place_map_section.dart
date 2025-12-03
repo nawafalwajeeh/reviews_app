@@ -14,6 +14,7 @@ class PlaceMapSection extends StatefulWidget {
   final double longitude;
   final String placeName;
   final double rating;
+  final String? categoryId;
 
   const PlaceMapSection({
     super.key,
@@ -21,6 +22,7 @@ class PlaceMapSection extends StatefulWidget {
     required this.longitude,
     required this.placeName,
     this.rating = 0.0,
+    this.categoryId,
   });
 
   @override
@@ -44,6 +46,7 @@ class _PlaceMapSectionState extends State<PlaceMapSection> {
         title: widget.placeName,
         rating: widget.rating,
         isSelected: true, // Always show as selected in detail view
+        categoryId: widget.categoryId,
       );
 
       setState(() {

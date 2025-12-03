@@ -108,7 +108,8 @@ class AddressController extends GetxController {
         message: newSelectedAddress.id.startsWith('Map_')
             // ? 'Map location selected successfully'
             // : 'Address selected successfully',
-            ? txt.mapLocationSelected  : txt.addressSelected
+            ? txt.mapLocationSelected
+            : txt.addressSelected,
       );
     } catch (e) {
       Get.back(); // Close loading dialog
@@ -180,7 +181,7 @@ class AddressController extends GetxController {
         // title: 'Congratulations',
         title: txt.success,
         // message: 'Your address has been saved successfully.',
-        message: txt.yourAddressHasBeenSaved
+        message: txt.yourAddressHasBeenSaved,
       );
 
       // Refresh Address data
@@ -240,7 +241,7 @@ class AddressController extends GetxController {
         title: txt.mapLocationSelected,
         // message:
         //     'Map location has been selected. Save the address to persist it.',
-        message: txt.mapLocationSelected
+        message: txt.mapLocationSelected,
       );
     } catch (e) {
       AppLoaders.errorSnackBar(
@@ -263,13 +264,16 @@ class AddressController extends GetxController {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // AppSectionHeading(title: 'Select Address', showActionButton: false),
-            AppSectionHeading(title: txt.selectAddress, showActionButton: false),
+            AppSectionHeading(
+              title: txt.selectAddress,
+              showActionButton: false,
+            ),
             SizedBox(
               width: double.infinity,
               child: OutlinedButton.icon(
                 icon: const Icon(Icons.map, color: AppColors.primaryColor),
                 // label: const Text('Pick Location on Map'),
-                label:  Text(txt.pickLocationFromMap),
+                label: Text(txt.pickLocationFromMap),
                 onPressed: () {
                   Get.back(); // Close the bottom sheet first
                   // navigateToMapPicker(); // Navigate to the Map screen

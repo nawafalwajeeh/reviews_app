@@ -107,6 +107,7 @@ class PlaceDetailsScreen extends StatelessWidget {
                               longitude: place.longitude,
                               placeName: place.title,
                               rating: place.averageRating,
+                              categoryId: place.categoryId,
                             ),
                             const SizedBox(height: AppSizes.spaceBtwSections),
                           ],

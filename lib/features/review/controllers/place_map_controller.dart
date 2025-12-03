@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:math';
-import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -119,7 +118,7 @@ class PlacesMapController extends GetxController {
       }
 
       displayedPlaces.assignAll(availablePlaces);
-      _createPlaceMarkers();
+      createPlaceMarkers();
 
       // Check if places have valid coordinates
       final placesWithCoords = availablePlaces
@@ -139,72 +138,7 @@ class PlacesMapController extends GetxController {
     }
   }
 
-  // void _createPlaceMarkers() async {
-  //   markers.clear();
-
-  //   for (final place in displayedPlaces) {
-  //     if (place.latitude == 0.0 || place.longitude == 0.0) continue;
-
-  //     final marker = Marker(
-  //       markerId: MarkerId('place_${place.id}'),
-  //       position: LatLng(place.latitude, place.longitude),
-  //       infoWindow: InfoWindow(
-  //         title: place.title,
-  //         snippet: '${place.averageRating} ⭐ • ${place.address.shortAddress}',
-  //       ),
-  //       icon: await _createCustomPlaceMarker(place),
-  //       onTap: () => _onPlaceMarkerTapped(place),
-  //     );
-
-  //     markers.add(marker);
-  //   }
-  //   markers.refresh();
-  // }
-
-  // Future<void> _createPlaceMarkers() async {
-  //   markers.clear();
-
-  //   // Add current location marker if available
-  //   if (currentLocation.value?.latitude != null) {
-  //     final currentLocationMarker = Marker(
-  //       markerId: const MarkerId('current_location'),
-  //       position: LatLng(
-  //         currentLocation.value!.latitude!,
-  //         currentLocation.value!.longitude!,
-  //       ),
-  //       icon: await CustomMarkerGenerator.getCurrentLocationMarker(),
-  //       infoWindow: const InfoWindow(title: 'Your Location'),
-  //       zIndexInt: 1000,
-  //     );
-  //     markers.add(currentLocationMarker);
-  //   }
-
-  //   // Add place markers
-  //   for (final place in displayedPlaces) {
-  //     if (place.latitude == 0.0 || place.longitude == 0.0) continue;
-
-  //     final isSelected = selectedPlace.value?.id == place.id;
-  //     final marker = Marker(
-  //       markerId: MarkerId('place_${place.id}'),
-  //       position: LatLng(place.latitude, place.longitude),
-  //       infoWindow: InfoWindow(
-  //         title: place.title,
-  //         snippet: '${place.averageRating} ⭐ • ${place.address.shortAddress}',
-  //       ),
-  //       icon: await CustomMarkerGenerator.generatePlaceMarker(
-  //         place,
-  //         isSelected: isSelected,
-  //       ),
-  //       onTap: () => _onPlaceMarkerTapped(place),
-  //       zIndexInt: isSelected ? 1000 : 1,
-  //     );
-
-  //     markers.add(marker);
-  //   }
-  //   markers.refresh();
-  // }
-
-  Future<void> _createPlaceMarkers() async {
+  Future<void> createPlaceMarkers() async {
     markers.clear();
 
     // Add current location marker if available
@@ -258,38 +192,8 @@ class PlacesMapController extends GetxController {
     markers.removeWhere((m) => m.markerId.value.startsWith('highlighted_'));
 
     // Recreate the selected marker with highlighted style
-    _createPlaceMarkers(); // This will recreate all markers with proper selection state
+    createPlaceMarkers(); // This will recreate all markers with proper selection state
   }
-
-  // Future<BitmapDescriptor> _createCustomPlaceMarker(PlaceModel place) async {
-  //   // Create custom marker based on rating and category
-  //   double rating = place.averageRating;
-  //   var hue = BitmapDescriptor.hueBlue;
-
-  //   if (rating >= 4.0) {
-  //     hue = BitmapDescriptor.hueGreen;
-  //   } else if (rating >= 3.0) {
-  //     hue = BitmapDescriptor.hueOrange;
-  //   } else if (rating >= 2.0) {
-  //     hue = BitmapDescriptor.hueYellow;
-  //   } else {
-  //     hue = BitmapDescriptor.hueRed;
-  //   }
-
-  //   return BitmapDescriptor.defaultMarkerWithHue(hue);
-  // }
-
-  // void _onPlaceMarkerTapped(PlaceModel place) {
-  //   selectedPlace.value = place;
-  //   showBottomSheet.value = true;
-  //   showLocationDetails.value = true;
-
-  //   // Move camera to place
-  //   moveCameraToLatLng(LatLng(place.latitude, place.longitude));
-
-  //   // Add highlight marker
-  //   _addHighlightMarker(place);
-  // }
 
   void _onPlaceMarkerTapped(PlaceModel place) {
     selectedPlace.value = place;
@@ -300,7 +204,7 @@ class PlacesMapController extends GetxController {
     moveCameraToLatLng(LatLng(place.latitude, place.longitude), zoom: 16.0);
 
     // Update markers to show selection
-    _createPlaceMarkers();
+    createPlaceMarkers();
 
     // Log for debugging
     AppLoggerHelper.info('Marker tapped: ${place.title}');
@@ -320,20 +224,6 @@ class PlacesMapController extends GetxController {
       ),
     );
   }
-
-  // void _addHighlightMarker(PlaceModel place) {
-  //   const markerId = MarkerId('highlighted_place');
-  //   final highlightMarker = Marker(
-  //     markerId: markerId,
-  //     position: LatLng(place.latitude, place.longitude),
-  //     icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueAzure),
-  //     infoWindow: InfoWindow(title: place.title),
-  //   );
-
-  //   markers.removeWhere((m) => m.markerId == markerId);
-  //   markers.add(highlightMarker);
-  //   markers.refresh();
-  // }
 
   // --- ENHANCED SEARCH WITH PLACES INTEGRATION ---
   void onSearchQueryChanged(String query) {
@@ -366,7 +256,7 @@ class PlacesMapController extends GetxController {
       }).toList();
       displayedPlaces.assignAll(filtered);
     }
-    _createPlaceMarkers();
+    createPlaceMarkers();
   }
 
   // Enhanced search with database + Google API integration
@@ -536,7 +426,7 @@ class PlacesMapController extends GetxController {
         );
       }
 
-      _createPlaceMarkers();
+      createPlaceMarkers();
 
       // Zoom to fit places
       if (displayedPlaces.isNotEmpty) {
@@ -953,12 +843,6 @@ class PlacesMapController extends GetxController {
     _isInitialMapSetupComplete = true;
   }
 
-  // void moveCameraToLatLng(LatLng target) {
-  //   googleMapController?.animateCamera(
-  //     CameraUpdate.newCameraPosition(CameraPosition(zoom: 15, target: target)),
-  //   );
-  // }
-
   void moveToCurrentLocation() {
     if (currentLocation.value?.latitude != null) {
       final latLng = LatLng(
@@ -995,22 +879,8 @@ class PlacesMapController extends GetxController {
     // You can implement a simple bounce effect by scaling the marker
     // This would require recreating the marker with different sizes
     // For now, we'll just ensure it's properly highlighted
-    _createPlaceMarkers();
+    createPlaceMarkers();
   }
-
-  // void _updateSelectionMarker(LatLng position) {
-  //   const markerId = MarkerId('selectedLocation');
-  //   final selectionMarker = Marker(
-  //     markerId: markerId,
-  //     position: position,
-  //     icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueAzure),
-  //     infoWindow: const InfoWindow(title: 'Selected Location'),
-  //   );
-
-  //   markers.removeWhere((m) => m.markerId == markerId);
-  //   markers.add(selectionMarker);
-  //   markers.refresh();
-  // }
 
   void _updateSelectionMarker(LatLng position) async {
     const markerId = MarkerId('selectedLocation');
@@ -1048,25 +918,56 @@ class PlacesMapController extends GetxController {
   // --- LOCATION SERVICES ---
   void getCurrentLocation() async {
     final location = Location();
-    bool serviceEnabled = await location.serviceEnabled();
-    LocationData? newLocationData;
 
-    if (!serviceEnabled) {
-      serviceEnabled = await location.requestService();
+    try {
+      // Check if location service is enabled
+      bool serviceEnabled = await location.serviceEnabled();
       if (!serviceEnabled) {
-        AppLoggerHelper.error('Location services are disabled');
-        return;
+        serviceEnabled = await location.requestService();
+        if (!serviceEnabled) {
+          AppLoggerHelper.error('Location services are disabled');
+          AppLoaders.warningSnackBar(
+            title: txt.locationRequired,
+            message: 'Please enable location services to use this feature',
+          );
+          return;
+        }
       }
-    }
 
-    PermissionStatus permissionGranted = await location.hasPermission();
-    if (permissionGranted == PermissionStatus.denied) {
-      permissionGranted = await location.requestPermission();
-    }
+      // Check permissions
+      PermissionStatus permissionGranted = await location.hasPermission();
+      if (permissionGranted == PermissionStatus.denied) {
+        permissionGranted = await location.requestPermission();
+        if (permissionGranted != PermissionStatus.granted) {
+          AppLoggerHelper.error('Location permission denied');
+          AppLoaders.warningSnackBar(
+            title: txt.locationRequired,
+            message: 'Please grant location permission to continue',
+          );
+          return;
+        }
+      }
 
-    if (serviceEnabled && permissionGranted == PermissionStatus.granted) {
+      // Configure location settings for better performance
+      await location.changeSettings(
+        accuracy: LocationAccuracy.high,
+        interval: 1000, // Update every second
+        distanceFilter: 10, // Update every 10 meters
+      );
+
+      // Get initial location with timeout
+      LocationData? newLocationData;
       try {
-        newLocationData = await location.getLocation();
+        newLocationData = await location.getLocation().timeout(
+          const Duration(seconds: 10),
+          onTimeout: () {
+            AppLoggerHelper.warning(
+              'Location fetch timeout, using last known location',
+            );
+            throw TimeoutException('Location fetch timeout');
+          },
+        );
+
         currentLocation.value = newLocationData;
         pickedLocation.value = LatLng(
           newLocationData.latitude!,
@@ -1076,30 +977,42 @@ class PlacesMapController extends GetxController {
         if (!_isInitialMapSetupComplete) {
           _performInitialMapSetup();
         }
-      } on PlatformException catch (e) {
-        AppLoggerHelper.error('Initial Location Fetch Error: ${e.message}');
-      }
-    }
 
-    if (currentLocation.value?.latitude != null &&
-        currentLocation.value?.longitude != null) {
-      _getLocationName(
-        currentLocation.value!.latitude!,
-        currentLocation.value!.longitude!,
+        // Get location name in background
+        _getLocationName(newLocationData.latitude!, newLocationData.longitude!);
+      } on TimeoutException {
+        AppLoggerHelper.error('Location fetch timed out');
+        // Try to use cached location if available
+        final cachedLocation = await location.getLocation();
+        if (cachedLocation.latitude != null) {
+          currentLocation.value = cachedLocation;
+          pickedLocation.value = LatLng(
+            cachedLocation.latitude!,
+            cachedLocation.longitude!,
+          );
+        }
+      }
+
+      // Set up location updates stream
+      _locationSubscription = location.onLocationChanged.listen(
+        (newLocation) {
+          currentLocation.value = newLocation;
+          if (googleMapController != null && _isInitialMapSetupComplete) {
+            // Update location name less frequently to avoid too many API calls
+            _getLocationName(newLocation.latitude!, newLocation.longitude!);
+          }
+        },
+        onError: (error) {
+          AppLoggerHelper.error('Live Location Stream Error: $error');
+        },
+      );
+    } catch (e) {
+      AppLoggerHelper.error('Location initialization error: $e');
+      AppLoaders.errorSnackBar(
+        title: txt.error,
+        message: 'Could not get your location. Please try again.',
       );
     }
-
-    _locationSubscription = location.onLocationChanged.listen(
-      (newLocation) {
-        currentLocation.value = newLocation;
-        if (googleMapController != null && _isInitialMapSetupComplete) {
-          _getLocationName(newLocation.latitude!, newLocation.longitude!);
-        }
-      },
-      onError: (error) {
-        AppLoggerHelper.error('Live Location Stream Error: $error');
-      },
-    );
   }
 
   Future<void> _getLocationName(double latitude, double longitude) async {
@@ -1157,7 +1070,7 @@ class PlacesMapController extends GetxController {
 
     // Reset to show all places
     displayedPlaces.assignAll(placeController.places);
-    _createPlaceMarkers();
+    createPlaceMarkers();
   }
 
   // --- RECENT SEARCHES ---
@@ -1185,15 +1098,40 @@ class PlacesMapController extends GetxController {
   }
 
   void _loadRecentSearches() {
-    // Load from storage or use defaults
-    recentSearches.addAll([
-      RecentSearch(
-        id: '1',
-        query: 'Restaurants',
-        type: 'search',
-        timestamp: DateTime.now().subtract(const Duration(hours: 1)),
-      ),
-    ]);
+    // Load from storage or use sample searches from various categories
+    // In production, this would load from local storage
+    final sampleSearches = <RecentSearch>[];
+
+    // Get a diverse set of places from different categories
+    final categorizedPlaces = <String, List<PlaceModel>>{};
+    for (final place in placeController.places.take(20)) {
+      if (!categorizedPlaces.containsKey(place.categoryId)) {
+        categorizedPlaces[place.categoryId] = [];
+      }
+      if (categorizedPlaces[place.categoryId]!.length < 2) {
+        categorizedPlaces[place.categoryId]!.add(place);
+      }
+    }
+
+    // Create recent searches from diverse places
+    int index = 0;
+    for (final entry in categorizedPlaces.entries.take(5)) {
+      for (final place in entry.value) {
+        sampleSearches.add(
+          RecentSearch(
+            id: 'recent_${index++}',
+            query: place.title,
+            placeId: place.id,
+            location: LatLng(place.latitude, place.longitude),
+            address: place.address.shortAddress,
+            type: 'place',
+            timestamp: DateTime.now().subtract(Duration(hours: index)),
+          ),
+        );
+      }
+    }
+
+    recentSearches.addAll(sampleSearches);
   }
 
   // --- PICKER MODE FUNCTIONALITY ---

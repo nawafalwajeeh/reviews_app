@@ -604,33 +604,33 @@ class PlaceController extends GetxController {
         message: txt.yourNewPlaceHasBeenCreatedWithTitle(newPlace.title),
       );
 
-      final allUserIds = await UserRepository.instance.getAllUserIds();
-      // final senderName = newPlace.userId.substring(
-      //   0,
-      //   8,
-      // ); // Simplified sender name
-      final placeTitle = newPlace.title;
+      // final allUserIds = await UserRepository.instance.getAllUserIds();
+      // // final senderName = newPlace.userId.substring(
+      // //   0,
+      // //   8,
+      // // ); // Simplified sender name
+      // final placeTitle = newPlace.title;
 
       _resetForm();
       update();
       Get.back();
 
-      for (final userId in allUserIds) {
-        // if (userId != newPlace.userId) {
-        // Don't notify the sender (creator)
-        await notificationController.sendNotification(
-          toUserId: userId,
-          type: 'new_place',
-          title: 'Exciting New Place Added!',
-          body: 'A new location, "$placeTitle", has just been added.',
-          senderName: 'System Broadcast',
-          senderAvatar: newPlace.thumbnail,
-          targetId: newPlace.id,
-          targetType: 'place',
-          extraData: {'categoryId': newPlace.categoryId},
-        );
-        // }
-      }
+      // for (final userId in allUserIds) {
+      //   // if (userId != newPlace.userId) {
+      //   // Don't notify the sender (creator)
+      //   await notificationController.sendNotification(
+      //     toUserId: userId,
+      //     type: 'new_place',
+      //     title: 'Exciting New Place Added!',
+      //     body: 'A new location, "$placeTitle", has just been added.',
+      //     senderName: 'System Broadcast',
+      //     senderAvatar: newPlace.thumbnail,
+      //     targetId: newPlace.id,
+      //     targetType: 'place',
+      //     extraData: {'categoryId': newPlace.categoryId},
+      //   );
+      //   // }
+      // }
     } catch (e) {
       AppFullScreenLoader.stopLoading();
       // AppLoaders.errorSnackBar(title: 'Oh Snap!', message: e.toString());

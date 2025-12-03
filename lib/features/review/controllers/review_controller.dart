@@ -8,6 +8,7 @@ import 'package:reviews_app/utils/constants/image_strings.dart';
 
 import '../../../data/repositories/authentication/authentication_repository.dart';
 import '../../../data/repositories/place/place_repository.dart';
+import '../../../localization/app_localizations.dart';
 import '../../../utils/constants/enums.dart';
 import '../../../utils/helpers/network_manager.dart';
 import '../../../utils/popups/full_screen_loader.dart';
@@ -54,13 +55,12 @@ class ReviewController extends GetxController {
   final currentPlaceRatingDistribution = <String, int>{}.obs;
   final currentPlaceReviewsCount = 0.obs;
 
-
   @override
   void onInit() {
     super.onInit();
     // Fetch and initialize state
     fetchExistingReview();
-      _initializeRatingData();
+    _initializeRatingData();
   }
 
   void setQuestionAnswer(
@@ -117,8 +117,10 @@ class ReviewController extends GetxController {
       update();
     } catch (e) {
       AppLoaders.warningSnackBar(
-        title: 'Oh Snap!',
-        message: 'Error fetching existing review: $e',
+        // title: 'Oh Snap!',
+        title: txt.ohSnap,
+        // message: 'Error fetching existing review: $e',
+        message: txt.errorLoadingReviews,
       );
     }
   }
@@ -140,8 +142,10 @@ class ReviewController extends GetxController {
     try {
       if (AuthenticationRepository.instance.isGuestUser) {
         AppLoaders.warningSnackBar(
-          title: 'Authentication Required',
-          message: 'Please sign in or create an account to add your review.',
+          // title: 'Authentication Required',
+          title: txt.authenticationRequired,
+          // message: 'Please sign in or create an account to add your review.',
+          message: txt.pleaseSignInToAddReview,
         );
 
         Get.to(() => const SignupScreen());
@@ -152,7 +156,8 @@ class ReviewController extends GetxController {
       // Start Loading
       isLoading.value = true;
       AppFullScreenLoader.openLoadingDialog(
-        'Submitting Review...',
+        // 'Submitting Review...',
+        txt.submittingReview,
         AppImages.docerAnimation,
       );
 
@@ -167,8 +172,10 @@ class ReviewController extends GetxController {
       if (!formKey.currentState!.validate()) return;
       if (rating.value == 0.0) {
         AppLoaders.warningSnackBar(
-          title: 'Rating Required',
-          message: 'Please select a star rating for your experience.',
+          // title: 'Rating Required',
+          title: txt.ratingRequired,
+          // message: 'Please select a star rating for your experience.',
+          message: txt.pleaseSelectStarRating,
         );
         AppFullScreenLoader.stopLoading();
         return;
@@ -220,12 +227,15 @@ class ReviewController extends GetxController {
 
       // 5. Success feedback
       AppLoaders.successSnackBar(
-        title: isUpdating ? 'Update Success!' : 'Submission Success!',
+        // title: isUpdating ? 'Update Success!' : 'Submission Success!',
+        title: isUpdating ? txt.updateSuccess : txt.submissionSuccess,
         message: isUpdating
-            ? 'Your review has been successfully updated.'
-            : 'Your review has been submitted.',
+            // ? 'Your review has been successfully updated.'
+            // : 'Your review has been submitted.',
+            ? txt.reviewUpdatedSuccess
+            : txt.reviewSubmittedSuccess,
       );
-       await _refreshRatingData();
+      await _refreshRatingData();
 
       // 6. Transition back to read-only view after successful submission/update
       await fetchExistingReview(); // Refetch to reset state, update ID (for new review), and update originalRating
@@ -233,7 +243,8 @@ class ReviewController extends GetxController {
       update(); // Refresh UI
     } catch (e) {
       AppLoaders.errorSnackBar(
-        title: 'Submission Failed',
+        // title: 'Submission Failed',
+        title: txt.submissionFailed,
         message: e.toString(),
       );
     } finally {
@@ -242,9 +253,11 @@ class ReviewController extends GetxController {
     }
   }
 
-    Future<void> _initializeRatingData() async {
+  Future<void> _initializeRatingData() async {
     try {
-      final place = await PlaceController.instance.placeRepository.getPlaceById(placeId);
+      final place = await PlaceController.instance.placeRepository.getPlaceById(
+        placeId,
+      );
       if (place != null) {
         currentPlaceRating.value = place.averageRating;
         currentPlaceRatingDistribution.value = place.ratingDistribution;
@@ -255,15 +268,16 @@ class ReviewController extends GetxController {
     }
   }
 
-
-   Future<void> _refreshRatingData() async {
+  Future<void> _refreshRatingData() async {
     try {
-      final place = await PlaceController.instance.placeRepository.getPlaceById(placeId);
+      final place = await PlaceController.instance.placeRepository.getPlaceById(
+        placeId,
+      );
       if (place != null) {
         currentPlaceRating.value = place.averageRating;
         currentPlaceRatingDistribution.value = place.ratingDistribution;
         currentPlaceReviewsCount.value = place.reviewsCount;
-        
+
         // This will update the GetBuilder
         update();
       }
@@ -272,27 +286,28 @@ class ReviewController extends GetxController {
     }
   }
 
-
   // NEW: Submit review with questions
   Future<void> submitReviewWithQuestions() async {
     try {
       // Validate mandatory rating
       if (rating.value == 0.0) {
         AppLoaders.warningSnackBar(
-          title: 'Rating Required',
-          message: 'Please select a star rating for your experience.',
+          // title: 'Rating Required',
+          title: txt.ratingRequired,
+          // message: 'Please select a star rating for your experience.',
+          message: txt.pleaseSelectStarRating,
         );
         return;
       }
 
       // Validate mandatory review text
-      if (reviewTextController.text.trim().isEmpty) {
-        AppLoaders.warningSnackBar(
-          title: 'Review Required',
-          message: 'Please write your review text.',
-        );
-        return;
-      }
+      // if (reviewTextController.text.trim().isEmpty) {
+      //   AppLoaders.warningSnackBar(
+      //     title: 'Review Required',
+      //     message: 'Please write your review text.',
+      //   );
+      //   return;
+      // }
 
       // Validate required custom questions
       final place = await PlaceController.instance.placeRepository.getPlaceById(
@@ -303,9 +318,11 @@ class ReviewController extends GetxController {
           if (question.isRequired &&
               !questionAnswers.containsKey(question.id)) {
             AppLoaders.warningSnackBar(
-              title: 'Answer Required',
-              message:
-                  'Please answer the required question: ${question.question}',
+              // title: 'Answer Required',
+              title: txt.answerRequired,
+              // message:
+              //     'Please answer the required question: ${question.question}',
+              message: txt.pleaseAnswerRequiredQuestion(question.question),
             );
             return;
           }
@@ -316,7 +333,8 @@ class ReviewController extends GetxController {
       await submitReview();
     } catch (e) {
       AppLoaders.errorSnackBar(
-        title: 'Submission Failed',
+        // title: 'Submission Failed',
+        title: txt.submissionFailed,
         message: e.toString(),
       );
     }
@@ -330,7 +348,8 @@ class ReviewController extends GetxController {
 
       // Show loading dialog
       AppFullScreenLoader.openLoadingDialog(
-        'Deleting Review...',
+        // 'Deleting Review...',
+        txt.deletingReview,
         AppImages.docerAnimation,
       );
 
@@ -339,7 +358,7 @@ class ReviewController extends GetxController {
       await _placeRepo.removeReviewRating(placeId, rating.value.round());
 
       await reviewRepo.deleteReview(existingReviewId.value);
-       // ADD THIS LINE: Refresh rating data after deletion
+      // ADD THIS LINE: Refresh rating data after deletion
       await _refreshRatingData();
       // Reset state
       existingReviewId.value = '';
@@ -350,14 +369,17 @@ class ReviewController extends GetxController {
 
       AppFullScreenLoader.stopLoading();
       AppLoaders.successSnackBar(
-        title: 'Success!',
-        message: 'Review deleted successfully.',
+        // title: 'Success!',
+        title: txt.success,
+        // message: 'Review deleted successfully.',
+        message: txt.reviewDeletedSuccess,
       );
 
       update(); // Refresh the UI
     } catch (e) {
       AppFullScreenLoader.stopLoading();
-      AppLoaders.errorSnackBar(title: 'Delete Failed', message: e.toString());
+      // AppLoaders.errorSnackBar(title: 'Delete Failed', message: e.toString());
+      AppLoaders.errorSnackBar(title: txt.deleteFailed, message: e.toString());
     } finally {
       isLoading.value = false;
     }

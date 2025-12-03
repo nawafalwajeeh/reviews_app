@@ -18,7 +18,12 @@ import 'widgets/category_filter_sheet.dart';
 
 class PlacesMapScreen extends StatelessWidget {
   final bool isPickerMode;
-  const PlacesMapScreen({super.key, this.isPickerMode = false});
+  final bool showBackButton;
+  const PlacesMapScreen({
+    super.key,
+    this.isPickerMode = false,
+    this.showBackButton = false,
+  });
 
   // Static method to open as picker
   static Future<AddressModel?> openLocationPicker() async {
@@ -61,8 +66,8 @@ class PlacesMapScreen extends StatelessWidget {
           /// Loading Overlay
           _buildLoadingOverlay(controller, context),
 
-          /// Picker Mode Back Button
-          if (isPickerMode) _buildPickerAppBar(),
+          /// Back Button (only when navigating from place details)
+          if (showBackButton) _buildBackButton(),
 
           /// Category Filter Button
           if (!isPickerMode) _buildCategoryFilterButton(context, controller),
@@ -635,57 +640,28 @@ class PlacesMapScreen extends StatelessWidget {
     });
   }
 
-  Widget _buildPickerAppBar() {
+  Widget _buildBackButton() {
     return Positioned(
-      top: MediaQuery.of(Get.context!).padding.top,
-      left: 0,
-      right: 0,
+      top: MediaQuery.of(Get.context!).padding.top + AppSizes.sm,
+      left: AppSizes.defaultSpace,
       child: Container(
-        padding: const EdgeInsets.symmetric(
-          horizontal: AppSizes.defaultSpace,
-          vertical: AppSizes.sm,
-        ),
         decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [Colors.black.withValues(alpha: 0.6), Colors.transparent],
-          ),
-        ),
-        child: Row(
-          children: [
-            Container(
-              decoration: BoxDecoration(
-                color: AppColors.white,
-                borderRadius: BorderRadius.circular(AppSizes.cardRadiusLg),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.1),
-                    blurRadius: 8,
-                    offset: const Offset(0, 2),
-                  ),
-                ],
-              ),
-              child: IconButton(
-                icon: const Icon(Iconsax.arrow_left),
-                onPressed: () {
-                  Get.back(result: null);
-                },
-                color: AppColors.darkGrey,
-              ),
-            ),
-            const SizedBox(width: AppSizes.sm),
-            Expanded(
-              child: Text(
-                // 'Choose Location',
-                AppLocalizations.of(Get.context!).chooseLocation,
-                style: Theme.of(Get.context!).textTheme.titleLarge?.copyWith(
-                  color: AppColors.white,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
+          color: AppColors.white,
+          borderRadius: BorderRadius.circular(AppSizes.cardRadiusLg),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.1),
+              blurRadius: 8,
+              offset: const Offset(0, 2),
             ),
           ],
+        ),
+        child: IconButton(
+          icon: const Icon(Icons.clear),
+          onPressed: () {
+            Get.back(result: isPickerMode ? null : null);
+          },
+          color: AppColors.dark,
         ),
       ),
     );
