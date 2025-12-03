@@ -300,9 +300,10 @@ class PlacesMapScreen extends StatelessWidget {
               const SizedBox(width: AppSizes.xs),
               Text(
                 text,
-                style: Theme.of(
-                  context,
-                ).textTheme.bodySmall?.copyWith(fontWeight: FontWeight.w500),
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                  fontWeight: FontWeight.w500,
+                  color: AppColors.dark,
+                ),
               ),
             ],
           ),
@@ -647,7 +648,8 @@ class PlacesMapScreen extends StatelessWidget {
       child: Container(
         decoration: BoxDecoration(
           color: AppColors.white,
-          borderRadius: BorderRadius.circular(AppSizes.cardRadiusLg),
+          // borderRadius: BorderRadius.circular(AppSizes.cardRadiusLg),
+          shape: BoxShape.circle,
           boxShadow: [
             BoxShadow(
               color: Colors.black.withValues(alpha: 0.1),
