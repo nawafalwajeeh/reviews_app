@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:iconsax/iconsax.dart';
 import 'package:reviews_app/common/widgets/appbar/appbar.dart';
 import 'package:reviews_app/common/widgets/icons/circular_icon.dart';
 import 'package:get/get.dart';
 import 'package:reviews_app/common/widgets/shimmers/shimmer_effect.dart';
+import 'package:reviews_app/features/personalization/controllers/settings_controller.dart';
 import 'package:reviews_app/features/personalization/controllers/user_controller.dart';
 import 'package:reviews_app/features/review/screens/barcode/barcode_scanner.dart';
 import 'package:reviews_app/features/review/screens/notifications/notifications.dart';
@@ -17,6 +19,7 @@ class HomeAppBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = Get.put(UserController());
+    final settingsController = SettingsController.instance;
 
     return CustomAppBar(
       title: Column(
@@ -57,13 +60,32 @@ class HomeAppBar extends StatelessWidget {
           size: AppSizes.iconMd,
           onPressed: () => Get.to(() => const BarcodeScannerScreen()),
         ),
+        // const SizedBox(width: AppSizes.spaceBtwItems),
+        // AppCircularIcon(
+        //   icon: Icons.notifications_outlined,
+        //   backgroundColor: Colors.blue[100],
+        //   color: Colors.blue,
+        //   size: AppSizes.iconMd,
+        //   onPressed: () => Get.to(() => const NotificationsScreen()),
+        // ),
         const SizedBox(width: AppSizes.spaceBtwItems),
-        AppCircularIcon(
-          icon: Icons.notifications_outlined,
-          backgroundColor: Colors.blue[100],
-          color: Colors.blue,
-          size: AppSizes.iconMd,
-          onPressed: () => Get.to(() => const NotificationsScreen()),
+
+        Obx(
+          () => AppCircularIcon(
+            icon: settingsController.themeMode == ThemeMode.dark
+                ? Iconsax.moon
+                : Iconsax.sun,
+            backgroundColor: Colors.blue[100],
+            color: Colors.blue,
+            size: AppSizes.iconMd,
+            onPressed: () {
+              settingsController.toggleTheme(
+                settingsController.themeMode == ThemeMode.dark
+                    ? ThemeMode.light
+                    : ThemeMode.dark,
+              );
+            },
+          ),
         ),
       ],
     );
