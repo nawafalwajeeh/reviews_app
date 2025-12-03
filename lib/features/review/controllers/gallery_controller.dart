@@ -106,8 +106,7 @@ class GalleryController extends GetxController {
       // 4. Transform PlaceModel data into the required FeaturedImagesModel
       final featuredImages = recentPlaces.map((place) {
         // Assume PlaceModel has a single main 'imageUrl' or you take the first from an image list
-        final categoryName =
-            categoryMap[place.collectionId] ?? txt.unknownCategory;
+        final _ = categoryMap[place.collectionId] ?? txt.unknownCategory;
         final imageUrl = place.imageUrl.isNotEmpty
             ? place.imageUrl
             : 'https://placehold.co/500x300/CCCCCC/000000?text=No+Image';
