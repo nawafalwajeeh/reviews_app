@@ -11,6 +11,7 @@ import 'package:reviews_app/features/review/controllers/place_controller.dart';
 import 'package:reviews_app/utils/constants/sizes.dart';
 
 import '../../../../../common/widgets/list_tiles/place_meta_data_tile.dart';
+import '../../../../../utils/constants/marker_icons.dart';
 import '../../../controllers/place_map_controller.dart'
     show PlacesMapController;
 import '../../../models/place_model.dart';
@@ -129,6 +130,10 @@ class PlaceMetadata extends StatelessWidget {
 
         // Recreate markers to show the selected state
         await mapController.createPlaceMarkers();
+        // await CustomMarkerGenerator.generatePlaceMarker(
+        //   place,
+        //   isSelected: true,
+        // );
       }
     } catch (e) {
       AppLoaders.errorSnackBar(
