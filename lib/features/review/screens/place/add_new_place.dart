@@ -173,4 +173,3 @@ class AddNewPlaceScreen extends StatelessWidget {
     );
   }
 }
-
