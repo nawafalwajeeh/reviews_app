@@ -167,7 +167,13 @@ class PlaceCardHorizontal extends StatelessWidget {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        CategoryNameText(categoryId: place.categoryId),
+                        // CategoryNameText(categoryId: place.categoryId),
+                         CategoryNameText(
+                          categoryId: place.categoryId,
+                          textColor: AppHelperFunctions.isDarkMode(context)
+                              ? AppColors.textWhite
+                              : AppColors.primaryColor,
+                        ),
 
                         const SizedBox(height: AppSizes.xs),
                         Text(

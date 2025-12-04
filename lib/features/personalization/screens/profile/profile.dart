@@ -137,12 +137,29 @@ class ProfileScreen extends StatelessWidget {
                 },
                 icon: Iconsax.copy,
               ),
-              AppProfileMenu(
-                // title: 'E-mail',
-                title: AppLocalizations.of(context).email,
-                // value: 'coder@gmail.com',
-                value: controller.user.value.email,
-              ),
+              Obx(() {
+                final userEmail = controller.user.value.email;
+                return AppProfileMenu(
+                  // title: 'E-mail',
+                  title: AppLocalizations.of(context).email,
+                  // value: 'coder@gmail.com',
+                  value: userEmail,
+                  isArrowIcon: false,
+                  onPressed: () {
+                    // Only attempt to copy if the email is valid (not the placeholder)
+                    if (userEmail.isNotEmpty) {
+                      Clipboard.setData(ClipboardData(text: userEmail));
+                      AppLoaders.successSnackBar(
+                        title: AppLocalizations.of(context).copied,
+                        message: AppLocalizations.of(
+                          context,
+                        ).copied, // Should probably be a different message key
+                      );
+                    }
+                  },
+                  icon: Iconsax.copy,
+                );
+              }),
               Obx(
                 () => AppProfileMenu(
                   // title: 'Phone Number',

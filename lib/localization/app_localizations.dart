@@ -1991,9 +1991,18 @@ class AppLocalizations {
       _localizedValues[locale.languageCode]!['failedToLoadImage'] ??
       'Failed to load image';
 
-String get swipeLeftOrRightToViewImages =>
-      _localizedValues[locale.languageCode]!['swipeLeftOrRightToViewImages'] 
-        ?? 'Swipe left or right to view other images';   
+  String get swipeLeftOrRightToViewImages =>
+      _localizedValues[locale.languageCode]!['swipeLeftOrRightToViewImages'] ??
+      'Swipe left or right to view other images';
+
+  String get youSelected =>
+      _localizedValues[locale.languageCode]!['youSelected'] ?? 'You Selected';
+
+  String get allLanguages =>
+      _localizedValues[locale.languageCode]!['allLanguages'] ?? 'All Languages';
+
+  String get search =>
+      _localizedValues[locale.languageCode]!['search'] ?? 'Search';
 }
 
 class _AppLocalizationsDelegate

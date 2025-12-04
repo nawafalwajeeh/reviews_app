@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:reviews_app/common/widgets/texts/category_name_text.dart';
 import 'package:reviews_app/localization/app_localizations.dart';
@@ -11,9 +10,6 @@ import 'package:reviews_app/features/review/controllers/place_controller.dart';
 import 'package:reviews_app/utils/constants/sizes.dart';
 
 import '../../../../../common/widgets/list_tiles/place_meta_data_tile.dart';
-import '../../../../../utils/constants/marker_icons.dart';
-import '../../../controllers/place_map_controller.dart'
-    show PlacesMapController;
 import '../../../models/place_model.dart';
 import '../../map/place_map.dart';
 
@@ -102,39 +98,15 @@ class PlaceMetadata extends StatelessWidget {
     try {
       // Navigate to the map screen and pass the place to be highlighted
       Get.to(
-        () => const PlacesMapScreen(
+        () => PlacesMapScreen(
           isPickerMode: false,
           showBackButton:
               true, // Show back button when coming from place details
+          initialPlace: place, // Pass the place to be highlighted
         ),
         transition: Transition.cupertino,
         duration: const Duration(milliseconds: 300),
       );
-
-      // After navigation, select the place on the map
-      // Wait a bit for the map to initialize
-      await Future.delayed(const Duration(milliseconds: 500));
-
-      final mapController = PlacesMapController.instance;
-
-      // Set the selected place
-      mapController.selectedPlace.value = place;
-      mapController.showBottomSheet.value = true;
-
-      // Move camera to the place location
-      if (place.latitude != 0.0 && place.longitude != 0.0) {
-        mapController.moveCameraToLatLng(
-          LatLng(place.latitude, place.longitude),
-          zoom: 16.0,
-        );
-
-        // Recreate markers to show the selected state
-        await mapController.createPlaceMarkers();
-        // await CustomMarkerGenerator.generatePlaceMarker(
-        //   place,
-        //   isSelected: true,
-        // );
-      }
     } catch (e) {
       AppLoaders.errorSnackBar(
         title: txt.error,

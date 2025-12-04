@@ -1,15 +1,19 @@
 // image_viewer_screen.dart
 import 'dart:io';
+import 'dart:ui' as dart_ui;
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:gal/gal.dart';
 import 'package:get/get.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:photo_view/photo_view.dart';
+import 'package:photo_view/photo_view_gallery.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:reviews_app/localization/app_localizations.dart';
 import 'package:reviews_app/utils/constants/colors.dart';
 import 'package:reviews_app/utils/constants/sizes.dart';
+import 'package:reviews_app/utils/helpers/helper_functions.dart';
 import 'package:reviews_app/utils/popups/loaders.dart';
 
 class ImageViewerScreen extends StatefulWidget {
@@ -18,9 +22,8 @@ class ImageViewerScreen extends StatefulWidget {
   final String? title;
   final String? subtitle;
   final double? rating;
-  final bool isFromGallery; // New flag to indicate gallery mode
-  final Map<int, Map<String, dynamic>>?
-  galleryMetadata; // Metadata for gallery images
+  final bool isFromGallery;
+  final Map<int, Map<String, dynamic>>? galleryMetadata;
 
   const ImageViewerScreen({
     super.key,
@@ -38,62 +41,51 @@ class ImageViewerScreen extends StatefulWidget {
 }
 
 class _ImageViewerScreenState extends State<ImageViewerScreen> {
-  final TransformationController _transformationController =
-      TransformationController();
   late PageController _pageController;
-  bool _isZoomed = false;
+  late ScrollController _thumbnailController;
+  late int _currentIndex;
   bool _isLoading = false;
-  int _currentIndex = 0;
+  bool _showControls = true;
 
   @override
   void initState() {
     super.initState();
     _currentIndex = widget.initialIndex;
     _pageController = PageController(initialPage: widget.initialIndex);
+    _thumbnailController = ScrollController();
+
+    // Scroll to initial thumbnail after build
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _scrollToThumbnail(_currentIndex);
+    });
   }
 
-  Widget _buildImage(String imageUrl) {
-    return CachedNetworkImage(
-      imageUrl: imageUrl,
-      fit: BoxFit.contain,
-      errorWidget: (context, url, error) => Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Icon(Icons.error_outline, size: 60, color: Colors.white),
-            const SizedBox(height: AppSizes.md),
-            Text(
-              txt.failedToLoadImage,
-              style: Theme.of(
-                context,
-              ).textTheme.bodyMedium?.copyWith(color: Colors.white70),
-            ),
-          ],
-        ),
-      ),
-      progressIndicatorBuilder: (context, url, progress) => Center(
-        child: CircularProgressIndicator(
-          value: progress.progress,
-          color: AppColors.primaryColor,
-        ),
-      ),
-    );
+  void _onPageChanged(int index) {
+    setState(() {
+      _currentIndex = index;
+    });
+    _scrollToThumbnail(index);
   }
 
-  Widget _buildInteractiveImage(String imageUrl) {
-    return InteractiveViewer(
-      transformationController: _transformationController,
-      minScale: 0.5,
-      maxScale: 4.0,
-      panEnabled: true,
-      boundaryMargin: const EdgeInsets.all(double.infinity),
-      onInteractionUpdate: (details) {
-        setState(() {
-          _isZoomed = _transformationController.value.getMaxScaleOnAxis() > 1.0;
-        });
-      },
-      child: _buildImage(imageUrl),
-    );
+  void _scrollToThumbnail(int index) {
+    if (_thumbnailController.hasClients) {
+      const double thumbnailWidth = 72.0; // 60 width + 12 margin
+      final double screenWidth = MediaQuery.of(context).size.width;
+      final double scrollOffset =
+          (index * thumbnailWidth) - (screenWidth / 2) + (thumbnailWidth / 2);
+
+      _thumbnailController.animateTo(
+        scrollOffset.clamp(0.0, _thumbnailController.position.maxScrollExtent),
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeInOut,
+      );
+    }
+  }
+
+  void _toggleControls() {
+    setState(() {
+      _showControls = !_showControls;
+    });
   }
 
   Future<void> _downloadImage() async {
@@ -166,170 +158,305 @@ class _ImageViewerScreenState extends State<ImageViewerScreen> {
     }
   }
 
-  void _resetZoom() {
-    _transformationController.value = Matrix4.identity();
-    setState(() => _isZoomed = false);
-  }
-
-  void _toggleZoom() {
-    if (_isZoomed) {
-      _resetZoom();
-    } else {
-      _transformationController.value = Matrix4.identity().scaledByDouble(
-        2.0,
-        0.0,
-        0.0,
-        0.0,
-      );
-      setState(() => _isZoomed = true);
-    }
-  }
-
-  void _onPageChanged(int index) {
-    setState(() {
-      _currentIndex = index;
-      // Reset zoom when switching images
-      if (_isZoomed) {
-        _resetZoom();
-      }
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
+    final isDark = AppHelperFunctions.isDarkMode(context);
+    final backgroundColor = isDark ? Colors.black : Colors.white;
+    final textColor = isDark ? Colors.white : Colors.black;
+    final iconColor = isDark ? Colors.white : Colors.black;
+    // Glassmorphism background colors
+    final barBackgroundColor = isDark
+        ? Colors.black.withValues(alpha: 0.7)
+        : Colors.white.withValues(alpha: 0.7);
+
+    // Determine title to display
+    String? displayTitle = widget.title;
+    if (widget.isFromGallery && widget.galleryMetadata != null) {
+      displayTitle = widget.galleryMetadata![_currentIndex]?['placeName'];
+    }
+
+    debugPrint('place_info: $displayTitle');
+
     return Scaffold(
-      backgroundColor: Colors.black,
-      body: SafeArea(
-        child: Stack(
-          children: [
-            // PageView for swiping between images
-            GestureDetector(
-              onTap: () {
-                if (!_isZoomed) Get.back();
+      backgroundColor: backgroundColor,
+      body: Stack(
+        children: [
+          // Main Gallery
+          GestureDetector(
+            onTap: _toggleControls,
+            child: PhotoViewGallery.builder(
+              scrollPhysics: const BouncingScrollPhysics(),
+              builder: (BuildContext context, int index) {
+                return PhotoViewGalleryPageOptions(
+                  imageProvider: CachedNetworkImageProvider(
+                    widget.imageUrls[index],
+                  ),
+                  initialScale: PhotoViewComputedScale.contained,
+                  minScale: PhotoViewComputedScale.contained,
+                  maxScale: PhotoViewComputedScale.covered * 2.5,
+                  heroAttributes: PhotoViewHeroAttributes(
+                    tag: widget.imageUrls[index],
+                  ),
+                  errorBuilder: (context, error, stackTrace) {
+                    return Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.error_outline,
+                            size: 50,
+                            color: textColor.withValues(alpha: 0.5),
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            txt.failedToLoadImage,
+                            style: TextStyle(
+                              color: textColor.withValues(alpha: 0.5),
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                );
               },
-              onDoubleTap: _toggleZoom,
-              child: PageView.builder(
-                controller: _pageController,
-                itemCount: widget.imageUrls.length,
-                onPageChanged: _onPageChanged,
-                itemBuilder: (context, index) {
-                  return Center(
-                    child: _buildInteractiveImage(widget.imageUrls[index]),
-                  );
-                },
+              itemCount: widget.imageUrls.length,
+              loadingBuilder: (context, event) => Center(
+                child: SizedBox(
+                  width: 20.0,
+                  height: 20.0,
+                  child: CircularProgressIndicator(
+                    value: event == null
+                        ? 0
+                        : event.cumulativeBytesLoaded /
+                              event.expectedTotalBytes!,
+                    color: AppColors.primaryColor,
+                  ),
+                ),
+              ),
+              backgroundDecoration: BoxDecoration(color: backgroundColor),
+              pageController: _pageController,
+              onPageChanged: _onPageChanged,
+            ),
+          ),
+
+          // Top Bar (Glassmorphism)
+          AnimatedPositioned(
+            duration: const Duration(milliseconds: 200),
+            top: _showControls ? 0 : -120,
+            left: 0,
+            right: 0,
+            child: ClipRRect(
+              child: BackdropFilter(
+                filter: dart_ui.ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                child: Container(
+                  color: barBackgroundColor,
+                  padding: EdgeInsets.only(
+                    top: MediaQuery.of(context).padding.top + AppSizes.xs,
+                    bottom: AppSizes.sm,
+                    left: AppSizes.sm,
+                    right: AppSizes.sm,
+                  ),
+                  child: SafeArea(
+                    bottom: false,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        // Close Button
+                        _buildActionButton(
+                          icon: Icons.close_rounded,
+                          onPressed: () => Get.back(),
+                          backgroundColor: Colors.transparent,
+                          iconColor: iconColor,
+                        ),
+
+                        // Title (Centered)
+                        Expanded(
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              if (displayTitle != null)
+                                Text(
+                                  displayTitle,
+                                  style: TextStyle(
+                                    color: textColor,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                  textAlign: TextAlign.center,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              // Counter
+                              Text(
+                                '${_currentIndex + 1} / ${widget.imageUrls.length}',
+                                style: TextStyle(
+                                  color: textColor.withValues(alpha: 0.7),
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+
+                        // Right Actions (Share & Download)
+                        Row(
+                          children: [
+                            _buildActionButton(
+                              icon: Icons.share_outlined,
+                              onPressed: _shareImage,
+                              backgroundColor: Colors.transparent,
+                              iconColor: iconColor,
+                            ),
+                            _buildActionButton(
+                              icon: Icons.download_rounded,
+                              onPressed: _isLoading ? null : _downloadImage,
+                              isLoading: _isLoading,
+                              backgroundColor: Colors.transparent,
+                              iconColor: iconColor,
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
               ),
             ),
+          ),
 
-            // Top Actions
-            Positioned(
-              top: AppSizes.defaultSpace,
-              left: AppSizes.defaultSpace,
-              right: AppSizes.defaultSpace,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  // Close Button
-                  _buildActionButton(
-                    icon: Icons.close_rounded,
-                    onPressed: () => Get.back(),
+          // Bottom Info Bar (Glassmorphism)
+          AnimatedPositioned(
+            duration: const Duration(milliseconds: 200),
+            bottom: _showControls ? 0 : -200,
+            left: 0,
+            right: 0,
+            child: ClipRRect(
+              child: BackdropFilter(
+                filter: dart_ui.ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                child: Container(
+                  color: barBackgroundColor,
+                  padding: EdgeInsets.only(
+                    top: AppSizes.sm,
+                    bottom: MediaQuery.of(context).padding.bottom + AppSizes.sm,
                   ),
-
-                  // Page Indicator
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: AppSizes.sm,
-                      vertical: AppSizes.xs,
-                    ),
-                    decoration: BoxDecoration(
-                      color: Colors.black54,
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    child: Text(
-                      '${_currentIndex + 1}/${widget.imageUrls.length}',
-                      style: Theme.of(
-                        context,
-                      ).textTheme.bodyMedium?.copyWith(color: Colors.white),
-                    ),
-                  ),
-
-                  // Right Actions
-                  Row(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // Share Button
-                      _buildActionButton(
-                        icon: Icons.share_outlined,
-                        onPressed: _shareImage,
-                      ),
-                      const SizedBox(width: AppSizes.sm),
+                      // Thumbnail Strip
+                      if (widget.imageUrls.length > 1)
+                        SizedBox(
+                          height: 80,
+                          child: ListView.builder(
+                            controller: _thumbnailController,
+                            scrollDirection: Axis.horizontal,
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: AppSizes.defaultSpace,
+                            ),
+                            itemCount: widget.imageUrls.length,
+                            itemBuilder: (context, index) {
+                              final isSelected = index == _currentIndex;
+                              return GestureDetector(
+                                onTap: () {
+                                  _pageController.animateToPage(
+                                    index,
+                                    duration: const Duration(milliseconds: 300),
+                                    curve: Curves.easeInOut,
+                                  );
+                                },
+                                child: AnimatedContainer(
+                                  duration: const Duration(milliseconds: 200),
+                                  margin: const EdgeInsets.only(right: 12),
+                                  width: isSelected ? 70 : 60,
+                                  height: isSelected ? 70 : 60,
+                                  decoration: BoxDecoration(
+                                    border: isSelected
+                                        ? Border.all(
+                                            color: AppColors.primaryColor,
+                                            width: 2,
+                                          )
+                                        : null,
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(6),
+                                    child: CachedNetworkImage(
+                                      imageUrl: widget.imageUrls[index],
+                                      fit: BoxFit.cover,
+                                      placeholder: (context, url) => Container(
+                                        color: isDark
+                                            ? Colors.grey[800]
+                                            : Colors.grey[200],
+                                      ),
+                                      errorWidget: (context, url, error) =>
+                                          Icon(
+                                            Icons.error,
+                                            color: textColor.withValues(
+                                              alpha: 0.5,
+                                            ),
+                                            size: 20,
+                                          ),
+                                    ),
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+                        ),
 
-                      // Download Button
-                      _buildActionButton(
-                        icon: Icons.download_rounded,
-                        onPressed: _isLoading ? null : _downloadImage,
-                        isLoading: _isLoading,
-                      ),
+                      // Image Info (Subtitle & Rating)
+                      if (widget.subtitle != null || widget.rating != null)
+                        Padding(
+                          padding: const EdgeInsets.only(
+                            top: AppSizes.sm,
+                            left: AppSizes.md,
+                            right: AppSizes.md,
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              if (widget.subtitle != null)
+                                Text(
+                                  widget.subtitle!,
+                                  style: TextStyle(
+                                    color: textColor.withValues(alpha: 0.8),
+                                    fontSize: 14,
+                                  ),
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              if (widget.rating != null) ...[
+                                const SizedBox(height: 4),
+                                Row(
+                                  children: [
+                                    const Icon(
+                                      Icons.star_rounded,
+                                      color: Colors.amber,
+                                      size: 18,
+                                    ),
+                                    const SizedBox(width: 4),
+                                    Text(
+                                      widget.rating!.toStringAsFixed(1),
+                                      style: TextStyle(
+                                        color: textColor,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ],
+                          ),
+                        ),
                     ],
                   ),
-                ],
+                ),
               ),
             ),
-
-            // Image Info Bottom Sheet (if provided)
-            if (widget.title != null ||
-                widget.subtitle != null ||
-                widget.rating != null)
-              Positioned(
-                bottom: 0,
-                left: 0,
-                right: 0,
-                child: _buildImageInfo(),
-              ),
-
-            // Zoom Controls
-            if (_isZoomed)
-              Positioned(
-                bottom: 100,
-                right: AppSizes.defaultSpace,
-                child: _buildActionButton(
-                  icon: Icons.zoom_out_map_rounded,
-                  onPressed: _resetZoom,
-                  backgroundColor: Colors.black54,
-                ),
-              ),
-
-            // Help Hint (disappears after first tap)
-            if (!_isZoomed && widget.imageUrls.length > 1)
-              Positioned(
-                bottom: AppSizes.defaultSpace,
-                left: 0,
-                right: 0,
-                child: Column(
-                  children: [
-                    Text(
-                      txt.doubleTapToZoom,
-                      style: Theme.of(
-                        context,
-                      ).textTheme.bodySmall?.copyWith(color: Colors.white70),
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      txt.tapToClose,
-                      style: Theme.of(
-                        context,
-                      ).textTheme.bodySmall?.copyWith(color: Colors.white70),
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      txt.swipeLeftOrRightToViewImages,
-                      style: Theme.of(
-                        context,
-                      ).textTheme.bodySmall?.copyWith(color: Colors.white70),
-                    ),
-                  ],
-                ),
-              ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -337,103 +464,40 @@ class _ImageViewerScreenState extends State<ImageViewerScreen> {
   Widget _buildActionButton({
     required IconData icon,
     required VoidCallback? onPressed,
-    Color backgroundColor = Colors.black54,
+    Color? backgroundColor,
+    Color? iconColor,
     bool isLoading = false,
   }) {
     return Container(
-      width: 44,
-      height: 44,
-      decoration: BoxDecoration(color: backgroundColor, shape: BoxShape.circle),
+      width: 40,
+      height: 40,
+      decoration: BoxDecoration(
+        color: backgroundColor ?? Colors.black54,
+        shape: BoxShape.circle,
+      ),
       child: isLoading
-          ? const Center(
+          ? Center(
               child: SizedBox(
                 width: 20,
                 height: 20,
-                child: CircularProgressIndicator(strokeWidth: 2),
+                child: CircularProgressIndicator(
+                  strokeWidth: 2,
+                  color: iconColor ?? Colors.white,
+                ),
               ),
             )
           : IconButton(
-              icon: Icon(icon, size: 22, color: Colors.white),
+              icon: Icon(icon, size: 20, color: iconColor ?? Colors.white),
               onPressed: onPressed,
               padding: EdgeInsets.zero,
-              splashRadius: 20,
             ),
-    );
-  }
-
-  // In _buildImageInfo() method, update to handle gallery metadata:
-  Widget _buildImageInfo() {
-    final txt = AppLocalizations.of(context);
-    if (widget.isFromGallery && widget.galleryMetadata != null) {
-      final metadata = widget.galleryMetadata![_currentIndex];
-      if (metadata != null) {}
-    }
-
-    return Container(
-      margin: const EdgeInsets.all(AppSizes.defaultSpace),
-      padding: const EdgeInsets.all(AppSizes.md),
-      decoration: BoxDecoration(
-        color: Colors.black54,
-        borderRadius: BorderRadius.circular(AppSizes.cardRadiusLg),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Use gallery metadata if available, otherwise use widget properties
-          if (widget.title != null)
-            Text(
-              widget.title.toString(),
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                color: Colors.white,
-                fontWeight: FontWeight.w600,
-              ),
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-            ),
-
-          if (widget.subtitle != null) ...[
-            const SizedBox(height: AppSizes.xs),
-            Text(
-              widget.subtitle.toString(),
-              style: Theme.of(
-                context,
-              ).textTheme.bodySmall?.copyWith(color: Colors.white70),
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-            ),
-          ],
-
-          if (widget.rating != null) ...[
-            const SizedBox(height: AppSizes.sm),
-            Row(
-              children: [
-                const Icon(Icons.star_rounded, color: Colors.amber, size: 16),
-                const SizedBox(width: AppSizes.xs),
-                Text(
-                  (widget.rating)!.toStringAsFixed(1),
-                  style: Theme.of(
-                    context,
-                  ).textTheme.bodyMedium?.copyWith(color: Colors.white),
-                ),
-                const SizedBox(width: AppSizes.sm),
-                Text(
-                  '• Image ${_currentIndex + 1} of ${widget.imageUrls.length}',
-                  style: Theme.of(
-                    context,
-                  ).textTheme.bodySmall?.copyWith(color: Colors.white70),
-                ),
-              ],
-            ),
-          ],
-        ],
-      ),
     );
   }
 
   @override
   void dispose() {
-    _transformationController.dispose();
     _pageController.dispose();
+    _thumbnailController.dispose();
     super.dispose();
   }
 }

@@ -29,7 +29,8 @@ class AppSearchContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final searchController = AppSearchController.instance;
+    // final searchController = AppSearchController.instance;
+    final searchController = Get.put(AppSearchController());
     final dark = AppHelperFunctions.isDarkMode(context);
 
     return GestureDetector(

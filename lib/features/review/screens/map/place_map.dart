@@ -9,6 +9,7 @@ import 'package:reviews_app/utils/constants/sizes.dart';
 import '../../../../utils/constants/enums.dart';
 import '../../../personalization/models/address_model.dart';
 import '../../controllers/place_map_controller.dart';
+import '../../models/place_model.dart';
 import '../../models/recent_search.dart';
 import '../../models/search_suggestion.dart';
 import 'widgets/map_search_container.dart';
@@ -19,10 +20,12 @@ import 'widgets/category_filter_sheet.dart';
 class PlacesMapScreen extends StatelessWidget {
   final bool isPickerMode;
   final bool showBackButton;
+  final PlaceModel? initialPlace;
   const PlacesMapScreen({
     super.key,
     this.isPickerMode = false,
     this.showBackButton = false,
+    this.initialPlace,
   });
 
   // Static method to open as picker
@@ -37,6 +40,11 @@ class PlacesMapScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = PlacesMapController.instance;
+
+    // Set initial place if provided
+    if (initialPlace != null) {
+      controller.setInitialPlace(initialPlace!);
+    }
 
     return Scaffold(
       backgroundColor: AppColors.white,

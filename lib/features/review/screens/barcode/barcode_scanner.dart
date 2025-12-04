@@ -7,6 +7,8 @@ import 'package:reviews_app/localization/app_localizations.dart'
 
 import '../../../../common/widgets/appbar/appbar.dart';
 import '../../../../data/services/barcode/barcode_service.dart';
+import '../../../../utils/constants/colors.dart';
+import '../../../../utils/helpers/helper_functions.dart';
 import '../../../../utils/popups/loaders.dart';
 import '../../controllers/barcode_scanner_controller.dart';
 import '../place_details/place_details.dart';
@@ -43,6 +45,8 @@ class _BarcodeScannerScreenState extends State<BarcodeScannerScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = AppHelperFunctions.isDarkMode(context);
+
     return Scaffold(
       appBar: CustomAppBar(
         // title: const Text('Scan QR Code'),
@@ -54,7 +58,7 @@ class _BarcodeScannerScreenState extends State<BarcodeScannerScreen> {
           IconButton(
             icon: Icon(
               _isTorchOn ? Icons.flash_on : Icons.flash_off,
-              color: Colors.white,
+              color: isDark ? AppColors.white : AppColors.dark,
             ),
             onPressed: _toggleTorch,
           ),
@@ -63,7 +67,7 @@ class _BarcodeScannerScreenState extends State<BarcodeScannerScreen> {
               _cameraFacing == CameraFacing.front
                   ? Icons.camera_front
                   : Icons.camera_rear,
-              color: Colors.white,
+              color: isDark ? AppColors.white : AppColors.dark,
             ),
             onPressed: _switchCamera,
           ),

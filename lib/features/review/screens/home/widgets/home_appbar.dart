@@ -7,7 +7,6 @@ import 'package:reviews_app/common/widgets/shimmers/shimmer_effect.dart';
 import 'package:reviews_app/features/personalization/controllers/settings_controller.dart';
 import 'package:reviews_app/features/personalization/controllers/user_controller.dart';
 import 'package:reviews_app/features/review/screens/barcode/barcode_scanner.dart';
-import 'package:reviews_app/features/review/screens/notifications/notifications.dart';
 import 'package:reviews_app/routes/app_routes.dart';
 import 'package:reviews_app/utils/constants/colors.dart';
 import '../../../../../localization/app_localizations.dart';
@@ -60,13 +59,14 @@ class HomeAppBar extends StatelessWidget {
           size: AppSizes.iconMd,
           onPressed: () => Get.to(() => const BarcodeScannerScreen()),
         ),
-        // const SizedBox(width: AppSizes.spaceBtwItems),
+        const SizedBox(width: AppSizes.spaceBtwItems),
         // AppCircularIcon(
         //   icon: Icons.notifications_outlined,
         //   backgroundColor: Colors.blue[100],
         //   color: Colors.blue,
         //   size: AppSizes.iconMd,
-        //   onPressed: () => Get.to(() => const NotificationsScreen()),
+        //   // onPressed: () => Get.to(() => const NotificationsScreen()),
+        //   onPressed: () => Get.to(() => const SelectLanguageScreen()),
         // ),
         const SizedBox(width: AppSizes.spaceBtwItems),
 

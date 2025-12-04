@@ -121,7 +121,12 @@ class PlaceCard extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         /// Category Name (Moved up)
-                        CategoryNameText(categoryId: place.categoryId),
+                        CategoryNameText(
+                          categoryId: place.categoryId,
+                          textColor: AppHelperFunctions.isDarkMode(context)
+                              ? AppColors.textWhite
+                              : AppColors.primaryColor,
+                        ),
                         // ReactiveCategoryNameText(categoryId: place.categoryId),
                         const SizedBox(height: AppSizes.sm),
 

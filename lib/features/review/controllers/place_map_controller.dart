@@ -36,6 +36,7 @@ class PlacesMapController extends GetxController {
   // --- PLACES INTEGRATION ---
   final RxList<PlaceModel> displayedPlaces = <PlaceModel>[].obs;
   final Rx<PlaceModel?> selectedPlace = Rx<PlaceModel?>(null);
+  PlaceModel? initialPlace; // Place to highlight when map opens
   final RxString selectedCategoryId = ''.obs;
   final RxList<PlaceModel> nearbyPlaces = <PlaceModel>[].obs;
   final RxDouble searchRadius = 5000.0.obs; // 5km default
@@ -831,16 +832,50 @@ class PlacesMapController extends GetxController {
   void _performInitialMapSetup() {
     if (_isInitialMapSetupComplete) return;
 
-    final targetLocation = currentLocation.value;
-    if (targetLocation?.latitude != null) {
-      final target = LatLng(
-        targetLocation!.latitude!,
-        targetLocation.longitude!,
-      );
-      moveCameraToLatLng(target);
+    // If we have an initial place to show, prioritize it
+    if (initialPlace != null) {
+      // Ensure the place is in the displayed list so a marker is created
+      if (!displayedPlaces.any((p) => p.id == initialPlace!.id)) {
+        displayedPlaces.add(initialPlace!);
+      }
+
+      selectedPlace.value = initialPlace;
+      showBottomSheet.value = true;
+
+      // Move camera to the place location
+      if (initialPlace!.latitude != 0.0 && initialPlace!.longitude != 0.0) {
+        final target = LatLng(initialPlace!.latitude, initialPlace!.longitude);
+        moveCameraToLatLng(target, zoom: 16.0);
+      }
+
+      // Recreate markers to show the selected state
+      createPlaceMarkers();
+
+      // Clear initialPlace after handling
+      initialPlace = null;
+    } else {
+      // Default behavior: move to current location
+      final targetLocation = currentLocation.value;
+      if (targetLocation?.latitude != null) {
+        final target = LatLng(
+          targetLocation!.latitude!,
+          targetLocation.longitude!,
+        );
+        moveCameraToLatLng(target);
+      }
     }
 
     _isInitialMapSetupComplete = true;
+  }
+
+  void setInitialPlace(PlaceModel place) {
+    initialPlace = place;
+    _isInitialMapSetupComplete = false;
+
+    // If map is already created, trigger setup immediately
+    if (googleMapController != null) {
+      _performInitialMapSetup();
+    }
   }
 
   void moveToCurrentLocation() {

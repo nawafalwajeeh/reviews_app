@@ -132,7 +132,13 @@ class SmallPlaceCard extends StatelessWidget {
                     //   overflow: TextOverflow.ellipsis,
                     //   maxLines: 1,
                     // ),
-                    child: CategoryNameText(categoryId: place.categoryId),
+                    // child: CategoryNameText(categoryId: place.categoryId),
+                    child: CategoryNameText(
+                      categoryId: place.categoryId,
+                      textColor: AppHelperFunctions.isDarkMode(context)
+                          ? AppColors.textWhite
+                          : AppColors.primaryColor,
+                    ),
                     //  child: ReactiveCategoryNameText(categoryId: place.categoryId),
                   ),
 
