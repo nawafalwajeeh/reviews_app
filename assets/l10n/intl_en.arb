@@ -675,5 +675,8 @@
   "failedToLoadImage": "Failed to load image",
   "swipeLeftOrRightToViewImages": "Swipe left or right to view other images",
   
-  "searchInStore": "Search in Store"
+  "searchInStore": "Search in Store",
+  "searchInStoreSubTitle": "Search for places, addresses, and more...",
+  "updatePlace": "Update Place",
+  "updatePlaceSubTitle": "Update your place details"
 }

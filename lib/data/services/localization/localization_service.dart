@@ -13,11 +13,31 @@ class LocalizationService extends GetxService {
   static final Map<String, Locale> _supportedLocales = {
     'ar': const Locale('ar', 'SA'),
     'en': const Locale('en', 'US'),
+    'fr': const Locale('fr', 'FR'),
+    'de': const Locale('de', 'DE'),
+    'es': const Locale('es', 'ES'),
+    'hi': const Locale('hi', 'IN'),
+    'ko': const Locale('ko', 'KR'),
+    'zh': const Locale('zh', 'CN'),
+    'ja': const Locale('ja', 'JP'),
+    'pt': const Locale('pt', 'PT'),
+    'it': const Locale('it', 'IT'),
+    'ru': const Locale('ru', 'RU'),
   };
 
   static final Map<String, String> _languageNames = {
     'ar': 'العربية',
     'en': 'English',
+    'fr': 'French',
+    'de': 'German',
+    'es': 'Spanish',
+    'hi': 'Hindi',
+    'ko': 'Korean',
+    'zh': 'Chinese',
+    'ja': 'Japanese',
+    'pt': 'Portuguese',
+    'it': 'Italian',
+    'ru': 'Russian',
   };
 
   final appFontFamily = 'Tajawal'.obs;

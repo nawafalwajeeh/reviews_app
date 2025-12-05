@@ -1,6 +1,5 @@
 {
   "@@locale": "ar",
-  
   "appName": "أماكن",
   "skip": "تخطي",
   "done": "تم",
@@ -26,14 +25,12 @@
   "copied": "تم النسخ",
   "share": "مشاركة",
   "download": "تحميل",
-  
   "onBoardingTitle1": "اكتشف الأماكن المميزة",
   "onBoardingTitle2": "شارك تقييماتك الصادقة",
   "onBoardingTitle3": "ابنِ مجتمعاً موثوقاً",
   "onBoardingSubTitle1": "استكشف عالماً من الأماكن الفريدة، من المقاهي الدافئة إلى المطاعم الجديدة المثيرة، كلها حولك.",
   "onBoardingSubTitle2": "آراؤك تساعد الآخرين على اتخاذ قرارات صائبة. شارك تجاربك وصورك مع المجتمع!",
   "onBoardingSubTitle3": "انضم إلى المستكشفين الآخرين، واحصل على توصيات من أشخاص تثق بهم، وساعد الأعمال المحلية على النمو.",
-  
   "name": "الاسم",
   "firstName": "الاسم الأول",
   "lastName": "اسم العائلة",
@@ -60,13 +57,11 @@
   "resendEmail": "إعادة إرسال البريد",
   "resendEmailIn": "إعادة إرسال البريد خلال",
   "logout": "تسجيل الخروج",
-  
   "loginTitle": "مرحباً بعودتك،",
   "loginSubTitle": "سجل الدخول لمتابعة تقييم أماكنك المفضلة.",
   "signupTitle": "لننشئ حسابك",
   "forgetPasswordTitle": "نسيت كلمة المرور",
   "forgetPasswordSubTitle": "لا تقلق، أحياناً ينسى الجميع. أدخل بريدك الإلكتروني وسنرسل لك رابط إعادة تعيين كلمة المرور.",
-  
   "popularPlaces": "الأماكن الشائعة",
   "featuredPlaces": "الأماكن المميزة",
   "trendingPlaces": "الأماكن الرائجة",
@@ -74,18 +69,15 @@
   "nearbyPlaces": "الأماكن القريبة",
   "homeAppbarTitle": "يوم جميل للاكتشاف",
   "homeAppbarSubTitle": "نواف الوجيه",
-  
   "navigationHome": "الرئيسية",
   "navigationPlaces": "الأماكن",
   "navigationMap": "الخريطة",
   "navigationWishlist": "المفضلة",
   "navigationProfile": "الملف",
-  
   "favorites": "المفضلة",
   "searchForFavoritePlace": "ابحث عن مكان مفضل",
   "wishlistEmpty": "عفواً! قائمة المفضلة فارغة...",
   "letsAddSome": "لنضف بعضها",
-  
   "searchPlaces": "البحث في الأماكن",
   "searchPlacesCategories": "ابحث عن أماكن، فئات...",
   "searchForAddress": "ابحث عن عنوان...",
@@ -105,7 +97,6 @@
   "noCategoriesAvailable": "لا توجد فئات متاحة",
   "categoryNotFound": "الفئة غير موجودة",
   "unknownCategory": "فئة غير معروفة",
-  
   "ratingReviews": "التقييمات والمراجعات",
   "ratingsVerified": "التقييمات والمراجعات موثقة ومن أشخاص يستخدمون نفس نوع الجهاز الذي تستخدمه.",
   "reviews": "مراجعات",
@@ -113,7 +104,6 @@
   "reviewsCount": "{count} مراجعة",
   "reviewsCount_other": "{count} مراجعات",
   "beFirstToReview": "كن أول من يكتب مراجعة!",
-  
   "comments": "التعليقات",
   "noCommentsYet": "لا توجد تعليقات بعد",
   "beFirstToComment": "كن أول من يعلق!",
@@ -128,12 +118,10 @@
   "replyingTo": "رداً على",
   "reply": "رد",
   "replies": "ردود",
-  
   "description": "الوصف",
   "tags": "الوسوم",
   "locationOnMap": "الموقع على الخريطة",
   "locationCoordinates": "إحداثيات الموقع",
-  
   "writeReview": "اكتب مراجعة",
   "editReview": "عدّل مراجعتك",
   "yourReviewSubmitted": "مراجعتك (تم الإرسال)",
@@ -145,7 +133,6 @@
   "deleteReview": "حذف المراجعة",
   "deleteReviewConfirmation": "هل أنت متأكد من حذف مراجعتك؟ لا يمكن التراجع عن هذا الإجراء.",
   "submitReview": "إرسال المراجعة",
-  
   "placeQRCode": "رمز QR للمكان",
   "scanQRCode": "مسح رمز QR",
   "scanToView": "امسح لعرض هذا المكان",
@@ -159,7 +146,6 @@
   "unrecognizedFormat": "تنسيق غير معروف.",
   "sharePDF": "مشاركة PDF",
   "savePDF": "حفظ PDF",
-  
   "discoverPlaces": "اكتشف الأماكن",
   "createNewPlace": "إضافة مكان جديد",
   "createPlaces": "إضافة أماكن",
@@ -168,7 +154,6 @@
   "updatePlaceInfo": "تحديث معلومات المكان",
   "deletePlace": "حذف المكان؟",
   "deletePlaceMessage": "هل أنت متأكد من حذف \"{placeTitle}\"؟ لا يمكن التراجع عن هذا الإجراء.",
-  
   "placeName": "اسم المكان",
   "enterPlaceName": "أدخل اسم المكان",
   "selectCategory": "اختر الفئة",
@@ -178,17 +163,14 @@
   "enterDescription": "أخبرنا ما يميز هذا المكان...",
   "enterPhoneNumber": "أدخل رقم الهاتف",
   "websiteUrlOptional": "رابط الموقع (اختياري)",
-  
   "communityGuidelines": "إرشادات المجتمع",
   "ensureAppropriate": "يرجى التأكد من أن المكان مناسب ويتبع معايير المجتمع",
-  
   "addPhotos": "إضافة صور",
   "uploadPhotos": "ارفع حتى {maxImages} صورة لهذا المكان",
   "existingPhotos": "الصور الحالية",
   "newPhotos": "صور جديدة",
   "photos": "صور",
   "noPhotosFound": "لم يتم العثور على صور في هذه المجموعة.",
-  
   "customQuestionsOptional": "أسئلة مخصصة (اختياري)",
   "addQuestion": "إضافة سؤال",
   "noCustomQuestions": "لا توجد أسئلة مخصصة",
@@ -203,7 +185,6 @@
   "typeYourAnswer": "اكتب إجابتك...",
   "removeQuestion": "إزالة السؤال",
   "notAnswered": "لم تتم الإجابة",
-  
   "premiumFeatures": "مميزات بريميوم",
   "premiumFeature": "ميزة بريميوم",
   "unlockPremium": "فعّل بريميوم",
@@ -241,11 +222,9 @@
   "gotIt": "فهمت",
   "creatingNewPlacesPremium": "إضافة أماكن جديدة هي ميزة بريميوم.",
   "upgradeToPremiumToUnlock": "قم بالترقية لبريميوم لفتح:",
-  
   "internetConnected": "تم الاتصال بالإنترنت",
   "noInternetConnection": "لا يوجد اتصال بالإنترنت",
   "noInternet": "لا يوجد اتصال بالإنترنت",
-  
   "validationRequired": "{fieldName} مطلوب.",
   "validationUsername": "اسم المستخدم غير صالح.",
   "validationEmail": "البريد الإلكتروني غير صالح.",
@@ -253,7 +232,6 @@
   "validationPhone": "تنسيق رقم الهاتف غير صالح (مطلوب 12 رقماً).",
   "validationWebsite": "يرجى إدخال رابط موقع صالح (مثال: https://example.com)",
   "validationReviewTextRequired": "نص المراجعة مطلوب.",
-  
   "profile": "الملف",
   "changeProfilePicture": "تغيير صورة الملف الشخصي",
   "profileInformation": "معلومات الملف الشخصي",
@@ -304,7 +282,6 @@
   "selected": "محدد",
   "noDateSelected": "لم يتم اختيار تاريخ",
   "clearSelection": "مسح الاختيار",
-  
   "addNewAddress": "إضافة عنوان جديد",
   "pickLocationFromMap": "اختر الموقع من الخريطة",
   "addressName": "اسم العنوان",
@@ -321,7 +298,6 @@
   "addressFromMap": "العنوان من الخريطة",
   "mapLocation": "موقع الخريطة",
   "addressNotFound": "العنوان غير موجود",
-  
   "passwordResetEmailSent": "تم إرسال بريد إعادة تعيين كلمة المرور",
   "accountSecurityPriority": "أمان حسابك أولويتنا! أرسلنا لك رابطاً آمناً لتغيير كلمة المرور والحفاظ على حسابك محمياً.",
   "verifyEmailAddress": "تحقق من بريدك الإلكتروني!",
@@ -336,11 +312,9 @@
   "confirmEmailSubTitle": "تهانينا! حسابك في انتظارك: تحقق من بريدك الإلكتروني للبدء واستمتع بعالم من العروض المميزة.",
   "yourAccountCreatedTitle": "تم إنشاء حسابك بنجاح!",
   "yourAccountCreatedSubTitle": "مرحباً بك! تم إنشاء حسابك، استمتع بتجربة سلسة!",
-  
   "listYourBusiness": "أضف نشاطك التجاري",
   "getDiscoveredByMillions": "اجعل ملايين العملاء يكتشفون نشاطك وينمو عملك",
   "getStarted": "ابدأ الآن",
-  
   "viewDetails": "عرض التفاصيل",
   "noTrendingPlacesFound": "لم يتم العثور على أماكن رائجة.",
   "unknownError": "حدث خطأ غير معروف",
@@ -359,16 +333,13 @@
   "readLess": "قراءة أقل",
   "viewMore": "عرض المزيد",
   "viewLess": "عرض أقل",
-  
   "placesSaved": "تم حفظ {count} أماكن",
   "placesSaved_other": "تم حفظ {count} مكان",
   "placeSaved": "تم حفظ {count} مكان",
   "placeSaved_other": "تم حفظ {count} أماكن",
-  
   "voiceSearch": "البحث الصوتي",
   "listening": "جارٍ الاستماع...",
   "stopListening": "إيقاف الاستماع",
-  
   "foundPlacesIn": "تم العثور على {count} أماكن في",
   "foundPlacesFor": "تم العثور على {count} أماكن لـ",
   "filterPlaces": "تصفية الأماكن",
@@ -384,7 +355,6 @@
   "newest": "الأحدث",
   "nameAZ": "الاسم (أ-ي)",
   "nameZA": "الاسم (ي-أ)",
-  
   "contactOptions": "خيارات التواصل",
   "chooseHowToContact": "اختر طريقة التواصل",
   "call": "اتصال",
@@ -405,7 +375,6 @@
   "failedToOpenAppStore": "فشل فتح متجر التطبيقات",
   "copyFailed": "فشل النسخ",
   "couldNotCopyPhoneNumber": "تعذر نسخ رقم الهاتف",
-  
   "today": "اليوم",
   "yesterday": "أمس",
   "daysAgo": "أيام مضت",
@@ -416,7 +385,6 @@
   "minutesAgo": "دقيقة مضت",
   "justNow": "الآن",
   "unknownDate": "تاريخ غير معروف",
-  
   "cannotOpenLink": "لا يمكن فتح الرابط",
   "couldNotLaunchWebsite": "تعذر فتح الموقع",
   "messageFailed": "فشل الإرسال",
@@ -426,7 +394,6 @@
   "failedToMakeCall": "فشل إجراء المكالمة",
   "failedToLaunchPhoneOptions": "فشل فتح خيارات الهاتف",
   "couldNotMakeCall": "تعذر الاتصال بـ",
-  
   "shareFailed": "فشلت المشاركة",
   "saveFailed": "فشل الحفظ",
   "permissionRequired": "الإذن مطلوب",
@@ -437,16 +404,13 @@
   "fileExistsMessage": "يوجد ملف PDF بنفس الاسم. هل تريد استبداله؟",
   "overwrite": "استبدال",
   "fileOverwritten": "تم استبدال الملف بنجاح",
-  
   "gallery": "معرض الصور",
   "collections": "المجموعات",
   "allPlacePhotos": "جميع صور الأماكن",
   "collectionPhotos": "صور المجموعة",
   "uncategorized": "غير مصنف",
-  
   "stars": "نجوم",
   "star": "نجمة",
-  
   "chooseLocation": "اختر الموقع",
   "currentLocation": "الموقع الحالي",
   "yourLocation": "موقعك",
@@ -477,8 +441,6 @@
   "googlePlacesLocation": "موقع من خرائط جوجل",
   "googlePlaces": "خرائط جوجل",
   "searchSystem": "نظام البحث",
-  
-
   "youSelected": "لقد اخترت",
   "allLanguages": "كل اللغات",
   "search": "بحث",
@@ -486,7 +448,6 @@
   "selectPreferredLanguage": "اختر لغتك المفضلة للمتابعة",
   "english": "الإنجليزية",
   "arabic": "العربية",
-  
   "authenticationRequired": "المصادقة مطلوبة",
   "pleaseSignIn": "يرجى تسجيل الدخول أو إنشاء حساب للمتابعة.",
   "signInRequired": "تسجيل الدخول مطلوب",
@@ -495,7 +456,6 @@
   "pleaseLogInToUseFeature": "يرجى تسجيل الدخول أو إنشاء حساب لاستخدام هذه الميزة.",
   "pleaseSignInToSavePlaces": "يرجى تسجيل الدخول أو إنشاء حساب لحفظ أماكنك المفضلة.",
   "pleaseSignInToAddReview": "يرجى تسجيل الدخول أو إنشاء حساب لإضافة مراجعتك.",
-  
   "updateSuccess": "تم التحديث بنجاح",
   "updateFailed": "فشل التحديث",
   "submissionSuccess": "تم الإرسال بنجاح!",
@@ -505,17 +465,14 @@
   "usernameUpdated": "تم تحديث اسم المستخدم.",
   "genderUpdated": "تم تحديث جنسك.",
   "birthDateUpdated": "تم تحديث تاريخ ميلادك.",
-  
   "addressSelected": "تم اختيار العنوان",
   "addressSaved": "تم حفظ العنوان بنجاح",
   "locationSelected": "تم اختيار الموقع",
   "mapLocationSelected": "تم اختيار موقع الخريطة بنجاح",
-  
   "placeCreated": "تم إضافة المكان بنجاح",
   "placeUpdated": "تم تحديث المكان بنجاح",
   "placeDeleted": "تم حذف المكان بنجاح",
   "placeNotFound": "المكان غير موجود",
-  
   "reviewSubmitted": "تم إرسال المراجعة بنجاح",
   "reviewUpdated": "تم تحديث المراجعة بنجاح",
   "reviewDeleted": "تم حذف المراجعة بنجاح",
@@ -528,13 +485,11 @@
   "pleaseWriteReviewText": "يرجى كتابة نص المراجعة.",
   "answerRequired": "الإجابة مطلوبة",
   "pleaseAnswerRequiredQuestion": "يرجى الإجابة على السؤال المطلوب: {question}",
-  
   "favoriteAdded": "تمت الإضافة للمفضلة",
   "favoriteRemoved": "تمت الإزالة من المفضلة",
   "failedToLoadFavorites": "فشل تحميل المفضلة: {error}",
   "placeHasBeenAddedToWishlist": "تمت إضافة المكان للمفضلة",
   "placeHasBeenRemovedFromWishlist": "تمت إزالة المكان من المفضلة",
-  
   "weAreUpdatingYourInformation": "جارٍ تحديث معلوماتك...",
   "yourNameHasBeenUpdated": "تم تحديث اسمك.",
   "weAreUpdatingYourPhoneNumber": "جارٍ تحديث رقم هاتفك...",
@@ -546,10 +501,8 @@
   "weAreUpdatingYourBirthDate": "جارٍ تحديث تاريخ ميلادك...",
   "yourBirthDateHasBeenUpdated": "تم تحديث تاريخ ميلادك.",
   "pleaseSelectYourBirthDate": "يرجى اختيار تاريخ ميلادك.",
-  
   "storingAddress": "جارٍ حفظ العنوان...",
   "yourAddressHasBeenSaved": "تم حفظ عنوانك بنجاح.",
-  
   "creatingNewPlace": "جارٍ إضافة مكان جديد...",
   "uploadingPhotos": "جارٍ رفع {count} صورة للمكان: {placeId}...",
   "yourNewPlaceHasBeenCreated": "تم إضافة مكانك الجديد \"{title}\" بنجاح!",
@@ -567,14 +520,12 @@
   "pleaseSelectValidCategory": "يرجى اختيار فئة صالحة.",
   "limitReached": "تم الوصول للحد الأقصى",
   "youCanOnlyAddUpTo4Questions": "يمكنك إضافة حتى 4 أسئلة مخصصة فقط.",
-  
   "creatingNewCategory": "جارٍ إنشاء فئة جديدة...",
   "categoryNameRequired": "اسم الفئة مطلوب",
   "pleaseEnterCategoryName": "يرجى إدخال اسم للفئة الجديدة.",
   "duplicateCategory": "فئة مكررة",
   "categoryAlreadyExists": "يوجد فئة بهذا الاسم بالفعل.",
   "categoryCreated": "تم إنشاء الفئة الجديدة \"{name}\" بنجاح.",
-  
   "dataNotSaved": "لم يتم حفظ البيانات",
   "couldNotSaveInformation": "حدث خطأ أثناء حفظ معلوماتك. يمكنك إعادة الحفظ من ملفك الشخصي.",
   "deleteAccount": "حذف الحساب",
@@ -595,7 +546,6 @@
   "couldNotSelectImages": "تعذر اختيار الصور: {error}",
   "deleteFailed": "فشل الحذف",
   "formValidationFailed": "فشل التحقق من النموذج",
-  
   "loggingYouIn": "جارٍ تسجيل الدخول...",
   "enteringAsGuest": "جارٍ الدخول كضيف...",
   "couldNotSkipLogin": "تعذر تخطي تسجيل الدخول. يرجى التحقق من اتصالك أو المحاولة مرة أخرى: {error}",
@@ -609,7 +559,6 @@
   "accountCreatedVerifyEmail": "تم إنشاء حسابك! يرجى التحقق من البريد الإلكتروني للمتابعة.",
   "pleaseCheckInboxVerifyEmail": "يرجى التحقق من صندوق الوارد والتحقق من بريدك الإلكتروني.",
   "yourAccountCreated": "تم إنشاء حسابك",
-  
   "submittingReview": "جارٍ إرسال المراجعة...",
   "deletingReview": "جارٍ حذف المراجعة...",
   "microphonePermissionRequired": "إذن الميكروفون مطلوب",
@@ -620,7 +569,6 @@
   "couldNotStartVoiceRecognition": "تعذر بدء التعرف على الصوت. يرجى المحاولة مرة أخرى.",
   "searchError": "خطأ في البحث",
   "failedToLoadRecentFeaturedImages": "فشل تحميل الصور المميزة الأخيرة: {error}",
-  
   "commentAddedSuccessfully": "تمت إضافة التعليق بنجاح",
   "failedToAddComment": "فشل إضافة التعليق",
   "commentUpdatedSuccess": "تم تحديث التعليق بنجاح",
@@ -636,7 +584,6 @@
   "commentDeleteErrorMessage": "فشل حذف التعليق: {error}",
   "commentReactError": "عفواً!",
   "commentReactErrorMessage": "فشل التفاعل مع التعليق: {error}",
-  
   "couldNotLoadPlaces": "تعذر تحميل الأماكن",
   "loadingError": "خطأ في التحميل",
   "filterError": "خطأ في التصفية",
@@ -657,7 +604,6 @@
   "reverseGeocodingError": "خطأ في الترميز الجغرافي العكسي",
   "googlePlacesSearchError": "خطأ في بحث خرائط جوجل",
   "nearbyPlacesError": "خطأ في تحميل الأماكن القريبة",
-  
   "imageViewer": "عارض الصور",
   "downloadImage": "تحميل الصورة",
   "imageDownloaded": "تم تحميل الصورة بنجاح",
@@ -674,6 +620,8 @@
   "viewOriginal": "عرض الأصلية",
   "failedToLoadImage": "فشل تحميل الصورة",
   "swipeLeftOrRightToViewImages": "مرر يميناً أو يساراً لعرض الصور الأخرى",
-  
-  "searchInStore": "البحث في المتجر"
+  "searchInStore": "البحث في المتجر",
+  "searchInStoreSubTitle": "البحث عن عناوين, أماكن ...",
+  "updatePlace": " تحديث المكان",
+  "updatePlaceSubTitle": "قم بتحديث بيانات المكان الخاص بك"
 }

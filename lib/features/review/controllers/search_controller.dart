@@ -1,8 +1,10 @@
 // controllers/search_controller.dart - UPDATED WITH MULTILINGUAL SUPPORT
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:reviews_app/features/review/models/category_extension.dart';
+import 'package:reviews_app/localization/app_localizations.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
 import 'package:permission_handler/permission_handler.dart';
 import 'package:reviews_app/features/review/controllers/category_controller.dart';
@@ -10,7 +12,6 @@ import 'package:reviews_app/features/review/controllers/place_controller.dart';
 import 'package:reviews_app/features/review/models/place_model.dart';
 import 'package:reviews_app/features/review/models/category_model.dart';
 import 'package:reviews_app/utils/popups/loaders.dart';
-
 
 class AppSearchController extends GetxController {
   static AppSearchController get instance => Get.find();
@@ -33,11 +34,20 @@ class AppSearchController extends GetxController {
   final RxString recognizedText = ''.obs;
   final RxBool speechAvailable = false.obs;
   final RxString currentLanguage = 'en-US'.obs; // Default to English
+  Timer? _listenTimer;
 
   // Language options
   final Map<String, String> languageOptions = {
     'en-US': 'English',
     'ar-SA': 'العربية',
+    'fr-FR': 'Français',
+    'de-DE': 'Deutsch',
+    'es-ES': 'Español',
+    'it-IT': 'Italiano',
+    'pt-PT': 'Português',
+    'ru-RU': 'Русский',
+    'ja-JP': '日本語',
+    'ko-KR': '한국어',
   };
 
   // Sorting options
@@ -49,6 +59,10 @@ class AppSearchController extends GetxController {
     'Newest',
     'Name (A-Z)',
     'Name (Z-A)',
+    'Distance',
+    'Price',
+    'Rating',
+    'Featured',
   ];
   final RxString selectedSortingOption = 'Relevance'.obs;
 
@@ -76,10 +90,18 @@ class AppSearchController extends GetxController {
         bool available = await speechToText.initialize(
           onStatus: (status) {
             print('Speech status: $status');
+            if (status == 'done' || status == 'notListening') {
+              isListening.value = false;
+              // Ensure loading is false too just in case
+              if (recognizedText.value.isEmpty) {
+                isLoading.value = false;
+              }
+            }
           },
           onError: (error) {
             print('Speech error: $error');
             isListening.value = false;
+            isLoading.value = false;
           },
         );
 
@@ -91,8 +113,10 @@ class AppSearchController extends GetxController {
       } else {
         speechAvailable.value = false;
         AppLoaders.warningSnackBar(
-          title: 'Microphone Permission Required',
-          message: 'Please enable microphone permission to use voice search.',
+          // title: 'Microphone Permission Required',
+          title: txt.microphonePermissionRequired,
+          // message: 'Please enable microphone permission to use voice search.',
+          message: txt.pleaseEnableMicrophone,
         );
       }
     } catch (e) {
@@ -105,6 +129,22 @@ class AppSearchController extends GetxController {
   void toggleLanguage() {
     if (currentLanguage.value == 'en-US') {
       currentLanguage.value = 'ar-SA';
+    } else if (currentLanguage.value == 'ar-SA') {
+      currentLanguage.value = 'fr-FR';
+    } else if (currentLanguage.value == 'fr-FR') {
+      currentLanguage.value = 'de-DE';
+    } else if (currentLanguage.value == 'de-DE') {
+      currentLanguage.value = 'es-ES';
+    } else if (currentLanguage.value == 'es-ES') {
+      currentLanguage.value = 'it-IT';
+    } else if (currentLanguage.value == 'it-IT') {
+      currentLanguage.value = 'pt-PT';
+    } else if (currentLanguage.value == 'pt-PT') {
+      currentLanguage.value = 'ru-RU';
+    } else if (currentLanguage.value == 'ru-RU') {
+      currentLanguage.value = 'ja-JP';
+    } else if (currentLanguage.value == 'ja-JP') {
+      currentLanguage.value = 'ko-KR';
     } else {
       currentLanguage.value = 'en-US';
     }
@@ -113,15 +153,17 @@ class AppSearchController extends GetxController {
 
   /// Get current language name
   String get currentLanguageName {
-    return languageOptions[currentLanguage.value] ?? 'English';
+    return languageOptions[currentLanguage.value] ?? 'العربيه';
   }
 
   /// Start listening for voice input with real-time updates
   void startListening() async {
     if (!speechAvailable.value) {
       AppLoaders.warningSnackBar(
-        title: 'Voice Search Unavailable',
-        message: 'Speech recognition is not available on this device.',
+        // title: 'Voice Search Unavailable',
+        title: txt.voiceSearchUnavailable,
+        // message: 'Speech recognition is not available on this device.',
+        message: txt.speechRecognitionNotAvailable,
       );
       return;
     }
@@ -132,8 +174,20 @@ class AppSearchController extends GetxController {
     }
 
     isListening.value = true;
+    isLoading.value = true; // Show loading while listening/processing
     recognizedText.value = '';
     searchQuery.value = ''; // Clear previous search
+
+    // Cancel any existing timer
+    _listenTimer?.cancel();
+
+    // Set safety timer to force stop after 12 seconds (listenFor + buffer)
+    _listenTimer = Timer(const Duration(seconds: 10), () {
+      if (isListening.value) {
+        print('⏰ Safety timer triggered: Stopping listening');
+        stopListening();
+      }
+    });
 
     try {
       speechToText.listen(
@@ -154,10 +208,15 @@ class AppSearchController extends GetxController {
             stopListening();
           }
         },
-        listenFor: const Duration(seconds: 30),
-        pauseFor: const Duration(seconds: 5),
-        partialResults: true, // 🔥 This enables real-time partial results
-        listenMode: stt.ListenMode.dictation,
+        listenFor: const Duration(seconds: 5),
+        pauseFor: const Duration(seconds: 2),
+        // partialResults: true, // 🔥 This enables real-time partial results
+        // listenMode: stt.ListenMode.dictation,
+        // partialResults: ,
+        listenOptions: stt.SpeechListenOptions(
+          listenMode: stt.ListenMode.dictation,
+          partialResults: true,
+        ),
         localeId: currentLanguage.value,
         onSoundLevelChange: (level) {
           // Optional: You can use this for voice level visualization
@@ -169,8 +228,10 @@ class AppSearchController extends GetxController {
       print('❌ Listen error: $e');
       isListening.value = false;
       AppLoaders.errorSnackBar(
-        title: 'Speech Error',
-        message: 'Could not start voice recognition. Please try again.',
+        // title: 'Speech Error',
+        title: txt.speechError,
+        // message: 'Could not start voice recognition. Please try again.',
+        message: txt.couldNotStartVoiceRecognition,
       );
     }
   }
@@ -182,8 +243,14 @@ class AppSearchController extends GetxController {
       print('🛑 Stopped listening');
     } catch (e) {
       print('Stop listening error: $e');
+    } finally {
+      _listenTimer?.cancel();
+      isListening.value = false;
+      // Ensure loading turned off if no text was recognized
+      if (recognizedText.value.isEmpty) {
+        isLoading.value = false;
+      }
     }
-    isListening.value = false;
   }
 
   /// Search places with filters

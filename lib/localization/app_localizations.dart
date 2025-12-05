@@ -31,6 +31,15 @@ class AppLocalizations {
   static final Map<String, Map<String, String>> _localizedValues = {
     'en': {},
     'ar': {},
+    'de': {},
+    'es': {},
+    'fr': {},
+    'it': {},
+    'ja': {},
+    'ko': {},
+    'pt': {},
+    'ru': {},
+    'zh': {},
   };
 
   Future<bool> load() async {
@@ -43,6 +52,46 @@ class AppLocalizations {
     String arData = await rootBundle.loadString('assets/l10n/intl_ar.arb');
     _localizedValues['ar'] = _parseArbFile(arData);
 
+    // Load German strings
+    String deData = await rootBundle.loadString('assets/l10n/intl_de.arb');
+    _localizedValues['de'] = _parseArbFile(deData);
+
+    // Load Spanish strings
+    String esData = await rootBundle.loadString('assets/l10n/intl_es.arb');
+    _localizedValues['es'] = _parseArbFile(esData);
+
+    // Load French strings
+    String frData = await rootBundle.loadString('assets/l10n/intl_fr.arb');
+    _localizedValues['fr'] = _parseArbFile(frData);
+
+    // Load Hindi strings
+    String hiData = await rootBundle.loadString('assets/l10n/intl_hi.arb');
+    _localizedValues['hi'] = _parseArbFile(hiData);
+
+    // Load Italian strings
+    String itData = await rootBundle.loadString('assets/l10n/intl_it.arb');
+    _localizedValues['it'] = _parseArbFile(itData);
+
+    // Load Japanese strings
+    String jaData = await rootBundle.loadString('assets/l10n/intl_ja.arb');
+    _localizedValues['ja'] = _parseArbFile(jaData);
+
+    // Load Korean strings
+    String koData = await rootBundle.loadString('assets/l10n/intl_ko.arb');
+    _localizedValues['ko'] = _parseArbFile(koData);
+
+    // Load Portuguese strings
+    String ptData = await rootBundle.loadString('assets/l10n/intl_pt.arb');
+    _localizedValues['pt'] = _parseArbFile(ptData);
+
+    // Load Russian strings
+    String ruData = await rootBundle.loadString('assets/l10n/intl_ru.arb');
+    _localizedValues['ru'] = _parseArbFile(ruData);
+
+    // Load Chinese strings
+    String zhData = await rootBundle.loadString('assets/l10n/intl_zh.arb');
+    _localizedValues['zh'] = _parseArbFile(zhData);
+  
     return true;
   }
 
@@ -2011,7 +2060,20 @@ class _AppLocalizationsDelegate
 
   @override
   bool isSupported(Locale locale) {
-    return ['en', 'ar'].contains(locale.languageCode);
+    return [
+      'en',
+      'ar',
+      'de',
+      'es',
+      'fr',
+      'hi',
+      'it',
+      'ja',
+      'ko',
+      'pt',
+      'ru',
+      'zh'
+    ].contains(locale.languageCode);
   }
 
   @override

@@ -97,7 +97,7 @@ dependencies:
   printing: ^5.14.2
   path_provider: ^2.1.5
   in_app_purchase: ^3.2.3
-  intl_utils: ^2.8.12
+  # intl_utils: ^2.8.12
   build_runner: ^2.10.4
   gal: ^2.3.2
   flutter_cache_manager: ^3.4.1
@@ -113,7 +113,7 @@ dev_dependencies:
   flutter_lints: ^6.0.0
 
 flutter:
-  generate: true
+  # generate: true
 
   uses-material-design: true
 

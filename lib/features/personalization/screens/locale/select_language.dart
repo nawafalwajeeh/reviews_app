@@ -10,7 +10,9 @@ import '../../../authentication/screens/onboarding/onboarding.dart';
 import 'package:iconsax/iconsax.dart'; // Assuming this import is available.
 
 class SelectLanguageScreen extends StatefulWidget {
-  const SelectLanguageScreen({super.key});
+  final bool isFromSettings; // Add this parameter
+
+  const SelectLanguageScreen({super.key, this.isFromSettings = false});
 
   @override
   State<SelectLanguageScreen> createState() => _SelectLanguageScreenState();
@@ -35,152 +37,379 @@ class _SelectLanguageScreenState extends State<SelectLanguageScreen>
   String _searchQuery = '';
 
   // Language list: Updated to include localized display names in a 'names' map.
+  // final List<Map<String, dynamic>> _allLanguages = [
+  //   {
+  //     'code': 'ar',
+  //     'names': {'ar': 'العربية', 'en': 'Arabic'},
+  //     'flag': '🇾🇪',
+  //     'selected': true,
+  //     'isSupported': true,
+  //   },
+
+  //   {
+  //     'code': 'en',
+  //     'names': {'ar': 'الإنجليزية', 'en': 'English'},
+  //     'flag': '🇺🇸',
+  //     'selected': false,
+  //     'isSupported': true,
+  //   },
+
+  //   // The rest are set to unsupported and given localized names
+  //   {
+  //     'code': 'fr',
+  //     'names': {'ar': 'الفرنسية', 'en': 'French'},
+  //     'flag': '🇫🇷',
+  //     'selected': false,
+  //     'isSupported': true,
+  //   },
+
+  //   {
+  //     'code': 'de',
+  //     'names': {'ar': 'الألمانية', 'en': 'German'},
+  //     'flag': '🇩🇪',
+  //     'selected': false,
+  //     'isSupported': true,
+  //   },
+
+  //   {
+  //     'code': 'es',
+  //     'names': {'ar': 'الإسبانية', 'en': 'Spanish'},
+  //     'flag': '🇪🇸',
+  //     'selected': false,
+  //     'isSupported': true,
+  //   },
+
+  //   {
+  //     'code': 'hi',
+  //     'names': {'ar': 'الهندية', 'en': 'Hindi'},
+  //     'flag': '🇮🇳',
+  //     'selected': false,
+  //     'isSupported': true,
+  //   },
+
+  //   {
+  //     'code': 'ko',
+  //     'names': {'ar': 'الكورية', 'en': 'Korean'},
+  //     'flag': '🇰🇷',
+  //     'selected': false,
+  //     'isSupported': true,
+  //   },
+
+  //   {
+  //     'code': 'zh',
+  //     'names': {'ar': 'الصينية', 'en': 'Chinese'},
+  //     'flag': '🇨🇳',
+  //     'selected': false,
+  //     'isSupported': true,
+  //   },
+
+  //   {
+  //     'code': 'ja',
+  //     'names': {'ar': 'اليابانية', 'en': 'Japanese'},
+  //     'flag': '🇯🇵',
+  //     'selected': false,
+  //     'isSupported': true,
+  //   },
+
+  //   {
+  //     'code': 'pt',
+  //     'names': {'ar': 'البرتغالية', 'en': 'Portuguese'},
+  //     'flag': '🇵🇹',
+  //     'selected': false,
+  //     'isSupported': true,
+  //   },
+
+  //   {
+  //     'code': 'it',
+  //     'names': {'ar': 'الإيطالية', 'en': 'Italian'},
+  //     'flag': '🇮🇹',
+  //     'selected': false,
+  //     'isSupported': true,
+  //   },
+
+  //   {
+  //     'code': 'ru',
+  //     'names': {'ar': 'الروسية', 'en': 'Russian'},
+  //     'flag': '🇷🇺',
+  //     'selected': false,
+  //     'isSupported': true,
+  //   },
+  // ];
+
+  // Language list: Updated to include localized display names in a 'names' map.
   final List<Map<String, dynamic>> _allLanguages = [
     {
       'code': 'ar',
-      'names': {'ar': 'العربية', 'en': 'Arabic'},
+      'names': {
+        'ar': 'العربية',
+        'en': 'Arabic',
+        'fr': 'Arabe',
+        'de': 'Arabisch',
+        'es': 'Árabe',
+        'hi': 'अरबी',
+        'ko': '아랍어',
+        'zh': '阿拉伯语',
+        'ja': 'アラビア語',
+        'pt': 'Árabe',
+        'it': 'Arabo',
+        'ru': 'Арабский',
+      },
       'flag': '🇾🇪',
       'selected': true,
       'isSupported': true,
     },
-
     {
       'code': 'en',
-      'names': {'ar': 'الإنجليزية', 'en': 'English'},
+      'names': {
+        'ar': 'الإنجليزية',
+        'en': 'English',
+        'fr': 'Anglais',
+        'de': 'Englisch',
+        'es': 'Inglés',
+        'hi': 'अंग्रेज़ी',
+        'ko': '영어',
+        'zh': '英语',
+        'ja': '英語',
+        'pt': 'Inglês',
+        'it': 'Inglese',
+        'ru': 'Английский',
+      },
       'flag': '🇺🇸',
       'selected': false,
       'isSupported': true,
     },
-
-    // The rest are set to unsupported and given localized names
     {
       'code': 'fr',
-      'names': {'ar': 'الفرنسية', 'en': 'French'},
+      'names': {
+        'ar': 'الفرنسية',
+        'en': 'French',
+        'fr': 'Français',
+        'de': 'Französisch',
+        'es': 'Francés',
+        'hi': 'फ़्रेंच',
+        'ko': '프랑스어',
+        'zh': '法语',
+        'ja': 'フランス語',
+        'pt': 'Francês',
+        'it': 'Francese',
+        'ru': 'Французский',
+      },
       'flag': '🇫🇷',
       'selected': false,
-      'isSupported': false,
+      'isSupported': true,
     },
-
     {
       'code': 'de',
-      'names': {'ar': 'الألمانية', 'en': 'German'},
+      'names': {
+        'ar': 'الألمانية',
+        'en': 'German',
+        'fr': 'Allemand',
+        'de': 'Deutsch',
+        'es': 'Alemán',
+        'hi': 'जर्मन',
+        'ko': '독일어',
+        'zh': '德语',
+        'ja': 'ドイツ語',
+        'pt': 'Alemão',
+        'it': 'Tedesco',
+        'ru': 'Немецкий',
+      },
       'flag': '🇩🇪',
       'selected': false,
-      'isSupported': false,
+      'isSupported': true,
     },
-
     {
       'code': 'es',
-      'names': {'ar': 'الإسبانية', 'en': 'Spanish'},
+      'names': {
+        'ar': 'الإسبانية',
+        'en': 'Spanish',
+        'fr': 'Espagnol',
+        'de': 'Spanisch',
+        'es': 'Español',
+        'hi': 'स्पेनिश',
+        'ko': '스페인어',
+        'zh': '西班牙语',
+        'ja': 'スペイン語',
+        'pt': 'Espanhol',
+        'it': 'Spagnolo',
+        'ru': 'Испанский',
+      },
       'flag': '🇪🇸',
       'selected': false,
-      'isSupported': false,
+      'isSupported': true,
     },
-
     {
       'code': 'hi',
-      'names': {'ar': 'الهندية', 'en': 'Hindi'},
+      'names': {
+        'ar': 'الهندية',
+        'en': 'Hindi',
+        'fr': 'Hindi',
+        'de': 'Hindi',
+        'es': 'Hindi',
+        'hi': 'हिन्दी',
+        'ko': '힌디어',
+        'zh': '印地语',
+        'ja': 'ヒンディー語',
+        'pt': 'Hindi',
+        'it': 'Hindi',
+        'ru': 'Хинди',
+      },
       'flag': '🇮🇳',
       'selected': false,
-      'isSupported': false,
+      'isSupported': true,
     },
-
     {
       'code': 'ko',
-      'names': {'ar': 'الكورية', 'en': 'Korean'},
+      'names': {
+        'ar': 'الكورية',
+        'en': 'Korean',
+        'fr': 'Coréen',
+        'de': 'Koreanisch',
+        'es': 'Coreano',
+        'hi': 'कोरियाई',
+        'ko': '한국어',
+        'zh': '韩语',
+        'ja': '韓国語',
+        'pt': 'Coreano',
+        'it': 'Coreano',
+        'ru': 'Корейский',
+      },
       'flag': '🇰🇷',
       'selected': false,
-      'isSupported': false,
+      'isSupported': true,
     },
-
     {
       'code': 'zh',
-
-      'names': {'ar': 'الصينية', 'en': 'Chinese'},
-
+      'names': {
+        'ar': 'الصينية',
+        'en': 'Chinese',
+        'fr': 'Chinois',
+        'de': 'Chinesisch',
+        'es': 'Chino',
+        'hi': 'चीनी',
+        'ko': '중국어',
+        'zh': '中文',
+        'ja': '中国語',
+        'pt': 'Chinês',
+        'it': 'Cinese',
+        'ru': 'Китайский',
+      },
       'flag': '🇨🇳',
-
       'selected': false,
-
-      'isSupported': false,
+      'isSupported': true,
     },
-
     {
       'code': 'ja',
-
-      'names': {'ar': 'اليابانية', 'en': 'Japanese'},
-
+      'names': {
+        'ar': 'اليابانية',
+        'en': 'Japanese',
+        'fr': 'Japonais',
+        'de': 'Japanisch',
+        'es': 'Japonés',
+        'hi': 'जापानी',
+        'ko': '일본어',
+        'zh': '日语',
+        'ja': '日本語',
+        'pt': 'Japonês',
+        'it': 'Giapponese',
+        'ru': 'Японский',
+      },
       'flag': '🇯🇵',
-
       'selected': false,
-
-      'isSupported': false,
+      'isSupported': true,
     },
-
     {
       'code': 'pt',
-
-      'names': {'ar': 'البرتغالية', 'en': 'Portuguese'},
-
+      'names': {
+        'ar': 'البرتغالية',
+        'en': 'Portuguese',
+        'fr': 'Portugais',
+        'de': 'Portugiesisch',
+        'es': 'Portugués',
+        'hi': 'पुर्तगाली',
+        'ko': '포르투갈어',
+        'zh': '葡萄牙语',
+        'ja': 'ポルトガル語',
+        'pt': 'Português',
+        'it': 'Portoghese',
+        'ru': 'Португальский',
+      },
       'flag': '🇵🇹',
-
       'selected': false,
-
-      'isSupported': false,
+      'isSupported': true,
     },
-
     {
       'code': 'it',
-
-      'names': {'ar': 'الإيطالية', 'en': 'Italian'},
-
+      'names': {
+        'ar': 'الإيطالية',
+        'en': 'Italian',
+        'fr': 'Italien',
+        'de': 'Italienisch',
+        'es': 'Italiano',
+        'hi': 'इतालवी',
+        'ko': '이탈리아어',
+        'zh': '意大利语',
+        'ja': 'イタリア語',
+        'pt': 'Italiano',
+        'it': 'Italiano',
+        'ru': 'Итальянский',
+      },
       'flag': '🇮🇹',
-
       'selected': false,
-
-      'isSupported': false,
+      'isSupported': true,
     },
-
     {
       'code': 'ru',
-
-      'names': {'ar': 'الروسية', 'en': 'Russian'},
-
+      'names': {
+        'ar': 'الروسية',
+        'en': 'Russian',
+        'fr': 'Russe',
+        'de': 'Russisch',
+        'es': 'Ruso',
+        'hi': 'रूसी',
+        'ko': '러시아어',
+        'zh': '俄语',
+        'ja': 'ロシア語',
+        'pt': 'Russo',
+        'it': 'Russo',
+        'ru': 'Русский',
+      },
       'flag': '🇷🇺',
-
       'selected': false,
-
-      'isSupported': false,
+      'isSupported': true,
     },
   ];
 
-  // --- I N L I N E D - H E L P E R S ---
-
   /// Custom helper function to replace Color.withOpacity with the requested
-
-  /// Color.withValues(alpha: value) syntax. 'alpha' here acts as the opacity (0.0 - 1.0).
-
   static Color _withValues({required Color color, required double alpha}) {
-    return color.withOpacity(alpha);
+    return color.withValues(alpha: alpha);
   }
 
   /// Helper to get the display name of a language based on the current selected locale.
-
   String _getLocalizedLanguageName(Map<String, dynamic> lang) {
     // Get the names map from the language item
-
     final names = lang['names'] as Map<String, String>?;
 
-    // Determine the key for localization (use 'ar' or 'en' from the selected language)
+    // Use the current selected language code as the key
+    final localeKey = _selectedLanguage;
 
-    final localeKey = (_selectedLanguage == 'ar') ? 'ar' : 'en';
+    // First, try to get the name in the selected language
+    final localizedName = names?[localeKey];
 
-    // Return the localized name, falling back to English or the language code if not found.
+    // If not available, try English as fallback
+    if (localizedName != null && localizedName.isNotEmpty) {
+      return localizedName;
+    }
 
-    return names?[localeKey] ?? names?['en'] ?? lang['code']!;
+    // Fall back to English
+    final englishName = names?['en'];
+    if (englishName != null && englishName.isNotEmpty) {
+      return englishName;
+    }
+
+    // Final fallback to language code
+    return lang['code'] ?? 'Unknown';
   }
-
-  // --- E N D - O F - I N L I N E D - H E L P E R S ---
 
   @override
   void initState() {
@@ -226,9 +455,100 @@ class _SelectLanguageScreenState extends State<SelectLanguageScreen>
 
   /// Loads all necessary localized texts for the initial screen based on the current locale.
 
+  // void _loadInitialLocalizedTexts(String languageCode) {
+  //   final initialLocale = Locale(languageCode);
+
+  //   final initialLocalizations = AppLocalizations(initialLocale);
+
+  //   initialLocalizations
+  //       .load()
+  //       .then((_) {
+  //         setState(() {
+  //           _localizedTexts = {
+  //             'chooseLanguage': initialLocalizations.chooseLanguage,
+
+  //             'selectPreferredLanguage':
+  //                 initialLocalizations.selectPreferredLanguage,
+
+  //             'continue': initialLocalizations.continueText,
+
+  //             // Custom header localization for the selected language section
+  //             'currentLanguageHeader': languageCode == 'ar'
+  //                 ? 'اللغة الحالية'
+  //                 : 'Current Language',
+
+  //             'allLanguagesText': languageCode == 'ar'
+  //                 ? 'كل اللغات'
+  //                 : 'All Languages',
+
+  //             'search': initialLocalizations.search,
+
+  //             'comingSoon': languageCode == 'ar' ? 'قريباً' : 'Coming Soon',
+  //           };
+
+  //           _isLoading = false;
+  //         });
+
+  //         _animationController.forward();
+  //       })
+  //       .catchError((error) {
+  //         // Fallback texts if loading fails
+
+  //         setState(() {
+  //           _localizedTexts = {
+  //             'chooseLanguage': 'Choose the language',
+
+  //             'selectPreferredLanguage':
+  //                 'Select your preferred language below. This helps us serve you better.',
+
+  //             'continue': 'Continue',
+
+  //             'currentLanguageHeader': 'Current Language',
+
+  //             'allLanguagesText': 'All Languages',
+
+  //             'search': 'Search',
+
+  //             'comingSoon': 'Coming Soon',
+  //           };
+
+  //           _isLoading = false;
+  //         });
+
+  //         _animationController.forward();
+  //       });
+  // }
+  String _getComingSoonText() {
+    switch (_selectedLanguage) {
+      case 'ar':
+        return 'قريباً';
+      case 'fr':
+        return 'Bientôt disponible';
+      case 'de':
+        return 'Demnächst verfügbar';
+      case 'es':
+        return 'Próximamente';
+      case 'hi':
+        return 'जल्द ही आ रहा है';
+      case 'ko':
+        return '곧 제공될 예정입니다';
+      case 'zh':
+        return '即将推出';
+      case 'ja':
+        return '近日公開予定';
+      case 'pt':
+        return 'Em breve';
+      case 'it':
+        return 'Prossimamente';
+      case 'ru':
+        return 'Скоро будет';
+      default:
+        return 'Coming Soon';
+    }
+  }
+
   void _loadInitialLocalizedTexts(String languageCode) {
     final initialLocale = Locale(languageCode);
-
     final initialLocalizations = AppLocalizations(initialLocale);
 
     initialLocalizations
@@ -237,57 +557,94 @@ class _SelectLanguageScreenState extends State<SelectLanguageScreen>
           setState(() {
             _localizedTexts = {
               'chooseLanguage': initialLocalizations.chooseLanguage,
-
               'selectPreferredLanguage':
                   initialLocalizations.selectPreferredLanguage,
-
               'continue': initialLocalizations.continueText,
-
               // Custom header localization for the selected language section
-              'currentLanguageHeader': languageCode == 'ar'
-                  ? 'اللغة الحالية'
-                  : 'Current Language',
-
-              'allLanguagesText': languageCode == 'ar'
-                  ? 'كل اللغات'
-                  : 'All Languages',
-
+              'currentLanguageHeader': _getCurrentLanguageHeader(languageCode),
+              'allLanguagesText': _getAllLanguagesText(languageCode),
               'search': initialLocalizations.search,
-
-              'comingSoon': languageCode == 'ar' ? 'قريباً' : 'Coming Soon',
+              'comingSoon': _getComingSoonText(),
             };
-
             _isLoading = false;
           });
-
           _animationController.forward();
         })
         .catchError((error) {
           // Fallback texts if loading fails
-
           setState(() {
             _localizedTexts = {
               'chooseLanguage': 'Choose the language',
-
               'selectPreferredLanguage':
                   'Select your preferred language below. This helps us serve you better.',
-
               'continue': 'Continue',
-
-              'currentLanguageHeader': 'Current Language',
-
-              'allLanguagesText': 'All Languages',
-
+              'currentLanguageHeader': _getCurrentLanguageHeader(languageCode),
+              'allLanguagesText': _getAllLanguagesText(languageCode),
               'search': 'Search',
-
-              'comingSoon': 'Coming Soon',
+              'comingSoon': _getComingSoonText(),
             };
-
             _isLoading = false;
           });
-
           _animationController.forward();
         });
+  }
+
+  String _getCurrentLanguageHeader(String languageCode) {
+    switch (languageCode) {
+      case 'ar':
+        return 'اللغة الحالية';
+      case 'fr':
+        return 'Langue actuelle';
+      case 'de':
+        return 'Aktuelle Sprache';
+      case 'es':
+        return 'Idioma actual';
+      case 'hi':
+        return 'वर्तमान भाषा';
+      case 'ko':
+        return '현재 언어';
+      case 'zh':
+        return '当前语言';
+      case 'ja':
+        return '現在の言語';
+      case 'pt':
+        return 'Idioma atual';
+      case 'it':
+        return 'Lingua corrente';
+      case 'ru':
+        return 'Текущий язык';
+      default:
+        return 'Current Language';
+    }
+  }
+
+  String _getAllLanguagesText(String languageCode) {
+    switch (languageCode) {
+      case 'ar':
+        return 'كل اللغات';
+      case 'fr':
+        return 'Toutes les langues';
+      case 'de':
+        return 'Alle Sprachen';
+      case 'es':
+        return 'Todos los idiomas';
+      case 'hi':
+        return 'सभी भाषाएँ';
+      case 'ko':
+        return '모든 언어';
+      case 'zh':
+        return '所有语言';
+      case 'ja':
+        return 'すべての言語';
+      case 'pt':
+        return 'Todos os idiomas';
+      case 'it':
+        return 'Tutte le lingue';
+      case 'ru':
+        return 'Все языки';
+      default:
+        return 'All Languages';
+    }
   }
 
   /// Updates localized texts when a new language is selected.
@@ -346,18 +703,46 @@ class _SelectLanguageScreenState extends State<SelectLanguageScreen>
     _updateLocalizedTexts(languageCode);
   }
 
+  // Future<void> _onContinuePressed() async {
+  //   await _localizationService.changeLanguage(_selectedLanguage);
+
+  //   await _storage.write('hasSelectedLanguage', true);
+
+  //   final bool isFirstTime = _storage.read('IsFirstTime') != false;
+
+  //   if (isFirstTime) {
+  //     Get.offAll(() => const OnBoardingScreen());
+  //   } else {
+  //     Get.offAll(() => const LoginScreen());
+  //   }
+  // }
+
   Future<void> _onContinuePressed() async {
     await _localizationService.changeLanguage(_selectedLanguage);
-
     await _storage.write('hasSelectedLanguage', true);
 
-    final bool isFirstTime = _storage.read('IsFirstTime') != false;
-
-    if (isFirstTime) {
-      Get.offAll(() => const OnBoardingScreen());
+    // Check if coming from settings or first time
+    if (widget.isFromSettings) {
+      // If from settings, just go back
+      Get.back();
+      // Show success message
+      Get.snackbar(
+        txt.success,
+        'Language changed successfully',
+        // txt.languageChangedSuccessfully,
+        snackPosition: SnackPosition.BOTTOM,
+      );
     } else {
-      Get.offAll(() => const LoginScreen());
+      // First time flow
+      final bool isFirstTime = _storage.read('IsFirstTime') != false;
+
+      if (isFirstTime) {
+        Get.offAll(() => const OnBoardingScreen());
+      } else {
+        Get.offAll(() => const LoginScreen());
+      }
     }
+    return;
   }
 
   @override
@@ -693,43 +1078,110 @@ class _SelectLanguageScreenState extends State<SelectLanguageScreen>
     );
   }
 
+  // Widget _buildLanguagesList(Color cardColor, Color textColor) {
+  //   // Prepare the lowercased search query once for efficient Latin comparison
+
+  //   final queryLower = _searchQuery.toLowerCase();
+
+  //   // FIX 2: Corrected filtering logic to handle Arabic search by using raw strings
+
+  //   // for Arabic names, and lowercased comparison for Latin (English) names.
+
+  //   final filteredLanguages = _searchQuery.isEmpty
+  //       ? _allLanguages.where((lang) => lang['selected'] != true).toList()
+  //       : _allLanguages.where((lang) {
+  //           // Extract raw names
+
+  //           final names = lang['names'] as Map<String, String>?;
+
+  //           final englishName = names?['en'] ?? '';
+
+  //           final arabicName = names?['ar'] ?? '';
+
+  //           // 1. Check against English name (case-insensitive)
+
+  //           final englishMatch = englishName.toLowerCase().contains(queryLower);
+
+  //           // 2. Check against Arabic name (raw comparison to avoid normalization issues)
+
+  //           final arabicMatch = arabicName.contains(_searchQuery);
+
+  //           // 3. Check against the currently localized name (using appropriate method)
+
+  //           final localizedName = _getLocalizedLanguageName(lang);
+
+  //           final localizedMatch = _selectedLanguage == 'ar'
+  //               ? localizedName.contains(_searchQuery)
+  //               : localizedName.toLowerCase().contains(queryLower);
+
+  //           return (englishMatch || arabicMatch || localizedMatch) &&
+  //               lang['selected'] != true;
+  //         }).toList();
+
+  //   if (filteredLanguages.isEmpty) {
+  //     return Padding(
+  //       padding: const EdgeInsets.symmetric(vertical: 40),
+
+  //       child: Center(
+  //         child: Text(
+  //           // Use localization fallback for this internal message
+  //           _selectedLanguage == 'ar'
+  //               ? 'لم يتم العثور على لغات'
+  //               : 'No languages found',
+
+  //           style: TextStyle(
+  //             // Apply _withValues replacement
+  //             color: _withValues(color: textColor, alpha: 0.5),
+
+  //             fontSize: 16,
+
+  //             fontWeight: FontWeight.w500,
+
+  //             fontFamily: _selectedLanguage == 'ar' ? 'Tajawal' : 'Poppins',
+  //           ),
+  //         ),
+  //       ),
+  //     );
+  //   }
+
+  //   return Column(
+  //     children: filteredLanguages.map((lang) {
+  //       return Padding(
+  //         padding: const EdgeInsets.only(bottom: 12),
+
+  //         child: _buildLanguageListItem(
+  //           lang: lang,
+
+  //           cardColor: cardColor, // Pass dynamic color
+
+  //           textColor: textColor, // Pass dynamic color
+
+  //           isCurrentLanguageCard: false,
+  //         ),
+  //       );
+  //     }).toList(),
+  //   );
+  // }
+
   Widget _buildLanguagesList(Color cardColor, Color textColor) {
     // Prepare the lowercased search query once for efficient Latin comparison
-
     final queryLower = _searchQuery.toLowerCase();
-
-    // FIX 2: Corrected filtering logic to handle Arabic search by using raw strings
-
-    // for Arabic names, and lowercased comparison for Latin (English) names.
 
     final filteredLanguages = _searchQuery.isEmpty
         ? _allLanguages.where((lang) => lang['selected'] != true).toList()
         : _allLanguages.where((lang) {
-            // Extract raw names
+            // Get the localized name in the currently selected language
+            final localizedName = _getLocalizedLanguageName(lang).toLowerCase();
 
+            // Also search in the language's native name
             final names = lang['names'] as Map<String, String>?;
+            final nativeName = names?[lang['code']]?.toLowerCase() ?? '';
 
-            final englishName = names?['en'] ?? '';
-
-            final arabicName = names?['ar'] ?? '';
-
-            // 1. Check against English name (case-insensitive)
-
-            final englishMatch = englishName.toLowerCase().contains(queryLower);
-
-            // 2. Check against Arabic name (raw comparison to avoid normalization issues)
-
-            final arabicMatch = arabicName.contains(_searchQuery);
-
-            // 3. Check against the currently localized name (using appropriate method)
-
-            final localizedName = _getLocalizedLanguageName(lang);
-
-            final localizedMatch = _selectedLanguage == 'ar'
-                ? localizedName.contains(_searchQuery)
-                : localizedName.toLowerCase().contains(queryLower);
-
-            return (englishMatch || arabicMatch || localizedMatch) &&
+            // Search in both localized and native names
+            return (localizedName.contains(queryLower) ||
+                    nativeName.contains(queryLower) ||
+                    // Also search in English name for all languages
+                    (names?['en']?.toLowerCase() ?? '').contains(queryLower)) &&
                 lang['selected'] != true;
           }).toList();
 
@@ -739,10 +1191,8 @@ class _SelectLanguageScreenState extends State<SelectLanguageScreen>
 
         child: Center(
           child: Text(
-            // Use localization fallback for this internal message
-            _selectedLanguage == 'ar'
-                ? 'لم يتم العثور على لغات'
-                : 'No languages found',
+            // Use dynamic text based on selected language
+            _getNoLanguagesFoundText(),
 
             style: TextStyle(
               // Apply _withValues replacement
@@ -776,6 +1226,35 @@ class _SelectLanguageScreenState extends State<SelectLanguageScreen>
         );
       }).toList(),
     );
+  }
+
+  String _getNoLanguagesFoundText() {
+    switch (_selectedLanguage) {
+      case 'ar':
+        return 'لم يتم العثور على لغات';
+      case 'fr':
+        return 'Aucune langue trouvée';
+      case 'de':
+        return 'Keine Sprachen gefunden';
+      case 'es':
+        return 'No se encontraron idiomas';
+      case 'hi':
+        return 'कोई भाषा नहीं मिली';
+      case 'ko':
+        return '언어를 찾을 수 없습니다';
+      case 'zh':
+        return '未找到语言';
+      case 'ja':
+        return '言語が見つかりません';
+      case 'pt':
+        return 'Nenhum idioma encontrado';
+      case 'it':
+        return 'Nessuna lingua trovata';
+      case 'ru':
+        return 'Языки не найдены';
+      default:
+        return 'No languages found';
+    }
   }
 
   /// Builds a single language list item or the selected language card.
@@ -899,16 +1378,11 @@ class _SelectLanguageScreenState extends State<SelectLanguageScreen>
               Expanded(
                 child: Text(
                   displayName,
-
                   style: TextStyle(
                     color: nameColor,
-
                     fontSize: 16.5,
-
                     fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
-
                     fontFamily: isArabic ? 'Tajawal' : 'Poppins',
-
                     letterSpacing: -0.3,
                   ),
                 ),
@@ -918,40 +1392,29 @@ class _SelectLanguageScreenState extends State<SelectLanguageScreen>
               if (isSelected)
                 Icon(
                   Icons.check_circle_rounded,
-
                   color: selectedBorderColor,
-
                   size: 28,
                 )
               else if (!isSupported)
                 Container(
                   padding: const EdgeInsets.symmetric(
                     horizontal: 10,
-
                     vertical: 4,
                   ),
-
                   decoration: BoxDecoration(
                     // Apply _withValues replacement
                     color: _withValues(
                       color: AppColors.primaryColor,
-
                       alpha: 0.1,
                     ),
-
                     borderRadius: BorderRadius.circular(16),
                   ),
-
                   child: Text(
                     _localizedTexts['comingSoon']!, // Localized "Coming Soon"
-
                     style: TextStyle(
                       color: AppColors.primaryColor,
-
                       fontSize: 12,
-
                       fontWeight: FontWeight.w600,
-
                       fontFamily: isArabic ? 'Tajawal' : 'Poppins',
                     ),
                   ),
@@ -959,9 +1422,7 @@ class _SelectLanguageScreenState extends State<SelectLanguageScreen>
               else
                 Icon(
                   Icons.circle_outlined,
-
                   color: unselectedIconColor, // Theme-aware color
-
                   size: 28,
                 ),
             ],
