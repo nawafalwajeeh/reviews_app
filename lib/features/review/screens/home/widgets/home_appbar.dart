@@ -11,7 +11,7 @@ import 'package:reviews_app/routes/app_routes.dart';
 import 'package:reviews_app/utils/constants/colors.dart';
 import '../../../../../localization/app_localizations.dart';
 import '../../../../../utils/constants/sizes.dart';
-import '../../../../personalization/screens/locale/select_language.dart';
+// import '../../../../personalization/screens/locale/select_language.dart';
 
 class HomeAppBar extends StatelessWidget {
   const HomeAppBar({super.key});
@@ -60,15 +60,15 @@ class HomeAppBar extends StatelessWidget {
           size: AppSizes.iconMd,
           onPressed: () => Get.to(() => const BarcodeScannerScreen()),
         ),
-        const SizedBox(width: AppSizes.spaceBtwItems),
-        AppCircularIcon(
-          icon: Icons.notifications_outlined,
-          backgroundColor: Colors.blue[100],
-          color: Colors.blue,
-          size: AppSizes.iconMd,
-          // onPressed: () => Get.to(() => const NotificationsScreen()),
-          onPressed: () => Get.to(() => const SelectLanguageScreen()),
-        ),
+        // const SizedBox(width: AppSizes.spaceBtwItems),
+        // AppCircularIcon(
+        //   icon: Icons.notifications_outlined,
+        //   backgroundColor: Colors.blue[100],
+        //   color: Colors.blue,
+        //   size: AppSizes.iconMd,
+        //   // onPressed: () => Get.to(() => const NotificationsScreen()),
+        //   onPressed: () => Get.to(() => const SelectLanguageScreen()),
+        // ),
         const SizedBox(width: AppSizes.spaceBtwItems),
 
         Obx(

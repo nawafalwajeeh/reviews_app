@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
 import '../../../../../common/widgets/list_tiles/settings_menu_tile.dart';
-import '../../../../../localization/app_localizations.dart';
 import '../../../../../data/services/localization/localization_service.dart';
 import '../../locale/select_language.dart';
 

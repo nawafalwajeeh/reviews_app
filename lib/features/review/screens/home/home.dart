@@ -4,7 +4,6 @@ import 'package:reviews_app/common/widgets/custom_shapes/containers/primary_head
 import 'package:reviews_app/common/widgets/texts/section_heading.dart';
 import 'package:reviews_app/features/review/controllers/notification_controller.dart';
 import '../../../../common/widgets/custom_shapes/containers/search_container.dart';
-import '../../../../common/widgets/shimmers/trending_list_shimmer.dart';
 import '../../../../localization/app_localizations.dart';
 import '../../../../utils/constants/sizes.dart';
 import '../../controllers/place_controller.dart';
@@ -24,92 +23,84 @@ class HomeScreen extends StatelessWidget {
     return GestureDetector(
       onTap: () {},
       child: Scaffold(
-        body: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              AppPrimaryHeaderContainer(
-                child: Column(
-                  children: [
-                    /// -- AppBar
-                    const HomeAppBar(),
-                    const SizedBox(height: AppSizes.spaceBtwSections),
+        body: RefreshIndicator(
+          onRefresh: () async {
+            await controller.refreshAll();
+            // Also refresh other controllers if needed, e.g.
+            // await NotificationController.instance.fetchNotifications();
+          },
+          child: SingleChildScrollView(
+            physics: const AlwaysScrollableScrollPhysics(),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                AppPrimaryHeaderContainer(
+                  child: Column(
+                    children: [
+                      /// -- AppBar
+                      const HomeAppBar(),
+                      const SizedBox(height: AppSizes.spaceBtwSections),
 
-                    /// -- SearchBar
-                    AppSearchContainer(
-                      // text: 'Search for Places',
-                      text: AppLocalizations.of(context).searchPlaces,
-                      onTap: () => Get.to(() => SearchScreen()),
-                    ),
-                    const SizedBox(height: AppSizes.spaceBtwSections),
-                  ],
+                      /// -- SearchBar
+                      AppSearchContainer(
+                        // text: 'Search for Places',
+                        text: AppLocalizations.of(context).searchPlaces,
+                        onTap: () => Get.to(() => SearchScreen()),
+                      ),
+                      const SizedBox(height: AppSizes.spaceBtwSections),
+                    ],
+                  ),
                 ),
-              ),
 
-              /// -- Categories
-              Padding(
-                padding: EdgeInsets.symmetric(
-                  horizontal: AppSizes.defaultSpace,
+                /// -- Categories
+                Padding(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: AppSizes.defaultSpace,
+                  ),
+                  child: Column(
+                    children: [
+                      AppSectionHeading(
+                        // title: 'Popular Categories',
+                        title: AppLocalizations.of(context).popularCategories,
+                        showActionButton: false,
+                      ),
+                      SizedBox(height: AppSizes.spaceBtwItems),
+
+                      /// -- Categories
+                      HomeCategories(),
+                    ],
+                  ),
                 ),
-                child: Column(
-                  children: [
-                    AppSectionHeading(
-                      // title: 'Popular Categories',
-                      title: AppLocalizations.of(context).popularCategories,
-                      showActionButton: false,
-                    ),
-                    SizedBox(height: AppSizes.spaceBtwItems),
+                const SizedBox(height: AppSizes.spaceBtwSections),
 
-                    /// -- Categories
-                    HomeCategories(),
-                  ],
+                /// -- Business Card
+                BusinessCard(),
+                const SizedBox(height: AppSizes.spaceBtwSections),
+
+                /// -- Trending
+                Padding(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: AppSizes.defaultSpace,
+                  ),
+                  child: Column(
+                    children: [
+                      AppSectionHeading(
+                        // title: 'Trending',
+                        title: AppLocalizations.of(context).trendingPlaces,
+                        showActionButton: false,
+                      ),
+                      SizedBox(height: AppSizes.spaceBtwItems),
+
+                      /// -- Trendings
+                      const HomeTrendings(),
+
+                      const SizedBox(height: AppSizes.spaceBtwItems),
+                    ],
+                  ),
                 ),
-              ),
-              const SizedBox(height: AppSizes.spaceBtwSections),
-
-              /// -- Business Card
-              BusinessCard(),
-              const SizedBox(height: AppSizes.spaceBtwSections),
-
-              /// -- Trending
-              Padding(
-                padding: EdgeInsets.symmetric(
-                  horizontal: AppSizes.defaultSpace,
-                ),
-                child: Column(
-                  children: [
-                    AppSectionHeading(
-                      // title: 'Trending',
-                      title: AppLocalizations.of(context).trendingPlaces,
-                      showActionButton: false,
-                    ),
-                    SizedBox(height: AppSizes.spaceBtwItems),
-
-                    /// -- Trendings
-                    Obx(() {
-                      // Show Shimmer if loading
-                      if (controller.isLoading.value) {
-                        return const AppTrendingListShimmer();
-                      }
-
-                      // Show actual data if loaded and not empty
-                      if (controller.featuredPlaces.isNotEmpty) {
-                        return HomeTrendings(places: controller.featuredPlaces);
-                      }
-
-                      // Show nothing or an empty state if loaded but empty
-                      return Center(
-                        // child: Text('No trending places found.'),
-                        child: Text(AppLocalizations.of(context).noTrendingPlacesFound),
-                      );
-                    }),
-
-                    const SizedBox(height: AppSizes.spaceBtwItems),
-                  ],
-                ),
-              ),
-              const SizedBox(height: AppSizes.spaceBtwItems),
-            ],
+                const SizedBox(height: AppSizes.spaceBtwItems),
+              ],
+            ),
           ),
         ),
       ),

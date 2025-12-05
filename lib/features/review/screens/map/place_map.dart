@@ -41,9 +41,11 @@ class PlacesMapScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final controller = PlacesMapController.instance;
 
-    // Set initial place if provided
+    // Set initial place if provided (after build completes)
     if (initialPlace != null) {
-      controller.setInitialPlace(initialPlace!);
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        controller.setInitialPlace(initialPlace!);
+      });
     }
 
     return Scaffold(

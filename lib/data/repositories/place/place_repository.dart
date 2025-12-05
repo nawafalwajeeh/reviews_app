@@ -920,4 +920,65 @@ class PlaceRepository extends GetxController {
       rethrow;
     }
   }
+
+  /// -- Data Repair (Run once to fix corrupted data)
+  Future<void> repairData() async {
+    try {
+      debugPrint('🔧 Starting Data Repair...');
+
+      // 1. Fetch ALL places
+      final placesSnapshot = await _db.collection('Places').get();
+      final places = placesSnapshot.docs
+          .map((doc) => PlaceModel.fromSnapshot(doc))
+          .toList();
+
+      debugPrint('Found ${places.length} places to check.');
+
+      final batch = _db.batch();
+      int operationCount = 0;
+
+      for (var place in places) {
+        bool needsUpdate = false;
+
+        // A. Fix isFeatured (Force to true)
+        if (place.isFeatured != true) {
+          debugPrint('Fixing isFeatured for ${place.title}');
+          batch.update(_db.collection('Places').doc(place.id), {
+            'IsFeatured': true,
+          });
+          operationCount++;
+          needsUpdate = true;
+        }
+
+        // B. Fix PlaceCategory Link
+        final categoryQuery = await _db
+            .collection('PlaceCategory')
+            .where('placeId', isEqualTo: place.id)
+            .where('categoryId', isEqualTo: place.categoryId)
+            .get();
+
+        if (categoryQuery.docs.isEmpty) {
+          debugPrint(
+            'Restoring missing Category Link for ${place.title} (Cat: ${place.categoryId})',
+          );
+          final newLinkRef = _db.collection('PlaceCategory').doc();
+          batch.set(newLinkRef, {
+            'placeId': place.id,
+            'categoryId': place.categoryId,
+          });
+          operationCount++;
+          needsUpdate = true;
+        }
+      }
+
+      if (operationCount > 0) {
+        await batch.commit();
+        debugPrint('✅ Data Repair Complete: Performed $operationCount fixes.');
+      } else {
+        debugPrint('✅ Data Repair Complete: No issues found.');
+      }
+    } catch (e) {
+      debugPrint('❌ Data Repair Failed: $e');
+    }
+  }
 }

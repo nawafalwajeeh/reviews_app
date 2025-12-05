@@ -21,77 +21,92 @@ class AddNewPlaceScreen extends StatelessWidget {
     final controller = PlaceController.instance;
     final subscriptionController = SubscriptionController.instance;
 
-    return GestureDetector(
-      onTap: () => FocusScope.of(context).unfocus(),
-      child: Scaffold(
-        appBar: CustomAppBar(
-          leadingIcon: Icons.clear,
-          leadingOnPressed: () => Get.back(),
-          actions: [
-            Obx(
-              () => subscriptionController.hasActiveSubscription.value
-                  ? _buildPremiumBadge()
-                  : const SizedBox(),
-            ),
-            IconButton(
-              icon: Icon(Icons.help_outline_rounded, color: AppColors.darkGrey),
-              onPressed: () {},
-            ),
-          ],
-        ),
-        body: SafeArea(
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.symmetric(
-              horizontal: AppSizes.defaultSpace,
-            ),
-            child: Form(
-              key: controller.placeFormKey,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const SizedBox(height: AppSizes.spaceBtwItems),
-                  Text(
-                    // 'Create New Place',
-                    AppLocalizations.of(context).createNewPlace,
-                    style: Theme.of(context).textTheme.headlineMedium,
-                  ),
-                  const SizedBox(height: AppSizes.xs),
-                  Text(
-                    // 'Share your favorite spot with the community',
-                    AppLocalizations.of(context).shareFavoriteSpot,
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: Theme.of(context).hintColor,
+    return PopScope(
+      onPopInvokedWithResult: (didPop, result) {
+        if (didPop) {
+          controller.resetForm();
+        }
+      },
+      child: GestureDetector(
+        onTap: () => FocusScope.of(context).unfocus(),
+        child: Scaffold(
+          appBar: CustomAppBar(
+            leadingIcon: Icons.clear,
+            leadingOnPressed: () {
+              controller.resetForm();
+              Get.back();
+            },
+            actions: [
+              Obx(
+                () => subscriptionController.hasActiveSubscription.value
+                    ? _buildPremiumBadge()
+                    : const SizedBox(),
+              ),
+              IconButton(
+                icon: Icon(
+                  Icons.help_outline_rounded,
+                  color: AppColors.darkGrey,
+                ),
+                onPressed: () {},
+              ),
+            ],
+          ),
+          body: SafeArea(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.symmetric(
+                horizontal: AppSizes.defaultSpace,
+              ),
+              child: Form(
+                key: controller.placeFormKey,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const SizedBox(height: AppSizes.spaceBtwItems),
+                    Text(
+                      // 'Create New Place',
+                      AppLocalizations.of(context).createNewPlace,
+                      style: Theme.of(context).textTheme.headlineMedium,
                     ),
-                  ),
-                  const SizedBox(height: AppSizes.spaceBtwItems),
-
-                  // Subscription Status Section (REPLACES Payment Section)
-                  const SubscriptionStatusSection(),
-                  const SizedBox(height: AppSizes.spaceBtwItems),
-
-                  const AddPhotoBox(),
-                  const SizedBox(height: AppSizes.spaceBtwItems),
-                  const PlaceForm(),
-                  const SizedBox(height: AppSizes.spaceBtwItems),
-
-                  // Custom Questions Section
-                  const CustomQuestionsSection(),
-                  const SizedBox(height: AppSizes.spaceBtwItems),
-                  const CommunityGuidelinesBox(),
-                  const SizedBox(height: AppSizes.spaceBtwItems),
-
-                  /// -- Create Button (Now handles subscription check)
-                  // _buildCreateButton(controller, subscriptionController),
-                  SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton(
-                      onPressed: () => controller.createPlace(),
-                      // child: const Text('Create Place'),
-                      child: Text(AppLocalizations.of(context).createNewPlace),
+                    const SizedBox(height: AppSizes.xs),
+                    Text(
+                      // 'Share your favorite spot with the community',
+                      AppLocalizations.of(context).shareFavoriteSpot,
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        color: Theme.of(context).hintColor,
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: AppSizes.spaceBtwSections),
-                ],
+                    const SizedBox(height: AppSizes.spaceBtwItems),
+
+                    // Subscription Status Section (REPLACES Payment Section)
+                    const SubscriptionStatusSection(),
+                    const SizedBox(height: AppSizes.spaceBtwItems),
+
+                    const AddPhotoBox(),
+                    const SizedBox(height: AppSizes.spaceBtwItems),
+                    const PlaceForm(),
+                    const SizedBox(height: AppSizes.spaceBtwItems),
+
+                    // Custom Questions Section
+                    const CustomQuestionsSection(),
+                    const SizedBox(height: AppSizes.spaceBtwItems),
+                    const CommunityGuidelinesBox(),
+                    const SizedBox(height: AppSizes.spaceBtwItems),
+
+                    /// -- Create Button (Now handles subscription check)
+                    // _buildCreateButton(controller, subscriptionController),
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        onPressed: () => controller.createPlace(),
+                        // child: const Text('Create Place'),
+                        child: Text(
+                          AppLocalizations.of(context).createNewPlace,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: AppSizes.spaceBtwSections),
+                  ],
+                ),
               ),
             ),
           ),

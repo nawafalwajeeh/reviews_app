@@ -82,38 +82,46 @@ class PlaceListTab extends StatelessWidget {
         }
 
         // 3. DATA FOUND STATE (Success)
-        return ListView.separated(
-          physics: const AlwaysScrollableScrollPhysics(),
-          padding: const EdgeInsets.symmetric(
-            horizontal: AppSizes.defaultSpace,
-            vertical: AppSizes.defaultSpace / 2,
-          ),
-          itemCount: categoryPlaces.length,
-          separatorBuilder: (_, __) =>
-              const SizedBox(height: AppSizes.spaceBtwSections),
-          itemBuilder: (context, index) {
-            final place = categoryPlaces[index];
-
-            // Determine if the current user is the creator
-            bool isCreator =
-                (place.userId == AuthenticationRepository.instance.getUserID);
-
-            return PlaceCard(
-              place: place,
-              showEditOptions: isCreator,
-              onEdit: () {
-                if (isCreator) {
-                  controller.initializeEditForm(place);
-                  Get.to(() => EditPlaceScreen(place: place));
-                }
-              },
-              onDelete: () {
-                if (isCreator) {
-                  controller.deletePlaceWithConfirmation(place);
-                }
-              },
-            );
+        // 3. DATA FOUND STATE (Success)
+        return RefreshIndicator(
+          onRefresh: () async {
+            controller.streamPlacesForCategory(categoryId);
+            // Optional: wait a bit to show the spinner
+            await Future.delayed(const Duration(milliseconds: 500));
           },
+          child: ListView.separated(
+            physics: const AlwaysScrollableScrollPhysics(),
+            padding: const EdgeInsets.symmetric(
+              horizontal: AppSizes.defaultSpace,
+              vertical: AppSizes.defaultSpace / 2,
+            ),
+            itemCount: categoryPlaces.length,
+            separatorBuilder: (_, __) =>
+                const SizedBox(height: AppSizes.spaceBtwSections),
+            itemBuilder: (context, index) {
+              final place = categoryPlaces[index];
+
+              // Determine if the current user is the creator
+              bool isCreator =
+                  (place.userId == AuthenticationRepository.instance.getUserID);
+
+              return PlaceCard(
+                place: place,
+                showEditOptions: isCreator,
+                onEdit: () {
+                  if (isCreator) {
+                    controller.initializeEditForm(place);
+                    Get.to(() => EditPlaceScreen(place: place));
+                  }
+                },
+                onDelete: () {
+                  if (isCreator) {
+                    controller.deletePlaceWithConfirmation(place);
+                  }
+                },
+              );
+            },
+          ),
         );
       }),
     );

@@ -5,41 +5,37 @@ import 'package:reviews_app/utils/constants/sizes.dart';
 import '../../../../../common/widgets/texts/section_heading.dart';
 import '../../../../../localization/app_localizations.dart';
 import '../../../../../utils/constants/colors.dart';
-import '../../../../personalization/controllers/address_controller.dart';
 
 class PlaceAddressSection extends StatelessWidget {
   const PlaceAddressSection({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final controller = AddressController.instance;
-    final placeController = PlaceController.instance;
+    final PlaceController placeController = PlaceController.instance;
 
     return Obx(() {
-      placeController.selectedAddress.value = controller.selectedAddress.value;
-      debugPrint('selectedAddress: ${placeController.selectedAddress.value}');
+      // Use the address stored specifically for this place (creation/editing)
+      final selectedAddress = placeController.selectedAddress.value;
 
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           AppSectionHeading(
-            // title: 'Place Address',
             title: AppLocalizations.of(context).placeAddress,
             titleStyle: Theme.of(
               context,
             ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w500),
-            // buttonTitle: 'Change',
             buttonTitle: AppLocalizations.of(context).change,
-            onPressed: () => controller.selectNewAddressPopup(context),
+            // Direct map picking for cleaner UX
+            onPressed: () => placeController.pickAddressFromMap(),
           ),
 
-          controller.selectedAddress.value.id.isNotEmpty
+          selectedAddress.id.isNotEmpty || selectedAddress.toString().isNotEmpty
               ? Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      // 'Alwajeeh',
-                      controller.selectedAddress.value.name,
+                      selectedAddress.name,
                       style: Theme.of(context).textTheme.bodyLarge,
                     ),
 
@@ -47,11 +43,14 @@ class PlaceAddressSection extends StatelessWidget {
 
                     Row(
                       children: [
-                        Icon(Icons.phone, color: AppColors.darkGrey, size: 16),
+                        const Icon(
+                          Icons.phone,
+                          color: AppColors.darkGrey,
+                          size: 16,
+                        ),
                         const SizedBox(width: AppSizes.spaceBtwItems),
                         Text(
-                          // '+967 778228445',
-                          controller.selectedAddress.value.phoneNumber,
+                          selectedAddress.phoneNumber,
                           style: Theme.of(context).textTheme.bodyMedium,
                         ),
                       ],
@@ -59,7 +58,7 @@ class PlaceAddressSection extends StatelessWidget {
                     const SizedBox(height: AppSizes.spaceBtwItems / 2),
                     Row(
                       children: [
-                        Icon(
+                        const Icon(
                           Icons.location_history,
                           color: AppColors.darkGrey,
                           size: 16,
@@ -67,8 +66,7 @@ class PlaceAddressSection extends StatelessWidget {
                         const SizedBox(width: AppSizes.spaceBtwItems),
                         Flexible(
                           child: Text(
-                            // 'South Liana, Maine 87695, USA',
-                            controller.selectedAddress.value.toString(),
+                            selectedAddress.toString(),
                             softWrap: true,
                             maxLines: 2,
                             overflow: TextOverflow.ellipsis,
@@ -80,7 +78,6 @@ class PlaceAddressSection extends StatelessWidget {
                   ],
                 )
               : Text(
-                  // 'Select Address',
                   AppLocalizations.of(context).selectAddress,
                   style: Theme.of(context).textTheme.bodyMedium,
                 ),

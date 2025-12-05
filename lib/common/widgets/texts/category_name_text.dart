@@ -70,7 +70,7 @@ class CategoryNameText extends StatelessWidget {
           return Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(iconData, size: iconSize, color: AppColors.primaryColor),
+              Icon(iconData, size: iconSize, color: textColor),
               SizedBox(width: spacing),
               Expanded(
                 child: Text(

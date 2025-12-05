@@ -96,7 +96,8 @@ class EditPhotoBox extends StatelessWidget {
     PlaceModel place,
   ) {
     const double imageSize = 100.0;
-    final existingImages = place.images ?? [];
+    // Use the observable list from the controller directly
+    final existingImages = controller.existingImageUrls;
     final allImages = [...existingImages];
 
     return SizedBox(
@@ -106,51 +107,83 @@ class EditPhotoBox extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            if (existingImages.isNotEmpty) ...[
-              Text(
-                // 'Existing Photos',
-                AppLocalizations.of(context).existingPhotos,
-                style: Theme.of(context).textTheme.titleSmall,
-              ),
-              const SizedBox(height: AppSizes.sm),
-              Wrap(
-                spacing: AppSizes.sm,
-                runSpacing: AppSizes.sm,
-                children: [
-                  ...List.generate(existingImages.length, (index) {
-                    return SizedBox(
-                      width: imageSize,
-                      height: imageSize,
-                      child: Stack(
-                        children: [
-                          ClipRRect(
-                            borderRadius: BorderRadius.circular(
-                              AppSizes.borderRadiusSm,
+            // Use Obx to listen to changes in existingImages
+            Obx(() {
+              if (existingImages.isNotEmpty) {
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      // 'Existing Photos',
+                      AppLocalizations.of(context).existingPhotos,
+                      style: Theme.of(context).textTheme.titleSmall,
+                    ),
+                    const SizedBox(height: AppSizes.sm),
+                    Wrap(
+                      spacing: AppSizes.sm,
+                      runSpacing: AppSizes.sm,
+                      children: [
+                        ...List.generate(existingImages.length, (index) {
+                          return SizedBox(
+                            width: imageSize,
+                            height: imageSize,
+                            child: Stack(
+                              children: [
+                                ClipRRect(
+                                  borderRadius: BorderRadius.circular(
+                                    AppSizes.borderRadiusSm,
+                                  ),
+                                  child: CachedNetworkImage(
+                                    imageUrl: existingImages[index],
+                                    fit: BoxFit.cover,
+                                    width: double.infinity,
+                                    height: double.infinity,
+                                  ),
+                                ),
+                                Positioned(
+                                  top: 0,
+                                  right: 0,
+                                  child: GestureDetector(
+                                    onTap: () =>
+                                        controller.removeExistingImage(index),
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        color: Colors.red,
+                                        borderRadius: BorderRadius.circular(
+                                          100,
+                                        ),
+                                      ),
+                                      child: const Icon(
+                                        Icons.close,
+                                        size: 20,
+                                        color: AppColors.white,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
-                            child: CachedNetworkImage(
-                              imageUrl: existingImages[index],
-                              fit: BoxFit.cover,
-                              width: double.infinity,
-                              height: double.infinity,
-                            ),
-                          ),
-                          // Can add remove functionality for existing images if needed
-                        ],
-                      ),
-                    );
-                  }),
-                ],
-              ),
-              const SizedBox(height: AppSizes.md),
-            ],
+                          );
+                        }),
+                      ],
+                    ),
+                    const SizedBox(height: AppSizes.md),
+                  ],
+                );
+              }
+              return const SizedBox.shrink();
+            }),
 
-            if (newImages.isNotEmpty) ...[
-              Text(
-                // 'New Photos',
-                AppLocalizations.of(context).newPhotos,
-                style: Theme.of(context).textTheme.titleSmall,
-              ),
-              const SizedBox(height: AppSizes.sm),
+            if (newImages.isNotEmpty ||
+                allImages.length < PlaceController.instance.maxImages) ...[
+              if (newImages.isNotEmpty) ...[
+                Text(
+                  // 'New Photos',
+                  AppLocalizations.of(context).newPhotos,
+                  style: Theme.of(context).textTheme.titleSmall,
+                ),
+                const SizedBox(height: AppSizes.sm),
+              ],
               Wrap(
                 spacing: AppSizes.sm,
                 runSpacing: AppSizes.sm,
@@ -197,22 +230,35 @@ class EditPhotoBox extends StatelessWidget {
 
                   if (allImages.length + newImages.length <
                       PlaceController.instance.maxImages)
-                    SizedBox(
-                      width: imageSize,
-                      height: imageSize,
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: AppColors.light,
-                          borderRadius: BorderRadius.circular(
-                            AppSizes.borderRadiusSm,
+                    GestureDetector(
+                      onTap: controller.pickAndHandleLocalImages,
+                      child: SizedBox(
+                        width: imageSize,
+                        height: imageSize,
+                        child: Container(
+                          decoration: BoxDecoration(
+                            // color: AppColors.light,
+                            color: AppHelperFunctions.isDarkMode(context)
+                                ? AppColors.darkerGrey
+                                : AppColors.light,
+                            borderRadius: BorderRadius.circular(
+                              AppSizes.borderRadiusSm,
+                            ),
+                            border: Border.all(
+                              color: AppHelperFunctions.isDarkMode(context)
+                                  ? AppColors.grey
+                                  : AppColors.darkerGrey,
+                            ),
                           ),
-                          border: Border.all(color: AppColors.darkerGrey),
-                        ),
-                        child: const Center(
-                          child: Icon(
-                            Icons.add_a_photo,
-                            color: AppColors.darkerGrey,
-                            size: 30,
+                          child: Center(
+                            child: Icon(
+                              Icons.add_a_photo,
+                              // color: AppColors.darkerGrey,
+                              color: AppHelperFunctions.isDarkMode(context)
+                                  ? AppColors.white
+                                  : AppColors.darkerGrey,
+                              size: 30,
+                            ),
                           ),
                         ),
                       ),

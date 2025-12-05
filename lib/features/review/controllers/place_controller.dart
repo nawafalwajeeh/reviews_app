@@ -12,12 +12,12 @@ import 'package:reviews_app/features/personalization/controllers/user_controller
 import 'package:reviews_app/features/personalization/models/address_model.dart';
 import 'package:reviews_app/features/review/controllers/category_controller.dart';
 import 'package:reviews_app/features/review/controllers/notification_controller.dart';
-import 'package:reviews_app/features/review/models/place_category_model.dart';
 import 'package:reviews_app/localization/app_localizations.dart';
 import 'package:uuid/uuid.dart';
 
-import '../../../data/repositories/place/place_repository.dart';
 import '../../../data/services/barcode/barcode_service.dart';
+import '../../review/screens/map/place_map.dart';
+import '../../../data/repositories/place/place_repository.dart';
 import '../../../utils/constants/colors.dart';
 import '../../../utils/constants/enums.dart';
 import '../../../utils/constants/image_strings.dart';
@@ -94,6 +94,9 @@ class PlaceController extends GetxController {
   final RxBool isFeatured = true.obs;
   final RxString editingPlaceId = ''.obs;
   final RxList<String> existingImageUrls = <String>[].obs;
+  final Rx<PlaceModel?> _editingPlace = Rx<PlaceModel?>(
+    null,
+  ); // Store original place for editing
 
   final allTags = const [
     // General
@@ -180,6 +183,12 @@ class PlaceController extends GetxController {
     super.onInit();
     // Initialize the real-time stream for featured places (used on Home screen)
     streamFeaturedPlaces();
+
+    // Auto-Repair Data (Fix missing links/flags from previous bugs)
+    // Run this briefly then can be removed
+    Future.delayed(const Duration(seconds: 2), () {
+      placeRepository.repairData();
+    });
   }
 
   @override
@@ -213,10 +222,10 @@ class PlaceController extends GetxController {
     isLoading.value = true;
     categoryPlaces.clear();
 
-    // NOTE: This assumes 'placeRepository.getPlacesForCategoryStream(categoryId)'
+    // NOTE: This assumes 'placeRepository.streamPlacesForCategory(categoryId)'
     // is implemented in your repository to return a Stream<List<PlaceModel>>.
     _categoryPlacesSubscription = placeRepository
-        .getPlacesForCategoryStream(categoryId)
+        .streamPlacesForCategory(categoryId: categoryId)
         .listen(
           (placesList) {
             // Update the observable list, triggering the Obx rebuild in PlaceListTab
@@ -589,48 +598,21 @@ class PlaceController extends GetxController {
       // 4. Save Place Data to Firestore
       await placeRepository.createPlace(newPlace);
 
-      // 5. Save Place-Category Link
-      final linkModel = PlaceCategoryModel(
-        placeId: newPlace.id,
-        categoryId: newPlace.categoryId,
-      );
-      await placeRepository.createPlaceCategory(linkModel);
-
       AppFullScreenLoader.stopLoading();
+
+      // Update UI
+      update();
+
+      // Close screen FIRST (so we return to previous screen)
+      Get.back();
+
+      // Then show success message
       AppLoaders.successSnackBar(
         // title: 'Success!',
         title: txt.success,
         // message: 'Your new place "${newPlace.title}" has been created!',
         message: txt.yourNewPlaceHasBeenCreatedWithTitle(newPlace.title),
       );
-
-      // final allUserIds = await UserRepository.instance.getAllUserIds();
-      // // final senderName = newPlace.userId.substring(
-      // //   0,
-      // //   8,
-      // // ); // Simplified sender name
-      // final placeTitle = newPlace.title;
-
-      _resetForm();
-      update();
-      Get.back();
-
-      // for (final userId in allUserIds) {
-      //   // if (userId != newPlace.userId) {
-      //   // Don't notify the sender (creator)
-      //   await notificationController.sendNotification(
-      //     toUserId: userId,
-      //     type: 'new_place',
-      //     title: 'Exciting New Place Added!',
-      //     body: 'A new location, "$placeTitle", has just been added.',
-      //     senderName: 'System Broadcast',
-      //     senderAvatar: newPlace.thumbnail,
-      //     targetId: newPlace.id,
-      //     targetType: 'place',
-      //     extraData: {'categoryId': newPlace.categoryId},
-      //   );
-      //   // }
-      // }
     } catch (e) {
       AppFullScreenLoader.stopLoading();
       // AppLoaders.errorSnackBar(title: 'Oh Snap!', message: e.toString());
@@ -638,8 +620,27 @@ class PlaceController extends GetxController {
     }
   }
 
+  /// Pick address directly from map
+  Future<void> pickAddressFromMap() async {
+    try {
+      final AddressModel? pickedAddress =
+          await PlacesMapScreen.openLocationPicker();
+
+      if (pickedAddress != null) {
+        selectedAddress.value = pickedAddress;
+
+        // Auto-fill form fields based on the picked address
+        if (locationController.text.isEmpty) {
+          locationController.text = pickedAddress.toString();
+        }
+      }
+    } catch (e) {
+      AppLoaders.errorSnackBar(title: txt.error, message: e.toString());
+    }
+  }
+
   /// Helper to reset form and image selection state
-  void _resetForm() {
+  void resetForm() {
     titleController.clear();
     descriptionController.clear();
     locationController.clear();
@@ -650,7 +651,7 @@ class PlaceController extends GetxController {
     websiteUrlController.clear();
     selectedCategoryId.value = '';
     selectedTags.clear();
-    isFeatured.value = false;
+    isFeatured.value = true; // Default to true
     placeFormKey.currentState?.reset();
     selectedLocalImageFiles.clear();
     selectedAddress.value = AddressModel.empty(); // Reset location
@@ -670,6 +671,12 @@ class PlaceController extends GetxController {
     }
   }
 
+  void removeExistingImage(int index) {
+    if (index >= 0 && index < existingImageUrls.length) {
+      existingImageUrls.removeAt(index);
+    }
+  }
+
   /// Get top rated/trending places (simple sort by rating)
   List<PlaceModel> get trendingPlaces {
     // Use featuredPlaces for trending, since it's already a real-time list
@@ -680,7 +687,10 @@ class PlaceController extends GetxController {
 
   /// Refresh data
   Future<void> refreshAll() async {
+    // Force a fresh fetch from the server (not from cache)
     await fetchAllFeaturedPlaces();
+    // Then restart the stream to ensure it picks up the latest data
+    streamFeaturedPlaces();
   }
 
   /// Initialize form with existing place data for editing
@@ -716,8 +726,31 @@ class PlaceController extends GetxController {
       selectedTags.addAll(place.tags!);
     }
 
+    // Capture original place for update merging
+    _editingPlace.value = place;
+    // Force isFeatured to true to satisfy "make full places isFeatured: true" requirement
+    isFeatured.value = true;
+
     // Clear any previously selected local images
     selectedLocalImageFiles.clear();
+
+    // Initialize custom questions
+    customQuestions.clear();
+    for (var controller in questionControllers) {
+      controller.dispose();
+    }
+    questionControllers.clear();
+    questionTypes.clear();
+    questionRequired.clear();
+
+    if (place.customQuestions != null) {
+      for (var question in place.customQuestions!) {
+        customQuestions.add(question);
+        questionControllers.add(TextEditingController(text: question.question));
+        questionTypes.add(question.type.obs);
+        questionRequired.add(question.isRequired.obs);
+      }
+    }
   }
 
   /// Clear edit form data
@@ -725,7 +758,7 @@ class PlaceController extends GetxController {
     editingPlaceId.value = '';
     existingImageUrls.clear();
     selectedLocalImageFiles.clear();
-    _resetForm();
+    resetForm();
   }
 
   /// Update existing place
@@ -814,11 +847,15 @@ class PlaceController extends GetxController {
         isFavorite: false,
         creatorName: userName,
         creatorAvatarUrl: userAvatar,
+        customQuestions: customQuestions
+            .toList(), // Ensure custom questions are saved
       );
 
       // Update place in Firestore
       await placeRepository.updatePlace(updatedPlace);
-
+      // clearEditForm();
+      update();
+      Get.back();
       AppLoaders.successSnackBar(
         // title: 'Success!',
         title: txt.success,
@@ -826,10 +863,6 @@ class PlaceController extends GetxController {
         message: txt.placeHasBeenUpdated,
         // message: txt.uploadingPhotosWithCount(place.images.length, placeId)
       );
-
-      clearEditForm();
-      update();
-      Get.back();
     } catch (e) {
       // AppLoaders.errorSnackBar(title: 'Update Failed', message: e.toString());
       AppLoaders.errorSnackBar(title: txt.updateFailed, message: e.toString());
