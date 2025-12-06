@@ -441,11 +441,46 @@ class _SelectLanguageScreenState extends State<SelectLanguageScreen>
         );
   }
 
+  // void _initializeLanguage() {
+  //   final storedLang = _storage.read('languageCode') ?? 'ar';
+
+  //   _selectedLanguage = storedLang;
+
+  //   for (var lang in _allLanguages) {
+  //     lang['selected'] = lang['code'] == _selectedLanguage;
+  //   }
+
+  //   _loadInitialLocalizedTexts(_selectedLanguage);
+  // }
+
+  // void _initializeLanguage() {
+  //   // CHANGE THIS LINE:
+  //   // final storedLang = _storage.read('languageCode') ?? 'ar'; // ❌ OLD
+  //   final storedLang = _localizationService.currentLanguage; // ✅ NEW
+
+  //   _selectedLanguage = storedLang;
+
+  //   for (var lang in _allLanguages) {
+  //     lang['selected'] = lang['code'] == _selectedLanguage;
+  //   }
+
+  //   _loadInitialLocalizedTexts(_selectedLanguage);
+  // }
+
   void _initializeLanguage() {
-    final storedLang = _storage.read('languageCode') ?? 'ar';
+    // FIRST: Check if we should use Arabic (first time) or saved language
+    final savedLanguage = _storage.read('language');
+    final hasSelectedBefore = _storage.read('hasSelectedLanguage') == true;
 
-    _selectedLanguage = storedLang;
+    if (savedLanguage != null && hasSelectedBefore) {
+      // User has both saved a language AND marked as selected
+      _selectedLanguage = savedLanguage;
+    } else {
+      // First time or no selection made yet
+      _selectedLanguage = 'ar';
+    }
 
+    // Rest of your code stays the same...
     for (var lang in _allLanguages) {
       lang['selected'] = lang['code'] == _selectedLanguage;
     }
@@ -649,9 +684,38 @@ class _SelectLanguageScreenState extends State<SelectLanguageScreen>
 
   /// Updates localized texts when a new language is selected.
 
+  // Future<void> _updateLocalizedTexts(String languageCode) async {
+  //   final tempLocale = Locale(languageCode);
+
+  //   final tempLocalizations = AppLocalizations(tempLocale);
+
+  //   await tempLocalizations.load();
+
+  //   setState(() {
+  //     _localizedTexts = {
+  //       'chooseLanguage': tempLocalizations.chooseLanguage,
+
+  //       'selectPreferredLanguage': tempLocalizations.selectPreferredLanguage,
+
+  //       'continue': tempLocalizations.continueText,
+
+  //       'currentLanguageHeader': languageCode == 'ar'
+  //           ? 'اللغة الحالية'
+  //           : 'Current Language',
+
+  //       'allLanguagesText': languageCode == 'ar'
+  //           ? 'كل اللغات'
+  //           : 'All Languages',
+
+  //       'search': tempLocalizations.search,
+
+  //       'comingSoon': languageCode == 'ar' ? 'قريباً' : 'Coming Soon',
+  //     };
+  //   });
+  // }
+
   Future<void> _updateLocalizedTexts(String languageCode) async {
     final tempLocale = Locale(languageCode);
-
     final tempLocalizations = AppLocalizations(tempLocale);
 
     await tempLocalizations.load();
@@ -659,22 +723,14 @@ class _SelectLanguageScreenState extends State<SelectLanguageScreen>
     setState(() {
       _localizedTexts = {
         'chooseLanguage': tempLocalizations.chooseLanguage,
-
         'selectPreferredLanguage': tempLocalizations.selectPreferredLanguage,
-
         'continue': tempLocalizations.continueText,
 
-        'currentLanguageHeader': languageCode == 'ar'
-            ? 'اللغة الحالية'
-            : 'Current Language',
-
-        'allLanguagesText': languageCode == 'ar'
-            ? 'كل اللغات'
-            : 'All Languages',
-
+        // FIX: Use dynamic methods instead of hardcoding
+        'currentLanguageHeader': _getCurrentLanguageHeader(languageCode), // ✅
+        'allLanguagesText': _getAllLanguagesText(languageCode), // ✅
         'search': tempLocalizations.search,
-
-        'comingSoon': languageCode == 'ar' ? 'قريباً' : 'Coming Soon',
+        'comingSoon': _getComingSoonText(), // Already fixed
       };
     });
   }
@@ -702,20 +758,6 @@ class _SelectLanguageScreenState extends State<SelectLanguageScreen>
 
     _updateLocalizedTexts(languageCode);
   }
-
-  // Future<void> _onContinuePressed() async {
-  //   await _localizationService.changeLanguage(_selectedLanguage);
-
-  //   await _storage.write('hasSelectedLanguage', true);
-
-  //   final bool isFirstTime = _storage.read('IsFirstTime') != false;
-
-  //   if (isFirstTime) {
-  //     Get.offAll(() => const OnBoardingScreen());
-  //   } else {
-  //     Get.offAll(() => const LoginScreen());
-  //   }
-  // }
 
   Future<void> _onContinuePressed() async {
     await _localizationService.changeLanguage(_selectedLanguage);
@@ -830,176 +872,212 @@ class _SelectLanguageScreenState extends State<SelectLanguageScreen>
       child: Scaffold(
         backgroundColor: backgroundColor,
 
-        body: SafeArea(
-          child: FadeTransition(
-            opacity: _fadeAnimation,
+        body: Stack(
+          children: [
+            SafeArea(
+              child: FadeTransition(
+                opacity: _fadeAnimation,
 
-            child: SlideTransition(
-              position: _slideAnimation,
+                child: SlideTransition(
+                  position: _slideAnimation,
 
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
 
-                children: [
-                  // Header/Title Section
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(24, 16, 24, 0),
+                    children: [
+                      // Header/Title Section
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(24, 16, 24, 0),
 
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
 
-                      children: [
-                        // Title
-                        Text(
-                          _localizedTexts['chooseLanguage']!,
+                          children: [
+                            // Title
+                            Text(
+                              _localizedTexts['chooseLanguage']!,
 
-                          style: TextStyle(
-                            color: textColor, // Theme-aware color
+                              style: TextStyle(
+                                color: textColor, // Theme-aware color
 
-                            fontSize: 28,
+                                fontSize: 28,
 
-                            fontWeight: FontWeight.w700,
+                                fontWeight: FontWeight.w700,
 
-                            fontFamily: isArabic ? 'Tajawal' : 'Poppins',
+                                fontFamily: isArabic ? 'Tajawal' : 'Poppins',
 
-                            height: 1.1,
+                                height: 1.1,
 
-                            letterSpacing: -0.5,
-                          ),
+                                letterSpacing: -0.5,
+                              ),
+                            ),
+
+                            const SizedBox(height: 16),
+
+                            // Subtitle
+                            Text(
+                              _localizedTexts['selectPreferredLanguage']!,
+
+                              style: TextStyle(
+                                color: mutedColor, // Theme-aware color
+
+                                fontSize: 15.5,
+
+                                height: 1.5,
+
+                                fontWeight: FontWeight.w400,
+
+                                fontFamily: isArabic ? 'Tajawal' : 'Poppins',
+                              ),
+                            ),
+
+                            const SizedBox(height: 32),
+
+                            // Search Bar
+                            _buildSearchBar(
+                              dark,
+
+                              isArabic,
+
+                              inputColor,
+
+                              textColor,
+
+                              mutedColor,
+                            ), // Pass dynamic colors
+
+                            const SizedBox(height: 32),
+
+                            // --- Current Language Section Header (New) ---
+                            Text(
+                              _localizedTexts['currentLanguageHeader']!, // Localized
+
+                              style: TextStyle(
+                                color: textColor, // Theme-aware color
+
+                                fontSize: 17,
+
+                                fontWeight: FontWeight.w600,
+
+                                fontFamily: isArabic ? 'Tajawal' : 'Poppins',
+
+                                letterSpacing: -0.3,
+                              ),
+                            ),
+
+                            const SizedBox(height: 12),
+                          ],
                         ),
+                      ),
 
-                        const SizedBox(height: 16),
+                      // Languages List & Selected Language Card
+                      Expanded(
+                        child: SingleChildScrollView(
+                          physics: const BouncingScrollPhysics(),
 
-                        // Subtitle
-                        Text(
-                          _localizedTexts['selectPreferredLanguage']!,
+                          // Add padding to the list content
+                          padding: const EdgeInsets.symmetric(horizontal: 24),
 
-                          style: TextStyle(
-                            color: mutedColor, // Theme-aware color
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
 
-                            fontSize: 15.5,
-
-                            height: 1.5,
-
-                            fontWeight: FontWeight.w400,
-
-                            fontFamily: isArabic ? 'Tajawal' : 'Poppins',
-                          ),
-                        ),
-
-                        const SizedBox(height: 32),
-
-                        // Search Bar
-                        _buildSearchBar(
-                          dark,
-
-                          isArabic,
-
-                          inputColor,
-
-                          textColor,
-
-                          mutedColor,
-                        ), // Pass dynamic colors
-
-                        const SizedBox(height: 32),
-
-                        // --- Current Language Section Header (New) ---
-                        Text(
-                          _localizedTexts['currentLanguageHeader']!, // Localized
-
-                          style: TextStyle(
-                            color: textColor, // Theme-aware color
-
-                            fontSize: 17,
-
-                            fontWeight: FontWeight.w600,
-
-                            fontFamily: isArabic ? 'Tajawal' : 'Poppins',
-
-                            letterSpacing: -0.3,
-                          ),
-                        ),
-
-                        const SizedBox(height: 12),
-                      ],
-                    ),
-                  ),
-
-                  // Languages List & Selected Language Card
-                  Expanded(
-                    child: SingleChildScrollView(
-                      physics: const BouncingScrollPhysics(),
-
-                      // Add padding to the list content
-                      padding: const EdgeInsets.symmetric(horizontal: 24),
-
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-
-                        children: [
-                          // Find and display the selected language item (Current Language Card)
-                          if (_allLanguages.any(
-                            (lang) => lang['code'] == _selectedLanguage,
-                          ))
-                            _buildLanguageListItem(
-                              lang: _allLanguages.firstWhere(
+                            children: [
+                              // Find and display the selected language item (Current Language Card)
+                              if (_allLanguages.any(
                                 (lang) => lang['code'] == _selectedLanguage,
+                              ))
+                                _buildLanguageListItem(
+                                  lang: _allLanguages.firstWhere(
+                                    (lang) => lang['code'] == _selectedLanguage,
+                                  ),
+
+                                  cardColor: cardColor, // Pass dynamic color
+
+                                  textColor: textColor, // Pass dynamic color
+
+                                  isCurrentLanguageCard: true,
+                                ),
+
+                              const SizedBox(height: 32),
+
+                              // All Languages Section Header
+                              Text(
+                                _localizedTexts['allLanguagesText']!, // Localized
+
+                                style: TextStyle(
+                                  color: textColor, // Theme-aware color
+
+                                  fontSize: 17,
+
+                                  fontWeight: FontWeight.w600,
+
+                                  fontFamily: isArabic ? 'Tajawal' : 'Poppins',
+
+                                  letterSpacing: -0.3,
+                                ),
                               ),
 
-                              cardColor: cardColor, // Pass dynamic color
+                              const SizedBox(height: 12),
 
-                              textColor: textColor, // Pass dynamic color
+                              // Languages List (excluding the selected one)
+                              _buildLanguagesList(
+                                cardColor,
 
-                              isCurrentLanguageCard: true,
-                            ),
+                                textColor,
+                              ), // Pass dynamic colors
 
-                          const SizedBox(height: 32),
-
-                          // All Languages Section Header
-                          Text(
-                            _localizedTexts['allLanguagesText']!, // Localized
-
-                            style: TextStyle(
-                              color: textColor, // Theme-aware color
-
-                              fontSize: 17,
-
-                              fontWeight: FontWeight.w600,
-
-                              fontFamily: isArabic ? 'Tajawal' : 'Poppins',
-
-                              letterSpacing: -0.3,
-                            ),
+                              const SizedBox(height: 48),
+                            ],
                           ),
-
-                          const SizedBox(height: 12),
-
-                          // Languages List (excluding the selected one)
-                          _buildLanguagesList(
-                            cardColor,
-
-                            textColor,
-                          ), // Pass dynamic colors
-
-                          const SizedBox(height: 48),
-                        ],
+                        ),
                       ),
-                    ),
+
+                      // Continue Button (Fixed at the bottom)
+                      Container(
+                        color:
+                            backgroundColor, // Use theme-aware background color
+
+                        padding: const EdgeInsets.fromLTRB(24, 16, 24, 32),
+
+                        child: _buildContinueButton(isArabic),
+                      ),
+                    ],
                   ),
-
-                  // Continue Button (Fixed at the bottom)
-                  Container(
-                    color: backgroundColor, // Use theme-aware background color
-
-                    padding: const EdgeInsets.fromLTRB(24, 16, 24, 32),
-
-                    child: _buildContinueButton(isArabic),
-                  ),
-                ],
+                ),
               ),
             ),
-          ),
+
+            // Close button (when from settings)
+            if (widget.isFromSettings)
+              Positioned(
+                top: 16,
+                right: isArabic ? null : 16,
+                left: isArabic ? 16 : null,
+                child: GestureDetector(
+                  onTap: () => Get.back(),
+                  child: Container(
+                    width: 44,
+                    height: 44,
+                    decoration: BoxDecoration(
+                      color: backgroundColor.withOpacity(0.9),
+                      shape: BoxShape.circle,
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.1),
+                          blurRadius: 8,
+                          offset: Offset(0, 2),
+                        ),
+                      ],
+                    ),
+                    child: Icon(
+                      Icons.close,
+                      color: dark ? Colors.white : AppColors.dark,
+                      size: 22,
+                    ),
+                  ),
+                ),
+              ),
+          ],
         ),
       ),
     );
@@ -1077,91 +1155,6 @@ class _SelectLanguageScreenState extends State<SelectLanguageScreen>
       ),
     );
   }
-
-  // Widget _buildLanguagesList(Color cardColor, Color textColor) {
-  //   // Prepare the lowercased search query once for efficient Latin comparison
-
-  //   final queryLower = _searchQuery.toLowerCase();
-
-  //   // FIX 2: Corrected filtering logic to handle Arabic search by using raw strings
-
-  //   // for Arabic names, and lowercased comparison for Latin (English) names.
-
-  //   final filteredLanguages = _searchQuery.isEmpty
-  //       ? _allLanguages.where((lang) => lang['selected'] != true).toList()
-  //       : _allLanguages.where((lang) {
-  //           // Extract raw names
-
-  //           final names = lang['names'] as Map<String, String>?;
-
-  //           final englishName = names?['en'] ?? '';
-
-  //           final arabicName = names?['ar'] ?? '';
-
-  //           // 1. Check against English name (case-insensitive)
-
-  //           final englishMatch = englishName.toLowerCase().contains(queryLower);
-
-  //           // 2. Check against Arabic name (raw comparison to avoid normalization issues)
-
-  //           final arabicMatch = arabicName.contains(_searchQuery);
-
-  //           // 3. Check against the currently localized name (using appropriate method)
-
-  //           final localizedName = _getLocalizedLanguageName(lang);
-
-  //           final localizedMatch = _selectedLanguage == 'ar'
-  //               ? localizedName.contains(_searchQuery)
-  //               : localizedName.toLowerCase().contains(queryLower);
-
-  //           return (englishMatch || arabicMatch || localizedMatch) &&
-  //               lang['selected'] != true;
-  //         }).toList();
-
-  //   if (filteredLanguages.isEmpty) {
-  //     return Padding(
-  //       padding: const EdgeInsets.symmetric(vertical: 40),
-
-  //       child: Center(
-  //         child: Text(
-  //           // Use localization fallback for this internal message
-  //           _selectedLanguage == 'ar'
-  //               ? 'لم يتم العثور على لغات'
-  //               : 'No languages found',
-
-  //           style: TextStyle(
-  //             // Apply _withValues replacement
-  //             color: _withValues(color: textColor, alpha: 0.5),
-
-  //             fontSize: 16,
-
-  //             fontWeight: FontWeight.w500,
-
-  //             fontFamily: _selectedLanguage == 'ar' ? 'Tajawal' : 'Poppins',
-  //           ),
-  //         ),
-  //       ),
-  //     );
-  //   }
-
-  //   return Column(
-  //     children: filteredLanguages.map((lang) {
-  //       return Padding(
-  //         padding: const EdgeInsets.only(bottom: 12),
-
-  //         child: _buildLanguageListItem(
-  //           lang: lang,
-
-  //           cardColor: cardColor, // Pass dynamic color
-
-  //           textColor: textColor, // Pass dynamic color
-
-  //           isCurrentLanguageCard: false,
-  //         ),
-  //       );
-  //     }).toList(),
-  //   );
-  // }
 
   Widget _buildLanguagesList(Color cardColor, Color textColor) {
     // Prepare the lowercased search query once for efficient Latin comparison
@@ -1257,38 +1250,206 @@ class _SelectLanguageScreenState extends State<SelectLanguageScreen>
     }
   }
 
-  /// Builds a single language list item or the selected language card.
+  // /// Builds a single language list item or the selected language card.
 
+  // Widget _buildLanguageListItem({
+  //   required Map<String, dynamic> lang,
+
+  //   required Color cardColor,
+
+  //   required Color textColor,
+
+  //   required bool isCurrentLanguageCard,
+  // }) {
+  //   final String code = lang['code']!;
+
+  //   // Use the localized display name based on the current selected language
+
+  //   final String displayName = _getLocalizedLanguageName(lang);
+
+  //   final String flag = lang['flag']!;
+
+  //   final bool isSelected = lang['selected']!;
+
+  //   final bool isSupported =
+  //       lang['isSupported'] ?? true; // Default to supported if key is missing
+
+  //   final bool isArabic = _selectedLanguage == 'ar';
+
+  //   // Define colors for the item based on its state
+
+  //   final Color itemBackgroundColor = cardColor;
+
+  //   // Apply _withValues replacement
+
+  //   final Color nameColor = isSelected
+  //       ? AppColors.primaryColor
+  //       : (isSupported ? textColor : _withValues(color: textColor, alpha: 0.5));
+
+  //   final Color selectedBorderColor = AppColors.primaryColor;
+
+  //   // Reduced opacity for unsupported languages
+
+  //   final double opacity = isSupported ? 1.0 : 0.6;
+
+  //   const double cardRadius = 24.0; // Increased rounding
+
+  //   // Apply _withValues replacement
+
+  //   final Color unselectedIconColor = _withValues(color: textColor, alpha: 0.3);
+
+  //   return Material(
+  //     color: Colors.transparent,
+
+  //     borderRadius: BorderRadius.circular(cardRadius),
+
+  //     child: InkWell(
+  //       // Disable onTap if selected or unsupported
+  //       onTap: isSelected || !isSupported
+  //           ? null
+  //           : () => _onLanguageSelected(code),
+
+  //       borderRadius: BorderRadius.circular(cardRadius),
+
+  //       // Apply _withValues replacement
+  //       highlightColor: isSupported
+  //           ? _withValues(color: AppColors.primaryColor, alpha: 0.1)
+  //           : Colors.transparent,
+
+  //       // Apply _withValues replacement
+  //       splashColor: isSupported
+  //           ? _withValues(color: AppColors.primaryColor, alpha: 0.2)
+  //           : Colors.transparent,
+
+  //       child: Container(
+  //         height: 64,
+
+  //         padding: const EdgeInsets.symmetric(horizontal: 16),
+
+  //         decoration: BoxDecoration(
+  //           // Apply _withValues replacement
+  //           color: _withValues(color: itemBackgroundColor, alpha: opacity),
+
+  //           borderRadius: BorderRadius.circular(cardRadius),
+
+  //           border: Border.all(
+  //             color: isSelected ? selectedBorderColor : Colors.transparent,
+
+  //             width: isSelected ? 2 : 0,
+  //           ),
+  //         ),
+
+  //         child: Row(
+  //           children: [
+  //             // Flag Circle
+  //             Container(
+  //               width: 40,
+
+  //               height: 40,
+
+  //               decoration: BoxDecoration(
+  //                 color: cardColor, // Theme-aware background
+
+  //                 shape: BoxShape.circle,
+
+  //                 border: Border.all(
+  //                   // Apply _withValues replacement
+  //                   color: _withValues(color: textColor, alpha: 0.1),
+
+  //                   width: 1,
+  //                 ),
+  //               ),
+
+  //               child: Center(
+  //                 child: Text(flag, style: const TextStyle(fontSize: 20)),
+  //               ),
+  //             ),
+
+  //             const SizedBox(width: 16),
+
+  //             // Language Name
+  //             Expanded(
+  //               child: Text(
+  //                 displayName,
+  //                 style: TextStyle(
+  //                   color: nameColor,
+  //                   fontSize: 16.5,
+  //                   fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
+  //                   fontFamily: isArabic ? 'Tajawal' : 'Poppins',
+  //                   letterSpacing: -0.3,
+  //                 ),
+  //               ),
+  //             ),
+
+  //             // Status Indicator (Checkmark or Coming Soon chip)
+  //             if (isSelected)
+  //               Icon(
+  //                 Icons.check_circle_rounded,
+  //                 color: selectedBorderColor,
+  //                 size: 28,
+  //               )
+  //             else if (!isSupported)
+  //               Container(
+  //                 padding: const EdgeInsets.symmetric(
+  //                   horizontal: 10,
+  //                   vertical: 4,
+  //                 ),
+  //                 decoration: BoxDecoration(
+  //                   // Apply _withValues replacement
+  //                   color: _withValues(
+  //                     color: AppColors.primaryColor,
+  //                     alpha: 0.1,
+  //                   ),
+  //                   borderRadius: BorderRadius.circular(16),
+  //                 ),
+  //                 child: Text(
+  //                   _localizedTexts['comingSoon']!, // Localized "Coming Soon"
+  //                   style: TextStyle(
+  //                     color: AppColors.primaryColor,
+  //                     fontSize: 12,
+  //                     fontWeight: FontWeight.w600,
+  //                     fontFamily: isArabic ? 'Tajawal' : 'Poppins',
+  //                   ),
+  //                 ),
+  //               )
+  //             else
+  //               Icon(
+  //                 Icons.circle_outlined,
+  //                 color: unselectedIconColor, // Theme-aware color
+  //                 size: 28,
+  //               ),
+  //           ],
+  //         ),
+  //       ),
+  //     ),
+  //   );
+  // }
+
+  //----new----
+  /// Builds a single language list item or the selected language card.
   Widget _buildLanguageListItem({
     required Map<String, dynamic> lang,
-
     required Color cardColor,
-
     required Color textColor,
-
     required bool isCurrentLanguageCard,
   }) {
     final String code = lang['code']!;
 
     // Use the localized display name based on the current selected language
-
     final String displayName = _getLocalizedLanguageName(lang);
-
     final String flag = lang['flag']!;
-
     final bool isSelected = lang['selected']!;
-
-    final bool isSupported =
-        lang['isSupported'] ?? true; // Default to supported if key is missing
-
+    final bool isSupported = lang['isSupported'] ?? true;
     final bool isArabic = _selectedLanguage == 'ar';
 
-    // Define colors for the item based on its state
+    // Check if this is Arabic AND user hasn't selected a language yet (first time)
+    final bool isFirstTimeArabic =
+        code == 'ar' && !_hasUserSelectedLanguage && isSelected;
 
+    // Define colors for the item based on its state
     final Color itemBackgroundColor = cardColor;
 
     // Apply _withValues replacement
-
     final Color nameColor = isSelected
         ? AppColors.primaryColor
         : (isSupported ? textColor : _withValues(color: textColor, alpha: 0.5));
@@ -1296,26 +1457,20 @@ class _SelectLanguageScreenState extends State<SelectLanguageScreen>
     final Color selectedBorderColor = AppColors.primaryColor;
 
     // Reduced opacity for unsupported languages
-
     final double opacity = isSupported ? 1.0 : 0.6;
-
     const double cardRadius = 24.0; // Increased rounding
 
     // Apply _withValues replacement
-
     final Color unselectedIconColor = _withValues(color: textColor, alpha: 0.3);
 
     return Material(
       color: Colors.transparent,
-
       borderRadius: BorderRadius.circular(cardRadius),
-
       child: InkWell(
         // Disable onTap if selected or unsupported
         onTap: isSelected || !isSupported
             ? null
             : () => _onLanguageSelected(code),
-
         borderRadius: BorderRadius.circular(cardRadius),
 
         // Apply _withValues replacement
@@ -1330,18 +1485,13 @@ class _SelectLanguageScreenState extends State<SelectLanguageScreen>
 
         child: Container(
           height: 64,
-
           padding: const EdgeInsets.symmetric(horizontal: 16),
-
           decoration: BoxDecoration(
             // Apply _withValues replacement
             color: _withValues(color: itemBackgroundColor, alpha: opacity),
-
             borderRadius: BorderRadius.circular(cardRadius),
-
             border: Border.all(
               color: isSelected ? selectedBorderColor : Colors.transparent,
-
               width: isSelected ? 2 : 0,
             ),
           ),
@@ -1351,22 +1501,16 @@ class _SelectLanguageScreenState extends State<SelectLanguageScreen>
               // Flag Circle
               Container(
                 width: 40,
-
                 height: 40,
-
                 decoration: BoxDecoration(
                   color: cardColor, // Theme-aware background
-
                   shape: BoxShape.circle,
-
                   border: Border.all(
                     // Apply _withValues replacement
                     color: _withValues(color: textColor, alpha: 0.1),
-
                     width: 1,
                   ),
                 ),
-
                 child: Center(
                   child: Text(flag, style: const TextStyle(fontSize: 20)),
                 ),
@@ -1376,24 +1520,67 @@ class _SelectLanguageScreenState extends State<SelectLanguageScreen>
 
               // Language Name
               Expanded(
-                child: Text(
-                  displayName,
-                  style: TextStyle(
-                    color: nameColor,
-                    fontSize: 16.5,
-                    fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
-                    fontFamily: isArabic ? 'Tajawal' : 'Poppins',
-                    letterSpacing: -0.3,
-                  ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      displayName,
+                      style: TextStyle(
+                        color: nameColor,
+                        fontSize: 16.5,
+                        fontWeight: isSelected
+                            ? FontWeight.w600
+                            : FontWeight.w500,
+                        fontFamily: isArabic ? 'Tajawal' : 'Poppins',
+                        letterSpacing: -0.3,
+                      ),
+                    ),
+
+                    // Show "Default" label for first-time Arabic
+                    if (isFirstTimeArabic)
+                      Padding(
+                        padding: const EdgeInsets.only(top: 4),
+                        child: Text(
+                          _getDefaultText(), // Localized "Default" text
+                          style: TextStyle(
+                            color: AppColors.primaryColor.withOpacity(0.8),
+                            fontSize: 11,
+                            fontWeight: FontWeight.w500,
+                            fontFamily: isArabic ? 'Tajawal' : 'Poppins',
+                          ),
+                        ),
+                      ),
+                  ],
                 ),
               ),
 
               // Status Indicator (Checkmark or Coming Soon chip)
               if (isSelected)
-                Icon(
-                  Icons.check_circle_rounded,
-                  color: selectedBorderColor,
-                  size: 28,
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Icons.check_circle_rounded,
+                      color: selectedBorderColor,
+                      size: 28,
+                    ),
+
+                    // Show "Default" indicator under checkmark too
+                    if (isFirstTimeArabic)
+                      Padding(
+                        padding: const EdgeInsets.only(top: 2),
+                        child: Text(
+                          _getDefaultText(),
+                          style: TextStyle(
+                            color: AppColors.primaryColor.withOpacity(0.8),
+                            fontSize: 10,
+                            fontWeight: FontWeight.w500,
+                            fontFamily: isArabic ? 'Tajawal' : 'Poppins',
+                          ),
+                        ),
+                      ),
+                  ],
                 )
               else if (!isSupported)
                 Container(
@@ -1430,6 +1617,41 @@ class _SelectLanguageScreenState extends State<SelectLanguageScreen>
         ),
       ),
     );
+  }
+
+  // Add this helper method for localized "Default" text
+  String _getDefaultText() {
+    switch (_selectedLanguage) {
+      case 'ar':
+        return 'الافتراضي';
+      case 'fr':
+        return 'Par défaut';
+      case 'de':
+        return 'Standard';
+      case 'es':
+        return 'Predeterminado';
+      case 'hi':
+        return 'डिफ़ॉल्ट';
+      case 'ko':
+        return '기본값';
+      case 'zh':
+        return '默认';
+      case 'ja':
+        return 'デフォルト';
+      case 'pt':
+        return 'Padrão';
+      case 'it':
+        return 'Predefinito';
+      case 'ru':
+        return 'По умолчанию';
+      default:
+        return 'Default';
+    }
+  }
+
+  // Also add this getter at the top of your class
+  bool get _hasUserSelectedLanguage {
+    return _storage.read('hasSelectedLanguage') == true;
   }
 
   Widget _buildContinueButton(bool isArabic) {

@@ -81,10 +81,25 @@ class LocalizationService extends GetxService {
     Get.updateLocale(currentLocale);
   }
 
+  // Future<void> changeLanguage(String languageCode) async {
+  //   if (_supportedLocales.containsKey(languageCode)) {
+  //     _currentLang.value = languageCode;
+  //     await _storage.write('language', languageCode);
+  //     Get.updateLocale(_supportedLocales[languageCode]!);
+  //   }
+  // }
+
+  // In your LocalizationService.dart
   Future<void> changeLanguage(String languageCode) async {
+    print('🔄 Changing language to: $languageCode');
+
     if (_supportedLocales.containsKey(languageCode)) {
       _currentLang.value = languageCode;
-      await _storage.write('language', languageCode);
+      await _storage.write(
+        'language',
+        languageCode,
+      ); // Should write to 'language'
+      print('✅ Saved to storage as: ${_storage.read('language')}');
       Get.updateLocale(_supportedLocales[languageCode]!);
     }
   }
