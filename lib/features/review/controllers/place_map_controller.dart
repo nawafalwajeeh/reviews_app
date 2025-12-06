@@ -23,6 +23,7 @@ import '../models/category_model.dart';
 import '../models/google_search_suggestions.dart';
 import '../models/recent_search.dart';
 import '../models/directions_model.dart';
+import '../models/search_filter_model.dart';
 import '../services/directions_service.dart';
 
 class PlacesMapController extends GetxController {
@@ -70,6 +71,12 @@ class PlacesMapController extends GetxController {
   final RxDouble distanceToSelectedPlace = 0.0.obs;
   final RxDouble currentZoomLevel = 15.0.obs;
 
+  // --- SEARCH FILTERS ---
+  final Rx<SearchFilterModel> searchFilters = Rx<SearchFilterModel>(
+    SearchFilterModel.empty(),
+  );
+  final RxList<PlaceModel> filteredPlaces = <PlaceModel>[].obs;
+
   // --- VOICE SEARCH ---
   final stt.SpeechToText speech = stt.SpeechToText();
   final isListening = false.obs;
@@ -89,7 +96,29 @@ class PlacesMapController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+    // Initialize map style based on current theme BEFORE map is created
+    _initializeMapStyle();
     _initializeApp();
+  }
+
+  /// Initialize map style based on current theme
+  void _initializeMapStyle() {
+    try {
+      // Get current theme mode from Get
+      final brightness = Get.isDarkMode ? Brightness.dark : Brightness.light;
+      final dark = brightness == Brightness.dark;
+      
+      isDarkMode.value = dark;
+      currentMapStyle = dark ? MapStyles.darkMapStyle : MapStyles.lightMapStyle;
+      
+      AppLoggerHelper.info(
+        'Map style initialized: ${dark ? "dark" : "light"} mode',
+      );
+    } catch (e) {
+      AppLoggerHelper.error('Error initializing map style: $e');
+      // Fallback to light mode
+      currentMapStyle = MapStyles.lightMapStyle;
+    }
   }
 
   Future<void> _initializeApp() async {
@@ -1387,6 +1416,7 @@ class PlacesMapController extends GetxController {
       currentMapStyle = dark ? MapStyles.darkMapStyle : MapStyles.lightMapStyle;
 
       if (googleMapController != null) {
+        // await googleMapController!.setMapStyle(currentMapStyle);
         await googleMapController!.setMapStyle(currentMapStyle);
         AppLoggerHelper.info(
           'Map style updated to ${dark ? 'dark' : 'light'} mode',
@@ -1395,6 +1425,160 @@ class PlacesMapController extends GetxController {
     } catch (e) {
       AppLoggerHelper.error('Error updating map style: $e');
     }
+  }
+
+  // --- SEARCH FILTERS ---
+
+  /// Set distance radius filter
+  void setDistanceRadius(double? radiusInMeters) {
+    if (radiusInMeters == null) {
+      // Clear distance filter
+      searchFilters.value = searchFilters.value.copyWith(
+        radiusInMeters: null,
+        enableDistanceFilter: false,
+      );
+    } else {
+      searchFilters.value = searchFilters.value.copyWith(
+        radiusInMeters: radiusInMeters,
+        enableDistanceFilter: true,
+      );
+    }
+  }
+
+  /// Toggle area filter (search in visible map bounds)
+  void toggleAreaFilter() {
+    final currentValue = searchFilters.value.enableAreaFilter;
+    if (!currentValue && googleMapController != null) {
+      // Enable: Get current map bounds
+      googleMapController!.getVisibleRegion().then((bounds) {
+        searchFilters.value = searchFilters.value.copyWith(
+          areaBounds: bounds,
+          enableAreaFilter: true,
+        );
+      });
+    } else {
+      // Disable
+      searchFilters.value = searchFilters.value.copyWith(
+        areaBounds: null,
+        enableAreaFilter: false,
+      );
+    }
+  }
+
+  /// Toggle nearby filter
+  void toggleNearbyFilter() {
+    searchFilters.value = searchFilters.value.copyWith(
+      nearbyOnly: !searchFilters.value.nearbyOnly,
+    );
+  }
+
+  /// Toggle highest rated filter
+  void toggleHighestRatedFilter() {
+    searchFilters.value = searchFilters.value.copyWith(
+      highestRatedOnly: !searchFilters.value.highestRatedOnly,
+    );
+  }
+
+  /// Toggle most popular filter
+  void toggleMostPopularFilter() {
+    searchFilters.value = searchFilters.value.copyWith(
+      mostPopularOnly: !searchFilters.value.mostPopularOnly,
+    );
+  }
+
+  /// Toggle recently added filter
+  void toggleRecentlyAddedFilter() {
+    searchFilters.value = searchFilters.value.copyWith(
+      recentlyAddedOnly: !searchFilters.value.recentlyAddedOnly,
+    );
+  }
+
+  /// Clear all filters
+  void clearAllFilters() {
+    searchFilters.value = SearchFilterModel.empty();
+    applyFilters();
+  }
+
+  /// Apply current filters to places
+  void applyFilters() {
+    List<PlaceModel> places = List.from(placeController.places);
+
+    // Apply category filter first
+    if (selectedCategoryId.value.isNotEmpty) {
+      places = places
+          .where((place) => place.categoryId == selectedCategoryId.value)
+          .toList();
+    }
+
+    // Apply distance radius filter
+    if (searchFilters.value.enableDistanceFilter &&
+        searchFilters.value.radiusInMeters != null &&
+        currentLocation.value != null) {
+      final userLat = currentLocation.value!.latitude!;
+      final userLng = currentLocation.value!.longitude!;
+      final radiusInMeters = searchFilters.value.radiusInMeters!;
+
+      places = places.where((place) {
+        final distance = DirectionsService.calculateDistance(
+          LatLng(userLat, userLng),
+          LatLng(place.latitude, place.longitude),
+        );
+        return distance <= radiusInMeters;
+      }).toList();
+    }
+
+    // Apply area bounds filter
+    if (searchFilters.value.enableAreaFilter &&
+        searchFilters.value.areaBounds != null) {
+      final bounds = searchFilters.value.areaBounds!;
+      places = places.where((place) {
+        final lat = place.latitude;
+        final lng = place.longitude;
+        return lat >= bounds.southwest.latitude &&
+            lat <= bounds.northeast.latitude &&
+            lng >= bounds.southwest.longitude &&
+            lng <= bounds.northeast.longitude;
+      }).toList();
+    }
+
+    // Apply quick filters
+    if (searchFilters.value.nearbyOnly && currentLocation.value != null) {
+      final userLat = currentLocation.value!.latitude!;
+      final userLng = currentLocation.value!.longitude!;
+      const nearbyRadius = 2000.0; // 2km for "nearby"
+
+      places = places.where((place) {
+        final distance = DirectionsService.calculateDistance(
+          LatLng(userLat, userLng),
+          LatLng(place.latitude, place.longitude),
+        );
+        return distance <= nearbyRadius;
+      }).toList();
+    }
+
+    if (searchFilters.value.highestRatedOnly) {
+      places = places.where((place) => place.averageRating >= 4.0).toList();
+      places.sort((a, b) => b.averageRating.compareTo(a.averageRating));
+    }
+
+    if (searchFilters.value.mostPopularOnly) {
+      places.sort((a, b) => b.reviewsCount.compareTo(a.reviewsCount));
+      places = places.take(20).toList(); // Top 20 most popular
+    }
+
+    if (searchFilters.value.recentlyAddedOnly) {
+      // Filter places with valid dates first
+      places = places.where((place) => place.dateAdded != null).toList();
+      places.sort((a, b) => b.dateAdded!.compareTo(a.dateAdded!));
+      places = places.take(20).toList(); // 20 most recent
+    }
+
+    // Update displayed places (markers will update automatically via the map widget)
+    displayedPlaces.value = places;
+
+    AppLoggerHelper.info(
+      'Filters applied. Showing ${places.length} places. Filter: ${searchFilters.value.getFilterDescription()}',
+    );
   }
 
   // --- CLEANUP ---

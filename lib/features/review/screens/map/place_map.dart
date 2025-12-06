@@ -15,6 +15,7 @@ import '../../models/place_model.dart';
 import '../../models/recent_search.dart';
 import '../../models/search_suggestion.dart';
 import 'widgets/map_search_container.dart';
+import 'widgets/search_filter_bottom_sheet.dart';
 import 'widgets/voice_search_overlay.dart';
 import 'widgets/place_bottom_sheet.dart';
 import 'widgets/category_filter_sheet.dart';
@@ -228,6 +229,83 @@ class PlacesMapScreen extends StatelessWidget {
                   controller: controller.searchController,
                 ),
               ),
+              if (!isPickerMode) ...[
+                const SizedBox(width: AppSizes.sm),
+                // Filter Button with Badge
+                Obx(() {
+                  final filterCount =
+                      controller.searchFilters.value.activeFilterCount;
+                  final dark = AppHelperFunctions.isDarkMode(context);
+
+                  return Stack(
+                    children: [
+                      Container(
+                        width: 50,
+                        height: 50,
+                        decoration: BoxDecoration(
+                          color: dark ? AppColors.darkerGrey : AppColors.white,
+                          borderRadius: BorderRadius.circular(
+                            AppSizes.cardRadiusLg,
+                          ),
+                          boxShadow: [
+                            BoxShadow(
+                              color: dark
+                                  ? Colors.black.withValues(alpha: 0.3)
+                                  : AppColors.darkGrey.withValues(alpha: 0.1),
+                              blurRadius: 10,
+                              offset: const Offset(0, 5),
+                            ),
+                          ],
+                        ),
+                        child: IconButton(
+                          icon: Icon(
+                            Iconsax.filter,
+                            color: filterCount > 0
+                                ? AppColors.primaryColor
+                                : (dark
+                                      ? AppColors.lightGrey
+                                      : AppColors.darkerGrey),
+                          ),
+                          onPressed: () {
+                            showModalBottomSheet(
+                              context: context,
+                              backgroundColor: Colors.transparent,
+                              isScrollControlled: true,
+                              builder: (context) =>
+                                  const SearchFilterBottomSheet(),
+                            );
+                          },
+                        ),
+                      ),
+                      if (filterCount > 0)
+                        Positioned(
+                          right: 6,
+                          top: 6,
+                          child: Container(
+                            padding: const EdgeInsets.all(4),
+                            decoration: BoxDecoration(
+                              color: AppColors.primaryColor,
+                              shape: BoxShape.circle,
+                            ),
+                            constraints: const BoxConstraints(
+                              minWidth: 18,
+                              minHeight: 18,
+                            ),
+                            child: Text(
+                              filterCount.toString(),
+                              style: const TextStyle(
+                                color: AppColors.white,
+                                fontSize: 10,
+                                fontWeight: FontWeight.bold,
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                        ),
+                    ],
+                  );
+                }),
+              ],
             ],
           ),
 
@@ -238,6 +316,10 @@ class PlacesMapScreen extends StatelessWidget {
           /// Coordinate Display (Premium Feature)
           if (!isPickerMode)
             Obx(() => _buildCoordinateDisplay(context, controller)),
+
+          /// Results Counter (when filters are active)
+          if (!isPickerMode)
+            Obx(() => _buildResultsCounter(context, controller)),
         ],
       ),
     );
@@ -309,6 +391,61 @@ class PlacesMapScreen extends StatelessWidget {
                 fontSize: 10,
                 fontWeight: FontWeight.w600,
               ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// Results Counter Widget
+  Widget _buildResultsCounter(
+    BuildContext context,
+    PlacesMapController controller,
+  ) {
+    final dark = AppHelperFunctions.isDarkMode(context);
+    final locale = AppLocalizations.of(context);
+    final hasFilters = controller.searchFilters.value.hasActiveFilters;
+    final count = controller.displayedPlaces.length;
+
+    if (!hasFilters || count == 0) return const SizedBox();
+
+    return Container(
+      margin: const EdgeInsets.only(top: AppSizes.xs),
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSizes.md,
+        vertical: AppSizes.sm,
+      ),
+      decoration: BoxDecoration(
+        color: dark
+            ? Colors.black.withValues(alpha: 0.3)
+            : Colors.white.withValues(alpha: 0.85),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: dark
+              ? Colors.white.withValues(alpha: 0.1)
+              : Colors.black.withValues(alpha: 0.05),
+          width: 1,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.1),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(Iconsax.location_tick, size: 16, color: AppColors.primaryColor),
+          const SizedBox(width: AppSizes.xs),
+          Text(
+            locale.showingResults.replaceAll('{count}', count.toString()),
+            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+              color: dark ? AppColors.light : AppColors.dark,
+              fontWeight: FontWeight.w500,
+              fontSize: 12,
             ),
           ),
         ],

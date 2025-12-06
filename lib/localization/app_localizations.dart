@@ -2077,6 +2077,148 @@ class AppLocalizations {
   String get couldNotFetchDirections =>
       _localizedValues[locale.languageCode]!['couldNotFetchDirections'] ??
       'Could not fetch directions';
+
+  // Distance and Map Features
+  String get away => _localizedValues[locale.languageCode]!['away'] ?? 'away';
+
+  String get meters => _localizedValues[locale.languageCode]!['meters'] ?? 'm';
+
+  String get kilometers =>
+      _localizedValues[locale.languageCode]!['kilometers'] ?? 'km';
+
+  String get distance =>
+      _localizedValues[locale.languageCode]!['distance'] ?? 'Distance';
+
+  // Search Filters
+  String get searchFilters =>
+      _localizedValues[locale.languageCode]!['searchFilters'] ??
+      'Search Filters';
+
+  String get searchInThisArea =>
+      _localizedValues[locale.languageCode]!['searchInThisArea'] ??
+      'Search in this area';
+
+  String get redoSearchInArea =>
+      _localizedValues[locale.languageCode]!['redoSearchInArea'] ??
+      'Redo search in this area';
+
+  String get distanceRadius =>
+      _localizedValues[locale.languageCode]!['distanceRadius'] ??
+      'Distance Radius';
+
+  String get selectArea =>
+      _localizedValues[locale.languageCode]!['selectArea'] ?? 'Select Area';
+
+  String get selectCity =>
+      _localizedValues[locale.languageCode]!['selectCity'] ?? 'Select City';
+
+  String get selectCountry =>
+      _localizedValues[locale.languageCode]!['selectCountry'] ??
+      'Select Country';
+
+  String get filterByArea =>
+      _localizedValues[locale.languageCode]!['filterByArea'] ??
+      'Filter by Area';
+
+  String get clearFilters =>
+      _localizedValues[locale.languageCode]!['clearFilters'] ?? 'Clear Filters';
+
+  String get activeFilters =>
+      _localizedValues[locale.languageCode]!['activeFilters'] ??
+      'Active Filters';
+
+  String get noFiltersActive =>
+      _localizedValues[locale.languageCode]!['noFiltersActive'] ??
+      'No filters active';
+
+  String get resultsFound =>
+      _localizedValues[locale.languageCode]!['resultsFound'] ??
+      '{count} results found';
+
+  // Distance Ranges
+  String get within1km =>
+      _localizedValues[locale.languageCode]!['within1km'] ?? 'Within 1 km';
+
+  String get within5km =>
+      _localizedValues[locale.languageCode]!['within5km'] ?? 'Within 5 km';
+
+  String get within10km =>
+      _localizedValues[locale.languageCode]!['within10km'] ?? 'Within 10 km';
+
+  String get within25km =>
+      _localizedValues[locale.languageCode]!['within25km'] ?? 'Within 25 km';
+
+  String get within50km =>
+      _localizedValues[locale.languageCode]!['within50km'] ?? 'Within 50 km';
+
+  String get customRadius =>
+      _localizedValues[locale.languageCode]!['customRadius'] ?? 'Custom Radius';
+
+  String get anyDistance =>
+      _localizedValues[locale.languageCode]!['anyDistance'] ?? 'Any Distance';
+
+  // Area Selection
+  String get allAreas =>
+      _localizedValues[locale.languageCode]!['allAreas'] ?? 'All Areas';
+
+  String get popularAreas =>
+      _localizedValues[locale.languageCode]!['popularAreas'] ?? 'Popular Areas';
+
+  String get recentAreas =>
+      _localizedValues[locale.languageCode]!['recentAreas'] ?? 'Recent Areas';
+
+  String get searchCity =>
+      _localizedValues[locale.languageCode]!['searchCity'] ?? 'Search city...';
+
+  // Quick Filters
+  String get quickFilters =>
+      _localizedValues[locale.languageCode]!['quickFilters'] ?? 'Quick Filters';
+
+  String get nearbyOnly =>
+      _localizedValues[locale.languageCode]!['nearbyOnly'] ?? 'Nearby Only';
+
+  String get mostPopular =>
+      _localizedValues[locale.languageCode]!['mostPopular'] ?? 'Most Popular';
+
+  String get recentlyAdded =>
+      _localizedValues[locale.languageCode]!['recentlyAdded'] ??
+      'Recently Added';
+
+  // Map Controls and Premium Features
+  String get mapControls =>
+      _localizedValues[locale.languageCode]!['mapControls'] ?? 'Map Controls';
+
+  String get searchHistory =>
+      _localizedValues[locale.languageCode]!['searchHistory'] ??
+      'Search History';
+
+  String get savedLocations =>
+      _localizedValues[locale.languageCode]!['savedLocations'] ??
+      'Saved Locations';
+
+  String get clusterView =>
+      _localizedValues[locale.languageCode]!['clusterView'] ?? 'Cluster View';
+
+  String get listView =>
+      _localizedValues[locale.languageCode]!['listView'] ?? 'List View';
+
+  String get exploreThisArea =>
+      _localizedValues[locale.languageCode]!['exploreThisArea'] ??
+      'Explore This Area';
+
+  String get showingResults =>
+      _localizedValues[locale.languageCode]!['showingResults'] ??
+      'Showing {count} results';
+
+  String get filterPresets =>
+      _localizedValues[locale.languageCode]!['filterPresets'] ??
+      'Filter Presets';
+
+  String get cityWide =>
+      _localizedValues[locale.languageCode]!['cityWide'] ?? 'City-wide';
+
+  String get searchRadius =>
+      _localizedValues[locale.languageCode]!['searchRadius'] ?? 'Search Radius';
 }
 
 class _AppLocalizationsDelegate
