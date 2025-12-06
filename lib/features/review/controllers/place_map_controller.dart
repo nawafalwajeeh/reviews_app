@@ -16,11 +16,14 @@ import '../../../data/services/map_service/map_service.dart';
 import '../../../utils/constants/colors.dart';
 import '../../../utils/constants/enums.dart';
 import '../../../utils/constants/marker_icons.dart';
+import '../../../utils/constants/map_styles.dart';
 import '../../../utils/logging/logger.dart';
 import '../../personalization/models/address_model.dart';
 import '../models/category_model.dart';
 import '../models/google_search_suggestions.dart';
 import '../models/recent_search.dart';
+import '../models/directions_model.dart';
+import '../services/directions_service.dart';
 
 class PlacesMapController extends GetxController {
   static PlacesMapController get instance => Get.find();
@@ -32,6 +35,12 @@ class PlacesMapController extends GetxController {
   final markers = <Marker>{}.obs;
   final polylines = <Polyline>{}.obs;
   final isLoading = false.obs;
+
+  // --- DIRECTIONS & ROUTING ---
+  final Rx<DirectionsModel?> currentDirections = Rx<DirectionsModel?>(null);
+  final showDirections = false.obs;
+  final isLoadingDirections = false.obs;
+  final selectedRouteIndex = 0.obs;
 
   // --- PLACES INTEGRATION ---
   final RxList<PlaceModel> displayedPlaces = <PlaceModel>[].obs;
@@ -53,6 +62,13 @@ class PlacesMapController extends GetxController {
   // --- MAP STYLING & TYPE ---
   final currentMapType = MapType.normal.obs;
   final enabledMapDetails = <MapDetail>[].obs;
+  final isDarkMode = false.obs;
+  String? currentMapStyle;
+
+  // --- PREMIUM FEATURES ---
+  final Rx<LatLng?> currentMapCenter = Rx<LatLng?>(null);
+  final RxDouble distanceToSelectedPlace = 0.0.obs;
+  final RxDouble currentZoomLevel = 15.0.obs;
 
   // --- VOICE SEARCH ---
   final stt.SpeechToText speech = stt.SpeechToText();
@@ -201,6 +217,9 @@ class PlacesMapController extends GetxController {
     showBottomSheet.value = true;
     showLocationDetails.value = true;
 
+    // Calculate distance from user to this place
+    calculateDistanceToPlace();
+
     // Move camera to place with nice animation
     moveCameraToLatLng(LatLng(place.latitude, place.longitude), zoom: 16.0);
 
@@ -223,6 +242,30 @@ class PlacesMapController extends GetxController {
           tilt: 45,
         ),
       ),
+    );
+  }
+
+  /// Handle camera movement to update coordinates display
+  void onCameraMove(CameraPosition position) {
+    currentMapCenter.value = position.target;
+    currentZoomLevel.value = position.zoom;
+  }
+
+  /// Calculate distance from user location to selected place
+  void calculateDistanceToPlace() {
+    if (currentLocation.value == null || selectedPlace.value == null) {
+      distanceToSelectedPlace.value = 0.0;
+      return;
+    }
+
+    final userLat = currentLocation.value!.latitude!;
+    final userLng = currentLocation.value!.longitude!;
+    final placeLat = selectedPlace.value!.latitude;
+    final placeLng = selectedPlace.value!.longitude;
+
+    distanceToSelectedPlace.value = DirectionsService.calculateDistance(
+      LatLng(userLat, userLng),
+      LatLng(placeLat, placeLng),
     );
   }
 
@@ -824,6 +867,17 @@ class PlacesMapController extends GetxController {
     if (!mapControllerCompleter.isCompleted) {
       googleMapController = controller;
       mapControllerCompleter.complete(controller);
+
+      // Apply map style immediately based on current theme
+      if (currentMapStyle != null) {
+        try {
+          await controller.setMapStyle(currentMapStyle);
+          AppLoggerHelper.info('Initial map style applied');
+        } catch (e) {
+          AppLoggerHelper.error('Error applying initial map style: $e');
+        }
+      }
+
       await Future.delayed(const Duration(milliseconds: 1000));
       _performInitialMapSetup();
     }
@@ -1064,8 +1118,25 @@ class PlacesMapController extends GetxController {
   }
 
   // --- UI CONTROLS ---
-  void changeMapType(MapType newType) {
+  void changeMapType(MapType newType) async {
     currentMapType.value = newType;
+
+    // Apply custom JSON style only for normal map type
+    // For satellite, hybrid, and terrain, clear the style to use Google's default
+    if (googleMapController != null) {
+      try {
+        if (newType == MapType.normal) {
+          // Apply dark or light style based on current theme
+          await googleMapController!.setMapStyle(currentMapStyle);
+        } else {
+          // Clear custom style for satellite, hybrid, terrain
+          await googleMapController!.setMapStyle(null);
+        }
+        AppLoggerHelper.info('Map type changed to $newType');
+      } catch (e) {
+        AppLoggerHelper.error('Error changing map type: $e');
+      }
+    }
   }
 
   void toggleMapDetail(MapDetail detail) {
@@ -1210,6 +1281,120 @@ class PlacesMapController extends GetxController {
     if (address.isEmpty) return '';
     final parts = address.split(',');
     return parts.isNotEmpty ? parts.last.trim() : '';
+  }
+
+  // --- DIRECTIONS & ROUTING ---
+
+  /// Fetch and display directions to a place
+  Future<void> getDirectionsToPlace(PlaceModel place) async {
+    if (currentLocation.value == null) {
+      AppLoaders.warningSnackBar(
+        title: txt.locationRequired,
+        message: txt.pleaseWaitForLocation,
+      );
+      return;
+    }
+
+    try {
+      isLoadingDirections.value = true;
+
+      final origin = LatLng(
+        currentLocation.value!.latitude!,
+        currentLocation.value!.longitude!,
+      );
+      final destination = LatLng(place.latitude, place.longitude);
+
+      final directions = await DirectionsService.getDirections(
+        origin: origin,
+        destination: destination,
+        alternatives: true,
+      );
+
+      if (directions != null && directions.routes.isNotEmpty) {
+        currentDirections.value = directions;
+        showDirections.value = true;
+        selectedRouteIndex.value = 0;
+
+        // Draw polyline for the first route
+        _drawRoutePolyline(directions.routes[0]);
+
+        // Zoom to show the entire route
+        _zoomToBounds(directions.routes[0].bounds);
+
+        AppLoaders.successSnackBar(
+          title: txt.directionsFound,
+          message: txt.routeReady(place.title),
+        );
+      } else {
+        AppLoaders.warningSnackBar(
+          title: txt.noRouteFound,
+          message: txt.couldNotFindRoute,
+        );
+      }
+    } catch (e) {
+      AppLoggerHelper.error('Error fetching directions: $e');
+      AppLoaders.errorSnackBar(
+        title: txt.error,
+        message: txt.couldNotFetchDirections,
+      );
+    } finally {
+      isLoadingDirections.value = false;
+    }
+  }
+
+  /// Draw polyline for a route
+  void _drawRoutePolyline(RouteModel route) {
+    polylines.clear();
+
+    final polyline = Polyline(
+      polylineId: const PolylineId('main_route'),
+      points: route.polylinePoints,
+      color: MapStyles.activeRouteColor,
+      width: MapStyles.routePolylineWidth,
+      startCap: Cap.roundCap,
+      endCap: Cap.roundCap,
+      jointType: JointType.round,
+    );
+
+    polylines.add(polyline);
+    polylines.refresh();
+  }
+
+  /// Clear directions and polylines
+  void clearDirections() {
+    currentDirections.value = null;
+    showDirections.value = false;
+    polylines.clear();
+    selectedRouteIndex.value = 0;
+  }
+
+  /// Switch to alternative route
+  void selectRoute(int index) {
+    if (currentDirections.value != null &&
+        index < currentDirections.value!.routes.length) {
+      selectedRouteIndex.value = index;
+      _drawRoutePolyline(currentDirections.value!.routes[index]);
+      _zoomToBounds(currentDirections.value!.routes[index].bounds);
+    }
+  }
+
+  // --- MAP STYLING ---
+
+  /// Update map style based on theme mode
+  Future<void> updateMapStyle(bool dark) async {
+    try {
+      isDarkMode.value = dark;
+      currentMapStyle = dark ? MapStyles.darkMapStyle : MapStyles.lightMapStyle;
+
+      if (googleMapController != null) {
+        await googleMapController!.setMapStyle(currentMapStyle);
+        AppLoggerHelper.info(
+          'Map style updated to ${dark ? 'dark' : 'light'} mode',
+        );
+      }
+    } catch (e) {
+      AppLoggerHelper.error('Error updating map style: $e');
+    }
   }
 
   // --- CLEANUP ---

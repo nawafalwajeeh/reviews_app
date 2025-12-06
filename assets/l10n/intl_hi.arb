@@ -623,5 +623,12 @@
     "searchInStore": "स्टोर में खोजें",
     "searchInStoreSubTitle": "स्थान, पते और बहुत कुछ खोजें...",
     "updatePlace": "स्थान अपडेट करें",
-    "updatePlaceSubTitle": "अपने स्थान विवरण अपडेट करें"
+    "updatePlaceSubTitle": "अपने स्थान विवरण अपडेट करें",
+  
+  "directions": "Directions",
+  "directionsFound": "Directions Found",
+  "routeReady": "Route to {placeName} is ready",
+  "noRouteFound": "No Route Found",
+  "couldNotFindRoute": "Could not find a route to this location",
+  "couldNotFetchDirections": "Could not fetch directions"
 }

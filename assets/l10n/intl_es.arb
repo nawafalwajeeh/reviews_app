@@ -623,5 +623,12 @@
     "searchInStore": "Buscar en tienda",
     "searchInStoreSubTitle": "Buscar lugares, direcciones y más...",
     "updatePlace": "Actualizar lugar",
-    "updatePlaceSubTitle": "Actualizar detalles de tu lugar"
+    "updatePlaceSubTitle": "Actualizar detalles de tu lugar",
+  
+  "directions": "Directions",
+  "directionsFound": "Directions Found",
+  "routeReady": "Route to {placeName} is ready",
+  "noRouteFound": "No Route Found",
+  "couldNotFindRoute": "Could not find a route to this location",
+  "couldNotFetchDirections": "Could not fetch directions"
 }

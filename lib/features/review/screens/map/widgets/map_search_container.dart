@@ -23,13 +23,17 @@ class MapSearchContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final dark = Theme.of(context).brightness == Brightness.dark;
+
     return Container(
       decoration: BoxDecoration(
-        color: AppColors.white,
+        color: dark ? AppColors.darkerGrey : AppColors.white,
         borderRadius: BorderRadius.circular(AppSizes.cardRadiusLg),
         boxShadow: [
           BoxShadow(
-            color: AppColors.darkGrey.withValues(alpha: 0.1),
+            color: dark
+                ? Colors.black.withValues(alpha: 0.3)
+                : AppColors.darkGrey.withValues(alpha: 0.1),
             blurRadius: 10,
             offset: const Offset(0, 5),
           ),
@@ -38,20 +42,23 @@ class MapSearchContainer extends StatelessWidget {
       child: TextFormField(
         controller: controller,
         onChanged: onChanged,
-        style: Theme.of(
-          context,
-        ).textTheme.bodyMedium?.copyWith(color: AppColors.black),
+        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+          color: dark ? AppColors.white : AppColors.black,
+        ),
         decoration: InputDecoration(
           hintText: text,
-          hintStyle: Theme.of(
-            context,
-          ).textTheme.bodyMedium?.copyWith(color: AppColors.black),
+          hintStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(
+            color: dark ? AppColors.lightGrey : AppColors.darkGrey,
+          ),
           labelText: text,
-          labelStyle: Theme.of(
-            context,
-          ).textTheme.bodyMedium?.copyWith(color: AppColors.black),
+          labelStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(
+            color: dark ? AppColors.lightGrey : AppColors.darkGrey,
+          ),
           border: InputBorder.none,
-          prefixIcon: Icon(Iconsax.search_normal, color: AppColors.darkerGrey),
+          prefixIcon: Icon(
+            Iconsax.search_normal,
+            color: dark ? AppColors.lightGrey : AppColors.darkerGrey,
+          ),
           suffixIcon: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -61,7 +68,10 @@ class MapSearchContainer extends StatelessWidget {
                   builder: (context, value, child) {
                     if (value.text.isEmpty) return const SizedBox.shrink();
                     return IconButton(
-                      icon: Icon(Iconsax.close_circle, color: AppColors.dark),
+                      icon: Icon(
+                        Iconsax.close_circle,
+                        color: dark ? AppColors.light : AppColors.dark,
+                      ),
                       onPressed: onClear,
                     );
                   },

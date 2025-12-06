@@ -5,7 +5,9 @@ import 'package:iconsax/iconsax.dart';
 import 'package:reviews_app/features/review/screens/place_details/place_details.dart';
 import 'package:reviews_app/localization/app_localizations.dart';
 import 'package:reviews_app/utils/constants/colors.dart';
+import 'package:reviews_app/utils/constants/map_styles.dart';
 import 'package:reviews_app/utils/constants/sizes.dart';
+import 'package:reviews_app/utils/helpers/helper_functions.dart';
 import '../../../../utils/constants/enums.dart';
 import '../../../personalization/models/address_model.dart';
 import '../../controllers/place_map_controller.dart';
@@ -40,6 +42,13 @@ class PlacesMapScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = PlacesMapController.instance;
+    final dark = AppHelperFunctions.isDarkMode(context);
+
+    // Set map style immediately (before map is created)
+    controller.isDarkMode.value = dark;
+    controller.currentMapStyle = dark
+        ? MapStyles.darkMapStyle
+        : MapStyles.lightMapStyle;
 
     // Set initial place if provided (after build completes)
     if (initialPlace != null) {
@@ -49,7 +58,7 @@ class PlacesMapScreen extends StatelessWidget {
     }
 
     return Scaffold(
-      backgroundColor: AppColors.white,
+      backgroundColor: dark ? AppColors.dark : AppColors.white,
       body: Stack(
         children: [
           /// Google Map
@@ -139,6 +148,7 @@ class PlacesMapScreen extends StatelessWidget {
             scrollGesturesEnabled: true,
             zoomGesturesEnabled: true,
             tiltGesturesEnabled: true,
+            onCameraMove: controller.onCameraMove,
             onCameraMoveStarted: () {
               // Show loading when camera moves (optional)
             },
@@ -224,6 +234,83 @@ class PlacesMapScreen extends StatelessWidget {
           /// Quick Access Chips
           if (!isPickerMode)
             Obx(() => _buildQuickAccessChips(context, controller)),
+
+          /// Coordinate Display (Premium Feature)
+          if (!isPickerMode)
+            Obx(() => _buildCoordinateDisplay(context, controller)),
+        ],
+      ),
+    );
+  }
+
+  /// Premium Coordinate Display Widget
+  Widget _buildCoordinateDisplay(
+    BuildContext context,
+    PlacesMapController controller,
+  ) {
+    final dark = AppHelperFunctions.isDarkMode(context);
+    final center = controller.currentMapCenter.value;
+
+    if (center == null) return const SizedBox();
+
+    return Container(
+      margin: const EdgeInsets.only(top: AppSizes.xs),
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSizes.md,
+        vertical: AppSizes.sm,
+      ),
+      decoration: BoxDecoration(
+        color: dark
+            ? Colors.black.withOpacity(0.3)
+            : Colors.white.withOpacity(0.85),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: dark
+              ? Colors.white.withOpacity(0.1)
+              : Colors.black.withOpacity(0.05),
+          width: 1,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.1),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(
+            Iconsax.location,
+            size: 16,
+            color: dark ? AppColors.light : AppColors.dark,
+          ),
+          const SizedBox(width: AppSizes.xs),
+          Text(
+            '${center.latitude.toStringAsFixed(4)}°, ${center.longitude.toStringAsFixed(4)}°',
+            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+              color: dark ? AppColors.light : AppColors.dark,
+              fontWeight: FontWeight.w500,
+              fontSize: 12,
+            ),
+          ),
+          const SizedBox(width: AppSizes.sm),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+            decoration: BoxDecoration(
+              color: AppColors.primaryColor.withOpacity(0.1),
+              borderRadius: BorderRadius.circular(4),
+            ),
+            child: Text(
+              'Zoom ${controller.currentZoomLevel.value.toStringAsFixed(1)}',
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                color: AppColors.primaryColor,
+                fontSize: 10,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
         ],
       ),
     );
@@ -1008,15 +1095,19 @@ class PlacesMapScreen extends StatelessWidget {
     String tooltip,
     VoidCallback onTap,
   ) {
+    final dark = AppHelperFunctions.isDarkMode(Get.context!);
+
     return Container(
       width: 40,
       height: 40,
       decoration: BoxDecoration(
-        color: AppColors.white,
+        color: dark ? AppColors.darkerGrey : AppColors.white,
         borderRadius: BorderRadius.circular(AppSizes.cardRadiusLg),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.1),
+            color: dark
+                ? Colors.black.withValues(alpha: 0.3)
+                : Colors.black.withValues(alpha: 0.1),
             blurRadius: 8,
             offset: const Offset(0, 2),
           ),
@@ -1034,12 +1125,14 @@ class PlacesMapScreen extends StatelessWidget {
     PlacesMapController controller,
   ) {
     final locale = AppLocalizations.of(context);
+    final dark = AppHelperFunctions.isDarkMode(context);
+
     showModalBottomSheet(
       context: context,
       backgroundColor: Colors.transparent,
       builder: (context) => Container(
         decoration: BoxDecoration(
-          color: AppColors.white,
+          color: dark ? AppColors.dark : AppColors.white,
           borderRadius: const BorderRadius.only(
             topLeft: Radius.circular(AppSizes.cardRadiusLg),
             topRight: Radius.circular(AppSizes.cardRadiusLg),
@@ -1055,7 +1148,7 @@ class PlacesMapScreen extends StatelessWidget {
                 locale.mapType,
                 style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                   fontWeight: FontWeight.bold,
-                  color: AppColors.black,
+                  color: dark ? AppColors.white : AppColors.black,
                 ),
               ),
             ),
@@ -1105,6 +1198,8 @@ class PlacesMapScreen extends StatelessWidget {
     String label,
     IconData icon,
   ) {
+    final dark = AppHelperFunctions.isDarkMode(context);
+
     return ListTile(
       leading: Container(
         width: 40,
@@ -1115,7 +1210,10 @@ class PlacesMapScreen extends StatelessWidget {
         ),
         child: Icon(icon, color: AppColors.primaryColor),
       ),
-      title: Text(label, style: TextStyle(color: AppColors.dark)),
+      title: Text(
+        label,
+        style: TextStyle(color: dark ? AppColors.white : AppColors.dark),
+      ),
       trailing: controller.currentMapType.value == type
           ? Icon(Icons.check, color: AppColors.primaryColor)
           : null,

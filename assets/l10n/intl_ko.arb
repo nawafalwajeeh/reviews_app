@@ -623,5 +623,12 @@
     "searchInStore": "스토어에서 검색",
     "searchInStoreSubTitle": "장소, 주소 등을 검색하세요...",
     "updatePlace": "장소 업데이트",
-    "updatePlaceSubTitle": "장소 세부 정보 업데이트"
+    "updatePlaceSubTitle": "장소 세부 정보 업데이트",
+  
+  "directions": "Directions",
+  "directionsFound": "Directions Found",
+  "routeReady": "Route to {placeName} is ready",
+  "noRouteFound": "No Route Found",
+  "couldNotFindRoute": "Could not find a route to this location",
+  "couldNotFetchDirections": "Could not fetch directions"
 }

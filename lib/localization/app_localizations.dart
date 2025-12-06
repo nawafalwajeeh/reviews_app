@@ -91,7 +91,7 @@ class AppLocalizations {
     // Load Chinese strings
     String zhData = await rootBundle.loadString('assets/l10n/intl_zh.arb');
     _localizedValues['zh'] = _parseArbFile(zhData);
-  
+
     return true;
   }
 
@@ -2052,6 +2052,31 @@ class AppLocalizations {
 
   String get search =>
       _localizedValues[locale.languageCode]!['search'] ?? 'Search';
+
+  // Directions and Map Features
+  String get directions =>
+      _localizedValues[locale.languageCode]!['directions'] ?? 'Directions';
+
+  String get directionsFound =>
+      _localizedValues[locale.languageCode]!['directionsFound'] ??
+      'Directions Found';
+
+  String routeReady(String placeName) =>
+      (_localizedValues[locale.languageCode]!['routeReady'] ??
+              'Route to {placeName} is ready')
+          .replaceAll('{placeName}', placeName);
+
+  String get noRouteFound =>
+      _localizedValues[locale.languageCode]!['noRouteFound'] ??
+      'No Route Found';
+
+  String get couldNotFindRoute =>
+      _localizedValues[locale.languageCode]!['couldNotFindRoute'] ??
+      'Could not find a route to this location';
+
+  String get couldNotFetchDirections =>
+      _localizedValues[locale.languageCode]!['couldNotFetchDirections'] ??
+      'Could not fetch directions';
 }
 
 class _AppLocalizationsDelegate
@@ -2072,7 +2097,7 @@ class _AppLocalizationsDelegate
       'ko',
       'pt',
       'ru',
-      'zh'
+      'zh',
     ].contains(locale.languageCode);
   }
 

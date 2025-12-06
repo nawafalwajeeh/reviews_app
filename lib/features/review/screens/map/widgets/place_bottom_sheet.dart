@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:reviews_app/common/widgets/place/favourite_icon/favourite_icon.dart';
 import 'package:reviews_app/common/widgets/texts/category_name_text.dart';
@@ -8,7 +9,9 @@ import 'package:reviews_app/localization/app_localizations.dart';
 import 'package:reviews_app/utils/constants/colors.dart';
 import 'package:reviews_app/utils/constants/enums.dart';
 import 'package:reviews_app/utils/constants/sizes.dart';
+import 'package:reviews_app/utils/helpers/helper_functions.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import '../../../controllers/place_map_controller.dart';
 
 class PlaceBottomSheet extends StatelessWidget {
   final PlaceModel place;
@@ -24,6 +27,9 @@ class PlaceBottomSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final dark = AppHelperFunctions.isDarkMode(context);
+    final controller = PlacesMapController.instance;
+
     return Positioned(
       bottom: 0,
       left: 0,
@@ -31,7 +37,7 @@ class PlaceBottomSheet extends StatelessWidget {
       child: Container(
         margin: const EdgeInsets.all(AppSizes.defaultSpace),
         decoration: BoxDecoration(
-          color: AppColors.white,
+          color: dark ? AppColors.darkerGrey : AppColors.white,
           borderRadius: BorderRadius.circular(AppSizes.cardRadiusLg),
           boxShadow: [
             BoxShadow(
@@ -68,14 +74,14 @@ class PlaceBottomSheet extends StatelessWidget {
                           title: place.title,
                           location: place.address.shortAddress,
                           isVerified: true,
-                          titleColor: AppColors.black,
+                          titleColor: dark ? AppColors.white : AppColors.black,
                           placeTitleSize: TextSizes.medium,
                         ),
                       ),
                       IconButton(
                         icon: const Icon(Iconsax.close_circle),
                         onPressed: onClose,
-                        color: AppColors.darkerGrey,
+                        color: dark ? AppColors.light : AppColors.darkerGrey,
                       ),
                     ],
                   ),
@@ -139,6 +145,59 @@ class PlaceBottomSheet extends StatelessWidget {
 
                             CategoryNameText(categoryId: place.categoryId),
 
+                            const SizedBox(height: AppSizes.xs),
+
+                            // Distance from user (Premium Feature)
+                            Obx(
+                              () => controller.distanceToSelectedPlace.value > 0
+                                  ? Container(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: AppSizes.sm,
+                                        vertical: AppSizes.xs,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        color: AppColors.primaryColor
+                                            .withValues(alpha: 0.1),
+                                        borderRadius: BorderRadius.circular(
+                                          AppSizes.cardRadiusSm,
+                                        ),
+                                        border: Border.all(
+                                          color: AppColors.primaryColor
+                                              .withValues(alpha: 0.3),
+                                          width: 1,
+                                        ),
+                                      ),
+                                      child: Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Icon(
+                                            Iconsax.routing_2,
+                                            size: 14,
+                                            color: AppColors.primaryColor,
+                                          ),
+                                          const SizedBox(width: 4),
+                                          Text(
+                                            controller
+                                                        .distanceToSelectedPlace
+                                                        .value <
+                                                    1000
+                                                ? '${controller.distanceToSelectedPlace.value.toStringAsFixed(0)} m away'
+                                                : '${(controller.distanceToSelectedPlace.value / 1000).toStringAsFixed(1)} km away',
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .bodySmall
+                                                ?.copyWith(
+                                                  color: AppColors.primaryColor,
+                                                  fontWeight: FontWeight.w600,
+                                                  fontSize: 11,
+                                                ),
+                                          ),
+                                        ],
+                                      ),
+                                    )
+                                  : const SizedBox(),
+                            ),
+
                             const SizedBox(height: AppSizes.sm),
 
                             // Description preview
@@ -147,8 +206,8 @@ class PlaceBottomSheet extends StatelessWidget {
                                 place.description.length > 100
                                     ? '${place.description.substring(0, 100)}...'
                                     : place.description,
-                                style: Theme.of(context).textTheme.bodySmall
-                                    ?.copyWith(color: AppColors.darkGrey),
+                                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                    color: dark ? AppColors.lightGrey : AppColors.darkGrey),
                                 maxLines: 2,
                                 overflow: TextOverflow.ellipsis,
                               ),
@@ -158,9 +217,28 @@ class PlaceBottomSheet extends StatelessWidget {
                             // Action buttons
                             Row(
                               children: [
+                                // Get Directions button
                                 Expanded(
-                                  child: OutlinedButton(
-                                    onPressed: onTap,
+                                  child: OutlinedButton.icon(
+                                    onPressed: () {
+                                      controller.getDirectionsToPlace(place);
+                                    },
+                                    icon: Icon(
+                                      Iconsax.routing,
+                                      size: 18,
+                                      color: AppColors.primaryColor,
+                                    ),
+                                    label: Text(
+                                      AppLocalizations.of(context).directions,
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodySmall
+                                          ?.copyWith(
+                                            color: AppColors.primaryColor,
+                                            fontWeight: FontWeight.w600,
+                                            fontSize: 10,
+                                          ),
+                                    ),
                                     style: OutlinedButton.styleFrom(
                                       padding: const EdgeInsets.symmetric(
                                         vertical: AppSizes.sm,
@@ -174,20 +252,39 @@ class PlaceBottomSheet extends StatelessWidget {
                                         ),
                                       ),
                                     ),
+                                  ),
+                                ),
+                                const SizedBox(width: AppSizes.xs),
+                                // View Details button
+                                Expanded(
+                                  child: ElevatedButton(
+                                    onPressed: onTap,
+                                    style: ElevatedButton.styleFrom(
+                                      padding: const EdgeInsets.symmetric(
+                                        vertical: AppSizes.sm,
+                                      ),
+                                      backgroundColor: AppColors.primaryColor,
+                                      foregroundColor: AppColors.white,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(
+                                          AppSizes.cardRadiusMd,
+                                        ),
+                                      ),
+                                    ),
                                     child: Text(
-                                      // 'View Details',
                                       AppLocalizations.of(context).viewDetails,
                                       style: Theme.of(context)
                                           .textTheme
-                                          .bodyMedium
+                                          .bodySmall
                                           ?.copyWith(
-                                            color: AppColors.primaryColor,
+                                            color: AppColors.white,
                                             fontWeight: FontWeight.w600,
+                                            fontSize: 10,
                                           ),
                                     ),
                                   ),
                                 ),
-                                const SizedBox(width: AppSizes.sm),
+                                const SizedBox(width: AppSizes.xs),
                                 Container(
                                   decoration: BoxDecoration(
                                     color: AppColors.primaryColor.withValues(

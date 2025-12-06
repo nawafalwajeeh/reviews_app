@@ -1,6 +1,5 @@
 {
   "@@locale": "en",
-  
   "appName": "Places",
   "skip": "Skip",
   "done": "Done",
@@ -26,14 +25,12 @@
   "copied": "Copied",
   "share": "Share",
   "download": "Download",
-  
   "onBoardingTitle1": "Discover Local Gems",
-  "onBoardingTitle2": "Share Your Honest Reviews", 
+  "onBoardingTitle2": "Share Your Honest Reviews",
   "onBoardingTitle3": "Build a Trusted Community",
   "onBoardingSubTitle1": "Explore a world of unique places, from cozy cafes to exciting new restaurants, all around you.",
   "onBoardingSubTitle2": "Your insights help others make informed choices. Share your thoughts and photos with the community!",
   "onBoardingSubTitle3": "Join fellow explorers, find recommendations from people you trust, and help local businesses thrive.",
-  
   "name": "Name",
   "firstName": "First Name",
   "lastName": "Last Name",
@@ -60,13 +57,11 @@
   "resendEmail": "Resend Email",
   "resendEmailIn": "Resend email in",
   "logout": "Logout",
-  
   "loginTitle": "Welcome back,",
   "loginSubTitle": "Login to continue reviewing your favorite places.",
   "signupTitle": "Let's create your account",
   "forgetPasswordTitle": "Forget password",
   "forgetPasswordSubTitle": "Don't worry sometimes people can forget too, enter your email and we will send you a password reset link.",
-  
   "popularPlaces": "Popular Places",
   "featuredPlaces": "Featured Places",
   "trendingPlaces": "Trending Places",
@@ -74,18 +69,15 @@
   "nearbyPlaces": "Nearby Places",
   "homeAppbarTitle": "Good day for discovering",
   "homeAppbarSubTitle": "Nawaf Alwajeeh",
-  
   "navigationHome": "Home",
-  "navigationPlaces": "Places", 
+  "navigationPlaces": "Places",
   "navigationMap": "Map",
   "navigationWishlist": "Wishlist",
   "navigationProfile": "Profile",
-  
   "favorites": "Favorites",
   "searchForFavoritePlace": "Search for favorite place",
   "wishlistEmpty": "Whoops! Wishlist is Empty...",
   "letsAddSome": "Let's add some",
-  
   "searchPlaces": "Search Places",
   "searchPlacesCategories": "Search places, categories...",
   "searchForAddress": "Search for an address...",
@@ -105,7 +97,6 @@
   "noCategoriesAvailable": "No categories available",
   "categoryNotFound": "Category Not Found",
   "unknownCategory": "Unknown Category",
-  
   "ratingReviews": "Rating & Reviews",
   "ratingsVerified": "Ratings and reviews are verified and are from people who use the same type of device that you use.",
   "reviews": "reviews",
@@ -113,7 +104,6 @@
   "reviewsCount": "{count} reviews",
   "reviewsCount_other": "{count} reviews",
   "beFirstToReview": "Be the first to write a review!",
-  
   "comments": "Comments",
   "noCommentsYet": "No comments yet",
   "beFirstToComment": "Be the first to comment!",
@@ -128,12 +118,10 @@
   "replyingTo": "Replying to",
   "reply": "reply",
   "replies": "replies",
-  
   "description": "Description",
   "tags": "Tags",
   "locationOnMap": "Location on Map",
   "locationCoordinates": "Location Coordinates",
-  
   "writeReview": "Write a Review",
   "editReview": "Edit Your Review",
   "yourReviewSubmitted": "Your Review (Submitted)",
@@ -145,7 +133,6 @@
   "deleteReview": "Delete Review",
   "deleteReviewConfirmation": "Are you sure you want to delete your review? This action cannot be undone.",
   "submitReview": "Submit Review",
-  
   "placeQRCode": "Place QR Code",
   "scanQRCode": "Scan QR Code",
   "scanToView": "Scan to view this place",
@@ -159,7 +146,6 @@
   "unrecognizedFormat": "Unrecognized format.",
   "sharePDF": "Share PDF",
   "savePDF": "Save PDF",
-  
   "discoverPlaces": "Discover Places",
   "createNewPlace": "Create New Place",
   "createPlaces": "Create Places",
@@ -168,7 +154,6 @@
   "updatePlaceInfo": "Update your place information",
   "deletePlace": "Delete Place?",
   "deletePlaceMessage": "Are you sure you want to delete \"{placeTitle}\"? This action cannot be undone.",
-  
   "placeName": "Place Name",
   "enterPlaceName": "Enter the name of this place",
   "selectCategory": "Select Category",
@@ -178,17 +163,14 @@
   "enterDescription": "Tell us what makes this place special...",
   "enterPhoneNumber": "Enter your phone number",
   "websiteUrlOptional": "Website URL (Optional)",
-  
   "communityGuidelines": "Community Guidelines",
   "ensureAppropriate": "Please ensure your place is appropriate and follows our community standards",
-  
   "addPhotos": "Add Photos",
   "uploadPhotos": "Upload up to {maxImages} photos of this place",
   "existingPhotos": "Existing Photos",
   "newPhotos": "New Photos",
   "photos": "photos",
   "noPhotosFound": "No photos found in this collection.",
-  
   "customQuestionsOptional": "Custom Questions (Optional)",
   "addQuestion": "Add Question",
   "noCustomQuestions": "No custom questions added",
@@ -203,7 +185,6 @@
   "typeYourAnswer": "Type your answer...",
   "removeQuestion": "Remove Question",
   "notAnswered": "Not answered",
-  
   "premiumFeatures": "Premium Features",
   "premiumFeature": "Premium Feature",
   "unlockPremium": "Unlock Premium",
@@ -241,11 +222,9 @@
   "gotIt": "Got it",
   "creatingNewPlacesPremium": "Creating new places is a premium feature.",
   "upgradeToPremiumToUnlock": "Upgrade to Premium to unlock:",
-  
   "internetConnected": "Internet is Connected",
   "noInternetConnection": "No Internet Connection",
   "noInternet": "No internet connection",
-  
   "validationRequired": "{fieldName} is required.",
   "validationUsername": "Username is not valid.",
   "validationEmail": "Invalid email address.",
@@ -253,7 +232,6 @@
   "validationPhone": "Invalid phone number format (12 digits required).",
   "validationWebsite": "Please enter a valid website URL (e.g. https://example.com)",
   "validationReviewTextRequired": "Review text is required.",
-  
   "profile": "Profile",
   "changeProfilePicture": "Change Profile Picture",
   "profileInformation": "Profile Information",
@@ -304,7 +282,6 @@
   "selected": "Selected",
   "noDateSelected": "No date selected",
   "clearSelection": "Clear Selection",
-  
   "addNewAddress": "Add New Address",
   "pickLocationFromMap": "Pick Location from Map",
   "addressName": "Address Name",
@@ -321,7 +298,6 @@
   "addressFromMap": "Address from map",
   "mapLocation": "Map Location",
   "addressNotFound": "Address not found",
-  
   "passwordResetEmailSent": "Password Reset Email Sent",
   "accountSecurityPriority": "Your Account Security is Our Priority! We've Sent You a Secure Link to Safely Change Your Password and Keep Your Account Protected.",
   "verifyEmailAddress": "Verify your email address!",
@@ -336,11 +312,9 @@
   "confirmEmailSubTitle": "Congratulations! Your Account Awaits: Verify Your Email to Start Shopping and Experience a World of Unrivaled Deals and Personalized Offers.",
   "yourAccountCreatedTitle": "Your account successfully created!",
   "yourAccountCreatedSubTitle": "Welcome to Your Ultimate Shopping Destination: Your Account is Created, Unleash the Joy of Seamless Online Shopping!",
-  
   "listYourBusiness": "List Your Business",
   "getDiscoveredByMillions": "Get discovered by millions of customers and grow your business",
   "getStarted": "Get Started",
-  
   "viewDetails": "View Details",
   "noTrendingPlacesFound": "No trending places found.",
   "unknownError": "Unknown error occurred",
@@ -357,18 +331,15 @@
   "showLess": "Show less",
   "readMore": "Read more",
   "readLess": "Read less",
-  "viewMore": "View more", 
+  "viewMore": "View more",
   "viewLess": "View less",
-  
   "placesSaved": "{count} places saved",
   "placesSaved_other": "{count} places saved",
   "placeSaved": "{count} place saved",
   "placeSaved_other": "{count} places saved",
-  
   "voiceSearch": "Voice Search",
   "listening": "Listening...",
   "stopListening": "Stop Listening",
-  
   "foundPlacesIn": "Found {count} places in",
   "foundPlacesFor": "Found {count} places for",
   "filterPlaces": "Filter Places",
@@ -384,7 +355,6 @@
   "newest": "Newest",
   "nameAZ": "Name (A-Z)",
   "nameZA": "Name (Z-A)",
-  
   "contactOptions": "Contact Options",
   "chooseHowToContact": "Choose how to contact",
   "call": "Call",
@@ -405,7 +375,6 @@
   "failedToOpenAppStore": "Failed to open app store",
   "copyFailed": "Copy Failed",
   "couldNotCopyPhoneNumber": "Could not copy phone number",
-  
   "today": "Today",
   "yesterday": "Yesterday",
   "daysAgo": "days ago",
@@ -416,7 +385,6 @@
   "minutesAgo": "m ago",
   "justNow": "Just now",
   "unknownDate": "Unknown date",
-  
   "cannotOpenLink": "Cannot Open Link",
   "couldNotLaunchWebsite": "Could not launch the website",
   "messageFailed": "Message Failed",
@@ -426,7 +394,6 @@
   "failedToMakeCall": "Failed to make call",
   "failedToLaunchPhoneOptions": "Failed to launch phone options",
   "couldNotMakeCall": "Could not make call to",
-  
   "shareFailed": "Share Failed",
   "saveFailed": "Save Failed",
   "permissionRequired": "Permission Required",
@@ -437,16 +404,13 @@
   "fileExistsMessage": "A PDF with this name already exists. Would you like to overwrite it?",
   "overwrite": "Overwrite",
   "fileOverwritten": "File overwritten successfully",
-  
   "gallery": "Gallery",
   "collections": "Collections",
   "allPlacePhotos": "All Place Photos",
   "collectionPhotos": "Collection Photos",
   "uncategorized": "Uncategorized",
-  
   "stars": "stars",
   "star": "star",
-  
   "chooseLocation": "Choose Location",
   "currentLocation": "Current Location",
   "yourLocation": "Your Location",
@@ -477,8 +441,6 @@
   "googlePlacesLocation": "Google Places location",
   "googlePlaces": "Google Places",
   "searchSystem": "Search System",
-  
-
   "youSelected": "You Selected",
   "allLanguages": "All Languages",
   "search": "Search",
@@ -486,7 +448,6 @@
   "selectPreferredLanguage": "Select your preferred language to continue",
   "english": "English",
   "arabic": "Arabic",
-  
   "authenticationRequired": "Authentication Required",
   "pleaseSignIn": "Please sign in or create an account to continue.",
   "signInRequired": "Sign In Required",
@@ -495,7 +456,6 @@
   "pleaseLogInToUseFeature": "Please log in or create an account to use this feature.",
   "pleaseSignInToSavePlaces": "Please sign in or create an account to save your favorite places.",
   "pleaseSignInToAddReview": "Please sign in or create an account to add your review.",
-  
   "updateSuccess": "Update Successful",
   "updateFailed": "Update Failed",
   "submissionSuccess": "Submission Success!",
@@ -505,17 +465,14 @@
   "usernameUpdated": "Your username has been updated.",
   "genderUpdated": "Your gender has been updated.",
   "birthDateUpdated": "Your birth date has been updated.",
-  
   "addressSelected": "Address Selected",
   "addressSaved": "Address saved successfully",
   "locationSelected": "Location Selected",
   "mapLocationSelected": "Map location selected successfully",
-  
   "placeCreated": "Place created successfully",
   "placeUpdated": "Place updated successfully",
   "placeDeleted": "Place deleted successfully",
   "placeNotFound": "Place not found",
-  
   "reviewSubmitted": "Review submitted successfully",
   "reviewUpdated": "Review updated successfully",
   "reviewDeleted": "Review deleted successfully",
@@ -528,13 +485,11 @@
   "pleaseWriteReviewText": "Please write your review text.",
   "answerRequired": "Answer Required",
   "pleaseAnswerRequiredQuestion": "Please answer the required question: {question}",
-  
   "favoriteAdded": "Added to favorites",
   "favoriteRemoved": "Removed from favorites",
   "failedToLoadFavorites": "Failed to load favorites: {error}",
   "placeHasBeenAddedToWishlist": "Place has been added to Wishlist",
   "placeHasBeenRemovedFromWishlist": "Place has been removed from Wishlist",
-  
   "weAreUpdatingYourInformation": "We are updating your information...",
   "yourNameHasBeenUpdated": "Your Name has been updated.",
   "weAreUpdatingYourPhoneNumber": "We are updating your phone number...",
@@ -546,10 +501,8 @@
   "weAreUpdatingYourBirthDate": "We are updating your birth date...",
   "yourBirthDateHasBeenUpdated": "Your birth date has been updated.",
   "pleaseSelectYourBirthDate": "Please select your birth date.",
-  
   "storingAddress": "Storing Address...",
   "yourAddressHasBeenSaved": "Your address has been saved successfully.",
-  
   "creatingNewPlace": "Creating new place...",
   "uploadingPhotos": "Uploading {count} photos for Place ID: {placeId}...",
   "yourNewPlaceHasBeenCreated": "Your new place \"{title}\" has been created!",
@@ -567,14 +520,12 @@
   "pleaseSelectValidCategory": "Please select a valid category.",
   "limitReached": "Limit Reached",
   "youCanOnlyAddUpTo4Questions": "You can only add up to 4 custom questions.",
-  
   "creatingNewCategory": "Creating new category...",
   "categoryNameRequired": "Category Name Required",
   "pleaseEnterCategoryName": "Please enter a name for the new category.",
   "duplicateCategory": "Duplicate Category",
   "categoryAlreadyExists": "A category with this name already exists.",
   "categoryCreated": "The new category \"{name}\" has been created.",
-  
   "dataNotSaved": "Data not saved",
   "couldNotSaveInformation": "Something went wrong while saving your information. You can re-save your data in your profile.",
   "deleteAccount": "Delete Account",
@@ -595,7 +546,6 @@
   "couldNotSelectImages": "Could not select images: {error}",
   "deleteFailed": "Delete Failed",
   "formValidationFailed": "Form validation failed",
-  
   "loggingYouIn": "Logging you in...",
   "enteringAsGuest": "Entering as guest...",
   "couldNotSkipLogin": "Could not skip login. Please check your connection or try again: {error}",
@@ -609,7 +559,6 @@
   "accountCreatedVerifyEmail": "Your account has been created! Verify email to continue.",
   "pleaseCheckInboxVerifyEmail": "Please Check your inbox and verify your email.",
   "yourAccountCreated": "Your account has been created",
-  
   "submittingReview": "Submitting Review...",
   "deletingReview": "Deleting Review...",
   "microphonePermissionRequired": "Microphone Permission Required",
@@ -620,7 +569,6 @@
   "couldNotStartVoiceRecognition": "Could not start voice recognition. Please try again.",
   "searchError": "Search Error",
   "failedToLoadRecentFeaturedImages": "Failed to load recent featured images: {error}",
-  
   "commentAddedSuccessfully": "Comment Added Successfully",
   "failedToAddComment": "Failed To Add Comment",
   "commentUpdatedSuccess": "Comment updated successfully",
@@ -636,7 +584,6 @@
   "commentDeleteErrorMessage": "Failed to delete comment: {error}",
   "commentReactError": "Oh Snap!",
   "commentReactErrorMessage": "Failed to react to comment: {error}",
-  
   "couldNotLoadPlaces": "Could not load places",
   "loadingError": "Loading Error",
   "filterError": "Filter Error",
@@ -657,7 +604,6 @@
   "reverseGeocodingError": "Reverse Geocoding Error",
   "googlePlacesSearchError": "Google Places search error",
   "nearbyPlacesError": "Error loading nearby places",
-  
   "imageViewer": "Image Viewer",
   "downloadImage": "Download Image",
   "imageDownloaded": "Image downloaded successfully",
@@ -674,9 +620,56 @@
   "viewOriginal": "View Original",
   "failedToLoadImage": "Failed to load image",
   "swipeLeftOrRightToViewImages": "Swipe left or right to view other images",
-  
   "searchInStore": "Search in Store",
   "searchInStoreSubTitle": "Search for places, addresses, and more...",
   "updatePlace": "Update Place",
-  "updatePlaceSubTitle": "Update your place details"
+  "updatePlaceSubTitle": "Update your place details",
+  "directions": "Directions",
+  "directionsFound": "Directions Found",
+  "routeReady": "Route to {placeName} is ready",
+  "noRouteFound": "No Route Found",
+  "couldNotFindRoute": "Could not find a route to this location",
+  "couldNotFetchDirections": "Could not fetch directions",
+  "away": "away",
+  "meters": "m",
+  "kilometers": "km",
+  "distance": "Distance",
+  "defaultMap": "Default",
+  "searchFilters": "Search Filters",
+  "searchInThisArea": "Search in this area",
+  "redoSearchInArea": "Redo search in this area",
+  "distanceRadius": "Distance Radius",
+  "selectArea": "Select Area",
+  "selectCity": "Select City",
+  "selectCountry": "Select Country",
+  "filterByArea": "Filter by Area",
+  "clearFilters": "Clear Filters",
+  "activeFilters": "Active Filters",
+  "noFiltersActive": "No filters active",
+  "resultsFound": "{count} results found",
+  "within1km": "Within 1 km",
+  "within5km": "Within 5 km",
+  "within10km": "Within 10 km",
+  "within25km": "Within 25 km",
+  "within50km": "Within 50 km",
+  "customRadius": "Custom Radius",
+  "anyDistance": "Any Distance",
+  "allAreas": "All Areas",
+  "popularAreas": "Popular Areas",
+  "recentAreas": "Recent Areas",
+  "searchCity": "Search city...",
+  "quickFilters": "Quick Filters",
+  "nearbyOnly": "Nearby Only",
+  "mostPopular": "Most Popular",
+  "recentlyAdded": "Recently Added",
+  "mapControls": "Map Controls",
+  "searchHistory": "Search History",
+  "savedLocations": "Saved Locations",
+  "clusterView": "Cluster View",
+  "listView": "List View",
+  "exploreThisArea": "Explore This Area",
+  "showingResults": "Showing {count} results",
+  "filterPresets": "Filter Presets",
+  "cityWide": "City-wide",
+  "searchRadius": "Search Radius"
 }

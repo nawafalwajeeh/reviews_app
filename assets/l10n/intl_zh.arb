@@ -623,5 +623,12 @@
     "searchInStore": "在商店中搜索",
     "searchInStoreSubTitle": "搜索场所、地址等...",
     "updatePlace": "更新场所",
-    "updatePlaceSubTitle": "更新您的场所详情"
+    "updatePlaceSubTitle": "更新您的场所详情",
+  
+  "directions": "Directions",
+  "directionsFound": "Directions Found",
+  "routeReady": "Route to {placeName} is ready",
+  "noRouteFound": "No Route Found",
+  "couldNotFindRoute": "Could not find a route to this location",
+  "couldNotFetchDirections": "Could not fetch directions"
 }

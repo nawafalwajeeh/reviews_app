@@ -53,14 +53,14 @@ List<SettingsTileModel> appSettings(BuildContext context) => [
     title: AppLocalizations.of(context).geolocation,
     subTitle: AppLocalizations.of(context).recommendationBasedOnLocation,
     onTap: () {},
-    trailing: Switch(value: false, onChanged: (value) {}),
+    trailing: Switch(value: true, onChanged: (value) {}),
   ),
   SettingsTileModel(
     icon: Iconsax.security_user,
     title: AppLocalizations.of(context).safeMode,
     subTitle: AppLocalizations.of(context).safeForAllAges,
     onTap: () {},
-    trailing: Switch(value: false, onChanged: (value) {}),
+    trailing: Switch(value: true, onChanged: (value) {}),
   ),
   SettingsTileModel(
     icon: Iconsax.image,
@@ -70,7 +70,6 @@ List<SettingsTileModel> appSettings(BuildContext context) => [
     trailing: Switch(value: true, onChanged: (value) {}),
   ),
 ];
-
 
 //---------------------------
 // import 'package:flutter/material.dart';

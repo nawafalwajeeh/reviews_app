@@ -25,11 +25,12 @@ class CategoryFilterSheet extends StatelessWidget {
     final categoryController = CategoryController.instance;
     final mapController = PlacesMapController.instance;
     final locale = AppLocalizations.of(context);
+    final dark = Theme.of(context).brightness == Brightness.dark;
 
     return Container(
       height: MediaQuery.of(context).size.height * 0.7,
       decoration: BoxDecoration(
-        color: AppColors.white,
+        color: dark ? AppColors.dark : AppColors.white,
         borderRadius: const BorderRadius.only(
           topLeft: Radius.circular(AppSizes.cardRadiusLg),
           topRight: Radius.circular(AppSizes.cardRadiusLg),
@@ -51,7 +52,10 @@ class CategoryFilterSheet extends StatelessWidget {
                       Text(
                         locale.filterByCategory,
                         style: Theme.of(context).textTheme.headlineSmall
-                            ?.copyWith(fontWeight: FontWeight.bold),
+                            ?.copyWith(
+                              fontWeight: FontWeight.bold,
+                              color: dark ? AppColors.white : AppColors.black,
+                            ),
                       ),
                       const Spacer(),
                       if (mapController.selectedCategoryId.value.isNotEmpty)
@@ -73,22 +77,26 @@ class CategoryFilterSheet extends StatelessWidget {
                 Obx(
                   () => Text(
                     '${mapController.displayedPlaces.length} ${locale.placesDisplayed}',
-                    style: Theme.of(
-                      context,
-                    ).textTheme.bodySmall?.copyWith(color: AppColors.darkGrey),
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      color: dark ? AppColors.lightGrey : AppColors.darkGrey,
+                    ),
                   ),
                 ),
               ],
             ),
           ),
 
-          const Divider(height: 1),
+          Divider(height: 1, color: dark ? AppColors.darkGrey : AppColors.grey),
 
           // Categories List
           Expanded(
             child: Obx(() {
               if (categoryController.isLoading.value) {
-                return const Center(child: CircularProgressIndicator());
+                return Center(
+                  child: CircularProgressIndicator(
+                    color: AppColors.primaryColor,
+                  ),
+                );
               }
 
               // Count places per category for debugging
@@ -115,10 +123,11 @@ class CategoryFilterSheet extends StatelessWidget {
                       onCategorySelected('');
                       Get.back();
                     },
+                    dark: dark,
                   ),
 
                   const SizedBox(height: AppSizes.sm),
-                  const Divider(),
+                  Divider(color: dark ? AppColors.darkGrey : AppColors.grey),
                   const SizedBox(height: AppSizes.sm),
 
                   // Categories list with counts
@@ -146,6 +155,7 @@ class CategoryFilterSheet extends StatelessWidget {
                           );
                         }
                       },
+                      dark: dark,
                     );
                   }),
                 ],
@@ -165,6 +175,7 @@ class CategoryFilterSheet extends StatelessWidget {
     required bool isSelected,
     required int count,
     required VoidCallback onTap,
+    required bool dark,
   }) {
     return ListTile(
       leading: Container(
@@ -186,7 +197,9 @@ class CategoryFilterSheet extends StatelessWidget {
         name,
         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
           fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
-          color: isSelected ? AppColors.primaryColor : AppColors.darkGrey,
+          color: isSelected
+              ? AppColors.primaryColor
+              : (dark ? AppColors.lightGrey : AppColors.darkGrey),
         ),
       ),
       trailing: Row(
@@ -194,9 +207,9 @@ class CategoryFilterSheet extends StatelessWidget {
         children: [
           Text(
             count.toString(),
-            style: Theme.of(
-              context,
-            ).textTheme.bodySmall?.copyWith(color: AppColors.darkGrey),
+            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+              color: dark ? AppColors.lightGrey : AppColors.darkGrey,
+            ),
           ),
           const SizedBox(width: AppSizes.sm),
           if (isSelected)

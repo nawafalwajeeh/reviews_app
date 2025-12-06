@@ -623,5 +623,12 @@
     "searchInStore": "ストア内を検索",
     "searchInStoreSubTitle": "場所、住所などを検索...",
     "updatePlace": "場所を更新",
-    "updatePlaceSubTitle": "場所の詳細を更新"
+    "updatePlaceSubTitle": "場所の詳細を更新",
+  
+  "directions": "Directions",
+  "directionsFound": "Directions Found",
+  "routeReady": "Route to {placeName} is ready",
+  "noRouteFound": "No Route Found",
+  "couldNotFindRoute": "Could not find a route to this location",
+  "couldNotFetchDirections": "Could not fetch directions"
 }

@@ -623,5 +623,12 @@
     "searchInStore": "Поиск в магазине",
     "searchInStoreSubTitle": "Поиск мест, адресов и прочего...",
     "updatePlace": "Обновить место",
-    "updatePlaceSubTitle": "Обновить детали вашего места"
+    "updatePlaceSubTitle": "Обновить детали вашего места",
+  
+  "directions": "Directions",
+  "directionsFound": "Directions Found",
+  "routeReady": "Route to {placeName} is ready",
+  "noRouteFound": "No Route Found",
+  "couldNotFindRoute": "Could not find a route to this location",
+  "couldNotFetchDirections": "Could not fetch directions"
 }
