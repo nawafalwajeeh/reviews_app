@@ -1,0 +1,199 @@
+name: reviews_app
+description: "A new Flutter project."
+# The following line prevents the package from being accidentally published to
+# pub.dev using `flutter pub publish`. This is preferred for private packages.
+publish_to: "none" # Remove this line if you wish to publish to pub.dev
+
+# The following defines the version and build number for your application.
+# A version number is three numbers separated by dots, like 1.2.43
+# followed by an optional build number separated by a +.
+# Both the version and the builder number may be overridden in flutter
+# build by specifying --build-name and --build-number, respectively.
+# In Android, build-name is used as versionName while build-number used as versionCode.
+# Read more about Android versioning at https://developer.android.com/studio/publish/versioning
+# In iOS, build-name is used as CFBundleShortVersionString while build-number is used as CFBundleVersion.
+# Read more about iOS versioning at
+# https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
+# In Windows, build-name is used as the major, minor, and patch parts
+# of the product and file versions while build-number is used as the build suffix.
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.9.0
+
+dependencies:
+  flutter_localizations:
+    sdk: flutter
+  flutter:
+    sdk: flutter
+
+  # Utility Packages
+  http: ^1.5.0
+  intl: ^0.20.2
+  lottie: ^3.0.0
+  shimmer: ^3.0.0
+  logger: ^2.0.2+1
+  flutter_svg: ^2.0.9
+  image_picker: ^1.0.4
+  url_launcher: ^6.2.1
+  connectivity_plus: ^6.1.3
+  cached_network_image: ^3.3.0
+  flutter_native_splash: ^2.3.5
+  smooth_page_indicator: ^1.1.0
+  wakelock_plus: ^1.1.3 #Only being used in the Dummy Data Uploader to keep screen on.
+  path: ^1.9.1
+  permission_handler: ^12.0.1
+  # flutter_paypal_checkout: ^1.0.1
+  # Icons
+  iconsax: ^0.0.8
+  cupertino_icons: ^1.0.6
+
+  # State Management
+  get: ^4.7.2
+  get_storage: ^2.1.1
+
+  # Product Specific
+  readmore: ^3.0.0
+  carousel_slider: ^5.0.0
+  flutter_rating_bar: ^4.0.1
+  capped_progress_indicator: ^0.0.2
+
+  # Firebase
+  firebase_core: ^4.0.0
+  firebase_auth: ^6.0.1
+  cloud_firestore: ^6.0.0
+  firebase_storage: ^13.0.0
+  google_sign_in: ^7.1.1
+  # flutter_facebook_auth: ^6.0.2
+  # Launcher icon
+  flutter_launcher_icons: ^0.14.3
+
+  # Supabase
+  supabase_flutter: ^2.9.1
+  uuid: ^4.5.1
+
+  # Map
+  google_maps_flutter: ^2.13.1
+  flutter_polyline_points: ^3.1.0
+  location: ^8.0.1
+  flutter_dropzone: ^4.2.1
+  geocoding: ^4.0.0
+  timeago: ^3.7.1
+  geolocator: ^14.0.1
+
+  # Notifications
+  firebase_messaging: ^16.0.4
+  flutter_local_notifications: ^19.5.0
+  timezone: ^0.10.1
+
+  # Voice to text
+  speech_to_text: ^7.3.0
+
+  # Pdf & Barcode
+  pdf: ^3.11.3
+  mobile_scanner: ^7.1.3
+  barcode_widget: ^2.0.4
+  share_plus: ^12.0.1
+  printing: ^5.14.2
+  path_provider: ^2.1.5
+  in_app_purchase: ^3.2.3
+  # intl_utils: ^2.8.12
+  build_runner: ^2.10.4
+  gal: ^2.3.2
+  flutter_cache_manager: ^3.4.1
+  photo_view: ^0.15.0
+  # image_gallery_saver: ^2.0.3
+  # flutter_inappwebview: 5.8.0
+  #--------------- ./ PACKAGES END ------------------#
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  flutter_lints: ^6.0.0
+
+flutter:
+  # generate: true
+
+  uses-material-design: true
+
+  #--------------- LOCAL ASSETS ------------------#
+  assets:
+    - assets/logos/
+    - assets/icons/brands/
+    - assets/icons/location/
+    - assets/icons/launcher/
+    - assets/images/content/
+    - assets/images/animations/
+    - assets/icons/payment_methods/
+    - assets/images/on_boarding_images/
+    - assets/l10n/
+
+  #--------------- LOCAL FONTS ------------------#
+  fonts:
+    - family: Poppins
+      fonts:
+        - asset: assets/fonts/Poppins-Light.ttf
+          weight: 300
+        - asset: assets/fonts/Poppins-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/Poppins-Italic.ttf
+          style: italic
+        - asset: assets/fonts/Poppins-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/Poppins-MediumItalic.ttf
+          weight: 500
+          style: italic
+        - asset: assets/fonts/Poppins-SemiBold.ttf
+          weight: 600
+        - asset: assets/fonts/Poppins-Bold.ttf
+          weight: 800
+
+    # Arabic Font - Tajawal (OPTIMIZED - only these 4)
+    - family: Tajawal
+      fonts:
+        - asset: assets/fonts/Tajawal-Light.ttf
+          weight: 300
+        - asset: assets/fonts/Tajawal-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/Tajawal-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/Tajawal-Bold.ttf
+          weight: 700
+
+# OLD Launcher icon settings
+# flutter_launcher_icons:
+#   android: "launcher_icon"
+#   ios: true
+#   remove_alpha_ios: true
+#   image_path: "assets/icons/launcher/ic-launcher.png"
+#   min_sdk_android: 21 # android min sdk min:16, default 21
+#   web:
+#     generate: true
+#     image_path: "assets/icons/launcher/ic-launcher.png"
+#     background_color: "#hexcode"
+#     theme_color: "#hexcode"
+# Luncher icon
+flutter_launcher_icons:
+  # General settings for standard icons and iOS
+  android: "launcher_icon"
+  ios: true
+  remove_alpha_ios: true
+  image_path: "assets/icons/launcher/ic-launcher.png"
+  min_sdk_android: 21 # android min sdk min:16, default 21
+
+  # --- Adaptive Icon Settings (REQUIRED FOR FILLING SPACE) ---
+  # 1. Sets the solid color that will fill the entire icon shape (the circle/square)
+  adaptive_icon_background: "#2B54A6"
+
+  # 2. Uses your logo as the content that sits on top of the background.
+  # Note: Ensure ic-launcher.png has no excess transparent padding inside its canvas.
+  adaptive_icon_foreground: "assets/icons/launcher/ic-launcher.png"
+
+  web:
+    generate: true
+    image_path: "assets/icons/launcher/ic-launcher.png"
+    background_color: "#2B54A6"
+    theme_color: "#2B54A6"
+flutter_intl:
+  enabled: true
