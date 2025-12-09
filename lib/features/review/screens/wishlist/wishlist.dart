@@ -14,6 +14,7 @@ import '../../../../localization/app_localizations.dart';
 import '../../../../navigation_menu.dart';
 import '../../../../utils/constants/image_strings.dart';
 import '../../../../utils/helpers/cloud_helper_functions.dart';
+import '../gallery/gallery.dart';
 
 class FavouriteScreen extends StatelessWidget {
   const FavouriteScreen({super.key});
@@ -28,9 +29,11 @@ class FavouriteScreen extends StatelessWidget {
           Obx(
             () => CustomHeader(
               title: AppLocalizations.of(context).favorites,
-              icon: Iconsax.sort,
+              // icon: Iconsax.sort,
+              icon: Iconsax.image,
               isFavorite: true,
               favoriteCount: controller.favorites.length,
+              onPressed: () => Get.to(() => ImageGalleryScreen()),
             ),
           ),
 

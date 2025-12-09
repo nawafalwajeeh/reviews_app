@@ -398,7 +398,7 @@ class PlaceRepository extends GetxController {
 
         await batchWriter.updateCollection(placeWithId);
       }
-
+        
       // 4. Commit the internal batch atomically.
       await batchWriter.commit();
 

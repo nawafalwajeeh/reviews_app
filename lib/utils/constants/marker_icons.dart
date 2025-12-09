@@ -1,5 +1,7 @@
+
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:reviews_app/localization/app_localizations.dart';
 import 'dart:ui' as ui;
 import 'dart:math' as math;
 import 'package:reviews_app/utils/constants/colors.dart';
@@ -49,8 +51,8 @@ class CustomMarkerGenerator {
     );
     final byteData = await image.toByteData(format: ui.ImageByteFormat.png);
 
-    // return BitmapDescriptor.fromBytes(byteData!.buffer.asUint8List());
-    return BitmapDescriptor.bytes(byteData!.buffer.asUint8List());
+    return BitmapDescriptor.fromBytes(byteData!.buffer.asUint8List());
+    // return BitmapDescriptor.bytes(byteData!.buffer.asUint8List());
   }
 
   static void _draw3DShadow(Canvas canvas, double size, bool isSelected) {
@@ -503,7 +505,8 @@ class CustomMarkerGenerator {
       // Find the category by ID from allMockCategories
       final category = allMockCategories.firstWhere(
         (cat) => cat.id == categoryId,
-        orElse: () => throw Exception('Category not found'),
+        // orElse: () => throw Exception('Category not found'),
+        orElse: () => throw Exception(txt.categoryNotFound),
       );
 
       // Use the iconKey to get the actual icon
@@ -591,8 +594,8 @@ class CustomMarkerGenerator {
     );
     final byteData = await image.toByteData(format: ui.ImageByteFormat.png);
 
-    // return BitmapDescriptor.fromBytes(byteData!.buffer.asUint8List());
-    return BitmapDescriptor.bytes(byteData!.buffer.asUint8List());
+    return BitmapDescriptor.fromBytes(byteData!.buffer.asUint8List());
+    // return BitmapDescriptor.bytes(byteData!.buffer.asUint8List());
   }
 
   static Future<BitmapDescriptor> getSelectedLocationMarker() async {
@@ -665,7 +668,7 @@ class CustomMarkerGenerator {
     );
     final byteData = await image.toByteData(format: ui.ImageByteFormat.png);
 
-    // return BitmapDescriptor.fromBytes(byteData!.buffer.asUint8List());
-    return BitmapDescriptor.bytes(byteData!.buffer.asUint8List());
+    return BitmapDescriptor.fromBytes(byteData!.buffer.asUint8List());
+    // return BitmapDescriptor.bytes(byteData!.buffer.asUint8List());
   }
 }

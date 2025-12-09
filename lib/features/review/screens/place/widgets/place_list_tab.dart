@@ -82,7 +82,6 @@ class PlaceListTab extends StatelessWidget {
         }
 
         // 3. DATA FOUND STATE (Success)
-        // 3. DATA FOUND STATE (Success)
         return RefreshIndicator(
           onRefresh: () async {
             controller.streamPlacesForCategory(categoryId);
