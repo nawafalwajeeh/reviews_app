@@ -9,7 +9,7 @@ import 'package:reviews_app/utils/helpers/network_manager.dart';
 import '../features/personalization/controllers/address_controller.dart';
 import '../features/personalization/controllers/user_controller.dart';
 import '../features/review/controllers/images_controller.dart';
-import '../features/review/controllers/notification_controller.dart';
+// import '../features/review/controllers/notification_controller.dart';
 
 class GeneralBindings extends Bindings {
   @override
@@ -17,7 +17,7 @@ class GeneralBindings extends Bindings {
     /// -- Core
     Get.put(AppNetworkManager(), permanent: true);
     Get.put(CategoryController());
-    Get.lazyPut(() => NotificationController());
+    // Get.lazyPut(() => NotificationController());
 
     /// -- User
     Get.put(UserController());

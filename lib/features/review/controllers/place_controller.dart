@@ -39,7 +39,7 @@ class PlaceController extends GetxController {
   final isLoading = false.obs;
   final placeRepository = Get.put(PlaceRepository());
   final userRepository = Get.put(UserRepository());
-  final notificationController = NotificationController.instance;
+  // final notificationController = NotificationController.instance;
   final reviewRepository = Get.put(ReviewRepository());
   final subscriptionController = Get.put(SubscriptionController()); // ADD THIS
 
@@ -567,10 +567,16 @@ class PlaceController extends GetxController {
         address: placeLocation,
 
         // Image URLs
-        thumbnail: imageUrls.first,
+        // thumbnail: imageUrls.first,
         // images: imageUrls.length > 1 ? imageUrls.sublist(1) : null,
-        images: imageUrls,
-
+        // images: imageUrls,
+        // Image URLs - CORRECT WAY:
+        thumbnail: imageUrls.isNotEmpty
+            ? imageUrls.first
+            : '', // First image as thumbnail
+        images: imageUrls.length > 1
+            ? imageUrls.sublist(1)
+            : null, // Additional images only
         // Selected IDs and Lists
         categoryId: selectedCategoryId.value,
         tags: selectedTags.toList(),
@@ -800,6 +806,17 @@ class PlaceController extends GetxController {
         return;
       }
 
+      // Get original place BEFORE making changes
+      final originalPlace = _editingPlace.value;
+      if (originalPlace == null) {
+        AppFullScreenLoader.stopLoading();
+        AppLoaders.errorSnackBar(
+          title: txt.updateFailed,
+          message: txt.noDataFound,
+        );
+        return;
+      }
+
       // Upload new images if any
       List<String> allImageUrls = [...existingImageUrls];
       if (selectedLocalImageFiles.isNotEmpty) {
@@ -808,55 +825,75 @@ class PlaceController extends GetxController {
         allImageUrls.addAll(newImageUrls);
       }
 
-      // Separate thumbnail and remaining images
-      final String finalThumbnail = allImageUrls.isNotEmpty
-          ? allImageUrls.first
-          : '';
-      final List<String>? finalImages = allImageUrls.length > 1
-          ? allImageUrls.sublist(1)
-          : null;
-
-      // Prepare updated Place Model
-      final AddressModel placeLocation = selectedAddress.value;
-      final userName = UserController.instance.user.value.fullName;
-      final userAvatar = UserController.instance.user.value.profilePicture;
-
+      // Prepare updated place - PRESERVE ALL EXISTING DATA
       final updatedPlace = PlaceModel(
         id: placeId,
         title: titleController.text.trim(),
         description: descriptionController.text.trim(),
-        address: placeLocation,
+        address: selectedAddress.value,
 
-        // Image URLs - combine existing and new
-        thumbnail: finalThumbnail,
-        images: finalImages,
+        // Images
+        thumbnail: allImageUrls.isNotEmpty
+            ? allImageUrls.first
+            : originalPlace.thumbnail,
+        images: allImageUrls.length > 1
+            ? allImageUrls.sublist(1)
+            : originalPlace.images,
 
-        // Selected IDs and Lists
+        // Category & Tags
         categoryId: selectedCategoryId.value,
         tags: selectedTags.toList(),
 
-        // Coordinates (sourced directly from the selectedAddress)
-        // latitude: placeLocation.latitude,
-        // longitude: placeLocation.longitude,
+        // Contact info
         websiteUrl: websiteUrlController.text.trim().isEmpty
-            ? null
+            ? originalPlace.websiteUrl
             : websiteUrlController.text.trim(),
-        phoneNumber: phoneController.text.trim(),
+        phoneNumber: phoneController.text.trim().isEmpty
+            ? originalPlace.phoneNumber
+            : phoneController.text.trim(),
 
-        // Retain existing metadata (note: you might fetch and merge existing data here)
-        userId: AuthenticationRepository.instance.getUserID,
-        averageRating: 0.0,
+        // ⚠️ CRITICAL: PRESERVE EXISTING DATA
+        userId: originalPlace.userId,
+        averageRating: originalPlace.averageRating,
+        reviewsCount: originalPlace.reviewsCount,
         isFeatured: isFeatured.value,
-        dateAdded: DateTime.now(),
-        isFavorite: false,
-        creatorName: userName,
-        creatorAvatarUrl: userAvatar,
-        customQuestions: customQuestions
-            .toList(), // Ensure custom questions are saved
+        dateAdded: originalPlace.dateAdded ?? DateTime.now(),
+        isFavorite: originalPlace.isFavorite,
+        creatorName: UserController.instance.user.value.fullName,
+        creatorAvatarUrl: UserController.instance.user.value.profilePicture,
+        likeCount: originalPlace.likeCount,
+
+        // ⚠️ MOST IMPORTANT: Preserve barcode or generate new
+        barcodeData: originalPlace.barcodeData.isNotEmpty == true
+            ? originalPlace.barcodeData
+            : BarcodeService().generateBarcodeData(placeId),
+        uniqueBarcode: originalPlace.uniqueBarcode?.isNotEmpty == true
+            ? originalPlace.uniqueBarcode
+            : 'QR_$placeId',
+
+        // Preserve other important fields
+        customQuestions: customQuestions.isNotEmpty
+            ? customQuestions.toList()
+            : originalPlace.customQuestions,
+        ratingDistribution: originalPlace.ratingDistribution ?? {},
       );
 
       // Update place in Firestore
+      // await placeRepository.updatePlace(updatedPlace);
       await placeRepository.updatePlace(updatedPlace);
+
+      // Update category link if changed
+      if (originalPlace.categoryId != selectedCategoryId.value) {
+        await _updateCategoryLinkSilently(
+          placeId,
+          originalPlace.categoryId,
+          selectedCategoryId.value,
+        );
+      }
+
+      // Update local lists
+      _updateLocalPlace(updatedPlace);
+
       // clearEditForm();
       update();
       Get.back();
@@ -873,6 +910,53 @@ class PlaceController extends GetxController {
     } finally {
       AppFullScreenLoader.stopLoading();
     }
+  }
+
+  /// Update category link silently
+  Future<void> _updateCategoryLinkSilently(
+    String placeId,
+    String oldCategoryId,
+    String newCategoryId,
+  ) async {
+    try {
+      await placeRepository.updatePlaceCategory(
+        placeId,
+        oldCategoryId,
+        newCategoryId,
+      );
+    } catch (e) {
+      AppLoaders.errorSnackBar(title: txt.ohSnap, message: e.toString());
+    }
+  }
+
+  /// Update place in all local lists
+  void _updateLocalPlace(PlaceModel updatedPlace) {
+    // Featured places
+    final featuredIndex = featuredPlaces.indexWhere(
+      (p) => p.id == updatedPlace.id,
+    );
+    if (featuredIndex >= 0) {
+      featuredPlaces[featuredIndex] = updatedPlace;
+    }
+
+    // All places
+    final placesIndex = places.indexWhere((p) => p.id == updatedPlace.id);
+    if (placesIndex >= 0) {
+      places[placesIndex] = updatedPlace;
+    }
+
+    // Category places
+    final categoryIndex = categoryPlaces.indexWhere(
+      (p) => p.id == updatedPlace.id,
+    );
+    if (categoryIndex >= 0) {
+      categoryPlaces[categoryIndex] = updatedPlace;
+    }
+
+    // Refresh UI
+    featuredPlaces.refresh();
+    places.refresh();
+    categoryPlaces.refresh();
   }
 
   /// Delete place with confirmation

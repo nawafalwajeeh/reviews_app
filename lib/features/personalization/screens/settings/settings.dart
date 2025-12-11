@@ -83,7 +83,7 @@ class SettingsScreen extends StatelessWidget {
                   ),
 
                   /// Tiles from [appSettings] list
-                  ...appSettings(context).map(
+                  ...appSettings(context, controller).map(
                     (tile) => SettingsMenuTile(
                       icon: tile.icon,
                       title: tile.title,

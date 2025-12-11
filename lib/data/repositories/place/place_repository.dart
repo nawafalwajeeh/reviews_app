@@ -398,7 +398,7 @@ class PlaceRepository extends GetxController {
 
         await batchWriter.updateCollection(placeWithId);
       }
-        
+
       // 4. Commit the internal batch atomically.
       await batchWriter.commit();
 
@@ -438,7 +438,9 @@ class PlaceRepository extends GetxController {
   /// -- Update place.
   Future<void> updatePlace(PlaceModel place) async {
     try {
-      await _db.collection('Places').doc(place.id).update(place.toJson());
+      // await _db.collection('Places').doc(place.id).update(place.toJson());
+      final batchWriter = PlaceBatchWriter(db: _db);
+      await batchWriter.updatePlace(place);
     } on FirebaseException catch (e) {
       throw AppFirebaseException(e.code).message;
     } on FormatException catch (_) {
@@ -759,6 +761,39 @@ class PlaceRepository extends GetxController {
       }
 
       return null;
+    } on FirebaseException catch (e) {
+      throw AppFirebaseException(e.code).message;
+    } on PlatformException catch (e) {
+      throw AppPlatformException(e.code).message;
+    } catch (e) {
+      // throw 'Something went wrong. Failed to fetch place: $e';
+      throw txt.somethingWentWrong;
+    }
+  }
+
+  /// Update category link silently
+  Future<void> updatePlaceCategory(
+    String placeId,
+    String oldCategoryId,
+    String newCategoryId,
+  ) async {
+    try {
+      // Remove old link
+      final oldLinks = await _db
+          .collection('PlaceCategory')
+          .where('placeId', isEqualTo: placeId)
+          .where('categoryId', isEqualTo: oldCategoryId)
+          .get();
+
+      for (var doc in oldLinks.docs) {
+        await doc.reference.delete();
+      }
+
+      // Create new link
+      await _db.collection('PlaceCategory').add({
+        'placeId': placeId,
+        'categoryId': newCategoryId,
+      });
     } on FirebaseException catch (e) {
       throw AppFirebaseException(e.code).message;
     } on PlatformException catch (e) {

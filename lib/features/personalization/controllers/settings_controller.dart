@@ -9,6 +9,10 @@ class SettingsController extends GetxController {
   final Rx<ThemeMode> _themeMode = ThemeMode.system.obs;
   final _storage = GetStorage();
 
+  final recommendationValue = false.obs;
+  final imageQualityValue = false.obs;
+  final safeResultsValue = false.obs;
+
   /// get themeMode value
   ThemeMode get themeMode => _themeMode.value;
 

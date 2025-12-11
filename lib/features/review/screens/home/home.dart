@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:reviews_app/common/widgets/custom_shapes/containers/primary_header_container.dart';
 import 'package:reviews_app/common/widgets/texts/section_heading.dart';
-import 'package:reviews_app/features/review/controllers/notification_controller.dart';
+// import 'package:reviews_app/features/review/controllers/notification_controller.dart';
 import '../../../../common/widgets/custom_shapes/containers/search_container.dart';
 import '../../../../localization/app_localizations.dart';
 import '../../../../utils/constants/sizes.dart';
@@ -19,7 +19,7 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = Get.put(PlaceController());
-    final _ = Get.put(NotificationController());
+    // final _ = Get.put(NotificationController());
     return GestureDetector(
       onTap: () {},
       child: Scaffold(

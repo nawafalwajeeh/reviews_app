@@ -3,8 +3,10 @@ import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:reviews_app/features/personalization/models/settings_tile_model.dart';
 import 'package:reviews_app/features/personalization/screens/address/address.dart';
-import 'package:reviews_app/features/personalization/screens/settings/upload_data.dart';
+// import 'package:reviews_app/features/personalization/screens/settings/upload_data.dart';
 import 'package:reviews_app/localization/app_localizations.dart';
+
+import '../../../controllers/settings_controller.dart';
 
 /// -- The toplevel [accountSettings] list of ListTile items
 List<SettingsTileModel> accountSettings(BuildContext context) => [
@@ -14,60 +16,81 @@ List<SettingsTileModel> accountSettings(BuildContext context) => [
     subTitle: AppLocalizations.of(context).setDeliveryAddress,
     onTap: () => Get.to(() => const UserAddressScreen()),
   ),
-  SettingsTileModel(
-    icon: Iconsax.bank,
-    title: AppLocalizations.of(context).bankAccount,
-    subTitle: AppLocalizations.of(context).withdrawBalance,
-    onTap: () {},
-  ),
-  SettingsTileModel(
-    icon: Iconsax.discount_shape,
-    title: AppLocalizations.of(context).myCoupons,
-    subTitle: AppLocalizations.of(context).discountedCoupons,
-    onTap: () {},
-  ),
-  SettingsTileModel(
-    icon: Iconsax.notification,
-    title: AppLocalizations.of(context).notifications,
-    subTitle: AppLocalizations.of(context).setNotifications,
-    onTap: () {},
-  ),
-  SettingsTileModel(
-    icon: Iconsax.security_card,
-    title: AppLocalizations.of(context).accountPrivacy,
-    subTitle: AppLocalizations.of(context).manageDataUsage,
-    onTap: () {},
-  ),
+  // SettingsTileModel(
+  //   icon: Iconsax.bank,
+  //   title: AppLocalizations.of(context).bankAccount,
+  //   subTitle: AppLocalizations.of(context).withdrawBalance,
+  //   onTap: () {},
+  // ),
+  // SettingsTileModel(
+  //   icon: Iconsax.discount_shape,
+  //   title: AppLocalizations.of(context).myCoupons,
+  //   subTitle: AppLocalizations.of(context).discountedCoupons,
+  //   onTap: () {},
+  // ),
+  // SettingsTileModel(
+  //   icon: Iconsax.notification,
+  //   title: AppLocalizations.of(context).notifications,
+  //   subTitle: AppLocalizations.of(context).setNotifications,
+  //   onTap: () {},
+  // ),
+  // SettingsTileModel(
+  //   icon: Iconsax.security_card,
+  //   title: AppLocalizations.of(context).accountPrivacy,
+  //   subTitle: AppLocalizations.of(context).manageDataUsage,
+  //   onTap: () {},
+  // ),
 ];
 
 /// -- Define the toplevel [appSettings] list of ListTile items
-List<SettingsTileModel> appSettings(BuildContext context) => [
-  SettingsTileModel(
-    icon: Iconsax.document_upload,
-    title: AppLocalizations.of(context).loadData,
-    subTitle: AppLocalizations.of(context).uploadDataToCloud,
-    onTap: () => Get.to(() => const UploadDataScreen()),
-  ),
+List<SettingsTileModel> appSettings(
+  BuildContext context,
+  SettingsController controller,
+) => [
+  // SettingsTileModel(
+  //   icon: Iconsax.document_upload,
+  //   title: AppLocalizations.of(context).loadData,
+  //   subTitle: AppLocalizations.of(context).uploadDataToCloud,
+  //   onTap: () => Get.to(() => const UploadDataScreen()),
+  // ),
   SettingsTileModel(
     icon: Iconsax.location,
     title: AppLocalizations.of(context).geolocation,
     subTitle: AppLocalizations.of(context).recommendationBasedOnLocation,
     onTap: () {},
-    trailing: Switch(value: true, onChanged: (value) {}),
+    trailing: Obx(
+      () => Switch(
+        value: controller.recommendationValue.value,
+        onChanged: (value) => controller.recommendationValue.value =
+            !controller.recommendationValue.value,
+      ),
+    ),
   ),
   SettingsTileModel(
     icon: Iconsax.security_user,
     title: AppLocalizations.of(context).safeMode,
     subTitle: AppLocalizations.of(context).safeForAllAges,
     onTap: () {},
-    trailing: Switch(value: true, onChanged: (value) {}),
+    trailing: Obx(
+      () => Switch(
+        value: controller.safeResultsValue.value,
+        onChanged: (value) => controller.safeResultsValue.value =
+            !controller.safeResultsValue.value,
+      ),
+    ),
   ),
   SettingsTileModel(
     icon: Iconsax.image,
     title: AppLocalizations.of(context).hdImageQuality,
     subTitle: AppLocalizations.of(context).setImageQuality,
     onTap: () {},
-    trailing: Switch(value: true, onChanged: (value) {}),
+    trailing: Obx(
+      () => Switch(
+        value: controller.imageQualityValue.value,
+        onChanged: (value) => controller.imageQualityValue.value =
+            !controller.imageQualityValue.value,
+      ),
+    ),
   ),
 ];
 
