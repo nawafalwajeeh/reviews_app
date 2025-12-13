@@ -19,7 +19,7 @@ class WriteReviewWithQuestionsSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Get.put(ReviewController(placeId: placeId), tag: placeId);
+    Get.put(ReviewController(placeId: placeId, placeOwnerId: place.userId, placeName: place.title), tag: placeId);
 
     return GetBuilder<ReviewController>(
       tag: placeId,

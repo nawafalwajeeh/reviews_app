@@ -1,4 +1,3 @@
-
 // import 'package:flutter/material.dart';
 // features/review/screens/notifications/widgets/notifications_list.dart
 import 'package:flutter/material.dart';
@@ -35,6 +34,7 @@ class NotificationList extends StatelessWidget {
           separatorBuilder: (context, index) => const SizedBox(height: 12),
           itemBuilder: (context, index) {
             final notification = notifications[index];
+           
             return _NotificationItem(notification: notification);
           },
         ),
@@ -128,10 +128,7 @@ class _NotificationItem extends StatelessWidget {
 
   MilestoneBadge? _getMilestoneBadge(NotificationModel notification) {
     if (notification.type == 'place_featured') {
-      return MilestoneBadge(
-        icon: Icons.emoji_events_rounded,
-        text: 'Featured',
-      );
+      return MilestoneBadge(icon: Icons.emoji_events_rounded, text: 'Featured');
     }
     return null;
   }
@@ -167,16 +164,16 @@ class _EmptyNotifications extends StatelessWidget {
           SizedBox(height: 16),
           Text(
             'No notifications yet',
-            style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                  color: Colors.grey[600],
-                ),
+            style: Theme.of(
+              context,
+            ).textTheme.titleMedium?.copyWith(color: Colors.grey[600]),
           ),
           SizedBox(height: 8),
           Text(
             'When you get notifications, they\'ll appear here',
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: Colors.grey[500],
-                ),
+            style: Theme.of(
+              context,
+            ).textTheme.bodyMedium?.copyWith(color: Colors.grey[500]),
             textAlign: TextAlign.center,
           ),
         ],
@@ -184,8 +181,6 @@ class _EmptyNotifications extends StatelessWidget {
     );
   }
 }
-
-
 
 //----------------------------
 // import '../../../controllers/notification_controller.dart';

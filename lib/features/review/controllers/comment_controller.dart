@@ -1,5 +1,6 @@
 // controllers/comment_controller.dart
 import 'package:get/get.dart';
+import 'package:reviews_app/features/review/controllers/notification_controller.dart';
 import '../../../data/repositories/comment/comment_repository.dart';
 import '../../../localization/app_localizations.dart';
 import '../../../utils/popups/loaders.dart';
@@ -13,6 +14,7 @@ class CommentController extends GetxController {
 
   final _commentRepository = Get.put(CommentRepository());
   final authRepo = AuthenticationRepository.instance;
+  final notificationController = Get.put(NotificationController());
 
   // Reactive state
   final RxList<CommentModel> _comments = <CommentModel>[].obs;

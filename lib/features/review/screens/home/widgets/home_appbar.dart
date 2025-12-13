@@ -11,6 +11,8 @@ import 'package:reviews_app/routes/app_routes.dart';
 import 'package:reviews_app/utils/constants/colors.dart';
 import '../../../../../localization/app_localizations.dart';
 import '../../../../../utils/constants/sizes.dart';
+import '../../../controllers/notification_controller.dart';
+import '../../notifications/notifications.dart';
 // import '../../../../personalization/screens/locale/select_language.dart';
 
 class HomeAppBar extends StatelessWidget {
@@ -20,6 +22,7 @@ class HomeAppBar extends StatelessWidget {
   Widget build(BuildContext context) {
     final controller = Get.put(UserController());
     final settingsController = SettingsController.instance;
+    final notificationController = Get.put(NotificationController());
 
     return CustomAppBar(
       title: Column(
@@ -60,15 +63,64 @@ class HomeAppBar extends StatelessWidget {
           size: AppSizes.iconMd,
           onPressed: () => Get.to(() => const BarcodeScannerScreen()),
         ),
-        // const SizedBox(width: AppSizes.spaceBtwItems),
+        const SizedBox(width: AppSizes.spaceBtwItems),
         // AppCircularIcon(
         //   icon: Icons.notifications_outlined,
         //   backgroundColor: Colors.blue[100],
         //   color: Colors.blue,
         //   size: AppSizes.iconMd,
-        //   // onPressed: () => Get.to(() => const NotificationsScreen()),
-        //   onPressed: () => Get.to(() => const SelectLanguageScreen()),
+        //   onPressed: () => Get.to(() => const NotificationsScreen()),
+        //   // onPressed: () => Get.to(() => const SelectLanguageScreen()),
         // ),
+
+        // Notification Icon with Badge
+        Obx(() {
+          final unreadCount =
+              notificationController.unreadNotificationCount.value;
+
+          return Stack(
+            alignment: Alignment.topRight,
+            children: [
+              AppCircularIcon(
+                icon: Icons.notifications_outlined,
+                backgroundColor: Colors.blue[100],
+                color: Colors.blue,
+                size: AppSizes.iconMd,
+                onPressed: () {
+                  Get.to(() => const NotificationsScreen());
+                  // Optionally mark all as read when opened
+                  notificationController.markAllAsRead();
+                },
+              ),
+
+              // Badge for unread notifications
+              if (unreadCount > 0)
+                Container(
+                  padding: const EdgeInsets.all(2),
+                  decoration: BoxDecoration(
+                    color: Colors.red,
+                    // borderRadius: BorderRadius.circular(15),
+                    shape: BoxShape.circle,
+                    border: Border.all(color: AppColors.white, width: 1.5),
+                  ),
+                  constraints: const BoxConstraints(
+                    minWidth: 20,
+                    minHeight: 20,
+                  ),
+                  child: Text(
+                    unreadCount > 99 ? '99+' : unreadCount.toString(),
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                      color: AppColors.white,
+                      fontSize: 10,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+            ],
+          );
+        }),
+
         const SizedBox(width: AppSizes.spaceBtwItems),
 
         Obx(

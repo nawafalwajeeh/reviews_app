@@ -190,60 +190,10 @@ class PlaceRepository extends GetxController {
     }
   }
 
-  /// Fetches products for a specific category.
-  /// If the limit is -1, retrieves all products for the category;
+  /// Fetches places for a specific category.
+  /// If the limit is -1, retrieves all places for the category;
   ///  otherwise, limits the result based on the provided limit.
   /// Returns a list of [PlaceModel] objects.
-  // Future<List<PlaceModel>> getPlacesForCategory(
-  //   String categoryId, {
-  //   int limit = 4,
-  // }) async {
-  //   try {
-  //     // Query to get all documnets where placeId matches the provided categoryId & Fetch
-  //     // limited or unlimited based on the limit parameter
-  //     QuerySnapshot placeCategoryQuery = limit == -1
-  //         ? await _db
-  //               .collection('PlaceCategory')
-  //               .where('categoryId', isEqualTo: categoryId)
-  //               .get()
-  //         : await _db
-  //               .collection('PlaceCategory')
-  //               .where('categoryId', isEqualTo: categoryId)
-  //               .limit(limit)
-  //               .get();
-
-  //     // Extract placeIds from the documents
-  //     final placeIds = placeCategoryQuery.docs
-  //         .map((doc) => PlaceCategoryModel.fromSnapshot(doc).placeId)
-  //         .toList();
-  //     // Query to get all documents where the placeId is in the list of placeIds
-  //     // FieldPath.documentId to query documents in Collection
-  //     final placesQuery = await _db
-  //         .collection('Places')
-  //         // .where(FieldPath.documentId, whereIn: placeIds)
-  //         .where('Id', whereIn: placeIds)
-  //         .get();
-
-  //     debugPrint(
-  //       'Fetched ${placesQuery.docs.length} places for category $categoryId',
-  //     );
-  //     debugPrint('placeIds: $placeIds');
-
-  //     // Extract relevant data from the documents
-  //     List<PlaceModel> places = placesQuery.docs
-  //         .map((doc) => PlaceModel.fromSnapshot(doc))
-  //         .toList();
-
-  //     return places;
-  //   } on FirebaseException catch (e) {
-  //     throw AppFirebaseException(e.code).message;
-  //   } on PlatformException catch (e) {
-  //     throw AppPlatformException(e.code).message;
-  //   } catch (e) {
-  //     throw 'Something went wrong. Please try again.';
-  //   }
-  // }
-
   Future<List<PlaceModel>> getPlacesForCategory(
     String categoryId, {
     int limit = 4,
@@ -519,50 +469,6 @@ class PlaceRepository extends GetxController {
   }
 
   /// -- Delete Place
-  // Future<void> deletePlace(PlaceModel place) async {
-  //   try {
-  //     // delete all data at once from Firebase firestore
-  //     await _db.runTransaction((transaction) async {
-  //       final placeRef = _db.collection('Places').doc(place.id);
-  //       final placeSnap = await transaction.get(placeRef);
-
-  //       if (!placeSnap.exists) {
-  //         throw Exception('Place not found');
-  //       }
-
-  //       // Fetch PlaceCategories
-  //       final placeCategoriesSnapshot = await _db
-  //           .collection('PlaceCategory')
-  //           .where('placeId', isEqualTo: place.id)
-  //           .get();
-  //       final placeCategories = placeCategoriesSnapshot.docs
-  //           .map((e) => PlaceCategoryModel.fromSnapshot(e))
-  //           .toList();
-
-  //       if (placeCategories.isNotEmpty) {
-  //         for (var placeCategory in placeCategories) {
-  //           transaction.delete(
-  //             _db.collection('PlaceCategory').doc(placeCategory.id),
-  //           );
-  //         }
-  //       }
-
-  //       transaction.delete(placeRef);
-  //     });
-  //   } on FirebaseException catch (e) {
-  //     throw AppFirebaseException(e.code).message;
-  //   } on FormatException catch (_) {
-  //     throw const AppFormatException();
-  //   } on PlatformException catch (e) {
-  //     throw AppPlatformException(e.code).message;
-  //   } catch (e) {
-  //     // throw 'Something went wrong. Please try again.';
-  //     throw txt.somethingWentWrong;
-  //   }
-  // }
-
-  /// -- Ultra Simple: Delete place and all related data
-  /// -- Ultra Simple: Delete place and all related data
   Future<void> deletePlace(PlaceModel place) async {
     try {
       debugPrint('🗑️  Deleting place: ${place.title}');

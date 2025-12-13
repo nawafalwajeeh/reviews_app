@@ -9,7 +9,7 @@ class NotificationRepository extends GetxController {
   static NotificationRepository get instance => Get.find();
   final FirebaseFirestore _db = FirebaseFirestore.instance;
   // NOTE: Ensure this URL points to your running Node.js server instance
-  final String _serverUrl = 'https://place-api.vercel.app/send-notification';
+  final String _serverUrl = 'https://place-api.vercel.app';
 
   // Get user notifications stream
   Stream<List<NotificationModel>> getUserNotifications(String userId) {

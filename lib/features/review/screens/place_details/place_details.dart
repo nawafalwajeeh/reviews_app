@@ -51,7 +51,14 @@ class _PlaceDetailsScreenState extends State<PlaceDetailsScreen> {
   Widget build(BuildContext context) {
     final userId = AuthenticationRepository.instance.getUserID;
     final creatorId = widget.place.userId;
-    Get.put(ReviewController(placeId: widget.place.id), tag: widget.place.id);
+    Get.put(
+      ReviewController(
+        placeId: widget.place.id,
+        placeOwnerId: widget.place.userId,
+        placeName: widget.place.title,
+      ),
+      tag: widget.place.id,
+    );
 
     debugPrint('UserId: $userId, creatorId: $creatorId');
 

@@ -11,7 +11,6 @@ import 'package:reviews_app/data/services/cloud_storage/supabase_storage_service
 import 'package:reviews_app/features/personalization/controllers/user_controller.dart';
 import 'package:reviews_app/features/personalization/models/address_model.dart';
 import 'package:reviews_app/features/review/controllers/category_controller.dart';
-import 'package:reviews_app/features/review/controllers/notification_controller.dart';
 import 'package:reviews_app/features/review/models/place_category_model.dart';
 import 'package:reviews_app/localization/app_localizations.dart';
 import 'package:uuid/uuid.dart';

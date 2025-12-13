@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:reviews_app/common/widgets/custom_shapes/containers/rounded_container.dart';
+import 'package:reviews_app/data/services/localization/localization_service.dart';
 import 'package:reviews_app/features/personalization/controllers/address_controller.dart';
 import 'package:reviews_app/features/personalization/models/address_model.dart';
 import 'package:reviews_app/utils/constants/colors.dart';
@@ -18,6 +19,7 @@ class SingleAddress extends StatelessWidget {
   Widget build(BuildContext context) {
     final controller = AddressController.instance;
     final dark = AppHelperFunctions.isDarkMode(context);
+    final localizationServie = LocalizationService.instance;
 
     return Obx(() {
       final selectedAddressId = controller.selectedAddress.value.id;
@@ -50,7 +52,8 @@ class SingleAddress extends StatelessWidget {
             children: [
               /// -- Selection Tick Icon
               Positioned(
-                right: 5,
+                right: localizationServie.isRTL() ? null : 5,
+                left: localizationServie.isRTL() ? 5 : null,
                 top: 0,
                 child: Icon(
                   selectedAddress ? Iconsax.tick_circle5 : null,

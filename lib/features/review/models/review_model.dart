@@ -7,6 +7,8 @@ class ReviewModel {
   String id;
   String placeId; // Foreign key to the place being reviewed
   String userId;
+  String placeOwnerId;
+  String placeName;
   String userName;
   String userAvatar;
   double rating; // 1.0 to 5.0
@@ -16,7 +18,7 @@ class ReviewModel {
   List<String> dislikes; // List of User IDs who disliked the review
   int repliesCount;
   List<ReplyModel> replies; // Nested replies
-    List<QuestionAnswer> questionAnswers; // Add this field
+  List<QuestionAnswer> questionAnswers; // Add this field
 
   ReviewModel({
     required this.id,
@@ -31,8 +33,9 @@ class ReviewModel {
     this.dislikes = const [],
     this.replies = const [],
     this.repliesCount = 0, // Initialize the new field
-        this.questionAnswers = const [], // Initialize with empty list
-
+    this.questionAnswers = const [], // Initialize with empty list
+    this.placeOwnerId = '',
+    this.placeName = '',
   });
 
   /// Factory constructor to create a ReviewModel from a Firestore DocumentSnapshot
@@ -40,12 +43,11 @@ class ReviewModel {
     DocumentSnapshot<Map<String, dynamic>> document,
   ) {
     final data = document.data()!;
-      // Parse question answers
+    // Parse question answers
     final questionAnswersData = data['questionAnswers'] as List<dynamic>?;
     final List<QuestionAnswer> questionAnswers = questionAnswersData != null
         ? questionAnswersData.map((qa) => QuestionAnswer.fromJson(qa)).toList()
         : [];
-  
 
     return ReviewModel(
       id: document.id,
@@ -61,8 +63,9 @@ class ReviewModel {
       repliesCount: data['repliesCount'] as int? ?? 0,
       replies:
           [], // Replies are handled in the controller by fetching separately
-          questionAnswers: questionAnswers,
-
+      questionAnswers: questionAnswers,
+      placeOwnerId: data['placeOwnerId'] ?? '',
+      placeName: data['placeName'] ?? '',
     );
   }
 
@@ -79,7 +82,9 @@ class ReviewModel {
       'likes': likes,
       'dislikes': dislikes,
       'repliesCount': repliesCount,
-       'questionAnswers': questionAnswers.map((qa) => qa.toJson()).toList(),
+      'questionAnswers': questionAnswers.map((qa) => qa.toJson()).toList(),
+      'placeOwnerId': placeOwnerId,
+      'placeName': placeName,
       // Replies are stored in a sub-collection, not in the parent document
     };
   }

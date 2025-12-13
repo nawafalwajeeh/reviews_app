@@ -17,10 +17,13 @@ import '../../authentication/screens/signup/signup_screen.dart';
 import '../models/question_answer_model.dart';
 import '../models/reply_model.dart';
 import '../models/review_model.dart';
+import 'notification_controller.dart';
 
 class ReviewController extends GetxController {
   final String placeId;
-  ReviewController({required this.placeId});
+  final String? placeOwnerId;
+  final String? placeName;
+  ReviewController({required this.placeId, this.placeOwnerId, this.placeName});
 
   static ReviewController get instance => Get.find();
 
@@ -198,6 +201,8 @@ class ReviewController extends GetxController {
         reviewText: reviewTextController.text.trim(),
         timestamp: DateTime.now(),
         questionAnswers: questionAnswers.values.toList(),
+        placeOwnerId: placeOwnerId ?? '',
+        placeName: placeName ?? '',
       );
 
       // 4. Submit or Update
@@ -239,7 +244,13 @@ class ReviewController extends GetxController {
 
       // 6. Transition back to read-only view after successful submission/update
       await fetchExistingReview(); // Refetch to reset state, update ID (for new review), and update originalRating
-
+      await NotificationController.instance.sendNewReviewNotification(
+        placeOwnerId: placeOwnerId ?? '',
+        placeId: placeId,
+        placeName: placeName ?? '',
+        rating: newRating,
+        reviewText: reviewTextController.text.trim(),
+      );
       update(); // Refresh UI
     } catch (e) {
       AppLoaders.errorSnackBar(

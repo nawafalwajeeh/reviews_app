@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:reviews_app/features/personalization/models/settings_tile_model.dart';
 import 'package:reviews_app/features/personalization/screens/address/address.dart';
+import 'package:reviews_app/features/review/screens/notifications/notifications.dart';
 // import 'package:reviews_app/features/personalization/screens/settings/upload_data.dart';
 import 'package:reviews_app/localization/app_localizations.dart';
 
@@ -28,12 +29,12 @@ List<SettingsTileModel> accountSettings(BuildContext context) => [
   //   subTitle: AppLocalizations.of(context).discountedCoupons,
   //   onTap: () {},
   // ),
-  // SettingsTileModel(
-  //   icon: Iconsax.notification,
-  //   title: AppLocalizations.of(context).notifications,
-  //   subTitle: AppLocalizations.of(context).setNotifications,
-  //   onTap: () {},
-  // ),
+  SettingsTileModel(
+    icon: Iconsax.notification,
+    title: AppLocalizations.of(context).notifications,
+    subTitle: AppLocalizations.of(context).setNotifications,
+    onTap: () => Get.to(() => NotificationsScreen()),
+  ),
   // SettingsTileModel(
   //   icon: Iconsax.security_card,
   //   title: AppLocalizations.of(context).accountPrivacy,

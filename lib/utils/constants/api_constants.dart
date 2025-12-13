@@ -13,6 +13,9 @@ final class ApiConstants {
   static const supabaseKey =
       'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdmbGN3bnN3c2Zoa2Z4aW9veHNzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA4MjUwNTAsImV4cCI6MjA3NjQwMTA1MH0.DqeSsTik9GyO4-3cH3kUKQbVoHfHnKELPEbMiL5DxeY';
 
+  /// Notification apiUrl
+  static const String serverUrl = 'https://place-api.vercel.app';
+
   /// -- PayPal Sandbox Credentials
   static const String paypalSandboxClientId =
       "AUqno48WE_mfiWr8BGUFtXE2UyfsCLtLn021RnzNzq2eNndG4iILwuDiNCgYWSgT2XJacKsCmDvJo5JQ";
