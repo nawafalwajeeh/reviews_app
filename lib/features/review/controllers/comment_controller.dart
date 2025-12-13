@@ -273,7 +273,7 @@ class CommentController extends GetxController {
     }
   }
 
-  // NEW: Count all nested replies recursively
+  // Count all nested replies recursively
   int _countAllNestedReplies(String commentId) {
     int count = 0;
     final directReplies = _replies[commentId] ?? [];

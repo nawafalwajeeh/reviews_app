@@ -4,14 +4,18 @@ import 'package:get/get.dart';
 import '../../../data/repositories/authentication/authentication_repository.dart';
 import '../../../localization/app_localizations.dart';
 import '../../../utils/popups/loaders.dart';
+import '../../personalization/controllers/user_controller.dart';
+import 'notification_controller.dart';
 import 'place_controller.dart';
 
 class PlaceLikeController extends GetxController {
   final PlaceController placeController = PlaceController.instance;
 
   final String userId = AuthenticationRepository.instance.getUserID;
-
   final String placeId;
+
+  final notificationController = NotificationController.instance;
+  final userController = UserController.instance;
 
   // Observables for UI state
   final Rx<bool> isLiked = false.obs;
@@ -101,6 +105,11 @@ class PlaceLikeController extends GetxController {
         userId,
         newStatus,
       );
+
+      // ✅ Use helper class
+      if (newStatus) {
+        sendPlaceLikedNotification(placeId: placeId, likerId: userId);
+      }
     } catch (e) {
       // Revert UI change and show error if DB update fails
       isLiked.value = oldStatus;
@@ -118,6 +127,44 @@ class PlaceLikeController extends GetxController {
     } finally {
       // Reset flag to allow future taps, even if an error occurred.
       isToggling.value = false;
+    }
+  }
+
+  Future<void> sendPlaceLikedNotification({
+    required String placeId,
+    required String likerId,
+  }) async {
+    try {
+      // Get place details
+      final place = await placeController.placeRepository.getPlaceById(placeId);
+      if (place == null) return;
+
+      // Don't notify self
+      if (place.userId == likerId) return;
+
+      // Get liker name
+      final likerName = userController.user.value.fullName;
+
+      // Send notification
+      await notificationController.sendNotification(
+        toUserId: place.userId,
+        type: 'place_liked',
+        title: 'Your Place Got Liked',
+        body: '$likerName liked your place "${place.title}"',
+        targetId: placeId,
+        targetType: 'place',
+        extraData: {
+          'placeId': placeId,
+          'placeName': place.title,
+          'likerId': likerId,
+          'likerName': likerName,
+          'timestamp': DateTime.now().toIso8601String(),
+        },
+      );
+
+      debugPrint('✅ Place liked notification sent successfully');
+    } catch (e) {
+      debugPrint('❌ Error sending place liked notification: $e');
     }
   }
 }
